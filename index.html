@@ -1,0 +1,476 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Prompt Ads — Creá anuncios premium con ChatGPT | simply studio.</title>
+  <meta name="description" content="El sistema de prompts y guías para convertir fotos reales en anuncios premium con ChatGPT, crear variaciones y corregir resultados que parecen hechos por IA.">
+  <meta name="theme-color" content="#f2eee5">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --paper:#f2eee5;--paper-2:#e8e1d5;--ink:#171713;--muted:#67675f;
+      --forest:#26362c;--forest-2:#34483a;--line:rgba(23,23,19,.14);
+      --white:#fffdf8;--radius:30px;--shadow:0 30px 80px rgba(25,24,18,.14);
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+    img{display:block;width:100%;height:auto}a{color:inherit;text-decoration:none}button{font:inherit}.serif{font-family:"Instrument Serif",Georgia,serif}.mono{font-family:"DM Mono",monospace}
+    .shell{width:min(1180px,calc(100% - 42px));margin:auto}.eyebrow{font:500 11px/1.4 "DM Mono",monospace;text-transform:uppercase;letter-spacing:.13em}
+    .muted{color:var(--muted)}.pill{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.42)}
+    .dot{width:7px;height:7px;border-radius:50%;background:#5c7c62;box-shadow:0 0 0 5px rgba(92,124,98,.13)}
+    .btn{min-height:54px;padding:0 23px;border:0;border-radius:99px;background:var(--forest);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:14px;font-weight:700;cursor:pointer;transition:.25s ease;box-shadow:0 10px 24px rgba(38,54,44,.18)}
+    .btn:hover{transform:translateY(-2px);background:var(--forest-2)}.btn.light{background:var(--white);color:var(--ink)}.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+    .arrow{font-size:19px}.reveal{opacity:0;transform:translateY(20px);transition:.7s ease}.reveal.visible{opacity:1;transform:none}
+
+    header{position:sticky;top:0;z-index:50;background:rgba(242,238,229,.82);backdrop-filter:blur(18px);border-bottom:1px solid rgba(23,23,19,.08)}
+    .nav{height:74px;display:flex;align-items:center;justify-content:space-between}.brand{font-size:20px;font-weight:800;letter-spacing:-.05em}.brand i{font-family:"Instrument Serif";font-weight:400}
+    .nav-links{display:flex;align-items:center;gap:28px;font-size:13px;font-weight:600}.nav .btn{min-height:42px;padding:0 18px;font-size:13px}
+
+    .hero{padding:34px 0 34px}.hero-copy{text-align:center;max-width:930px;margin:0 auto 24px}.hero-copy h1{font:400 clamp(55px,7.2vw,88px)/.88 "Instrument Serif",Georgia,serif;letter-spacing:-.055em;margin:18px 0 18px}
+    .hero-copy h1 em{color:var(--forest);font-weight:400}.hero-copy>p{max-width:760px;margin:0 auto;font-size:clamp(18px,2vw,22px);line-height:1.5;color:#46463f}
+    .hero-actions{display:flex;justify-content:center;gap:12px;margin-top:22px}.hero-proof{margin-top:12px;font-size:12px;color:var(--muted)}
+    .campaign-stage{position:relative;padding:18px;background:rgba(255,255,255,.36);border:1px solid rgba(255,255,255,.7);border-radius:40px;box-shadow:var(--shadow)}
+    .campaign-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .campaign-card{margin:0;overflow:hidden;border-radius:24px;background:#e5dfd4;border:1px solid rgba(23,23,19,.08)}
+    .campaign-card button,.result-card button{display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
+    .campaign-card img{aspect-ratio:1;object-fit:contain;transition:transform .6s ease}.campaign-card:hover img{transform:scale(1.012)}
+    .campaign-card figcaption{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 14px;background:rgba(255,255,255,.55);font:500 9px "DM Mono";text-transform:uppercase;letter-spacing:.08em}
+    .campaign-card figcaption:after{content:"↗";font-size:14px}
+    .stage-note{display:flex;justify-content:space-between;gap:20px;padding:15px 5px 2px;color:var(--muted);font-size:11px}
+
+    section{padding:102px 0}.section-intro{display:grid;grid-template-columns:190px 1fr;gap:48px;margin-bottom:48px}.section-intro h2{font:400 clamp(44px,6vw,76px)/.97 "Instrument Serif",Georgia,serif;letter-spacing:-.04em;margin:0;max-width:850px}
+    .section-intro p{font-size:18px;line-height:1.65;max-width:720px;color:var(--muted);margin:20px 0 0}
+
+    .pain{background:var(--ink);color:var(--white);border-radius:48px;margin:34px 16px;padding:96px 0}.pain .muted{color:#aaa99f}.pain-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:65px;align-items:start}
+    .pain h2{font:400 clamp(48px,6vw,80px)/.94 "Instrument Serif";letter-spacing:-.045em;margin:0}.pain h2 em{color:#b9c9b9;font-weight:400}
+    .symptoms{border-top:1px solid rgba(255,255,255,.17)}.symptom{display:grid;grid-template-columns:50px 1fr;padding:22px 0;border-bottom:1px solid rgba(255,255,255,.17)}
+    .symptom b{font-size:18px}.symptom p{margin:7px 0 0;color:#aaa99f;line-height:1.55}
+    .truth{margin-top:32px;padding:22px;border:1px solid rgba(255,255,255,.2);border-radius:20px;color:#d8d6cc;line-height:1.55}.truth strong{color:#fff}
+
+    .difference{padding-bottom:38px}.difference-card{background:var(--white);border-radius:40px;padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:18px;box-shadow:var(--shadow)}
+    .difference-copy{padding:44px;display:flex;flex-direction:column;justify-content:center}.difference-copy h3{font:400 clamp(42px,5vw,67px)/.95 "Instrument Serif";margin:19px 0}
+    .difference-copy p{font-size:17px;line-height:1.65;color:var(--muted)}.difference-copy ul{list-style:none;padding:0;margin:22px 0 0}.difference-copy li{padding:11px 0;border-top:1px solid var(--line);display:flex;gap:11px;font-weight:600}.difference-copy li:before{content:"✓";color:#4e6c54}
+    .difference-proof{border-radius:28px;background:var(--forest);color:#fff;padding:42px;display:flex;flex-direction:column;justify-content:space-between;min-height:580px}.difference-proof .big{font:400 clamp(58px,8vw,100px)/.82 "Instrument Serif";letter-spacing:-.055em}.difference-proof .big em{color:#b9c9b9}.difference-proof p{color:#c5d0c7;max-width:430px;line-height:1.6}.difference-proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.proof-cell{border-top:1px solid rgba(255,255,255,.22);padding-top:14px}.proof-cell b{display:block;font-size:24px}.proof-cell span{font-size:11px;color:#aab9ae}
+    .versus-grid{display:grid;grid-template-columns:1fr 56px 1fr;gap:18px;align-items:center}.versus-card{background:var(--white);border-radius:30px;padding:12px;box-shadow:var(--shadow)}.versus-image{overflow:hidden;border-radius:22px;background:#ddd}.versus-image button{display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in}.versus-image img{aspect-ratio:1;object-fit:contain}.versus-copy{padding:20px 16px 16px}.versus-copy span{font:500 10px "DM Mono";letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.versus-copy h3{font:400 36px/1 "Instrument Serif";margin:9px 0}.versus-copy p{color:var(--muted);line-height:1.55;margin:0}.versus-badge{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:var(--forest);color:#fff;font:500 12px "DM Mono";z-index:2}
+
+    .results{padding-top:80px}.result-head{text-align:center;max-width:830px;margin:0 auto 44px}.result-head h2{font:400 clamp(48px,6vw,78px)/.94 "Instrument Serif";letter-spacing:-.045em;margin:16px 0}.result-head p{font-size:18px;color:var(--muted);line-height:1.6}
+    .result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.result-card{overflow:hidden;border-radius:24px;background:rgba(255,255,255,.5);border:1px solid rgba(23,23,19,.09)}.result-card img{aspect-ratio:1;object-fit:contain;background:#ded8cd;transition:transform .5s ease}.result-card:hover img{transform:scale(1.012)}
+    .result-meta{padding:15px 16px 17px;color:var(--ink)}.result-meta span{font:500 9px "DM Mono";letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.result-meta b{display:block;font-size:15px;margin-top:6px}
+    .result-note{text-align:center;color:var(--muted);font-size:12px;line-height:1.5;margin:19px auto 0;max-width:760px}
+
+    .process{background:#ddd5c7;margin:80px 16px 0;border-radius:48px}.process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.process-card{background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8);border-radius:28px;padding:30px;min-height:300px}
+    .process-card .n{font:500 11px "DM Mono";color:var(--muted)}.process-card h3{font:400 36px/1 "Instrument Serif";margin:50px 0 15px}.process-card p{line-height:1.6;color:#55564f}.process-card .input{margin-top:22px;padding:13px;border-radius:13px;background:var(--white);font:10px/1.5 "DM Mono";color:#555}
+    .reference-finder{padding-top:84px}.finder-box{background:var(--ink);color:#fff;border-radius:42px;padding:56px;display:grid;grid-template-columns:.9fr 1.1fr;gap:58px}.finder-box h2{font:400 clamp(48px,6vw,75px)/.93 "Instrument Serif";margin:18px 0}.finder-box h2 em{color:#b9c9b9}.finder-box>div>p{color:#aaa99f;line-height:1.65;font-size:17px}
+    .locked-stack{display:grid;gap:11px;align-content:center}.locked-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:22px;display:grid;grid-template-columns:45px 1fr auto;gap:16px;align-items:center}.locked-icon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#d7cda9;color:#171713}.locked-card b{display:block;font-size:16px}.locked-card p{margin:5px 0 0;color:#aaa99f;font-size:13px;line-height:1.45}.locked-card>span:last-child{font:9px "DM Mono";text-transform:uppercase;color:#d7cda9;letter-spacing:.08em}
+
+    .inside{padding-bottom:76px}.inside-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}.inside-card{border:1px solid var(--line);border-radius:26px;padding:30px;display:grid;grid-template-columns:52px 1fr;gap:18px;background:rgba(255,255,255,.28)}
+    .inside-card.featured{grid-column:1/3;background:var(--forest);color:#fff;border-color:transparent}.inside-card.featured p{color:#c6d0c8}
+    .icon{width:48px;height:48px;border:1px solid currentColor;border-radius:50%;display:grid;place-items:center;font-size:19px}.inside-card h3{font-size:19px;margin:2px 0 9px}.inside-card p{margin:0;line-height:1.6;color:var(--muted)}
+
+    .product-showcase{padding:20px 0 34px}.product-box{border-radius:44px;background:var(--white);border:1px solid rgba(23,23,19,.09);box-shadow:var(--shadow);overflow:hidden}
+    .product-main{display:grid;grid-template-columns:.88fr 1.12fr;gap:0;align-items:stretch}.product-copy{padding:54px 48px;display:flex;flex-direction:column;justify-content:center}
+    .product-copy h2{font:400 clamp(48px,5.8vw,76px)/.92 "Instrument Serif";letter-spacing:-.045em;margin:18px 0}.product-copy h2 em{color:var(--forest);font-weight:400}
+    .product-copy p{font-size:18px;line-height:1.65;color:var(--muted);margin:0 0 24px}.product-points{display:grid;gap:10px;margin-top:8px}
+    .product-point{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}.product-point span{font:500 10px "DM Mono";color:var(--muted)}.product-point b{font-size:15px}
+    .product-visual{padding:18px;background:#e1d9cc}.product-visual img{height:100%;object-fit:contain;border-radius:30px;background:#d9d1c5}
+    .product-strip{display:grid;grid-template-columns:1.12fr .88fr;border-top:1px solid var(--line)}.product-strip figure{margin:0;padding:14px;background:#e8e1d5}.product-strip img{border-radius:28px;background:#d9d1c5}.product-note{padding:34px 42px;display:flex;flex-direction:column;justify-content:center}
+    .product-note b{font:400 38px/1 "Instrument Serif";letter-spacing:-.025em}.product-note p{color:var(--muted);line-height:1.6;margin:12px 0 0}
+
+    .audience{padding-top:60px}.audience-list{border-top:1px solid var(--line)}.audience-row{display:grid;grid-template-columns:50px .7fr 1fr;gap:28px;align-items:center;padding:25px 0;border-bottom:1px solid var(--line)}
+    .audience-row .n{font:11px "DM Mono";color:var(--muted)}.audience-row h3{font-size:22px;margin:0}.audience-row p{color:var(--muted);line-height:1.55;margin:0}
+
+    .offer{padding:80px 0 110px}.offer-box{display:grid;grid-template-columns:1.05fr .95fr;background:var(--forest);color:white;border-radius:44px;overflow:hidden;box-shadow:0 40px 100px rgba(38,54,44,.27)}
+    .offer-copy{padding:64px}.offer-copy h2{font:400 clamp(49px,6vw,78px)/.93 "Instrument Serif";letter-spacing:-.04em;margin:22px 0}.offer-copy>p{color:#c8d0ca;line-height:1.65;font-size:18px}
+    .cost-line{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:32px}.cost{padding:16px 10px 16px 0;border-top:1px solid rgba(255,255,255,.23)}.cost b{display:block;font-size:20px}.cost span{display:block;margin-top:5px;font-size:11px;color:#abb9ae}
+    .price-card{margin:18px;background:var(--white);color:var(--ink);border-radius:30px;padding:38px}.price{font:400 88px/1 "Instrument Serif";margin:22px 0 0;letter-spacing:-.05em}.price sup{font:600 12px Inter;letter-spacing:0;margin-right:7px}
+    .price-card ul{list-style:none;padding:0;margin:29px 0}.price-card li{padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}.price-card li:before{content:"✓";color:#4e6c54;margin-right:9px;font-weight:800}.price-card .btn{width:100%}.secure{text-align:center;color:var(--muted);font:10px "DM Mono";margin:13px 0 0}
+
+    .guarantee{padding:0 0 95px}.guarantee-box{display:grid;grid-template-columns:200px 1fr;gap:45px;align-items:center;border:1px solid var(--line);padding:38px;border-radius:30px}.seal{aspect-ratio:1;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;text-align:center}.seal b{font:400 45px "Instrument Serif";display:block}.seal span{font:10px "DM Mono";text-transform:uppercase;letter-spacing:.09em}
+    .guarantee h2{font:400 41px/1 "Instrument Serif";margin:0 0 14px}.guarantee p{color:var(--muted);line-height:1.65;margin:0}.guarantee small{display:block;color:var(--muted);margin-top:12px;line-height:1.5}
+
+    .faq{background:var(--white);border-radius:48px 48px 0 0}.faq-wrap{max-width:900px}.faq h2{font:400 70px/1 "Instrument Serif";margin:0 0 34px}.faq details{border-top:1px solid var(--line)}.faq details:last-child{border-bottom:1px solid var(--line)}
+    .faq summary{list-style:none;cursor:pointer;padding:24px 42px 24px 0;font-size:18px;font-weight:700;position:relative}.faq summary::-webkit-details-marker{display:none}.faq summary:after{content:"+";position:absolute;right:4px;font-size:24px;font-weight:400}.faq details[open] summary:after{content:"−"}
+    .faq details p{max-width:760px;margin:-7px 0 24px;color:var(--muted);line-height:1.7}
+
+    footer{background:var(--ink);color:white;padding:54px 0 95px}.footer-top{display:flex;justify-content:space-between;align-items:end;gap:30px}.footer-top p{color:#aaa99f}.footer-bottom{display:flex;justify-content:space-between;gap:30px;padding-top:28px;margin-top:40px;border-top:1px solid rgba(255,255,255,.15);font-size:11px;color:#88887f;line-height:1.5}
+    dialog.lightbox{width:min(94vw,980px);max-height:94vh;padding:0;border:0;border-radius:24px;background:#111;box-shadow:0 30px 120px rgba(0,0,0,.55);overflow:hidden}.lightbox::backdrop{background:rgba(10,10,8,.88);backdrop-filter:blur(8px)}.lightbox img{width:100%;height:min(86vh,980px);object-fit:contain;background:#111}.lightbox-close{position:absolute;right:12px;top:12px;width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.92);font-size:24px;cursor:pointer}
+    .mobile-buy{display:none}
+    .announcement{background:var(--forest);color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
+    .announcement-inner{min-height:38px;display:flex;align-items:center;justify-content:center;gap:14px;text-align:center;font-size:12px;line-height:1.35;color:#dfe7df}
+    .announcement-inner b{color:#fff}.announcement-inner a{text-decoration:underline;text-underline-offset:3px;font-weight:700}
+    .art-direction{padding:92px 0;background:var(--white)}
+    .art-board{display:grid;grid-template-columns:.78fr 1.22fr;gap:44px;align-items:center}
+    .art-copy{position:sticky;top:104px;align-self:start}
+    .art-copy h2{font:400 clamp(48px,6vw,82px)/.9 "Instrument Serif";letter-spacing:-.045em;margin:18px 0}
+    .art-copy p{font-size:18px;line-height:1.65;color:var(--muted)}
+    .art-list{display:grid;gap:10px;margin-top:24px}
+    .art-list div{display:grid;grid-template-columns:32px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line)}
+    .art-list span{font:500 10px "DM Mono";color:var(--muted)}
+    .art-list b{font-size:15px}
+    .mosaic{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;align-items:start}
+    .mosaic figure{margin:0;overflow:hidden;border-radius:24px;background:#ded8cd;border:1px solid rgba(23,23,19,.08);box-shadow:0 18px 50px rgba(25,24,18,.08)}
+    .mosaic img{width:100%;height:100%;object-fit:contain;background:#ded8cd}
+    .mosaic .tall{grid-column:span 4;height:430px}.mosaic .wide{grid-column:span 8;height:300px}.mosaic .small{grid-column:span 4;height:245px}.mosaic .medium{grid-column:span 5;height:315px}.mosaic .large{grid-column:span 7;height:315px}
+    .buyer-lens{padding:30px 0 90px}
+    .buyer-box{border-radius:42px;background:var(--ink);color:#fff;padding:54px;display:grid;grid-template-columns:.86fr 1.14fr;gap:54px;align-items:start}
+    .buyer-box h2{font:400 clamp(48px,6vw,78px)/.92 "Instrument Serif";letter-spacing:-.045em;margin:16px 0 0}.buyer-box h2 em{color:#b9c9b9}
+    .buyer-box p{color:#aaa99f;line-height:1.65;font-size:17px}
+    .buyer-points{display:grid;gap:10px}
+    .buyer-point{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);border-radius:22px;padding:22px;display:grid;grid-template-columns:58px 1fr;gap:16px}
+    .buyer-point span{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#d7cda9;color:#171713;font:500 11px "DM Mono"}
+    .buyer-point b{display:block;font-size:18px}.buyer-point p{font-size:14px;margin:7px 0 0}
+
+    @media(max-width:900px){
+      .nav-links a:not(.btn){display:none}.campaign-grid{grid-template-columns:1fr 1fr}
+      .section-intro{grid-template-columns:1fr;gap:14px}.pain-grid,.difference-card,.offer-box,.finder-box{grid-template-columns:1fr}.difference-proof{min-height:480px}
+      .art-board,.buyer-box{grid-template-columns:1fr}.art-copy{position:static}.mosaic .tall,.mosaic .wide,.mosaic .small,.mosaic .medium,.mosaic .large{grid-column:span 6;height:300px}
+      .result-grid{grid-template-columns:repeat(2,1fr)}.versus-grid{grid-template-columns:1fr}.versus-badge{margin:-8px auto;transform:rotate(-6deg)}.process-grid{grid-template-columns:1fr}.process-card{min-height:auto}.inside-grid{grid-template-columns:1fr}.inside-card.featured{grid-column:auto}.product-main,.product-strip{grid-template-columns:1fr}.audience-row{grid-template-columns:40px 1fr}.audience-row p{grid-column:2}.guarantee-box{grid-template-columns:150px 1fr}
+    }
+    @media(max-width:640px){
+      :root{--radius:22px}.shell{width:min(100% - 28px,1180px)}.nav{height:65px}.brand{font-size:18px}.nav .btn{min-height:40px;padding:0 15px}.hero{padding:32px 0 18px}.hero-copy{text-align:left;margin-bottom:25px}
+      .hero-copy h1{font-size:56px;line-height:.91;margin:19px 0 18px}.hero-copy>p{font-size:17px;line-height:1.5}.hero-actions{display:grid;justify-content:stretch}.hero-actions .btn{width:100%}.hero-actions .btn.ghost{display:none}.hero-proof{text-align:center}
+      .campaign-stage{padding:8px;border-radius:25px}.campaign-grid{display:flex;overflow:auto;scroll-snap-type:x mandatory;gap:8px;-ms-overflow-style:none}.campaign-grid::-webkit-scrollbar{display:none}.campaign-card,.campaign-card:first-child,.campaign-card:last-child{display:block;flex:0 0 83%;height:auto;scroll-snap-align:start;border-radius:18px}.stage-note{padding:12px 6px 4px}.stage-note span:last-child{display:none}
+      .announcement-inner{font-size:11px;padding:9px 8px}.art-direction{padding:68px 0}.mosaic{gap:8px}.mosaic .tall,.mosaic .wide,.mosaic .small,.mosaic .medium,.mosaic .large{grid-column:1/-1;height:auto}.mosaic figure img{aspect-ratio:1;object-fit:contain}.buyer-lens{padding:10px 0 70px}.buyer-box{padding:31px 20px;border-radius:28px;gap:30px}.buyer-point{grid-template-columns:42px 1fr;padding:18px}.buyer-point span{width:38px;height:38px}
+      section{padding:72px 0}.section-intro h2,.result-head h2{font-size:46px}.section-intro p,.result-head p{font-size:16px}.pain{margin:18px 8px;border-radius:30px;padding:68px 0}.pain h2{font-size:48px}.pain-grid{gap:36px}.symptom{grid-template-columns:38px 1fr}
+      .difference{padding-bottom:20px}.difference-card{padding:8px;border-radius:27px}.difference-proof{min-height:420px;border-radius:21px;padding:28px 22px}.difference-copy{padding:25px 16px 30px}.difference-copy h3{font-size:44px}
+      .results{overflow:hidden}.result-head{text-align:left}.result-grid{display:flex;overflow:auto;scroll-snap-type:x mandatory;margin-right:-14px;padding-right:14px}.result-card{flex:0 0 82%;scroll-snap-align:start}
+      .process{margin:58px 8px 0;border-radius:30px}.process-card{padding:25px}.process-card h3{margin-top:32px}
+      .finder-box{padding:31px 20px;border-radius:28px;gap:32px}.finder-box h2{font-size:49px}.locked-card{grid-template-columns:40px 1fr}.locked-card>span:last-child{grid-column:2}
+      .inside-card{grid-template-columns:42px 1fr;padding:22px}.icon{width:40px;height:40px}.audience-row{gap:13px}.audience-row h3{font-size:19px}
+      .product-showcase{padding:0 0 34px}.product-box{border-radius:28px}.product-copy{padding:30px 22px}.product-copy h2{font-size:48px}.product-copy p{font-size:16px}.product-visual{padding:8px}.product-visual img,.product-strip img{border-radius:20px}.product-strip figure{padding:8px}.product-note{padding:26px 22px}.product-note b{font-size:34px}
+      .offer{padding:60px 0 85px}.offer-box{border-radius:28px}.offer-copy{padding:34px 24px}.offer-copy h2{font-size:51px}.cost-line{grid-template-columns:1fr}.cost{padding:12px 0}.price-card{margin:8px;padding:27px 22px}.price{font-size:76px}
+      .guarantee-box{grid-template-columns:1fr;padding:26px}.seal{width:135px}.guarantee h2{font-size:36px}.faq{border-radius:30px 30px 0 0}.faq h2{font-size:55px}.footer-top{display:block}.footer-top .btn{margin-top:20px}.footer-bottom{display:block}.footer-bottom span{display:block;margin-top:10px}
+      .mobile-buy{position:fixed;z-index:60;left:10px;right:10px;bottom:10px;padding:8px 8px 8px 16px;border:1px solid rgba(255,255,255,.2);background:rgba(23,23,19,.91);backdrop-filter:blur(18px);color:#fff;border-radius:18px;display:flex;align-items:center;justify-content:space-between;gap:10px;transform:translateY(130%);transition:.35s ease;box-shadow:0 20px 60px rgba(0,0,0,.3)}.mobile-buy.show{transform:none}.mobile-buy span{display:block;font-size:11px}.mobile-buy b{font-size:12px}.mobile-buy .btn{min-height:44px;padding:0 16px;font-size:12px;background:#fff;color:#171713}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+  </style>
+</head>
+<body>
+  <div class="announcement">
+    <div class="shell announcement-inner">
+      <span><b>Prompt Ads:</b> un sistema simple para que tus anuncios se vean más dirigidos, menos improvisados.</span>
+      <a href="#oferta">Ver acceso</a>
+    </div>
+  </div>
+  <header>
+    <div class="shell nav">
+      <a class="brand" href="#">simply <i>studio.</i></a>
+      <nav class="nav-links" aria-label="Principal">
+        <a href="#resultado">Resultados</a>
+        <a href="#direccion">Dirección</a>
+        <a href="#incluye">Qué incluye</a>
+        <a href="#preguntas">Preguntas</a>
+        <a class="btn" href="#oferta">Conseguir Prompt Ads</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="shell">
+        <div class="hero-copy reveal">
+          <span class="pill eyebrow"><i class="dot"></i> Prompts + guías + sistema de corrección</span>
+          <h1>Dejá de crear anuncios que <em>parecen hechos con IA.</em></h1>
+          <p>Prompt Ads es el sistema de prompts, referencias y correcciones para convertir tus fotos en anuncios que parezcan dirigidos por una agencia, aunque trabajes solo.</p>
+          <div class="hero-actions">
+            <a class="btn" href="#oferta">Quiero anuncios que no parezcan IA <span class="arrow">↗</span></a>
+            <a class="btn ghost" href="#resultado">Ver qué podés crear</a>
+          </div>
+          <div class="hero-proof mono">USD 17 · pago único · acceso inmediato por Hotmart</div>
+        </div>
+
+        <div class="campaign-stage reveal" id="resultado">
+          <div class="campaign-grid" aria-label="Anuncios creados aplicando Prompt Ads">
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/prompt-ads/01-hero-moda-rebelde.webp" aria-label="Ampliar campaña de moda"><img src="assets/prompt-ads/01-hero-moda-rebelde.webp" width="1254" height="1254" alt="Campaña de moda con concepto inesperado"></button><figcaption>Moda · concepto inesperado</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/prompt-ads/02-hero-piel-real.webp" aria-label="Ampliar campaña de belleza"><img src="assets/prompt-ads/02-hero-piel-real.webp" width="1254" height="1254" alt="Campaña de belleza con piel realista"></button><figcaption>Beauty · piel real</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/prompt-ads/03-hero-performance.webp" aria-label="Ampliar campaña deportiva"><img src="assets/prompt-ads/03-hero-performance.webp" width="1254" height="1254" alt="Campaña deportiva dinámica y realista"></button><figcaption>Producto · alto impacto</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/prompt-ads/04-hero-restaurante.webp" aria-label="Ampliar campaña gastronómica"><img src="assets/prompt-ads/04-hero-restaurante.webp" width="1254" height="1254" alt="Campaña gastronómica con deseo visual"></button><figcaption>Restaurante · deseo</figcaption></figure>
+          </div>
+          <div class="stage-note mono"><span>Deslizá o tocá una pieza para verla completa →</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pain">
+      <div class="shell pain-grid">
+        <div class="reveal">
+          <span class="eyebrow muted">El problema no es la IA</span>
+          <h2>Pedís algo “premium”. Te devuelve algo <em>plástico, genérico y olvidable.</em></h2>
+          <div class="truth"><strong>No te falta creatividad.</strong> Te faltan las palabras, la estructura y los controles que le dicen al modelo exactamente qué hacer.</div>
+        </div>
+        <div class="symptoms reveal">
+          <div class="symptom"><span class="eyebrow">01</span><div><b>Piel que parece de muñeca</b><p>Rostros demasiado lisos, manos raras y ese brillo artificial que destruye la confianza.</p></div></div>
+          <div class="symptom"><span class="eyebrow">02</span><div><b>Producto que cambia en cada imagen</b><p>La forma, el tamaño, el color o la etiqueta dejan de parecerse a lo que realmente vendés.</p></div></div>
+          <div class="symptom"><span class="eyebrow">03</span><div><b>Diseños que se ven baratos</b><p>Mucho texto, poca jerarquía y composiciones que parecen una plantilla improvisada.</p></div></div>
+          <div class="symptom"><span class="eyebrow">04</span><div><b>Horas corrigiendo sin saber qué pedir</b><p>Cambiás palabras al azar, perdés el resultado anterior y empezás otra vez desde cero.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="difference">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <span class="eyebrow muted">Mismo producto · dos resultados</span>
+          <div><h2>Uno se ignora. El otro se siente como <em>marca.</em></h2><p>La diferencia no es agregar más texto, más colores o más efectos. Es saber qué mostrar, qué decir y qué eliminar para que el anuncio venda sin parecer desesperado.</p></div>
+        </div>
+        <div class="versus-grid reveal">
+          <article class="versus-card">
+            <div class="versus-image"><button class="zoomable" data-full="assets/prompt-ads/05-comparacion-anuncio-generico.webp" aria-label="Ampliar anuncio genérico"><img src="assets/prompt-ads/05-comparacion-anuncio-generico.webp" width="1254" height="1254" loading="lazy" alt="Anuncio genérico saturado con demasiado texto"></button></div>
+            <div class="versus-copy"><span>Sin dirección · genérico</span><h3>Mucho ruido. Cero deseo.</h3><p>Promesas vacías, texto por todas partes y una imagen que parece pedir desesperadamente un clic.</p></div>
+          </article>
+          <div class="versus-badge">VS.</div>
+          <article class="versus-card">
+            <div class="versus-image"><button class="zoomable" data-full="assets/prompt-ads/06-comparacion-anuncio-premium.webp" aria-label="Ampliar anuncio premium"><img src="assets/prompt-ads/06-comparacion-anuncio-premium.webp" width="1254" height="1254" loading="lazy" alt="Anuncio premium claro del mismo producto"></button></div>
+            <div class="versus-copy"><span>Con dirección · premium</span><h3>Una idea. Una jerarquía. Una razón para mirar.</h3><p>El mismo producto se siente más confiable, más valioso y mucho más fácil de recordar.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="results">
+      <div class="shell">
+        <div class="result-head reveal">
+          <span class="eyebrow muted">Galería ampliable</span>
+          <h2>Entrá a cada anuncio. Mirá el detalle.</h2>
+          <p>Cuatro campañas nuevas, con rubros y ángulos distintos. Sin recortes ni capas encima: tocá cualquiera para verla en grande.</p>
+        </div>
+        <div class="result-grid">
+          <article class="result-card reveal"><button class="zoomable" data-full="assets/prompt-ads/07-galeria-prompt-ads.webp" aria-label="Ampliar anuncio de Prompt Ads"><img src="assets/prompt-ads/07-galeria-prompt-ads.webp" width="1254" height="1254" loading="lazy" alt="Anuncio de Prompt Ads sobre dirección creativa"></button><div class="result-meta"><span>01 · Producto digital</span><b>Convertí una idea en posicionamiento</b></div></article>
+          <article class="result-card reveal"><button class="zoomable" data-full="assets/prompt-ads/08-galeria-joyeria.webp" aria-label="Ampliar anuncio de joyería"><img src="assets/prompt-ads/08-galeria-joyeria.webp" width="1254" height="1254" loading="lazy" alt="Anuncio editorial realista para una joya"></button><div class="result-meta"><span>02 · Joyería</span><b>Hacé que el detalle se recuerde</b></div></article>
+          <article class="result-card reveal"><button class="zoomable" data-full="assets/prompt-ads/09-galeria-streetwear.webp" aria-label="Ampliar anuncio de streetwear"><img src="assets/prompt-ads/09-galeria-streetwear.webp" width="1254" height="1254" loading="lazy" alt="Anuncio dinámico de streetwear"></button><div class="result-meta"><span>03 · Moda</span><b>Subí la percepción del producto</b></div></article>
+          <article class="result-card reveal"><button class="zoomable" data-full="assets/prompt-ads/10-galeria-servicios.webp" aria-label="Ampliar anuncio de servicios"><img src="assets/prompt-ads/10-galeria-servicios.webp" width="1254" height="1254" loading="lazy" alt="Anuncio humano para un servicio profesional"></button><div class="result-meta"><span>04 · Servicios</span><b>Vendé confianza antes de la consulta</b></div></article>
+        </div>
+        <p class="result-note">Cada pieza fue generada como imagen independiente. La cantidad que ChatGPT entrega por respuesta puede variar; el pack incluye cómo continuar la tanda sin empezar de nuevo.</p>
+      </div>
+    </section>
+
+    <section class="art-direction" id="direccion">
+      <div class="shell art-board">
+        <div class="art-copy reveal">
+          <span class="eyebrow muted">Dirección visual</span>
+          <h2>La estética no aparece por suerte. Se dirige.</h2>
+          <p>Prompt Ads está pensado para que cada pieza tenga una intención visual clara: piel real, producto con peso, luz con criterio y una sola idea principal. Menos collage improvisado, más campaña con dirección.</p>
+          <div class="art-list">
+            <div><span>01</span><b>Fotografía primero: la pieza debe parecer tomada, no armada.</b></div>
+            <div><span>02</span><b>Menos grilla, más campaña: cada imagen necesita un ángulo claro.</b></div>
+            <div><span>03</span><b>El texto acompaña al deseo, no tapa el producto ni la escena.</b></div>
+          </div>
+        </div>
+        <div class="mosaic reveal" aria-label="Mosaico de campañas y referencias visuales Prompt Ads">
+          <figure class="tall"><img src="assets/seccion-direccion-visual/no-parece-ia.webp" loading="lazy" alt="Anuncio que muestra una estética que no parece IA"></figure>
+          <figure class="wide"><img src="assets/seccion-direccion-visual/revista.webp" loading="lazy" alt="Anuncio editorial con estética de revista"></figure>
+          <figure class="small"><img src="assets/seccion-direccion-visual/basket.webp" loading="lazy" alt="Anuncio deportivo con dirección visual"></figure>
+          <figure class="medium"><img src="assets/seccion-direccion-visual/zapatillas-veja.webp" loading="lazy" alt="Anuncio de zapatillas con estética premium"></figure>
+          <figure class="large"><img src="assets/seccion-direccion-visual/street-girl.webp" loading="lazy" alt="Anuncio street style con dirección aesthetic"></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="process">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <span class="eyebrow muted">Cómo lo usás</span>
+          <div><h2>De una foto común a una campaña lista para revisar.</h2><p>No necesitás dominar diseño ni aprender vocabulario técnico. Completás la información, pegás el sistema y seguís las instrucciones.</p></div>
+        </div>
+        <div class="process-grid">
+          <article class="process-card reveal"><span class="n">PASO 01</span><h3>Subí tu material</h3><p>Una foto real del producto, del local, del resultado o una referencia autorizada que ayude a conservar forma, escala y contexto.</p><div class="input">ENTRADA → producto + logo + oferta + referencias</div></article>
+          <article class="process-card reveal"><span class="n">PASO 02</span><h3>Contale qué vendés</h3><p>Completá una ficha simple con tu producto, tu cliente y el mensaje que querés comunicar. Sin palabras técnicas ni estrategias complicadas.</p><div class="input">DATOS → producto + cliente + objetivo + acción</div></article>
+          <article class="process-card reveal"><span class="n">PASO 03</span><h3>Generá, revisá y corregí</h3><p>ChatGPT crea las piezas. Si cambia el producto, agrupa imágenes o pierde realismo, aplicás la corrección exacta del pack.</p><div class="input">SALIDA → tanda + control + continuidad</div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="reference-finder">
+      <div class="shell finder-box reveal">
+        <div>
+          <span class="eyebrow muted">Bonus · Dirección visual</span>
+          <h2>No vuelvas a quedarte mirando un chat <em>sin saber qué pedir.</em></h2>
+          <p>Recibís un sistema guiado para definir la apariencia de tu campaña, adaptarla a tu negocio y comunicarle a ChatGPT exactamente el resultado que buscás.</p>
+        </div>
+        <div class="locked-stack">
+          <div class="locked-card"><span class="locked-icon">✦</span><div><b>De idea confusa a dirección clara</b><p>Dejá de probar palabras al azar y empezá cada sesión sabiendo qué resultado querés conseguir.</p></div><span>Incluido</span></div>
+          <div class="locked-card"><span class="locked-icon">◇</span><div><b>Adaptado a lo que vendés</b><p>Producto, servicio, local o negocio digital: el sistema cambia la forma de presentar cada oferta.</p></div><span>Incluido</span></div>
+          <div class="locked-card"><span class="locked-icon">↻</span><div><b>Coherencia entre piezas</b><p>Mantené la misma percepción de marca mientras probás conceptos y mensajes diferentes.</p></div><span>Incluido</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="inside" id="incluye">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <span class="eyebrow muted">Lo que recibís</span>
+          <div><h2>No es una frase mágica. Es un sistema completo para producir mejor.</h2><p>Todo está escrito para usar con ChatGPT, en español y paso a paso.</p></div>
+        </div>
+        <div class="inside-grid">
+          <article class="inside-card featured reveal"><div class="icon">✦</div><div><h3>Protocolo maestro Prompt Ads</h3><p>La instrucción central que organiza el negocio, el ángulo de venta, el copy, la dirección visual y la generación de piezas independientes.</p></div></article>
+          <article class="inside-card reveal"><div class="icon">◎</div><div><h3>Reality Layer</h3><p>Bloques originales para pedir piel, manos, luz, cámara y materiales más creíbles.</p></div></article>
+          <article class="inside-card reveal"><div class="icon">↻</div><div><h3>Correcciones y continuidad</h3><p>Qué escribir cuando el modelo entrega menos piezas, arma una grilla, cambia tu producto o pierde la estética.</p></div></article>
+          <article class="inside-card reveal"><div class="icon">◇</div><div><h3>Ficha rápida de tu negocio</h3><p>Adaptá el proceso a productos físicos, dropshipping, servicios, profesionales, locales y productos digitales.</p></div></article>
+          <article class="inside-card reveal"><div class="icon">⌕</div><div><h3>Sistema de dirección visual</h3><p>Definí qué apariencia necesita tu campaña y mantenela coherente sin depender de palabras técnicas.</p></div></article>
+          <article class="inside-card reveal"><div class="icon">≋</div><div><h3>Guía de imagen ancla</h3><p>Qué fotos conviene aportar para que el resultado respete mejor el producto, la escala y el contexto real.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="audience">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <span class="eyebrow muted">¿Para quién es?</span>
+          <div><h2>Para gente que vende algo real y necesita mostrarlo mejor.</h2></div>
+        </div>
+        <div class="audience-list">
+          <div class="audience-row reveal"><span class="n">01</span><h3>Tiendas y dropshipping</h3><p>Creá conceptos para testear sin depender de una sola foto del proveedor ni de una sola idea.</p></div>
+          <div class="audience-row reveal"><span class="n">02</span><h3>Negocios locales</h3><p>Restaurantes, lavaderos, salones, barberías, gimnasios y comercios que quieren verse profesionales en redes.</p></div>
+          <div class="audience-row reveal"><span class="n">03</span><h3>Servicios y profesionales</h3><p>Odontólogos, médicos, asesores y especialistas que necesitan hacer visible un servicio que no viene en una caja.</p></div>
+          <div class="audience-row reveal"><span class="n">04</span><h3>Productos digitales</h3><p>Representá el resultado, la experiencia y el valor sin recurrir a mockups flotantes que parecen falsos.</p></div>
+          <div class="audience-row reveal"><span class="n">05</span><h3>Freelancers y equipos chicos</h3><p>Producí más conceptos y presentá ideas con una dirección visual consistente.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="buyer-lens">
+      <div class="shell buyer-box reveal">
+        <div>
+          <span class="eyebrow muted">Lo que resolvés</span>
+          <h2>No comprás prompts sueltos. Comprás <em>alivio visual.</em></h2>
+          <p>No necesitás estudiar IA ni probar palabras al azar durante horas. Entrás con una estructura, sabés qué pedir, sabés qué revisar y sabés cómo corregir cuando el resultado se va de lugar.</p>
+        </div>
+        <div class="buyer-points">
+          <article class="buyer-point"><span>01</span><div><b>Cuando ChatGPT falla, no empezás de cero</b><p>El pack incluye correcciones para producto cambiado, grillas, imágenes incompletas, pérdida de realismo y continuidad de tandas.</p></div></article>
+          <article class="buyer-point"><span>02</span><div><b>Tu negocio deja de verse improvisado</b><p>Usás tus datos reales, tus referencias y una dirección visual más clara para subir la percepción de lo que vendés.</p></div></article>
+          <article class="buyer-point"><span>03</span><div><b>Te da control sin complicarte</b><p>Un paso a paso directo para producir, revisar y mejorar piezas sin depender de inspiración, palabras técnicas o prueba-error infinito.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-showcase">
+      <div class="shell">
+        <div class="product-box reveal">
+          <div class="product-main">
+            <div class="product-copy">
+              <span class="eyebrow muted">Antes del acceso</span>
+              <h2>Esto es lo que te llevás: <em>sistema, dirección y ejemplos.</em></h2>
+              <p>Un pack claro para crear anuncios con más criterio visual, corregir resultados y mantener una estética coherente sin empezar de cero.</p>
+              <div class="product-points">
+                <div class="product-point"><span>01</span><b>Prompts organizados para usar en ChatGPT.</b></div>
+                <div class="product-point"><span>02</span><b>Guías para piel, luz, producto y composición.</b></div>
+                <div class="product-point"><span>03</span><b>Correcciones para seguir iterando sin perder calidad.</b></div>
+              </div>
+            </div>
+            <figure class="product-visual">
+              <img src="assets/producto-prompt-ads/prompt-ads-sistema-para-vender.webp" loading="lazy" alt="Mockup del sistema Prompt Ads en escritorio, notebook y celular">
+            </figure>
+          </div>
+          <div class="product-strip">
+            <figure>
+              <img src="assets/producto-prompt-ads/producto-prompt-ads.webp" loading="lazy" alt="Mockup del producto Prompt Ads con piezas de campaña alrededor">
+            </figure>
+            <div class="product-note">
+              <b>De una idea suelta a una campaña que se puede repetir.</b>
+              <p>El objetivo es simple: entrar con más claridad, producir mejores piezas y saber qué ajustar cuando el resultado todavía no está listo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="offer" id="oferta">
+      <div class="shell">
+        <div class="offer-box reveal">
+          <div class="offer-copy">
+            <span class="eyebrow">PROMPT ADS · ACCESO COMPLETO</span>
+            <h2>Dejá de improvisar cada vez que abrís ChatGPT.</h2>
+            <p>Entrá con el sistema listo, producí tus primeras variaciones y empezá a construir anuncios que estén a la altura de lo que vendés.</p>
+            <div class="cost-line">
+              <div class="cost"><b>USD 300+</b><span>Agencia o producción</span></div>
+              <div class="cost"><b>USD 30+</b><span>Una pieza freelance</span></div>
+              <div class="cost"><b>USD 17</b><span>Prompt Ads · una vez</span></div>
+            </div>
+          </div>
+          <aside class="price-card">
+            <span class="eyebrow muted">Pago único · acceso inmediato</span>
+            <div class="price"><sup>USD</sup>17</div>
+            <ul>
+              <li>Protocolo maestro reutilizable</li>
+              <li>Reality Layer de realismo visual</li>
+              <li>Correcciones y continuidad</li>
+              <li>Ficha simple para distintos negocios</li>
+              <li>Sistema privado de dirección visual</li>
+              <li>Guía de imagen ancla y fidelidad</li>
+              <li>Actualizaciones de esta edición</li>
+            </ul>
+            <a class="btn checkout" href="https://pay.hotmart.com/Y106693224R?checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads <span class="arrow">↗</span></a>
+            <p class="secure">CHECKOUT SEGURO MEDIANTE HOTMART</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="guarantee">
+      <div class="shell guarantee-box reveal">
+        <div class="seal"><div><b>7 días</b><span>Garantía de activación</span></div></div>
+        <div>
+          <h2>Usalo. Probalo. Si no podés ponerlo en marcha, te ayudamos.</h2>
+          <p>Completá los datos de tu negocio, ejecutá el protocolo y aplicá al menos una corrección. Si seguís bloqueado, enviá dentro de los 7 días el chat, las referencias y los resultados. Revisamos el caso con vos y, si no logramos resolverlo, gestionamos la devolución según las condiciones configuradas en Hotmart.</p>
+          <small>Prompt Ads ayuda a crear y mejorar piezas; no garantiza ventas, rentabilidad ni una cantidad fija de imágenes por respuesta.</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq" id="preguntas">
+      <div class="shell faq-wrap">
+        <span class="eyebrow muted">Preguntas claras</span>
+        <h2>Antes de comprar.</h2>
+        <details><summary>¿Qué es exactamente Prompt Ads?</summary><p>Es un pack digital de aplicación rápida para dirigir la creación de anuncios con ChatGPT. Incluye la instrucción principal, el sistema de realismo, una ficha simple para tu negocio, las correcciones, la continuidad y el sistema de dirección visual.</p></details>
+        <details><summary>¿Necesito saber diseño?</summary><p>No. El sistema te da una estructura concreta. Vos aportás la información verdadera de tu negocio, elegís las referencias y revisás el resultado final antes de publicarlo.</p></details>
+        <details><summary>¿Qué necesito para usarlo?</summary><p>Una cuenta de ChatGPT con acceso a generación de imágenes y material coherente con lo que vendés: fotos propias, material del proveedor que puedas usar, imágenes del local, resultados o referencias visuales. Para trabajar con frecuencia, un plan con mayor disponibilidad suele ser más cómodo.</p></details>
+        <details><summary>¿Qué pasa si no sé qué estilo pedir?</summary><p>El pack incluye un sistema guiado para definir la apariencia que necesita tu campaña y convertir una idea vaga en instrucciones claras para ChatGPT.</p></details>
+        <details><summary>¿Genera siempre la misma cantidad de anuncios?</summary><p>No. La cantidad puede variar según el modelo, el plan y la complejidad. Por eso Prompt Ads trabaja con tandas e incluye instrucciones para pedir las siguientes piezas sin perder el contexto.</p></details>
+        <details><summary>¿Sirve para servicios o productos digitales?</summary><p>Sí. La ficha cambia la forma de representar la oferta: puede mostrar la experiencia, el resultado, el entorno, el proceso o una escena real coherente con el beneficio.</p></details>
+        <details><summary>¿Mantiene mi producto exactamente igual?</summary><p>La fidelidad mejora cuanto mejores y más claras sean tus referencias. El pack te enseña qué material aportar y cómo corregir forma, escala, ángulos y detalles. Ningún modelo garantiza reproducción perfecta en todos los intentos.</p></details>
+        <details><summary>¿Puedo usarlo para clientes?</summary><p>Sí, podés usar el sistema para producir piezas para tus propios proyectos o servicios. No podés revender, compartir ni distribuir los archivos y prompts del pack como si fueran tuyos.</p></details>
+        <details><summary>¿Esto garantiza ventas?</summary><p>No. La creatividad es una parte del sistema comercial. Tus resultados también dependen de la oferta, el precio, la segmentación, la página, el presupuesto y la ejecución.</p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell">
+      <div class="footer-top"><div><div class="brand">simply <i>studio.</i></div><p>Herramientas simples para hacer trabajo que no parece simple.</p></div><a href="#oferta" class="btn light">Ver el acceso <span class="arrow">↑</span></a></div>
+      <div class="footer-bottom"><span>© 2026 simply studio. Todos los derechos reservados.</span><span>Prompt Ads es un producto independiente. No está afiliado ni respaldado por OpenAI, ChatGPT, Meta o Hotmart.</span></div>
+    </div>
+  </footer>
+
+  <div class="mobile-buy" id="mobileBuy"><div><span>Prompt Ads</span><b>USD 17 · pago único</b></div><a href="#oferta" class="btn">Ver acceso</a></div>
+  <dialog class="lightbox" id="lightbox" aria-label="Vista ampliada del anuncio">
+    <button class="lightbox-close" aria-label="Cerrar vista ampliada">×</button>
+    <img id="lightboxImage" alt="Anuncio ampliado">
+  </dialog>
+  <script>
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const items=document.querySelectorAll('.reveal');
+    if(reduced)items.forEach(x=>x.classList.add('visible'));
+    else{const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.1});items.forEach(x=>observer.observe(x))}
+    const mobileBuy=document.getElementById('mobileBuy');
+    addEventListener('scroll',()=>mobileBuy.classList.toggle('show',scrollY>720&&scrollY<document.body.scrollHeight-innerHeight-500),{passive:true});
+    const lightbox=document.getElementById('lightbox');
+    const lightboxImage=document.getElementById('lightboxImage');
+    document.querySelectorAll('.zoomable').forEach(button=>button.addEventListener('click',()=>{
+      lightboxImage.src=button.dataset.full;
+      lightboxImage.alt=button.querySelector('img').alt;
+      lightbox.showModal();
+    }));
+    document.querySelector('.lightbox-close').addEventListener('click',()=>lightbox.close());
+    lightbox.addEventListener('click',event=>{if(event.target===lightbox)lightbox.close()});
+    addEventListener('contextmenu',event=>event.preventDefault());
+    addEventListener('keydown',event=>{
+      const key=event.key.toLowerCase();
+      if(event.key==='F12'||(event.ctrlKey&&event.shiftKey&&['i','j','c'].includes(key))||(event.ctrlKey&&key==='u'))event.preventDefault();
+    });
+    
+  </script>
+</body>
+</html>
+
