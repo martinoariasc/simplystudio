@@ -83,7 +83,7 @@
 
     .offer{padding:80px 0 110px}.offer-box{display:grid;grid-template-columns:1.05fr .95fr;background:var(--forest);color:white;border-radius:44px;overflow:hidden;box-shadow:0 40px 100px rgba(38,54,44,.27)}
     .offer-copy{padding:64px}.offer-copy h2{font:400 clamp(49px,6vw,78px)/.93 "Instrument Serif";letter-spacing:-.04em;margin:22px 0}.offer-copy>p{color:#c8d0ca;line-height:1.65;font-size:18px}
-    .cost-line{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:32px}.cost{padding:16px 10px 16px 0;border-top:1px solid rgba(255,255,255,.23)}.cost b{display:block;font-size:20px}.cost span{display:block;margin-top:5px;font-size:11px;color:#abb9ae}.cost-intro{color:#c8d0ca;font-size:13px;margin:30px 0 0;letter-spacing:.02em}.offer-copy .cost-line{margin-top:10px}.cost.highlight{border-top-color:#d7cda9}.cost.highlight b{color:#d7cda9}.cost.highlight span{color:#e5dfd4}.cost-kicker{margin-top:18px;color:#fff;font-size:15px;line-height:1.5}.cost-kicker b{color:#d7cda9}
+    .cost-line{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:10px}.cost{padding:16px 14px 16px 0;border-top:1px solid rgba(255,255,255,.23)}.cost .who{display:block;font-size:11px;color:#aab9ae;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}.cost b{display:block;font:400 30px/1 "Instrument Serif";color:#fff}.cost span:last-child{display:block;margin-top:5px;font-size:11px;color:#abb9ae}.cost-intro{color:#c8d0ca;font-size:13px;margin:30px 0 0;letter-spacing:.02em}.cost-ours{margin-top:14px;padding:18px 20px;border-radius:18px;background:rgba(215,205,169,.13);border:1px solid rgba(215,205,169,.55);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.cost-ours .who{font:500 10px "DM Mono";text-transform:uppercase;letter-spacing:.08em;color:#d7cda9}.cost-ours b{font:400 40px/1 "Instrument Serif";color:#fff}.cost-ours span:last-child{color:#e5dfd4;font-size:14px;line-height:1.4;flex:1;min-width:180px}
     .price-card{margin:18px;background:var(--white);color:var(--ink);border-radius:30px;padding:38px}.price{font:400 88px/1 "Instrument Serif";margin:22px 0 0;letter-spacing:-.05em}.price sup{font:600 12px Inter;letter-spacing:0;margin-right:7px}
     .price-card ul{list-style:none;padding:0;margin:29px 0}.price-card li{padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}.price-card li:before{content:"✓";color:#4e6c54;margin-right:9px;font-weight:800}.price-card .btn{width:100%}.secure{text-align:center;color:var(--muted);font:10px "DM Mono";margin:13px 0 0}
 
@@ -383,13 +383,12 @@
             <span class="eyebrow">PROMPT ADS · ACCESO COMPLETO</span>
             <h2>Dejá de improvisar cada vez que abrís ChatGPT.</h2>
             <p>Entrá con el sistema listo, producí tus primeras variaciones y empezá a construir anuncios que estén a la altura de lo que vendés.</p>
-            <p class="cost-intro">Cuánto te cuesta conseguir estos anuncios:</p>
+            <p class="cost-intro">Estos mismos anuncios, por otro lado, te costarían:</p>
             <div class="cost-line">
-              <div class="cost"><b>USD 300+</b><span>una agencia, por cada campaña</span></div>
-              <div class="cost"><b>USD 30+</b><span>un freelance, por un solo anuncio</span></div>
-              <div class="cost highlight"><b>USD 17</b><span>Prompt Ads: una vez · anuncios ilimitados</span></div>
+              <div class="cost"><span class="who">Una agencia</span><b>USD 300+</b><span>por cada campaña</span></div>
+              <div class="cost"><span class="who">Un freelancer</span><b>USD 30+</b><span>por un solo anuncio</span></div>
             </div>
-            <p class="cost-kicker">Esos precios se pagan <b>una y otra vez</b>. Prompt Ads es <b>un pago único</b>: generás todos los anuncios que quieras, para siempre.</p>
+            <div class="cost-ours"><span class="who">Con Prompt Ads</span><b>USD 17</b><span>una sola vez — y generás todos los anuncios que quieras, para siempre.</span></div>
           </div>
           <aside class="price-card">
             <span class="eyebrow muted">Pago único · acceso inmediato</span>
