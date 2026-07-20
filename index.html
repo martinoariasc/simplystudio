@@ -87,7 +87,10 @@
     .cost-line{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:10px}.cost{padding:16px 14px 16px 0;border-top:1px solid rgba(255,255,255,.23)}.cost .who{display:block;font-size:11px;color:#aab9ae;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}.cost b{display:block;font:400 30px/1 "Instrument Serif";color:#fff}.cost span:last-child{display:block;margin-top:5px;font-size:11px;color:#abb9ae}.cost-intro{color:#c8d0ca;font-size:13px;margin:30px 0 0;letter-spacing:.02em}.cost-ours{margin-top:14px;padding:18px 20px;border-radius:18px;background:rgba(215,205,169,.13);border:1px solid rgba(215,205,169,.55);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.cost-ours .who{font:500 10px "DM Mono";text-transform:uppercase;letter-spacing:.08em;color:#d7cda9}.cost-ours b{font:400 40px/1 "Instrument Serif";color:#fff}.cost-ours span:last-child{color:#e5dfd4;font-size:14px;line-height:1.4;flex:1;min-width:180px}
     .price-card{margin:18px;background:var(--white);color:var(--ink);border-radius:30px;padding:38px}.price{font:400 88px/1 "Instrument Serif";margin:8px 0 0;letter-spacing:-.05em}.price sup{font:600 12px Inter;letter-spacing:0;margin-right:7px}
     .launch-tag{display:inline-block;font:600 10px "DM Mono";letter-spacing:.08em;text-transform:uppercase;color:#4e6c54;background:rgba(78,108,84,.1);border-radius:99px;padding:5px 11px;margin-top:14px}.price-was{color:var(--muted);font-size:15px;margin:6px 0 0}.price-was s{opacity:.75}.price-note{color:var(--muted);font-size:12px;line-height:1.5;margin:9px 0 0}
-    .price-card ul{list-style:none;padding:0;margin:29px 0}.price-card li{padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}.price-card li:before{content:"✓";color:#4e6c54;margin-right:9px;font-weight:800}.price-card .btn{width:100%}.secure{text-align:center;color:var(--muted);font:10px "DM Mono";margin:13px 0 0}
+    .stack{list-style:none;padding:0;margin:18px 0 0}.stack li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}.stack li span{flex:1}.stack li span:before{content:"✓";color:#4e6c54;margin-right:9px;font-weight:800}.stack li b{font:500 13px Inter;color:var(--muted);white-space:nowrap}
+    .stack-total{display:flex;justify-content:space-between;align-items:baseline;padding:15px 0 3px;font-size:14px}.stack-total span{font:600 11px "DM Mono";text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}.stack-total b{font:400 22px "Instrument Serif";color:var(--muted)}.stack-total b s{opacity:.7}
+    .price-reveal{margin-top:14px;padding:22px;border-radius:22px;background:var(--forest);color:#fff;text-align:center}.price-reveal .launch-tag{color:#d7cda9;background:rgba(215,205,169,.15);margin:0 0 6px}.price-reveal .price{color:#fff;margin:2px 0 0}.price-reveal .price sup{color:#c6d0c8}.price-sub{color:#c6d0c8;font:10px "DM Mono";text-transform:uppercase;letter-spacing:.08em;margin:8px 0 0}
+    .price-card .btn{width:100%;margin-top:16px}.secure{text-align:center;color:var(--muted);font:10px "DM Mono";margin:13px 0 0}
 
     .guarantee{padding:0 0 95px}.guarantee-box{display:grid;grid-template-columns:200px 1fr;gap:45px;align-items:center;border:1px solid var(--line);padding:38px;border-radius:30px}.seal{aspect-ratio:1;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;text-align:center}.seal b{font:400 45px "Instrument Serif";display:block}.seal span{font:10px "DM Mono";text-transform:uppercase;letter-spacing:.09em}
     .guarantee h2{font:400 41px/1 "Instrument Serif";margin:0 0 14px}.guarantee p{color:var(--muted);line-height:1.65;margin:0}.guarantee p a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}.guarantee small{display:block;color:var(--muted);margin-top:12px;line-height:1.5}
@@ -411,19 +414,22 @@
             <div class="cost-ours"><span class="who">Con Prompt Ads</span><b>USD 27</b><span>una sola vez — y generás todos los anuncios que quieras, para siempre.</span></div>
           </div>
           <aside class="price-card">
-            <span class="eyebrow muted">Pago único · acceso inmediato</span>
-            <span class="launch-tag">Precio de lanzamiento</span>
-            <div class="price"><sup>USD</sup>27</div>
-            <p class="price-was"><s>Precio regular USD 47</s></p>
-            <ul>
-              <li>Protocolo maestro reutilizable</li>
-              <li>Reality Layer de realismo visual</li>
-              <li>Correcciones y continuidad</li>
-              <li>Variedad total para no repetir anuncios</li>
-              <li>Sistema privado de dirección visual</li>
-              <li>Guía de imagen ancla y fidelidad</li>
-              <li>Actualizaciones de esta edición</li>
+            <span class="eyebrow muted">Todo lo que te llevás</span>
+            <ul class="stack">
+              <li><span>Guía de uso del sistema</span><b>USD 19</b></li>
+              <li><span>Protocolo Maestro</span><b>USD 47</b></li>
+              <li><span>Reality Layer</span><b>USD 27</b></li>
+              <li><span>Dirección Visual</span><b>USD 27</b></li>
+              <li><span>Corregí y Continuá</span><b>USD 17</b></li>
+              <li><span>Variedad Total</span><b>USD 17</b></li>
+              <li><span>Actualizaciones de esta edición</span><b>Incluido</b></li>
             </ul>
+            <div class="stack-total"><span>Valor total</span><b><s>USD 154</s></b></div>
+            <div class="price-reveal">
+              <span class="launch-tag">Precio de lanzamiento · hoy</span>
+              <div class="price"><sup>USD</sup>27</div>
+              <p class="price-sub">Pago único · acceso inmediato</p>
+            </div>
             <a class="btn checkout" href="https://pay.hotmart.com/Y106693224R?checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads</a>
             <p class="secure">CHECKOUT SEGURO MEDIANTE HOTMART</p>
             <p class="price-note">Es un precio de lanzamiento y puede subir en cualquier momento. El precio que ves hoy es el que pagás.</p>
