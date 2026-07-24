@@ -103,6 +103,29 @@
     footer{background:var(--ink);color:white;padding:54px 0 95px}.footer-top{display:flex;justify-content:space-between;align-items:end;gap:30px}.footer-top p{color:#aaa99f}.footer-bottom{display:flex;justify-content:space-between;gap:30px;padding-top:28px;margin-top:40px;border-top:1px solid rgba(255,255,255,.15);font-size:11px;color:#88887f;line-height:1.5}
     dialog.lightbox{width:min(94vw,980px);max-height:94vh;padding:0;border:0;border-radius:24px;background:#111;box-shadow:0 30px 120px rgba(0,0,0,.55);overflow:hidden}.lightbox::backdrop{background:rgba(10,10,8,.88);backdrop-filter:blur(8px)}.lightbox img{width:100%;height:min(86vh,980px);object-fit:contain;background:#111}.lightbox-close{position:absolute;right:12px;top:12px;width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.92);font-size:24px;cursor:pointer}
     .mobile-buy{display:none}
+    .proof{background:var(--paper);padding:96px 0;overflow:hidden}
+    .proof-head{text-align:center;max-width:720px;margin:0 auto 48px}
+    .proof-head h2{font:400 clamp(38px,5vw,62px)/.98 "Instrument Serif";letter-spacing:-.03em;margin:14px 0 0;text-wrap:balance}
+    .proof-head h2 em{font-style:italic;color:var(--forest)}
+    .proof-head p{color:var(--muted);font-size:17px;line-height:1.6;margin:16px auto 0;max-width:560px}
+    .marquee{position:relative;display:grid;gap:18px}
+    .marquee::before,.marquee::after{content:"";position:absolute;top:0;bottom:0;width:13%;z-index:3;pointer-events:none}
+    .marquee::before{left:0;background:linear-gradient(90deg,var(--paper),rgba(242,238,229,0))}
+    .marquee::after{right:0;background:linear-gradient(270deg,var(--paper),rgba(242,238,229,0))}
+    .m-row{overflow:hidden}
+    .m-track{display:flex;gap:18px;width:max-content;animation:mscroll 70s linear infinite}
+    .m-row.rev .m-track{animation-duration:84s;animation-direction:reverse}
+    .marquee:hover .m-track{animation-play-state:paused}
+    @keyframes mscroll{to{transform:translateX(-50%)}}
+    .tcard{flex:0 0 min(360px,82vw);background:var(--white);border:1px solid var(--line);border-radius:24px;padding:26px 28px 22px;box-shadow:0 14px 40px rgba(38,54,44,.06);display:flex;flex-direction:column;gap:16px}
+    .tcard-tag{align-self:flex-start;font:600 10px "DM Mono";letter-spacing:.06em;text-transform:uppercase;color:#4e6c54;background:rgba(78,108,84,.09);border-radius:99px;padding:5px 11px}
+    .tcard-q{position:relative;color:var(--ink);font-size:15px;line-height:1.62;padding-top:16px}
+    .tcard-q::before{content:"\201C";position:absolute;top:-12px;left:-3px;font:400 46px "Instrument Serif";color:#c9b989;line-height:1}
+    .tcard-q b{font-weight:600}
+    .tcard-foot{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);padding-top:16px;margin-top:auto}
+    .tcard-av{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--forest);color:#efe9df;font:600 13px "DM Mono";letter-spacing:.02em}
+    .tcard-id b{display:block;font-size:14px;font-weight:700;color:var(--ink)}
+    .tcard-id span{font:500 10px "DM Mono";text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
     .announcement{background:var(--forest);color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
     .announcement-inner{min-height:38px;display:flex;align-items:center;justify-content:center;gap:14px;text-align:center;font-size:12px;line-height:1.35;color:#dfe7df}
     .announcement-inner b{color:#fff}.announcement-inner a{text-decoration:underline;text-underline-offset:3px;font-weight:700}
@@ -432,6 +455,28 @@
       </div>
     </section>
 
+    <section class="proof">
+      <div class="shell proof-head reveal">
+        <span class="eyebrow muted">Lo que dicen los primeros</span>
+        <h2>Dejaron de improvisar y <em>empezaron a vender.</em></h2>
+        <p>Dropshippers, gente de ecommerce y equipos de marketing que ya usan Prompt Ads todos los días. Esto es lo que nos cuentan.</p>
+      </div>
+      <div class="marquee reveal">
+        <div class="m-row"><div class="m-track">
+          <article class="tcard"><span class="tcard-tag">50+ piezas · 10 min</span><p class="tcard-q">Con ChatGPT Plus saco <b>más de 50 anuncios en menos de 10 minutos</b>, y todos con calidad de un diseñador que cobraría miles de dólares.</p><div class="tcard-foot"><div class="tcard-av">LF</div><div class="tcard-id"><b>Lucía F.</b><span>Ecommerce</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Antes hacía anuncios re genéricos y feos, tan fáciles de ignorar que ni llamaban la atención. Desde que uso el sistema <b>vendo muchísimo más</b>.</p><div class="tcard-foot"><div class="tcard-av">NV</div><div class="tcard-id"><b>Nicolás V.</b><span>Dropshipping</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Al principio no entendía ni confiaba, pero adentro te explica tan bien cómo usarlo que en 10 minutos ya estaba generando piezas geniales.</p><div class="tcard-foot"><div class="tcard-av">SM</div><div class="tcard-id"><b>Sofía M.</b><span>Dropshipping</span></div></div></article>
+          <article class="tcard"><span class="tcard-tag">Menos horas de diseño</span><p class="tcard-q">Mi jefe me agradeció que <b>mejoré el aspecto de la marca</b>. Me ahorra horas de diseño cada semana.</p><div class="tcard-foot"><div class="tcard-av">TR</div><div class="tcard-id"><b>Tomás R.</b><span>Marketing</span></div></div></article>
+        </div></div>
+        <div class="m-row rev"><div class="m-track">
+          <article class="tcard"><p class="tcard-q">Desde que pauto con estos anuncios siento que <b>vendo mejor</b>: mi marca se ve más premium y la gente confía más.</p><div class="tcard-foot"><div class="tcard-av">JP</div><div class="tcard-id"><b>Julián P.</b><span>Ecommerce</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Trabajo en diseño gráfico y esto me ahorra muchísimo tiempo. La calidad es de estudio, no de IA genérica.</p><div class="tcard-foot"><div class="tcard-av">CS</div><div class="tcard-id"><b>Camila S.</b><span>Diseño gráfico</span></div></div></article>
+          <article class="tcard"><span class="tcard-tag">×3 productividad</span><p class="tcard-q">Mi productividad se disparó. <b>Testeo el triple de creativos</b> sin depender de nadie ni esperar a un diseñador.</p><div class="tcard-foot"><div class="tcard-av">BA</div><div class="tcard-id"><b>Bruno A.</b><span>Freelancer</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Lo que antes me llevaba una tarde entera, ahora lo tengo en minutos. Un ahorro de tiempo enorme.</p><div class="tcard-foot"><div class="tcard-av">VC</div><div class="tcard-id"><b>Valentina C.</b><span>Ecommerce</span></div></div></article>
+        </div></div>
+      </div>
+    </section>
+
     <section class="offer" id="oferta">
       <div class="shell">
         <div class="offer-box reveal">
@@ -534,6 +579,7 @@
     }));
     document.querySelector('.lightbox-close').addEventListener('click',()=>lightbox.close());
     lightbox.addEventListener('click',event=>{if(event.target===lightbox)lightbox.close()});
+    if(!reduced)document.querySelectorAll('.m-track').forEach(t=>{t.innerHTML+=t.innerHTML;});
     addEventListener('contextmenu',event=>event.preventDefault());
     addEventListener('keydown',event=>{
       const key=event.key.toLowerCase();
