@@ -119,7 +119,7 @@
     .m-track{display:flex;gap:18px;width:max-content;animation:mscroll 70s linear infinite}
     .m-row.rev .m-track{animation-duration:84s;animation-direction:reverse}
     .marquee:hover .m-track{animation-play-state:paused}
-    @keyframes mscroll{to{transform:translateX(-50%)}}
+    @keyframes mscroll{to{transform:translateX(calc(-1 * var(--shift,50%)))}}
     .tcard{flex:0 0 min(360px,82vw);background:var(--white);border:1px solid var(--line);border-radius:24px;padding:26px 28px 22px;box-shadow:0 14px 40px rgba(38,54,44,.06);display:flex;flex-direction:column;gap:16px}
     .tcard-tag{align-self:flex-start;font:600 10px "DM Mono";letter-spacing:.06em;text-transform:uppercase;color:#4e6c54;background:rgba(78,108,84,.09);border-radius:99px;padding:5px 11px}
     .tcard-q{position:relative;color:var(--ink);font-size:15px;line-height:1.62;padding-top:16px}
@@ -409,12 +409,14 @@
           <article class="tcard"><p class="tcard-q">Antes hacía anuncios re genéricos y feos, tan fáciles de ignorar que ni llamaban la atención. Desde que uso el sistema <b>vendo muchísimo más</b>.</p><div class="tcard-foot"><div class="tcard-av">AT</div><div class="tcard-id"><b>Alejandro T.</b><span>Dropshipping</span></div></div></article>
           <article class="tcard"><p class="tcard-q">Al principio no entendía ni confiaba, pero adentro te explica tan bien cómo usarlo que en 10 minutos ya estaba generando piezas geniales.</p><div class="tcard-foot"><div class="tcard-av">VG</div><div class="tcard-id"><b>Valentina G.</b><span>Dropshipping</span></div></div></article>
           <article class="tcard"><span class="tcard-tag">Menos horas de diseño</span><p class="tcard-q">Mi jefe me agradeció que <b>mejoré el aspecto de la marca</b>. Me ahorra horas de diseño cada semana.</p><div class="tcard-foot"><div class="tcard-av">MT</div><div class="tcard-id"><b>Martín T.</b><span>Marketing</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Tengo una tienda online y renovar los creativos era un dolor de cabeza. Ahora <b>saco anuncios nuevos cada semana yo solo</b>, y se nota en las ventas.</p><div class="tcard-foot"><div class="tcard-av">RG</div><div class="tcard-id"><b>Ricardo G.</b><span>Tienda online</span></div></div></article>
         </div></div>
         <div class="m-row rev"><div class="m-track">
           <article class="tcard"><p class="tcard-q">Vendo productos digitales y siempre me costaba mostrarlos sin que parezcan un mockup falso. Con Prompt Ads mis anuncios <b>por fin transmiten el valor real</b> de lo que ofrezco.</p><div class="tcard-foot"><div class="tcard-av">AC</div><div class="tcard-id"><b>Arthur C.</b><span>Productos digitales</span></div></div></article>
           <article class="tcard"><p class="tcard-q">Desde que pauto con estos anuncios siento que <b>vendo mejor</b>: mi marca se ve más premium y la gente confía más.</p><div class="tcard-foot"><div class="tcard-av">PA</div><div class="tcard-id"><b>Pether A.</b><span>Ecommerce</span></div></div></article>
           <article class="tcard"><p class="tcard-q">Trabajo en diseño gráfico y esto me ahorra muchísimo tiempo. La calidad es de estudio, no de IA genérica.</p><div class="tcard-foot"><div class="tcard-av">SM</div><div class="tcard-id"><b>Steve M.</b><span>Diseño gráfico</span></div></div></article>
           <article class="tcard"><span class="tcard-tag">Nivel estudio, en minutos</span><p class="tcard-q">Creo contenido para varias marcas y esto me cambió el ritmo: <b>entrego piezas de nivel estudio en una fracción del tiempo</b>. Mis clientes quedan felices.</p><div class="tcard-foot"><div class="tcard-av">MD</div><div class="tcard-id"><b>Mathias D.</b><span>Freelance · contenido</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">En marketing esto me salvó. Presento propuestas con <b>piezas que parecen de una agencia grande</b>, en la mitad del tiempo.</p><div class="tcard-foot"><div class="tcard-av">MV</div><div class="tcard-id"><b>Marta V.</b><span>Marketing</span></div></div></article>
         </div></div>
       </div>
     </section>
@@ -516,7 +518,16 @@
     }));
     document.querySelector('.lightbox-close').addEventListener('click',()=>lightbox.close());
     lightbox.addEventListener('click',event=>{if(event.target===lightbox)lightbox.close()});
-    if(!reduced)document.querySelectorAll('.m-track').forEach(t=>{t.innerHTML+=t.innerHTML;});
+    if(!reduced)document.querySelectorAll('.m-track').forEach(track=>{
+      const setHTML=track.innerHTML;
+      const setCount=track.children.length;
+      // Duplicar hasta cubrir de sobra el ancho de pantalla (nunca queda vacío)
+      let guard=0;
+      do{track.insertAdjacentHTML('beforeend',setHTML);guard++;}while(track.scrollWidth < window.innerWidth*2 + 400 && guard<10);
+      // Desplazamiento exacto = distancia entre la 1ª tarjeta y la 1ª del set siguiente (incluye el gap)
+      const shift=track.children[setCount].offsetLeft - track.children[0].offsetLeft;
+      track.style.setProperty('--shift',shift+'px');
+    });
     addEventListener('contextmenu',event=>event.preventDefault());
     addEventListener('keydown',event=>{
       const key=event.key.toLowerCase();
