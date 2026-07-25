@@ -61,6 +61,7 @@
     .result-note{text-align:center;color:var(--muted);font-size:12px;line-height:1.5;margin:19px auto 0;max-width:760px}
 
     .process{background:#ddd5c7;margin:80px 16px 0;border-radius:48px}.process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.process-card{background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8);border-radius:28px;padding:30px;min-height:300px}
+    .process-req{max-width:660px;margin:32px auto 0;text-align:center;color:#5c584e;line-height:1.6;font-size:15px}.process-req b{color:var(--ink)}
     .process-card .n{font:500 11px "DM Mono";color:var(--muted)}.process-card h3{font:400 36px/1 "Instrument Serif";margin:50px 0 15px}.process-card p{line-height:1.6;color:#55564f}.process-card .input{margin-top:22px;padding:13px;border-radius:13px;background:var(--white);font:10px/1.5 "DM Mono";color:#555}
     .reference-finder{padding-top:84px}.finder-box{background:var(--ink);color:#fff;border-radius:42px;padding:56px;display:grid;grid-template-columns:.9fr 1.1fr;gap:58px}.finder-box h2{font:400 clamp(48px,6vw,75px)/.93 "Instrument Serif";margin:18px 0}.finder-box h2 em{color:#b9c9b9}.finder-box>div>p{color:#aaa99f;line-height:1.65;font-size:17px}
     .locked-stack{display:grid;gap:11px;align-content:center}.locked-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:22px;display:grid;grid-template-columns:45px 1fr auto;gap:16px;align-items:center}.locked-icon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#d7cda9;color:#171713}.locked-card b{display:block;font-size:16px}.locked-card p{margin:5px 0 0;color:#aaa99f;font-size:13px;line-height:1.45}.locked-card>span:last-child{font:9px "DM Mono";text-transform:uppercase;color:#d7cda9;letter-spacing:.08em}
@@ -239,7 +240,6 @@
       <a class="brand" href="#">simply <i>studio.</i></a>
       <nav class="nav-links" aria-label="Principal">
         <a href="#resultado">Resultados</a>
-        <a href="#direccion">Dirección</a>
         <a href="#incluye">Qué incluye</a>
         <a href="#preguntas">Preguntas</a>
         <a class="btn" href="#oferta">Conseguir Prompt Ads</a>
@@ -251,11 +251,11 @@
     <section class="hero">
       <div class="shell">
         <div class="hero-copy reveal">
-          <span class="pill eyebrow"><i class="dot"></i> Prompts + guías + sistema de corrección</span>
-          <h1>Dejá de crear anuncios que <em>parecen hechos con IA.</em></h1>
-          <p>Prompt Ads es el sistema de prompts, referencias y correcciones para convertir tus fotos en anuncios que parezcan dirigidos por una agencia, aunque trabajes solo.</p>
+          <span class="pill eyebrow"><i class="dot"></i> Pack de prompts + guías para ChatGPT</span>
+          <h1>Convertí tus fotos en anuncios que <em>parecen de agencia.</em></h1>
+          <p>Prompt Ads es un pack de prompts y guías listos para copiar y pegar en ChatGPT. Subís una foto de lo que vendés, seguís los pasos y en minutos tenés una tanda de anuncios profesionales. Sin saber diseño.</p>
           <div class="hero-actions">
-            <a class="btn" href="#oferta">Quiero anuncios que no parezcan IA <span class="arrow">↗</span></a>
+            <a class="btn" href="#oferta">Quiero mis anuncios ahora <span class="arrow">↗</span></a>
             <a class="btn ghost" href="#resultado">Ver qué podés crear</a>
           </div>
           <div class="hero-proof mono">USD 27 · precio de lanzamiento · pago único por Hotmart</div>
@@ -326,23 +326,6 @@
       </div>
     </section>
 
-    <section class="art-direction" id="direccion">
-      <div class="shell art-board">
-        <div class="art-copy reveal">
-          <span class="eyebrow muted">Dirección visual</span>
-          <h2>La estética no aparece por suerte. Se dirige.</h2>
-          <p>Prompt Ads está pensado para que cada pieza tenga una intención visual clara: piel real, producto con peso, luz con criterio y una sola idea principal. Menos collage improvisado, más campaña con dirección.</p>
-        </div>
-        <div class="mosaic reveal" aria-label="Mosaico de campañas y referencias visuales Prompt Ads">
-          <figure class="tall"><img src="assets/seccion-direccion-visual/no-parece-ia.webp" loading="lazy" alt="Anuncio que muestra una estética que no parece IA"></figure>
-          <figure class="wide"><img src="assets/seccion-direccion-visual/revista.webp" loading="lazy" alt="Anuncio editorial con estética de revista"></figure>
-          <figure class="small"><img src="assets/seccion-direccion-visual/basket.webp" loading="lazy" alt="Anuncio deportivo con dirección visual"></figure>
-          <figure class="medium"><img src="assets/seccion-direccion-visual/zapatillas-veja.webp" loading="lazy" alt="Anuncio de zapatillas con estética premium"></figure>
-          <figure class="large"><img src="assets/seccion-direccion-visual/street-girl.webp" loading="lazy" alt="Anuncio street style con dirección aesthetic"></figure>
-        </div>
-      </div>
-    </section>
-
     <section class="process">
       <div class="shell">
         <div class="section-intro reveal">
@@ -354,6 +337,7 @@
           <article class="process-card reveal"><span class="n">PASO 02</span><h3>Contale qué vendés</h3><p>Completá una ficha simple con tu producto, tu cliente y el mensaje que querés comunicar. Sin palabras técnicas ni estrategias complicadas.</p><div class="input">DATOS → producto + cliente + objetivo + acción</div></article>
           <article class="process-card reveal"><span class="n">PASO 03</span><h3>Generá, revisá y corregí</h3><p>ChatGPT crea las piezas. Si cambia el producto, agrupa imágenes o pierde realismo, aplicás la corrección exacta del pack.</p><div class="input">SALIDA → tanda + control + continuidad</div></article>
         </div>
+        <p class="process-req reveal">Todo lo que necesitás: una cuenta de <b>ChatGPT</b> —con Plus le sacás el máximo—, una foto de lo que vendés y ganas de probar. <b>Cero diseño, cero marketing técnico.</b></p>
       </div>
     </section>
 
@@ -409,52 +393,6 @@
       </div>
     </section>
 
-    <section class="buyer-lens">
-      <div class="shell buyer-box reveal">
-        <div>
-          <span class="eyebrow muted">Lo que resolvés</span>
-          <h2>No comprás prompts sueltos. Comprás <em>alivio visual.</em></h2>
-          <p>No necesitás estudiar IA ni probar palabras al azar durante horas. Entrás con una estructura, sabés qué pedir, sabés qué revisar y sabés cómo corregir cuando el resultado se va de lugar.</p>
-        </div>
-        <div class="buyer-points">
-          <article class="buyer-point"><span>01</span><div><b>Cuando ChatGPT falla, no empezás de cero</b><p>El pack incluye correcciones para producto cambiado, grillas, imágenes incompletas, pérdida de realismo y continuidad de tandas.</p></div></article>
-          <article class="buyer-point"><span>02</span><div><b>Tu negocio deja de verse improvisado</b><p>Usás tus datos reales, tus referencias y una dirección visual más clara para subir la percepción de lo que vendés.</p></div></article>
-          <article class="buyer-point"><span>03</span><div><b>Te da control sin complicarte</b><p>Un paso a paso directo para producir, revisar y mejorar piezas sin depender de inspiración, palabras técnicas o prueba-error infinito.</p></div></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="product-showcase">
-      <div class="shell">
-        <div class="product-box reveal">
-          <div class="product-main">
-            <div class="product-copy">
-              <span class="eyebrow muted">El sistema, en tus manos</span>
-              <h2>Listo para usar con ChatGPT, <em>sin vueltas.</em></h2>
-              <p>Descargás el pack, arrastrás el sistema al chat y empezás. Cada sesión está pensada para generar tandas de alrededor de 10 anuncios.</p>
-              <div class="product-points">
-                <div class="product-point"><span>01</span><b>Pensado para ChatGPT Plus: convertís la herramienta que ya conocés en tu propio estudio creativo y producís anuncios tanda tras tanda, cuando los necesites. Si ya pagás Plus, es la forma de sacarle todo el jugo a esa suscripción.</b></div>
-                <div class="product-point"><span>02</span><b>Partís de lo que ya tenés de tu negocio: sin estudio de fotos, sin diseñador y sin producción cara.</b></div>
-                <div class="product-point"><span>03</span><b>Cero diseño y cero marketing técnico: la guía te lleva paso a paso.</b></div>
-              </div>
-            </div>
-            <figure class="product-visual">
-              <img src="assets/producto-prompt-ads/prompt-ads-sistema-para-vender.webp" loading="lazy" alt="Mockup del sistema Prompt Ads en escritorio, notebook y celular">
-            </figure>
-          </div>
-          <div class="product-strip">
-            <figure>
-              <img src="assets/producto-prompt-ads/producto-prompt-ads.webp" loading="lazy" alt="Mockup del producto Prompt Ads con piezas de campaña alrededor">
-            </figure>
-            <div class="product-note">
-              <b>De una idea suelta a una campaña que se puede repetir.</b>
-              <p>El objetivo es simple: entrar con más claridad, producir mejores piezas y saber qué ajustar cuando el resultado todavía no está listo.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="proof">
       <div class="shell proof-head reveal">
         <span class="eyebrow muted">Lo que dicen los primeros</span>
@@ -504,14 +442,14 @@
             </ul>
             <div class="stack-total"><span>Valor total</span><b><s>USD 154</s></b></div>
             <div class="price-reveal">
-              <span class="launch-tag">Precio de lanzamiento · hoy</span>
+              <span class="launch-tag">Precio fundador · edición de lanzamiento</span>
               <div class="price"><sup>USD</sup>27</div>
               <p class="price-sub">Pago único · acceso inmediato</p>
               <p class="price-after">Al cerrar el lanzamiento pasa a <b>USD 47</b></p>
             </div>
             <a class="btn checkout" href="https://pay.hotmart.com/Y106693224R?checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads</a>
             <p class="secure">CHECKOUT SEGURO MEDIANTE HOTMART</p>
-            <p class="price-note">El precio de lanzamiento termina sin aviso previo: cuando cierre, Prompt Ads pasa a USD 47. Comprando hoy asegurás el precio y las actualizaciones de esta edición.</p>
+            <p class="price-note">Sos de los primeros. El precio fundador de USD 27 es solo por el lanzamiento — al cerrar, pasa a USD 47. Comprando hoy lo asegurás para siempre, con todas las actualizaciones de esta edición incluidas.</p>
           </aside>
         </div>
       </div>
