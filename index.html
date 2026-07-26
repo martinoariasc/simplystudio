@@ -115,11 +115,8 @@
     .marquee::before,.marquee::after{content:"";position:absolute;top:0;bottom:0;width:13%;z-index:3;pointer-events:none}
     .marquee::before{left:0;background:linear-gradient(90deg,var(--paper),rgba(242,238,229,0))}
     .marquee::after{right:0;background:linear-gradient(270deg,var(--paper),rgba(242,238,229,0))}
-    .m-row{overflow:hidden}
-    .m-track{display:flex;gap:18px;width:max-content;animation:mscroll 70s linear infinite}
-    .m-row.rev .m-track{animation-duration:84s;animation-direction:reverse}
-    .marquee:hover .m-track{animation-play-state:paused}
-    @keyframes mscroll{to{transform:translateX(calc(-1 * var(--shift,50%)))}}
+    .m-row{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch}.m-row::-webkit-scrollbar{display:none}
+    .m-track{display:flex;gap:18px;width:max-content}
     .tcard{flex:0 0 min(360px,82vw);background:var(--white);border:1px solid var(--line);border-radius:24px;padding:26px 28px 22px;box-shadow:0 14px 40px rgba(38,54,44,.06);display:flex;flex-direction:column;gap:16px}
     .tcard-tag{align-self:flex-start;font:600 10px "DM Mono";letter-spacing:.06em;text-transform:uppercase;color:#4e6c54;background:rgba(78,108,84,.09);border-radius:99px;padding:5px 11px}
     .tcard-q{position:relative;color:var(--ink);font-size:15px;line-height:1.62;padding-top:16px}
@@ -253,11 +250,11 @@
     <section class="hero">
       <div class="shell">
         <div class="hero-copy reveal">
-          <span class="pill eyebrow"><i class="dot"></i> Pack de prompts + guías para ChatGPT</span>
-          <h1>Convertí tus fotos en anuncios que <em>parecen de agencia.</em></h1>
-          <p>Prompt Ads es un pack de prompts y guías listos para copiar y pegar en ChatGPT. Subís una foto de lo que vendés, seguís los pasos y en minutos tenés una tanda de anuncios profesionales. Sin saber diseño.</p>
+          <span class="pill eyebrow"><i class="dot"></i> Prompts + guías + sistema de corrección</span>
+          <h1>Dejá de crear anuncios que <em>parecen hechos con IA.</em></h1>
+          <p>Prompt Ads es el sistema de prompts, referencias y correcciones para convertir tus fotos en anuncios que parezcan dirigidos por una agencia, aunque trabajes solo.</p>
           <div class="hero-actions">
-            <a class="btn" href="#oferta">Quiero mis anuncios ahora <span class="arrow">↗</span></a>
+            <a class="btn" href="#oferta">Quiero anuncios que no parezcan IA <span class="arrow">↗</span></a>
             <a class="btn ghost" href="#resultado">Ver qué podés crear</a>
           </div>
           <div class="hero-proof mono">USD 27 · precio de lanzamiento · pago único por Hotmart</div>
@@ -518,15 +515,32 @@
     }));
     document.querySelector('.lightbox-close').addEventListener('click',()=>lightbox.close());
     lightbox.addEventListener('click',event=>{if(event.target===lightbox)lightbox.close()});
-    if(!reduced)document.querySelectorAll('.m-track').forEach(track=>{
+    document.querySelectorAll('.m-row').forEach(row=>{
+      const track=row.querySelector('.m-track');
       const setHTML=track.innerHTML;
-      const setCount=track.children.length;
-      // Duplicar hasta cubrir de sobra el ancho de pantalla (nunca queda vacío)
+      const n=track.children.length;
+      // 2 copias para medir la "unidad" (ancho de una copia, incluye el gap)
+      track.insertAdjacentHTML('beforeend',setHTML);
+      const unit=track.children[n].offsetLeft-track.children[0].offsetLeft;
+      // duplicar hasta tener espacio real de reciclado: ancho total >= 2 copias + pantalla
       let guard=0;
-      do{track.insertAdjacentHTML('beforeend',setHTML);guard++;}while(track.scrollWidth < window.innerWidth*2 + 400 && guard<10);
-      // Desplazamiento exacto = distancia entre la 1ª tarjeta y la 1ª del set siguiente (incluye el gap)
-      const shift=track.children[setCount].offsetLeft - track.children[0].offsetLeft;
-      track.style.setProperty('--shift',shift+'px');
+      while(track.scrollWidth < unit*2 + window.innerWidth && guard<12){track.insertAdjacentHTML('beforeend',setHTML);guard++;}
+      const rev=row.classList.contains('rev');
+      let pos=unit; row.scrollLeft=pos;               // arranca en el medio: se puede leer hacia los dos lados
+      let paused=false, resumeT;
+      const pauseNow=()=>{paused=true;clearTimeout(resumeT);resumeT=setTimeout(()=>{paused=false;},2200);};
+      row.addEventListener('pointerenter',()=>paused=true);
+      row.addEventListener('pointerleave',()=>{paused=false;});
+      ['wheel','touchstart','pointerdown'].forEach(ev=>row.addEventListener(ev,pauseNow,{passive:true}));
+      const speed=rev?-0.4:0.4;
+      (function tick(){
+        if(reduced)return;
+        if(paused){pos=row.scrollLeft;}               // mientras el usuario scrollea, seguimos su posición
+        else{pos+=speed;row.scrollLeft=pos;}
+        if(pos>=unit*2){pos-=unit;row.scrollLeft=pos;} // reciclado sin costura (contenido idéntico)
+        else if(pos<=0){pos+=unit;row.scrollLeft=pos;}
+        requestAnimationFrame(tick);
+      })();
     });
     addEventListener('contextmenu',event=>event.preventDefault());
     addEventListener('keydown',event=>{
