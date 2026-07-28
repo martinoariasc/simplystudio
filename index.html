@@ -87,6 +87,9 @@
     .offer{padding:80px 0 110px}.offer-box{display:grid;grid-template-columns:1.05fr .95fr;background:var(--forest);color:white;border-radius:44px;overflow:hidden;box-shadow:0 40px 100px rgba(38,54,44,.27)}
     .offer-copy{padding:64px}.offer-copy h2{font:400 clamp(49px,6vw,78px)/.93 "Instrument Serif";letter-spacing:-.04em;margin:22px 0}.offer-copy>p{color:#c8d0ca;line-height:1.65;font-size:18px}
     .offer-visual{margin:0 0 30px;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.16);box-shadow:0 20px 50px rgba(0,0,0,.22)}.offer-visual img{width:100%;height:auto;display:block}
+    .offer-choice{margin:16px 0 0;padding:16px 18px;border-left:2px solid var(--gold, #d7cda9);background:rgba(215,205,169,.1);border-radius:0 12px 12px 0;color:#d3d9d1;font-size:16px;line-height:1.55}.offer-choice b{color:#fff}
+    .after-buy{margin:26px 0 0;border-top:1px solid rgba(255,255,255,.16);padding-top:22px}.after-buy .ab-title{font:600 10px "DM Mono";letter-spacing:.09em;text-transform:uppercase;color:#d7cda9}.after-buy ol{margin:14px 0 0;padding:0;list-style:none;counter-reset:ab;display:grid;gap:11px}.after-buy li{counter-increment:ab;position:relative;padding-left:34px;color:#c8d0ca;font-size:14px;line-height:1.5}.after-buy li::before{content:counter(ab);position:absolute;left:0;top:-1px;width:24px;height:24px;border-radius:50%;background:rgba(215,205,169,.16);color:#d7cda9;font:600 11px "DM Mono";display:grid;place-items:center}.after-buy li b{color:#fff}
+    .trust-row{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;margin:14px 0 0}.trust-row span{font:600 9px "DM Mono";letter-spacing:.04em;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:5px}.trust-row span::before{content:"✓";color:#4e6c54;font-weight:800}
     .cost-line{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:10px}.cost{padding:16px 14px 16px 0;border-top:1px solid rgba(255,255,255,.23)}.cost .who{display:block;font-size:11px;color:#aab9ae;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}.cost b{display:block;font:400 30px/1 "Instrument Serif";color:#fff}.cost span:last-child{display:block;margin-top:5px;font-size:11px;color:#abb9ae}.cost-intro{color:#c8d0ca;font-size:13px;margin:30px 0 0;letter-spacing:.02em}.cost-ours{margin-top:14px;padding:18px 20px;border-radius:18px;background:rgba(215,205,169,.13);border:1px solid rgba(215,205,169,.55);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.cost-ours .who{font:500 10px "DM Mono";text-transform:uppercase;letter-spacing:.08em;color:#d7cda9}.cost-ours b{font:400 40px/1 "Instrument Serif";color:#fff}.cost-ours span:last-child{color:#e5dfd4;font-size:14px;line-height:1.4;flex:1;min-width:180px}
     .price-card{margin:18px;background:var(--white);color:var(--ink);border-radius:30px;padding:38px}.price{font:400 88px/1 "Instrument Serif";margin:8px 0 0;letter-spacing:-.05em}.price sup{font:600 12px Inter;letter-spacing:0;margin-right:7px}
     .launch-tag{display:inline-block;font:600 10px "DM Mono";letter-spacing:.08em;text-transform:uppercase;color:#4e6c54;background:rgba(78,108,84,.1);border-radius:99px;padding:5px 11px;margin-top:14px}.price-was{color:var(--muted);font-size:15px;margin:6px 0 0}.price-was s{opacity:.75}.price-note{color:var(--muted);font-size:12px;line-height:1.5;margin:9px 0 0}
@@ -126,6 +129,31 @@
     .tcard-av{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--forest);color:#efe9df;font:600 13px "DM Mono";letter-spacing:.02em}
     .tcard-id b{display:block;font-size:14px;font-weight:700;color:var(--ink)}
     .tcard-id span{font:500 10px "DM Mono";text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+    .marquee-hint{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:18px;font:500 11px/1 "DM Mono";text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
+    .marquee-hint .ar{font-size:18px;color:var(--forest);animation:hintp 1.5s ease-in-out infinite}
+    .marquee-hint .ar:last-child{animation-delay:.18s}
+    @keyframes hintp{0%,100%{opacity:.32}50%{opacity:1}}
+    .manifesto{background:var(--forest);color:#fff;border-radius:48px;margin:34px 16px;padding:96px 0}
+    .manifesto .eyebrow{color:#c9b989}
+    .manifesto h2{font:400 clamp(46px,6vw,82px)/.94 "Instrument Serif";letter-spacing:-.045em;margin:14px 0 0;max-width:920px}
+    .manifesto h2 em{color:#b9c9b9;font-style:italic}
+    .manifesto .m-without{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+    .manifesto .m-without span{font:600 11px "DM Mono";letter-spacing:.05em;text-transform:uppercase;color:#cdd6cf;border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:9px 15px}
+    .manifesto .m-without span s{text-decoration-color:#b9c9b9}
+    .manifesto .m-lead{margin-top:32px;display:grid;gap:18px;max-width:740px}
+    .manifesto .m-lead p{font-size:18px;line-height:1.62;color:#d8ddd5;margin:0}.manifesto .m-lead p b{color:#fff}
+    .manifesto .m-cta{margin-top:40px;display:flex;flex-wrap:wrap;align-items:center;gap:20px}
+    .manifesto .m-cta .kick{font:400 clamp(23px,3vw,31px)/1.18 "Instrument Serif";color:#fff;max-width:520px}
+    .manifesto .btn.light{background:var(--white);color:var(--ink)}
+    @media(max-width:640px){.manifesto{margin:18px 8px;border-radius:30px;padding:60px 0}.manifesto h2{font-size:43px}.manifesto .m-lead p{font-size:16px}}
+    .offer-lead{max-width:850px;margin:0 auto 42px;text-align:center}
+    .offer-lead .eyebrow{color:#4e6c54}
+    .offer-lead h2{font:400 clamp(38px,5vw,64px)/.98 "Instrument Serif";letter-spacing:-.03em;margin:12px 0 0}
+    .offer-lead h2 em{font-style:italic;color:var(--forest)}
+    .offer-lead .without{display:inline-flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px}
+    .offer-lead .without span{font:600 10px "DM Mono";letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:7px 13px}
+    .offer-lead p{font-size:17px;line-height:1.62;color:var(--muted);margin:18px auto 0;max-width:670px}.offer-lead p b{color:var(--ink)}
+    @media(max-width:640px){.offer-lead{margin-bottom:28px}.offer-lead h2{font-size:37px}.offer-lead p{font-size:16px}}
     .announcement{background:var(--forest);color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
     .announcement-inner{min-height:38px;display:flex;align-items:center;justify-content:center;gap:14px;text-align:center;font-size:12px;line-height:1.35;color:#dfe7df}
     .announcement-inner b{color:#fff}.announcement-inner a{text-decoration:underline;text-underline-offset:3px;font-weight:700}
@@ -230,7 +258,7 @@
 <body>
   <div class="announcement">
     <div class="shell announcement-inner">
-      <span><b>Lanzamiento:</b> Prompt Ads a USD 27 por tiempo limitado — al cerrar el lanzamiento pasa a USD 47.</span>
+      <span><b>Lanzamiento:</b> precio fundador <b>hasta el 15 de agosto</b> — el más bajo que va a tener. Al cerrar, sube.</span>
       <a href="#oferta">Asegurar mi precio</a>
     </div>
   </div>
@@ -252,12 +280,12 @@
         <div class="hero-copy reveal">
           <span class="pill eyebrow"><i class="dot"></i> Prompts + guías + sistema de corrección</span>
           <h1>Dejá de crear anuncios que <em>parecen hechos con IA.</em></h1>
-          <p>Prompt Ads es el sistema de prompts, referencias y correcciones para convertir tus fotos en anuncios que parezcan dirigidos por una agencia, aunque trabajes solo.</p>
+          <p>Prompt Ads es el sistema de prompts, referencias y correcciones para convertir tus fotos en <b>anuncios premium en menos de 15 minutos</b> — con calidad de agencia, aunque trabajes solo.</p>
           <div class="hero-actions">
             <a class="btn" href="#oferta">Quiero anuncios que no parezcan IA <span class="arrow">↗</span></a>
             <a class="btn ghost" href="#resultado">Ver qué podés crear</a>
           </div>
-          <div class="hero-proof mono">USD 27 · precio de lanzamiento · pago único por Hotmart</div>
+          <div class="hero-proof mono">Edición de lanzamiento · pago único · acceso inmediato por Hotmart</div>
         </div>
 
         <div class="campaign-stage reveal" id="resultado">
@@ -409,30 +437,39 @@
           <article class="tcard"><span class="tcard-tag">Menos horas de diseño</span><p class="tcard-q">Mi jefe me agradeció que <b>mejoré el aspecto de la marca</b>. Me ahorra horas de diseño cada semana.</p><div class="tcard-foot"><div class="tcard-av">MT</div><div class="tcard-id"><b>Martín T.</b><span>Marketing</span></div></div></article>
           <article class="tcard"><p class="tcard-q">Tengo una tienda online y renovar los creativos era un dolor de cabeza. Ahora <b>saco anuncios nuevos cada semana yo solo</b>, y se nota en las ventas.</p><div class="tcard-foot"><div class="tcard-av">RG</div><div class="tcard-id"><b>Ricardo G.</b><span>Tienda online</span></div></div></article>
         </div></div>
-        <div class="m-row rev"><div class="m-track">
-          <article class="tcard"><p class="tcard-q">Vendo productos digitales y siempre me costaba mostrarlos sin que parezcan un mockup falso. Con Prompt Ads mis anuncios <b>por fin transmiten el valor real</b> de lo que ofrezco.</p><div class="tcard-foot"><div class="tcard-av">AC</div><div class="tcard-id"><b>Arthur C.</b><span>Productos digitales</span></div></div></article>
-          <article class="tcard"><p class="tcard-q">Desde que pauto con estos anuncios siento que <b>vendo mejor</b>: mi marca se ve más premium y la gente confía más.</p><div class="tcard-foot"><div class="tcard-av">PA</div><div class="tcard-id"><b>Pether A.</b><span>Ecommerce</span></div></div></article>
-          <article class="tcard"><p class="tcard-q">Trabajo en diseño gráfico y esto me ahorra muchísimo tiempo. La calidad es de estudio, no de IA genérica.</p><div class="tcard-foot"><div class="tcard-av">SM</div><div class="tcard-id"><b>Steve M.</b><span>Diseño gráfico</span></div></div></article>
-          <article class="tcard"><span class="tcard-tag">Nivel estudio, en minutos</span><p class="tcard-q">Creo contenido para varias marcas y esto me cambió el ritmo: <b>entrego piezas de nivel estudio en una fracción del tiempo</b>. Mis clientes quedan felices.</p><div class="tcard-foot"><div class="tcard-av">MD</div><div class="tcard-id"><b>Mathias D.</b><span>Freelance · contenido</span></div></div></article>
-          <article class="tcard"><p class="tcard-q">En marketing esto me salvó. Presento propuestas con <b>piezas que parecen de una agencia grande</b>, en la mitad del tiempo.</p><div class="tcard-foot"><div class="tcard-av">MV</div><div class="tcard-id"><b>Marta V.</b><span>Marketing</span></div></div></article>
-        </div></div>
+        <div class="marquee-hint"><span class="ar">‹</span> Deslizá para ver más historias <span class="ar">›</span></div>
       </div>
     </section>
 
     <section class="offer" id="oferta">
       <div class="shell">
+        <div class="offer-lead reveal">
+          <span class="eyebrow">El momento es ahora</span>
+          <h2>La IA ya cambió las reglas. Llegá <em>primero</em>, no tarde.</h2>
+          <div class="without"><span>Sin modelos</span><span>Sin sesión de fotos</span><span>Sin semanas de producción</span><span>Sin agencia</span></div>
+          <p>Mientras algunos todavía sacan imágenes genéricas, otros ya crean campañas que parecen producciones reales. La diferencia no es tener IA: es <b>saber dirigirla</b>. Los que aprenden a aprovecharla ahora avanzan mucho más rápido — <b>empezá hoy, antes de que sea lo que todos ya hacen.</b></p>
+        </div>
         <div class="offer-box reveal">
           <div class="offer-copy">
             <figure class="offer-visual"><img src="assets/producto-prompt-ads/producto-prompt-ads.webp" loading="lazy" alt="El sistema completo Prompt Ads con todas sus piezas"></figure>
             <span class="eyebrow">PROMPT ADS · ACCESO COMPLETO</span>
-            <h2>Dejá de improvisar cada vez que abrís ChatGPT.</h2>
-            <p>Entrá con el sistema listo, producí tus primeras variaciones y empezá a construir anuncios que estén a la altura de lo que vendés.</p>
+            <h2>Empezá a crear anuncios premium en <em>menos de 15 minutos.</em></h2>
+            <p>Entrá con el sistema listo y <b>aprovechá la IA como los que ya van adelante</b>: producí anuncios con calidad de estudio que cobraría miles de dólares — sin diseñador, sin agencia y sin semanas de producción. El momento de empezar es ahora, no cuando ya lo haga todo el mundo.</p>
+            <p class="offer-choice">Tu marca puede seguir pasando desapercibida, o volverse imposible de olvidar. <b>Hoy, esa decisión es tuya.</b></p>
             <p class="cost-intro">Estos mismos anuncios, por otro lado, te costarían:</p>
             <div class="cost-line">
               <div class="cost"><span class="who">Una agencia</span><b>USD 300+</b><span>por cada campaña</span></div>
               <div class="cost"><span class="who">Un freelancer</span><b>USD 30+</b><span>por un solo anuncio</span></div>
             </div>
             <div class="cost-ours"><span class="who">Con Prompt Ads</span><b>USD 27</b><span>una sola vez — y generás todos los anuncios que quieras, para siempre.</span></div>
+            <div class="after-buy">
+              <span class="ab-title">Qué pasa cuando comprás</span>
+              <ol>
+                <li>Pagás de forma 100% segura por Hotmart, sin suscripciones.</li>
+                <li>Recibís el <b>acceso al instante</b> en tu email.</li>
+                <li>Entrás, seguís la guía y creás tus primeros anuncios <b>en menos de 15 minutos</b>.</li>
+              </ol>
+            </div>
           </div>
           <aside class="price-card">
             <span class="eyebrow muted">Todo lo que te llevás</span>
@@ -449,12 +486,12 @@
             <div class="price-reveal">
               <span class="launch-tag">Precio fundador · edición de lanzamiento</span>
               <div class="price"><sup>USD</sup>27</div>
-              <p class="price-sub">Pago único · acceso inmediato</p>
-              <p class="price-after">Al cerrar el lanzamiento pasa a <b>USD 47</b></p>
+              <p class="price-after">El <b>15 de agosto</b> pasa a <b>USD 47</b></p>
             </div>
             <a class="btn checkout" href="https://pay.hotmart.com/Y106693224R?checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads</a>
+            <div class="trust-row"><span>Pago único</span><span>Acceso inmediato</span><span>Compra segura</span><span>Garantía 7 días</span></div>
             <p class="secure">CHECKOUT SEGURO MEDIANTE HOTMART</p>
-            <p class="price-note">Sos de los primeros. El precio fundador de USD 27 es solo por el lanzamiento — al cerrar, pasa a USD 47. Comprando hoy lo asegurás para siempre, con todas las actualizaciones de esta edición incluidas.</p>
+            <p class="price-note">El lanzamiento cierra el <b>15 de agosto</b>. Comprando ahora asegurás el precio fundador para siempre, con todas las actualizaciones de esta edición incluidas.</p>
           </aside>
         </div>
       </div>
@@ -471,6 +508,28 @@
       </div>
     </section>
 
+    <section class="proof proof-2">
+      <div class="shell proof-head reveal">
+        <span class="eyebrow muted">Más historias reales</span>
+        <h2>Fácil de usar. Y se <em>nota en las ventas.</em></h2>
+        <p>Lo que nos cuentan quienes ya lo están usando para su propia marca.</p>
+      </div>
+      <div class="marquee reveal">
+        <div class="m-row"><div class="m-track">
+          <article class="tcard"><span class="tcard-tag">Fácil de usar</span><p class="tcard-q">El producto está <b>muy bueno y súper fácil de usar</b>. Pensé que iba a ser complicado y en realidad cualquiera puede.</p><div class="tcard-foot"><div class="tcard-av">CT</div><div class="tcard-id"><b>Cesar T.</b><span>Emprendedor</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Está todo <b>muy bien detallado, el paso a paso</b> de lo que hay que hacer. No me perdí en ningún momento y arranqué enseguida.</p><div class="tcard-foot"><div class="tcard-av">JR</div><div class="tcard-id"><b>Julián R.</b><span>Tienda online</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Increíble <b>cómo ayuda a crear mejores anuncios</b>. La diferencia con lo que hacía antes es enorme.</p><div class="tcard-foot"><div class="tcard-av">CS</div><div class="tcard-id"><b>Camila S.</b><span>Ecommerce</span></div></div></article>
+          <article class="tcard"><span class="tcard-tag">Más confianza · más ventas</span><p class="tcard-q">Ya me ayudó a <b>vender más con mi marca</b>: ahora mis anuncios inspiran más confianza, y por eso entran más ventas.</p><div class="tcard-foot"><div class="tcard-av">AW</div><div class="tcard-id"><b>Analia W.</b><span>Marca propia</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Vendo productos digitales y siempre me costaba mostrarlos sin que parezcan un mockup falso. Con Prompt Ads mis anuncios <b>por fin transmiten el valor real</b> de lo que ofrezco.</p><div class="tcard-foot"><div class="tcard-av">AC</div><div class="tcard-id"><b>Arthur C.</b><span>Productos digitales</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Desde que pauto con estos anuncios siento que <b>vendo mejor</b>: mi marca se ve más premium y la gente confía más.</p><div class="tcard-foot"><div class="tcard-av">PA</div><div class="tcard-id"><b>Pether A.</b><span>Ecommerce</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Trabajo en diseño gráfico y esto me ahorra muchísimo tiempo. La calidad es de estudio, no de IA genérica.</p><div class="tcard-foot"><div class="tcard-av">SM</div><div class="tcard-id"><b>Steve M.</b><span>Diseño gráfico</span></div></div></article>
+          <article class="tcard"><span class="tcard-tag">Nivel estudio, en minutos</span><p class="tcard-q">Creo contenido para varias marcas y esto me cambió el ritmo: <b>entrego piezas de nivel estudio en una fracción del tiempo</b>. Mis clientes quedan felices.</p><div class="tcard-foot"><div class="tcard-av">MD</div><div class="tcard-id"><b>Mathias D.</b><span>Freelance · contenido</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">En marketing esto me salvó. Presento propuestas con <b>piezas que parecen de una agencia grande</b>, en la mitad del tiempo.</p><div class="tcard-foot"><div class="tcard-av">MV</div><div class="tcard-id"><b>Marta V.</b><span>Marketing</span></div></div></article>
+        </div></div>
+        <div class="marquee-hint"><span class="ar">‹</span> Deslizá para ver más historias <span class="ar">›</span></div>
+      </div>
+    </section>
+
     <section class="faq" id="preguntas">
       <div class="shell faq-wrap">
         <span class="eyebrow muted">Preguntas claras</span>
@@ -483,7 +542,7 @@
         <details><summary>¿Sirve para servicios o productos digitales?</summary><p>Sí. La ficha cambia la forma de representar la oferta: puede mostrar la experiencia, el resultado, el entorno, el proceso o una escena real coherente con el beneficio.</p></details>
         <details><summary>¿Mantiene mi producto exactamente igual?</summary><p>La fidelidad mejora cuanto mejores y más claras sean tus referencias. El pack te enseña qué material aportar y cómo corregir forma, escala, ángulos y detalles. Ningún modelo garantiza reproducción perfecta en todos los intentos.</p></details>
         <details><summary>¿Puedo usarlo para clientes?</summary><p>Sí, podés usar el sistema para producir piezas para tus propios proyectos o servicios. No podés revender, compartir ni distribuir los archivos y prompts del pack como si fueran tuyos.</p></details>
-        <details><summary>¿Esto garantiza ventas?</summary><p>No. La creatividad es una parte del sistema comercial. Tus resultados también dependen de la oferta, el precio, la segmentación, la página, el presupuesto y la ejecución.</p></details>
+        <details><summary>¿Esto garantiza ventas?</summary><p>No. La creatividad es una parte del sistema comercial. Tus resultados también dependen de la oferta, el precio, la segmentación, la página, el presupuesto y la ejecución. Pero sin dudas ayuda a mejorar la calidad y la presentación de tus anuncios, lo cual puede aumentar tus ventas.</p></details>
       </div>
     </section>
   </main>
@@ -495,7 +554,7 @@
     </div>
   </footer>
 
-  <div class="mobile-buy" id="mobileBuy"><div><span>Prompt Ads</span><b>USD 27 · pago único</b></div><a href="#oferta" class="btn">Ver acceso</a></div>
+  <div class="mobile-buy" id="mobileBuy"><div><span>Prompt Ads</span><b>Oferta de lanzamiento</b></div><a href="#oferta" class="btn">Ver oferta</a></div>
   <dialog class="lightbox" id="lightbox" aria-label="Vista ampliada del anuncio">
     <button class="lightbox-close" aria-label="Cerrar vista ampliada">×</button>
     <img id="lightboxImage" alt="Anuncio ampliado">
