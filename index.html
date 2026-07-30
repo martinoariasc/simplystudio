@@ -146,6 +146,10 @@
     .manifesto .m-cta .kick{font:400 clamp(23px,3vw,31px)/1.18 "Instrument Serif";color:#fff;max-width:520px}
     .manifesto .btn.light{background:var(--white);color:var(--ink)}
     @media(max-width:640px){.manifesto{margin:18px 8px;border-radius:30px;padding:60px 0}.manifesto h2{font-size:43px}.manifesto .m-lead p{font-size:16px}}
+    .audience-chips{display:flex;flex-wrap:wrap;gap:10px}
+    .audience-chips span{font-size:15px;font-weight:600;color:var(--ink);background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:99px;padding:12px 20px}
+    .audience-note{margin:26px 0 0;font-size:17px;line-height:1.6;color:var(--muted);max-width:720px}.audience-note b{color:var(--ink)}
+    @media(max-width:640px){.audience-chips{gap:8px}.audience-chips span{font-size:13.5px;padding:10px 15px}.audience-note{font-size:16px}}
     .offer-lead{max-width:850px;margin:0 auto 42px;text-align:center}
     .offer-lead .eyebrow{color:#4e6c54}
     .offer-lead h2{font:400 clamp(38px,5vw,64px)/.98 "Instrument Serif";letter-spacing:-.03em;margin:12px 0 0}
@@ -279,10 +283,10 @@
       <div class="shell">
         <div class="hero-copy reveal">
           <span class="pill eyebrow"><i class="dot"></i> Prompts + guías + sistema de corrección</span>
-          <h1>Dejá de crear anuncios que <em>parecen hechos con IA.</em></h1>
-          <p>Prompt Ads es el sistema de prompts, referencias y correcciones para convertir tus fotos en <b>anuncios premium en menos de 15 minutos</b> — con calidad de agencia, aunque trabajes solo.</p>
+          <h1>Creá anuncios premium en <em>menos de 15 minutos.</em></h1>
+          <p>Prompt Ads son <b>6 guías con los prompts exactos</b> que arrastrás a ChatGPT: subís la foto de lo que vendés y salen anuncios con calidad de agencia — que no parecen hechos con IA. <b>Para cualquier negocio</b>, sin saber diseño.</p>
           <div class="hero-actions">
-            <a class="btn" href="#oferta">Quiero anuncios que no parezcan IA <span class="arrow">↗</span></a>
+            <a class="btn" href="#oferta">Quiero crear mis anuncios <span class="arrow">↗</span></a>
             <a class="btn ghost" href="#resultado">Ver qué podés crear</a>
           </div>
           <div class="hero-proof mono">Edición de lanzamiento · pago único · acceso inmediato por Hotmart</div>
@@ -351,7 +355,7 @@
           <article class="result-card reveal"><button class="zoomable" data-full="assets/prompt-ads/09-galeria-streetwear.webp" aria-label="Ampliar anuncio de streetwear"><img src="assets/prompt-ads/09-galeria-streetwear.webp" width="1254" height="1254" loading="lazy" alt="Anuncio dinámico de streetwear"></button><div class="result-meta"><span>03 · Moda</span><b>Subí la percepción del producto</b></div></article>
           <article class="result-card reveal"><button class="zoomable" data-full="assets/prompt-ads/10-galeria-servicios.webp" aria-label="Ampliar anuncio de servicios"><img src="assets/prompt-ads/10-galeria-servicios.webp" width="1254" height="1254" loading="lazy" alt="Anuncio humano para un servicio profesional"></button><div class="result-meta"><span>04 · Servicios</span><b>Vendé confianza antes de la consulta</b></div></article>
         </div>
-        <p class="result-note">Cada pieza fue generada como imagen independiente. El sistema está pensado para producir tandas de alrededor de 10 anuncios; la cantidad exacta por respuesta puede variar según tu plan de ChatGPT, y el pack incluye cómo continuar la tanda sin empezar de nuevo.</p>
+        <p class="result-note">Cada tanda son ~10 anuncios, cada uno una imagen independiente lista para publicar.</p>
       </div>
     </section>
 
@@ -366,7 +370,7 @@
           <article class="process-card reveal"><span class="n">PASO 02</span><h3>Contale qué vendés</h3><p>Completá una ficha simple con tu producto, tu cliente y el mensaje que querés comunicar. Sin palabras técnicas ni estrategias complicadas.</p><div class="input">DATOS → producto + cliente + objetivo + acción</div></article>
           <article class="process-card reveal"><span class="n">PASO 03</span><h3>Generá, revisá y corregí</h3><p>ChatGPT crea las piezas. Si cambia el producto, agrupa imágenes o pierde realismo, aplicás la corrección exacta del pack.</p><div class="input">SALIDA → tanda + control + continuidad</div></article>
         </div>
-        <p class="process-req reveal">Todo lo que necesitás: una cuenta de <b>ChatGPT</b> —con Plus le sacás el máximo—, una foto de lo que vendés y ganas de probar. <b>Cero diseño, cero marketing técnico.</b></p>
+        <p class="process-req reveal">Solo necesitás <b>ChatGPT</b> (con Plus le sacás el máximo) y una foto de lo que vendés. <b>Cero diseño, cero marketing técnico.</b></p>
       </div>
     </section>
 
@@ -411,15 +415,19 @@
           <span class="eyebrow muted">¿Para quién es?</span>
           <div><h2>Para gente que vende algo real y necesita mostrarlo mejor.</h2></div>
         </div>
-        <div class="audience-list">
-          <div class="audience-row reveal"><span class="n">01</span><h3>Tiendas y dropshipping</h3><p>Creá conceptos para testear sin depender de una sola foto del proveedor ni de una sola idea.</p></div>
-          <div class="audience-row reveal"><span class="n">02</span><h3>Negocios locales</h3><p>Restaurantes, lavaderos, salones, barberías, gimnasios y comercios que quieren verse profesionales en redes.</p></div>
-          <div class="audience-row reveal"><span class="n">03</span><h3>Bienes raíces e inmobiliarias</h3><p>Agentes y desarrollos que necesitan que una propiedad se vea deseable y premium — departamentos, casas, alquileres temporarios — para vender o alquilar más rápido.</p></div>
-          <div class="audience-row reveal"><span class="n">04</span><h3>Servicios y profesionales</h3><p>Odontólogos, médicos, asesores y especialistas que necesitan hacer visible un servicio que no viene en una caja.</p></div>
-          <div class="audience-row reveal"><span class="n">05</span><h3>Productos digitales</h3><p>Representá el resultado, la experiencia y el valor sin recurrir a mockups flotantes que parecen falsos.</p></div>
-          <div class="audience-row reveal"><span class="n">06</span><h3>Freelancers y equipos chicos</h3><p>Producí más conceptos y presentá ideas con una dirección visual consistente.</p></div>
-          <div class="audience-row reveal"><span class="n">07</span><h3>Si pautás en Meta Ads o creás contenido</h3><p>Testeá más creativos en formato 1:1 listo para Instagram y Facebook sin esperar a un diseñador, y subí la calidad de tu feed orgánico con piezas que parecen de campaña.</p></div>
+        <div class="audience-chips reveal">
+          <span>Tiendas y dropshipping</span>
+          <span>Restaurantes y gastronomía</span>
+          <span>Bienes raíces e inmobiliarias</span>
+          <span>Gimnasios y bienestar</span>
+          <span>Salones, barberías y estética</span>
+          <span>Servicios y profesionales</span>
+          <span>Productos digitales y SaaS</span>
+          <span>Marcas de ropa y accesorios</span>
+          <span>Freelancers y agencias chicas</span>
+          <span>Creadores de contenido</span>
         </div>
+        <p class="audience-note reveal">Si vendés algo real y necesitás mostrarlo mejor, funciona. <b>Vos ponés la foto y tus datos; el sistema pone la dirección creativa.</b></p>
       </div>
     </section>
 
@@ -501,8 +509,8 @@
       <div class="shell guarantee-box reveal">
         <div class="seal"><div><b>7 días</b><span>Satisfacción o reembolso</span></div></div>
         <div>
-          <h2>Probalo sin riesgo. Si no es para vos, te devolvemos todo.</h2>
-          <p>Tenés <b>7 días</b> para usar Prompt Ads. Si sentís que no es para vos, pedís tu reembolso y te devolvemos el <b>100%</b>. Sin vueltas y sin preguntas incómodas.</p>
+          <h2>Si no te sirve, te devolvemos todo.</h2>
+          <p>Probalo <b>7 días</b>. Si no es para vos o sentís que no te sirve, pedís el reembolso y te devolvemos el <b>100% de tu dinero</b>. Sin vueltas y sin preguntas incómodas — el reembolso lo procesa <b>Hotmart</b>, así que tu compra está protegida de punta a punta.</p>
           <p>Y no te dejamos solo: si te trabás en algún punto, escribinos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a> y te damos una mano directa para que le saques el máximo provecho.</p>
         </div>
       </div>
@@ -534,7 +542,7 @@
       <div class="shell faq-wrap">
         <span class="eyebrow muted">Preguntas claras</span>
         <h2>Antes de comprar.</h2>
-        <details><summary>¿Qué es exactamente Prompt Ads?</summary><p>Es un pack digital de aplicación rápida para dirigir la creación de anuncios con ChatGPT. Incluye la instrucción principal, el sistema de realismo, una ficha simple para tu negocio, las correcciones, la continuidad y el sistema de dirección visual.</p></details>
+        <details><summary>¿Qué es exactamente Prompt Ads? ¿Son prompts?</summary><p>Sí. Son <b>6 guías en PDF</b>: cuatro contienen los prompts e instrucciones que arrastrás directo al chat de ChatGPT (el Protocolo Maestro, el sistema de realismo, las correcciones y el de variedad), y dos las leés vos (la guía de uso paso a paso y la de dirección visual). No es un software ni una app: <b>subís la foto de lo que vendés, pegás los archivos en ChatGPT y te genera los anuncios</b>. Funciona para cualquier negocio — producto físico, servicio, local, inmobiliaria o producto digital.</p></details>
         <details><summary>¿Necesito saber diseño?</summary><p>No. El sistema te da una estructura concreta. Vos aportás la información verdadera de tu negocio, elegís las referencias y revisás el resultado final antes de publicarlo.</p></details>
         <details><summary>¿Necesito ChatGPT pago (Plus)?</summary><p>Para producir en serio, lo mejor es <b>ChatGPT Plus</b>: te da más capacidad por sesión, mantiene mejor el contexto de tu marca y entrega las tandas de forma más fluida. Con la versión gratuita podés arrancar y probar el sistema, pero vas a chocar con los límites: menos generaciones, piezas que a veces salen de a una y cortes al llegar al tope diario. Y si ya pagás Plus, Prompt Ads es justamente la forma de exprimir esa suscripción y convertirla en una máquina de producir anuncios.</p></details>
         <details><summary>¿Qué pasa si no sé qué estilo pedir?</summary><p>El pack incluye un sistema guiado para definir la apariencia que necesita tu campaña y convertir una idea vaga en instrucciones claras para ChatGPT.</p></details>
@@ -578,27 +586,29 @@
     document.querySelectorAll('.m-row').forEach(row=>{
       const track=row.querySelector('.m-track');
       const setHTML=track.innerHTML;
-      const n=track.children.length;
-      // 2 copias para medir la "unidad" (ancho de una copia, incluye el gap)
-      track.insertAdjacentHTML('beforeend',setHTML);
-      const unit=track.children[n].offsetLeft-track.children[0].offsetLeft;
-      // duplicar hasta tener espacio real de reciclado: ancho total >= 2 copias + pantalla
-      let guard=0;
-      while(track.scrollWidth < unit*2 + window.innerWidth && guard<12){track.insertAdjacentHTML('beforeend',setHTML);guard++;}
+      const setW=Math.max(1,track.scrollWidth);                    // ancho de una tanda
+      const reps=Math.max(1,Math.ceil((window.innerWidth+80)/setW)); // copias por bloque para tapar la pantalla
+      track.innerHTML=setHTML.repeat(reps*2);                       // 2 bloques idénticos -> loop sin costura, pocos nodos
       const rev=row.classList.contains('rev');
-      let pos=unit; row.scrollLeft=pos;               // arranca en el medio: se puede leer hacia los dos lados
+      let block=track.scrollWidth/2;                                // ancho de un bloque = punto de reciclado
+      const remeasure=()=>{block=track.scrollWidth/2;};
+      if(document.fonts&&document.fonts.ready)document.fonts.ready.then(remeasure); // recalcula al cargar las fuentes
+      addEventListener('resize',remeasure,{passive:true});
+      let pos=rev?Math.max(0,block-1):0;                           // acumulador decimal (scrollLeft redondea: sin esto se ve a tirones)
+      row.scrollLeft=pos;
       let paused=false, resumeT;
-      const pauseNow=()=>{paused=true;clearTimeout(resumeT);resumeT=setTimeout(()=>{paused=false;},2200);};
+      const pauseNow=()=>{paused=true;clearTimeout(resumeT);resumeT=setTimeout(()=>{paused=false;},1600);};
       row.addEventListener('pointerenter',()=>paused=true);
       row.addEventListener('pointerleave',()=>{paused=false;});
       ['wheel','touchstart','pointerdown'].forEach(ev=>row.addEventListener(ev,pauseNow,{passive:true}));
-      const speed=rev?-0.4:0.4;
+      row.addEventListener('scroll',()=>{if(paused)pos=row.scrollLeft;},{passive:true}); // sigue al usuario al deslizar
+      const speed=rev?-0.55:0.55;
       (function tick(){
-        if(reduced)return;
-        if(paused){pos=row.scrollLeft;}               // mientras el usuario scrollea, seguimos su posición
-        else{pos+=speed;row.scrollLeft=pos;}
-        if(pos>=unit*2){pos-=unit;row.scrollLeft=pos;} // reciclado sin costura (contenido idéntico)
-        else if(pos<=0){pos+=unit;row.scrollLeft=pos;}
+        if(!reduced&&!paused){
+          pos+=speed;
+          if(pos>=block)pos-=block; else if(pos<0)pos+=block;      // reciclado sin costura (contenido idéntico)
+          row.scrollLeft=pos;
+        }
         requestAnimationFrame(tick);
       })();
     });
