@@ -32,7 +32,7 @@
     .hero-copy h1 em{color:var(--forest);font-weight:400}.hero-copy>p{max-width:760px;margin:0 auto;font-size:clamp(18px,2vw,22px);line-height:1.5;color:#46463f}
     .hero-actions{display:flex;justify-content:center;gap:12px;margin-top:22px}.hero-proof{margin-top:12px;font-size:12px;color:var(--muted)}
     .campaign-stage{position:relative;padding:18px;background:rgba(255,255,255,.36);border:1px solid rgba(255,255,255,.7);border-radius:40px;box-shadow:var(--shadow)}
-    .campaign-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .campaign-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
     .campaign-card{margin:0;overflow:hidden;border-radius:24px;background:#e5dfd4;border:1px solid rgba(23,23,19,.08)}
     .campaign-card button,.result-card button{display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
     .campaign-card img{aspect-ratio:1;object-fit:contain;transition:transform .6s ease}.campaign-card:hover img{transform:scale(1.012)}
@@ -155,10 +155,13 @@
     .sc{margin:0;overflow:hidden;border-radius:22px;background:#e5dfd4;border:1px solid rgba(23,23,19,.08);box-shadow:0 16px 44px rgba(25,24,18,.07)}
     .sc button{display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
     .sc img{aspect-ratio:1;object-fit:cover;transition:transform .55s ease}.sc:hover img{transform:scale(1.03)}
-    .sc:nth-child(1){grid-column:span 2;grid-row:span 2}
-    .sc:nth-child(1) img{height:100%}
     .showcase-note{text-align:center;margin:26px 0 0;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-    @media(max-width:900px){.showcase-grid{grid-template-columns:repeat(2,1fr)}.sc:nth-child(1){grid-column:span 2;grid-row:span 1}}
+    @media(max-width:900px){
+      .showcase{padding:60px 0 54px;overflow:hidden}
+      .showcase-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin-right:-14px;padding-right:14px;scrollbar-width:none}
+      .showcase-grid::-webkit-scrollbar{display:none}
+      .sc{flex:0 0 46%;scroll-snap-align:start}
+    }
     @media(max-width:640px){
       .showcase{padding:60px 0 54px;overflow:hidden}.showcase-head{text-align:left;margin-bottom:26px}.showcase-head h2{font-size:41px}.showcase-head p{font-size:16px}
       .showcase-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin-right:-14px;padding-right:14px;scrollbar-width:none}
@@ -381,10 +384,12 @@
 
         <div class="campaign-stage reveal" id="resultado">
           <div class="campaign-grid" aria-label="Anuncios creados aplicando Prompt Ads">
-            <figure class="campaign-card"><button class="zoomable" data-full="assets/prompt-ads/01-hero-moda-rebelde.webp" aria-label="Ampliar campaña de moda"><img src="assets/prompt-ads/01-hero-moda-rebelde.webp" width="1254" height="1254" alt="Campaña de moda con concepto inesperado"></button><figcaption>Moda · concepto inesperado</figcaption></figure>
-            <figure class="campaign-card"><button class="zoomable" data-full="assets/prompt-ads/02-hero-piel-real.webp" aria-label="Ampliar campaña de belleza"><img src="assets/prompt-ads/02-hero-piel-real.webp" width="1254" height="1254" alt="Campaña de belleza con piel realista"></button><figcaption>Beauty · piel real</figcaption></figure>
-            <figure class="campaign-card"><button class="zoomable" data-full="assets/prompt-ads/03-hero-performance.webp" aria-label="Ampliar campaña deportiva"><img src="assets/prompt-ads/03-hero-performance.webp" width="1254" height="1254" alt="Campaña deportiva dinámica y realista"></button><figcaption>Producto · alto impacto</figcaption></figure>
-            <figure class="campaign-card"><button class="zoomable" data-full="assets/prompt-ads/04-hero-restaurante.webp" aria-label="Ampliar campaña gastronómica"><img src="assets/prompt-ads/04-hero-restaurante.webp" width="1254" height="1254" alt="Campaña gastronómica con deseo visual"></button><figcaption>Restaurante · deseo</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p7.webp" aria-label="Ampliar anuncio de vía pública"><img src="assets/premium/p7.webp" width="1000" height="1000" alt="Anuncio de alto impacto en vía pública"></button><figcaption>Marca · impacto</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p1.webp" aria-label="Ampliar anuncio automotor"><img src="assets/premium/p1.webp" width="1000" height="1000" alt="Anuncio automotor con estética premium"></button><figcaption>Autos · percepción</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p6.webp" aria-label="Ampliar anuncio deportivo"><img src="assets/premium/p6.webp" width="1000" height="1000" alt="Anuncio deportivo que frena el scroll"></button><figcaption>Deporte · frena el scroll</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p4.webp" aria-label="Ampliar anuncio de estética"><img src="assets/premium/p4.webp" width="1000" height="1000" alt="Anuncio de clínica estética con detalle macro"></button><figcaption>Estética · detalle real</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p5.webp" aria-label="Ampliar anuncio de lujo"><img src="assets/premium/p5.webp" width="1000" height="1000" alt="Anuncio de lujo con estética aspiracional"></button><figcaption>Lujo · deseo</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p2.webp" aria-label="Ampliar anuncio de moda"><img src="assets/premium/p2.webp" width="1000" height="1000" alt="Anuncio de moda masculina editorial"></button><figcaption>Moda · deseo</figcaption></figure>
           </div>
           <div class="stage-note mono"><span>Deslizá o tocá una pieza para verla completa →</span></div>
         </div>
@@ -394,18 +399,16 @@
     <section class="showcase">
       <div class="shell">
         <div class="showcase-head reveal">
-          <span class="eyebrow muted">Hecho con Prompt Ads</span>
-          <h2>Todos estos anuncios salieron de <em>una sola foto.</em></h2>
-          <p>Sin sesión de fotos. Sin modelos. Sin diseñador. Sin agencia. Solo el sistema, ChatGPT y unos minutos. <b>Esto es exactamente lo que vas a poder crear para tu negocio.</b></p>
+          <span class="eyebrow muted">Ninguno de estos anuncios existía hace 15 minutos</span>
+          <h2>Esto no lo hizo una agencia. <em>Lo hiciste vos.</em></h2>
+          <p>Sin sesión de fotos, sin modelos, sin diseñador y sin esperar a nadie. Una foto común, el sistema, y salen así. <b>Tu próxima campaña puede verse exactamente igual.</b></p>
         </div>
         <div class="showcase-grid">
-          <figure class="sc reveal"><button class="zoomable" data-full="assets/premium/p1.webp" aria-label="Ampliar anuncio"><img src="assets/premium/p1.webp" width="1000" height="1000" loading="lazy" alt="Anuncio premium de automóvil creado con Prompt Ads"></button></figure>
-          <figure class="sc reveal"><button class="zoomable" data-full="assets/premium/p2.webp" aria-label="Ampliar anuncio"><img src="assets/premium/p2.webp" width="1000" height="1000" loading="lazy" alt="Anuncio premium de moda masculina creado con Prompt Ads"></button></figure>
-          <figure class="sc reveal"><button class="zoomable" data-full="assets/premium/p3.webp" aria-label="Ampliar anuncio"><img src="assets/premium/p3.webp" width="1000" height="1000" loading="lazy" alt="Anuncio premium de skincare creado con Prompt Ads"></button></figure>
-          <figure class="sc reveal"><button class="zoomable" data-full="assets/premium/p4.webp" aria-label="Ampliar anuncio"><img src="assets/premium/p4.webp" width="1000" height="1000" loading="lazy" alt="Anuncio premium creado con Prompt Ads"></button></figure>
-          <figure class="sc reveal"><button class="zoomable" data-full="assets/premium/p5.webp" aria-label="Ampliar anuncio"><img src="assets/premium/p5.webp" width="1000" height="1000" loading="lazy" alt="Anuncio premium creado con Prompt Ads"></button></figure>
-          <figure class="sc reveal"><button class="zoomable" data-full="assets/premium/p6.webp" aria-label="Ampliar anuncio"><img src="assets/premium/p6.webp" width="1000" height="1000" loading="lazy" alt="Anuncio premium creado con Prompt Ads"></button></figure>
-          <figure class="sc reveal"><button class="zoomable" data-full="assets/premium/p7.webp" aria-label="Ampliar anuncio"><img src="assets/premium/p7.webp" width="1000" height="1000" loading="lazy" alt="Anuncio premium creado con Prompt Ads"></button></figure>
+          <figure class="sc reveal"><button class="zoomable" data-full="assets/prompt-ads/01-hero-moda-rebelde.webp" aria-label="Ampliar anuncio de moda"><img src="assets/prompt-ads/01-hero-moda-rebelde.webp" width="1254" height="1254" loading="lazy" alt="Anuncio de moda con concepto inesperado"></button></figure>
+          <figure class="sc reveal"><button class="zoomable" data-full="assets/prompt-ads/02-hero-piel-real.webp" aria-label="Ampliar anuncio de belleza"><img src="assets/prompt-ads/02-hero-piel-real.webp" width="1254" height="1254" loading="lazy" alt="Anuncio de belleza con piel realista"></button></figure>
+          <figure class="sc reveal"><button class="zoomable" data-full="assets/premium/p3.webp" aria-label="Ampliar anuncio de skincare"><img src="assets/premium/p3.webp" width="1000" height="1000" loading="lazy" alt="Anuncio de skincare con resultados visibles"></button></figure>
+          <figure class="sc reveal"><button class="zoomable" data-full="assets/prompt-ads/03-hero-performance.webp" aria-label="Ampliar anuncio deportivo"><img src="assets/prompt-ads/03-hero-performance.webp" width="1254" height="1254" loading="lazy" alt="Anuncio deportivo dinámico y realista"></button></figure>
+          <figure class="sc reveal"><button class="zoomable" data-full="assets/prompt-ads/04-hero-restaurante.webp" aria-label="Ampliar anuncio gastronómico"><img src="assets/prompt-ads/04-hero-restaurante.webp" width="1254" height="1254" loading="lazy" alt="Anuncio gastronómico con deseo visual"></button></figure>
         </div>
         <p class="showcase-note mono">Rubros distintos · el mismo sistema · cada pieza lista para publicar</p>
       </div>
