@@ -118,7 +118,8 @@
     .marquee::before,.marquee::after{content:"";position:absolute;top:0;bottom:0;width:13%;z-index:3;pointer-events:none}
     .marquee::before{left:0;background:linear-gradient(90deg,var(--paper),rgba(242,238,229,0))}
     .marquee::after{right:0;background:linear-gradient(270deg,var(--paper),rgba(242,238,229,0))}
-    .m-row{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch}.m-row::-webkit-scrollbar{display:none}
+    .m-row{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;scroll-behavior:auto;scroll-snap-type:none}.m-row::-webkit-scrollbar{display:none}
+    .campaign-grid,.showcase-grid,.case-grid{scroll-behavior:auto}
     .m-track{display:flex;gap:18px;width:max-content}
     .tcard{flex:0 0 min(360px,82vw);background:var(--white);border:1px solid var(--line);border-radius:24px;padding:26px 28px 22px;box-shadow:0 14px 40px rgba(38,54,44,.06);display:flex;flex-direction:column;gap:16px}
     .tcard-tag{align-self:flex-start;font:600 10px "DM Mono";letter-spacing:.06em;text-transform:uppercase;color:#4e6c54;background:rgba(78,108,84,.09);border-radius:99px;padding:5px 11px}
@@ -158,9 +159,9 @@
     .showcase-note{text-align:center;margin:26px 0 0;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
     @media(max-width:900px){
       .showcase{padding:60px 0 54px;overflow:hidden}
-      .showcase-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin-right:-14px;padding-right:14px;scrollbar-width:none}
+      .showcase-grid{display:flex;overflow-x:auto;overflow-y:hidden;align-items:flex-start;gap:10px;margin-right:-14px;padding-right:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
       .showcase-grid::-webkit-scrollbar{display:none}
-      .sc{flex:0 0 46%;scroll-snap-align:start}
+      .sc{flex:0 0 46%}
     }
     @media(max-width:640px){
       .showcase{padding:60px 0 54px;overflow:hidden}.showcase-head{text-align:left;margin-bottom:26px}.showcase-head h2{font-size:41px}.showcase-head p{font-size:16px}
@@ -232,7 +233,7 @@
     @media(max-width:640px){
       :root{--radius:22px}.shell{width:min(100% - 28px,1180px)}.nav{height:65px}.brand{font-size:18px}.nav .btn{min-height:40px;padding:0 15px}.hero{padding:32px 0 18px}.hero-copy{text-align:left;margin-bottom:25px}
       .hero-copy h1{font-size:56px;line-height:.91;margin:19px 0 18px}.hero-copy>p{font-size:17px;line-height:1.5}.hero-actions{display:grid;justify-content:stretch}.hero-actions .btn{width:100%}.hero-actions .btn.ghost{display:none}.hero-proof{text-align:center}
-      .campaign-stage{padding:8px;border-radius:25px}.campaign-grid{display:flex;overflow:auto;scroll-snap-type:x mandatory;gap:8px;-ms-overflow-style:none}.campaign-grid::-webkit-scrollbar{display:none}.campaign-card,.campaign-card:first-child,.campaign-card:last-child{display:block;flex:0 0 83%;height:auto;scroll-snap-align:start;border-radius:18px}.stage-note{padding:12px 6px 4px}.stage-note span:last-child{display:none}
+      .campaign-stage{padding:8px;border-radius:25px}.campaign-grid{display:flex;overflow-x:auto;overflow-y:hidden;align-items:flex-start;gap:8px;-ms-overflow-style:none;scrollbar-width:none}.campaign-grid::-webkit-scrollbar{display:none}.campaign-card,.campaign-card:first-child,.campaign-card:last-child{display:block;flex:0 0 83%;height:auto;border-radius:18px}.stage-note{padding:12px 6px 4px}.stage-note span:last-child{display:none}
       .announcement-inner{font-size:11px;padding:9px 8px}.art-direction{padding:68px 0}.mosaic{gap:8px}.mosaic .tall,.mosaic .wide,.mosaic .small,.mosaic .medium,.mosaic .large{grid-column:1/-1;height:auto}.mosaic figure img{aspect-ratio:1;object-fit:contain}.buyer-lens{padding:10px 0 70px}.buyer-box{padding:31px 20px;border-radius:28px;gap:30px}.buyer-point{grid-template-columns:42px 1fr;padding:18px}.buyer-point span{width:38px;height:38px}
       section{padding:72px 0}.section-intro h2,.result-head h2{font-size:46px}.section-intro p,.result-head p{font-size:16px}.pain{margin:18px 8px;border-radius:30px;padding:68px 0}.pain h2{font-size:48px}.pain-grid{gap:36px}.symptom{grid-template-columns:38px 1fr}
       .versus-grid{gap:7px}.versus-badge{width:40px;height:40px;font-size:9px;top:31%}
@@ -396,7 +397,7 @@
             <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p5.webp" aria-label="Ampliar anuncio de lujo"><img loading="lazy" decoding="async" src="assets/premium/p5.webp" width="1000" height="1000" alt="Anuncio de lujo con estética aspiracional"></button><figcaption>Lujo · deseo</figcaption></figure>
             <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p2.webp" aria-label="Ampliar anuncio de moda"><img loading="lazy" decoding="async" src="assets/premium/p2.webp" width="1000" height="1000" alt="Anuncio de moda masculina editorial"></button><figcaption>Moda · deseo</figcaption></figure>
           </div>
-          <div class="stage-note mono"><span>Desliza o toca una pieza para verla completa →︎</span></div>
+          <div class="marquee-hint"><span class="ar">‹</span> Toca una pieza para ampliarla <span class="ar">›</span></div>
         </div>
       </div>
     </section>
@@ -415,6 +416,7 @@
           <figure class="sc reveal"><button class="zoomable" data-full="assets/prompt-ads/04-hero-restaurante.webp" aria-label="Ampliar anuncio gastronómico"><img decoding="async" src="assets/prompt-ads/04-hero-restaurante.webp" width="1254" height="1254" loading="lazy" alt="Anuncio gastronómico con deseo visual"></button></figure>
           <figure class="sc reveal"><button class="zoomable" data-full="assets/prompt-ads/02-hero-piel-real.webp" aria-label="Ampliar anuncio de belleza"><img decoding="async" src="assets/prompt-ads/02-hero-piel-real.webp" width="1254" height="1254" loading="lazy" alt="Anuncio de belleza con piel realista"></button></figure>
         </div>
+        <div class="marquee-hint"><span class="ar">‹</span> Desliza para ver más anuncios <span class="ar">›</span></div>
         <p class="showcase-note mono">Rubros distintos · el mismo sistema · cada pieza lista para publicar</p>
       </div>
     </section>
@@ -719,6 +721,35 @@
         requestAnimationFrame(tick);
       })();
     });
+    // Carruseles del hero y del muro de prueba: en celular se desplazan solos (igual que
+    // los testimonios) para que el visitante vea todas las piezas sin tener que tocar nada.
+    (function(){
+      if(reduced) return;
+      if(!matchMedia('(max-width:900px)').matches) return;
+      document.querySelectorAll('.campaign-grid, .showcase-grid').forEach(row=>{
+        if(row.scrollWidth <= row.clientWidth + 4) return;      // en escritorio es grilla: no toca nada
+        const setHTML=row.innerHTML;
+        const setW=row.scrollWidth;
+        const reps=Math.max(1,Math.ceil((row.clientWidth+80)/setW));
+        row.innerHTML=setHTML.repeat(reps*2);                   // 2 bloques idénticos = loop sin costura
+        row.querySelectorAll('.zoomable').forEach(b=>b.addEventListener('click',()=>{   // las copias también se amplían
+          lightboxImage.src=b.dataset.full;
+          lightboxImage.alt=b.querySelector('img').alt;
+          lightbox.showModal();
+        }));
+        const block=row.scrollWidth/2;
+        let pos=0, paused=false, t;
+        row.scrollLeft=0;
+        const pauseNow=()=>{paused=true;clearTimeout(t);t=setTimeout(()=>{paused=false;},1600);};
+        ['wheel','touchstart','pointerdown'].forEach(ev=>row.addEventListener(ev,pauseNow,{passive:true}));
+        row.addEventListener('scroll',()=>{if(paused)pos=row.scrollLeft;},{passive:true});
+        (function tick(){
+          if(!paused){ pos+=0.55; if(pos>=block)pos-=block; row.scrollLeft=pos; }
+          requestAnimationFrame(tick);
+        })();
+      });
+    })();
+
     // Checkout: le pasa a Hotmart de dónde vino la persona (parámetro sck) para poder
     // ver el origen de cada venta en Hotmart, aunque Meta no la atribuya. Y avisa
     // "Iniciar pago" a Meta al tocar el botón.
