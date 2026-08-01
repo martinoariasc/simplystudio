@@ -37,7 +37,7 @@
     .campaign-card button,.result-card button{display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
     .campaign-card img{aspect-ratio:1;object-fit:contain;transition:transform .6s ease}.campaign-card:hover img{transform:scale(1.012)}
     .campaign-card figcaption{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 14px;background:rgba(255,255,255,.55);font:500 9px "DM Mono";text-transform:uppercase;letter-spacing:.08em}
-    .campaign-card figcaption:after{content:"↗\FE0E";font-size:14px;font-family:"DM Mono",monospace}
+    .campaign-card figcaption:after{content:"Abrir imagen";font-size:9px;font-family:"DM Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--forest);border:1px solid var(--line);border-radius:99px;padding:5px 10px;white-space:nowrap}
     .stage-note{display:flex;justify-content:space-between;gap:20px;padding:15px 5px 2px;color:var(--muted);font-size:11px}
 
     section{padding:102px 0}.section-intro{display:grid;grid-template-columns:190px 1fr;gap:48px;margin-bottom:48px}.section-intro h2{font:400 clamp(44px,6vw,76px)/.97 "Instrument Serif",Georgia,serif;letter-spacing:-.04em;margin:0;max-width:850px}
@@ -184,8 +184,8 @@
     .case-note{margin:22px 0 0;font-size:17px;line-height:1.6;color:var(--muted);max-width:760px}.case-note b{color:var(--ink)}
     @media(max-width:640px){
       .case{padding:56px 0;overflow:hidden}.case-steps{grid-template-columns:1fr;gap:10px;margin-bottom:20px}.case-step{padding:18px 20px}
-      .case-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:9px;margin-right:-14px;padding-right:14px;scrollbar-width:none}
-      .case-grid::-webkit-scrollbar{display:none}.case-grid figure{flex:0 0 62%;scroll-snap-align:start}
+      .case-grid{display:flex;overflow-x:auto;overflow-y:hidden;align-items:flex-start;gap:9px;margin-right:-14px;padding-right:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+      .case-grid::-webkit-scrollbar{display:none}.case-grid figure{flex:0 0 62%}
       .case-note{font-size:16px}
     }
     .audience-chips{display:flex;flex-wrap:wrap;gap:10px}
@@ -234,7 +234,7 @@
     @media(max-width:640px){
       :root{--radius:22px}.shell{width:min(100% - 28px,1180px)}.nav{height:65px}.brand{font-size:18px}.nav .btn{min-height:40px;padding:0 15px}.hero{padding:32px 0 18px}.hero-copy{text-align:left;margin-bottom:25px}
       .hero-copy h1{font-size:56px;line-height:.91;margin:19px 0 18px}.hero-copy>p{font-size:17px;line-height:1.5}.hero-actions{display:grid;justify-content:stretch}.hero-actions .btn{width:100%}.hero-actions .btn.ghost{display:none}.hero-proof{text-align:center}
-      .campaign-stage{padding:8px;border-radius:25px}.campaign-grid{display:flex;overflow-x:auto;overflow-y:hidden;align-items:flex-start;gap:8px;-ms-overflow-style:none;scrollbar-width:none}.campaign-grid::-webkit-scrollbar{display:none}.campaign-card,.campaign-card:first-child,.campaign-card:last-child{display:block;flex:0 0 83%;height:auto;border-radius:18px}.stage-note{padding:12px 6px 4px}.stage-note span:last-child{display:none}
+      .campaign-stage{padding:8px;border-radius:25px}.campaign-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.campaign-card,.campaign-card:first-child,.campaign-card:last-child{display:block;height:auto;border-radius:14px}.campaign-card figcaption{padding:9px 10px;font-size:8px;gap:6px}.stage-note{padding:12px 6px 4px}.stage-note span:last-child{display:none}
       .announcement-inner{font-size:11px;padding:9px 8px}.art-direction{padding:68px 0}.mosaic{gap:8px}.mosaic .tall,.mosaic .wide,.mosaic .small,.mosaic .medium,.mosaic .large{grid-column:1/-1;height:auto}.mosaic figure img{aspect-ratio:1;object-fit:contain}.buyer-lens{padding:10px 0 70px}.buyer-box{padding:31px 20px;border-radius:28px;gap:30px}.buyer-point{grid-template-columns:42px 1fr;padding:18px}.buyer-point span{width:38px;height:38px}
       section{padding:72px 0}.section-intro h2,.result-head h2{font-size:46px}.section-intro p,.result-head p{font-size:16px}.pain{margin:18px 8px;border-radius:30px;padding:68px 0}.pain h2{font-size:48px}.pain-grid{gap:36px}.symptom{grid-template-columns:38px 1fr}
       .versus-grid{gap:7px}.versus-badge{width:40px;height:40px;font-size:9px;top:31%}
@@ -398,7 +398,6 @@
             <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p5.webp" aria-label="Ampliar anuncio de lujo"><img loading="lazy" decoding="async" src="assets/premium/p5.webp" width="1000" height="1000" alt="Anuncio de lujo con estética aspiracional"></button><figcaption>Lujo · deseo</figcaption></figure>
             <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p2.webp" aria-label="Ampliar anuncio de moda"><img loading="lazy" decoding="async" src="assets/premium/p2.webp" width="1000" height="1000" alt="Anuncio de moda masculina editorial"></button><figcaption>Moda · deseo</figcaption></figure>
           </div>
-          <div class="marquee-hint"><span class="ar">‹</span> Desliza para ver más anuncios <span class="ar">›</span></div>
         </div>
       </div>
     </section>
@@ -729,7 +728,7 @@
     addEventListener('load',function(){
       if(reduced) return;
       if(!matchMedia('(max-width:900px)').matches) return;      // en escritorio son grillas: no se toca nada
-      document.querySelectorAll('.campaign-grid, .showcase-grid, .case-grid').forEach(row=>{
+      document.querySelectorAll('.showcase-grid, .case-grid').forEach(row=>{
         const setW=row.scrollWidth;
         if(setW <= row.clientWidth + 8 || setW < 200) return;    // medida poco confiable o sin scroll: aborta
         const originales=Array.prototype.slice.call(row.children);
