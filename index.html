@@ -191,7 +191,11 @@
     .audience-chips{display:flex;flex-wrap:wrap;gap:10px}
     .audience-chips span{font-size:15px;font-weight:600;color:var(--ink);background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:99px;padding:12px 20px}
     .audience-note{margin:26px 0 0;font-size:17px;line-height:1.6;color:var(--muted);max-width:720px}.audience-note b{color:var(--ink)}
-    @media(max-width:640px){.audience-chips{gap:8px}.audience-chips span{font-size:13.5px;padding:10px 15px}.audience-note{font-size:16px}}
+    @media(max-width:640px){
+      .audience-chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+      .audience-chips span{display:flex;align-items:center;justify-content:center;text-align:center;min-height:52px;font-size:12.5px;line-height:1.25;padding:8px 10px}
+      .audience-note{font-size:16px}
+    }
     .offer-lead{max-width:850px;margin:0 auto 42px;text-align:center}
     .offer-lead .eyebrow{color:#4e6c54}
     .offer-lead h2{font:400 clamp(38px,5vw,64px)/.98 "Instrument Serif";letter-spacing:-.03em;margin:12px 0 0}
@@ -660,7 +664,7 @@
         <details><summary>¿Sirve para servicios o productos digitales?</summary><p>Sí. La ficha cambia la forma de representar la oferta: puede mostrar la experiencia, el resultado, el entorno, el proceso o una escena real coherente con el beneficio.</p></details>
         <details><summary>¿Mantiene mi producto exactamente igual?</summary><p>La fidelidad mejora cuanto mejores y más claras sean tus referencias. El pack te enseña qué material aportar y cómo corregir forma, escala, ángulos y detalles. Ningún modelo garantiza reproducción perfecta en todos los intentos.</p></details>
         <details><summary>¿Puedo usarlo para clientes?</summary><p>Sí, puedes usar el sistema para producir piezas para tus propios proyectos o servicios. No puedes revender, compartir ni distribuir los archivos y prompts del pack como si fueran tuyos.</p></details>
-        <details><summary>¿Esto garantiza ventas?</summary><p>No. La creatividad es una parte del sistema comercial. Tus resultados también dependen de la oferta, el precio, la segmentación, la página, el presupuesto y la ejecución. Pero sin dudas ayuda a mejorar la calidad y la presentación de tus anuncios, lo cual puede aumentar tus ventas.</p></details>
+        <details><summary>¿Esto me va a ayudar a vender más?</summary><p>Prompt Ads mejora la <b>calidad y la presentación</b> de tus anuncios, y eso puede aumentar tus ventas: una pieza que se ve profesional genera más confianza, frena el scroll y hace que tu producto se perciba más valioso. Ten en cuenta que tus resultados también dependen de tu oferta, el precio, la segmentación, tu página y el presupuesto que inviertas.</p></details>
       </div>
     </section>
   </main>
