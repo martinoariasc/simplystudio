@@ -398,7 +398,7 @@
             <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p5.webp" aria-label="Ampliar anuncio de lujo"><img loading="lazy" decoding="async" src="assets/premium/p5.webp" width="1000" height="1000" alt="Anuncio de lujo con estética aspiracional"></button><figcaption>Lujo · deseo</figcaption></figure>
             <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p2.webp" aria-label="Ampliar anuncio de moda"><img loading="lazy" decoding="async" src="assets/premium/p2.webp" width="1000" height="1000" alt="Anuncio de moda masculina editorial"></button><figcaption>Moda · deseo</figcaption></figure>
           </div>
-          <div class="marquee-hint"><span class="ar">‹</span> Toca una pieza para ampliarla <span class="ar">›</span></div>
+          <div class="marquee-hint"><span class="ar">‹</span> Desliza para ver más anuncios <span class="ar">›</span></div>
         </div>
       </div>
     </section>
@@ -732,15 +732,25 @@
       document.querySelectorAll('.campaign-grid, .showcase-grid, .case-grid').forEach(row=>{
         const setW=row.scrollWidth;
         if(setW <= row.clientWidth + 8 || setW < 200) return;    // medida poco confiable o sin scroll: aborta
-        const setHTML=row.innerHTML;
+        const originales=Array.prototype.slice.call(row.children);
+        originales.forEach(n=>{n.querySelectorAll('img').forEach(i=>{i.loading='eager';});});
         const reps=Math.min(3,Math.max(1,Math.ceil((row.clientWidth+80)/setW)));  // tope de seguridad
-        row.innerHTML=setHTML.repeat(reps*2);                    // 2 bloques idénticos = loop sin costura
-        row.querySelectorAll('img').forEach(i=>{i.loading='eager';});  // las copias tienen que verse sí o sí
-        row.querySelectorAll('.zoomable').forEach(b=>b.addEventListener('click',()=>{
-          lightboxImage.src=b.dataset.full;
-          lightboxImage.alt=b.querySelector('img').alt;
-          lightbox.showModal();
-        }));
+        // Clonamos (NO reemplazamos el HTML) para no destruir las imágenes ya cargadas.
+        for(let r=0;r<reps*2-1;r++){
+          originales.forEach(n=>{
+            const c=n.cloneNode(true);
+            c.querySelectorAll('img').forEach(i=>{i.loading='eager';});
+            c.querySelectorAll('.zoomable').forEach(b=>b.addEventListener('click',()=>{
+              lightboxImage.src=b.dataset.full;
+              lightboxImage.alt=b.querySelector('img').alt;
+              lightbox.showModal();
+            }));
+            row.appendChild(c);
+          });
+        }
+        // Los clones nacen con la clase .reveal (opacidad 0) y nunca reciben el aviso del
+        // observador de scroll: hay que hacerlos visibles a mano o la sección queda en blanco.
+        row.querySelectorAll('.reveal').forEach(n=>n.classList.add('visible'));
         const block=row.scrollWidth/2;
         if(!(block>0)) return;
         let pos=0, paused=false, t;
