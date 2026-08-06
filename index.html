@@ -275,6 +275,13 @@
       .btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(38,54,44,.18)}
     }
     @media(prefers-reduced-motion:reduce){#fx-progreso{display:none}.reveal{filter:none}}
+    /* ===== Producto flotante en el hero ===== */
+    .hero-prod{max-width:620px;margin:8px auto 26px;perspective:1100px}
+    .prod-float{margin:0;transform-style:preserve-3d;will-change:transform;transition:transform .45s cubic-bezier(.16,1,.3,1)}
+    .prod-float img{width:100%;height:auto;display:block;border-radius:26px;box-shadow:0 34px 90px rgba(23,23,19,.22);animation:prodFlotar 7s ease-in-out infinite;will-change:transform}
+    @keyframes prodFlotar{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-13px) rotate(.5deg)}}
+    @media(max-width:900px){.hero-prod{max-width:min(92vw,480px);margin:4px auto 20px}.prod-float img{border-radius:20px;box-shadow:0 22px 60px rgba(23,23,19,.2)}}
+    @media(prefers-reduced-motion:reduce){.prod-float img{animation:none}.prod-float{transition:none}}
   </style>
   <!-- Meta Pixel Code -->
   <script>
@@ -403,6 +410,19 @@
         <div class="hero-copy reveal">
           <span class="pill eyebrow"><i class="dot"></i> Prompts + guías + sistema de corrección</span>
           <h1>Crea anuncios premium en <em>menos de 5 minutos</em> y <em>aumenta tus ventas.</em></h1>
+        </div>
+
+        <div class="hero-prod reveal">
+          <figure class="prod-float">
+            <img src="assets/producto/prompt-ads-hero.webp"
+                 srcset="assets/producto/prompt-ads-hero-640.webp 640w, assets/producto/prompt-ads-hero.webp 1100w"
+                 sizes="(max-width:900px) 92vw, 620px"
+                 width="1100" height="1100" fetchpriority="high" decoding="async"
+                 alt="Prompt Ads — el sistema definitivo para crear anuncios de alta conversión, con ejemplos de piezas premium alrededor">
+          </figure>
+        </div>
+
+        <div class="hero-copy reveal">
           <p>El sistema que hace que tu marca se vea como las que facturan millones. Subes una foto de lo que vendes y sales con piezas que una agencia te cobraría <b>+USD 1.000</b> y tres semanas de espera. <b>Sin contratar a nadie, sin sesión de fotos y sin saber diseño.</b></p>
           <div class="hero-actions">
             <a class="btn" href="#precio">Quiero crear mis anuncios <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
@@ -410,21 +430,10 @@
           </div>
           <div class="hero-proof mono">Edición de lanzamiento · pago único · acceso inmediato por Hotmart</div>
         </div>
-
-        <div class="campaign-stage reveal" id="resultado">
-          <div class="campaign-grid" aria-label="Anuncios creados aplicando Prompt Ads">
-            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p7.webp" aria-label="Ampliar anuncio de vía pública"><img loading="lazy" decoding="async" src="assets/premium/p7.webp" width="1000" height="1000" alt="Anuncio de alto impacto en vía pública"></button><figcaption>Marca · impacto</figcaption></figure>
-            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p1.webp" aria-label="Ampliar anuncio automotor"><img loading="lazy" decoding="async" src="assets/premium/p1.webp" width="1000" height="1000" alt="Anuncio automotor con estética premium"></button><figcaption>Autos · percepción</figcaption></figure>
-            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p6.webp" aria-label="Ampliar anuncio deportivo"><img loading="lazy" decoding="async" src="assets/premium/p6.webp" width="1000" height="1000" alt="Anuncio deportivo que frena el scroll"></button><figcaption>Deporte · frena el scroll</figcaption></figure>
-            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p4.webp" aria-label="Ampliar anuncio de estética"><img loading="lazy" decoding="async" src="assets/premium/p4.webp" width="1000" height="1000" alt="Anuncio de clínica estética con detalle macro"></button><figcaption>Estética · detalle real</figcaption></figure>
-            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p5.webp" aria-label="Ampliar anuncio de lujo"><img loading="lazy" decoding="async" src="assets/premium/p5.webp" width="1000" height="1000" alt="Anuncio de lujo con estética aspiracional"></button><figcaption>Lujo · deseo</figcaption></figure>
-            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p2.webp" aria-label="Ampliar anuncio de moda"><img loading="lazy" decoding="async" src="assets/premium/p2.webp" width="1000" height="1000" alt="Anuncio de moda masculina editorial"></button><figcaption>Moda · deseo</figcaption></figure>
-          </div>
-        </div>
       </div>
     </section>
 
-    <section class="showcase">
+    <section class="showcase" id="resultado">
       <div class="shell">
         <div class="showcase-head reveal">
           <span class="eyebrow muted">Hecho con Prompt Ads · sin agencia</span>
@@ -895,6 +904,19 @@
       addEventListener('scroll', ()=>{ if(!pedido){ pedido = true; requestAnimationFrame(cuadro); } }, { passive:true });
       addEventListener('resize', ()=>{ if(!pedido){ pedido = true; requestAnimationFrame(cuadro); } }, { passive:true });
       cuadro();
+
+      // Inclinación 3D del producto siguiendo el mouse (solo escritorio con puntero fino)
+      const zona = document.querySelector('.hero-prod');
+      const fig = document.querySelector('.prod-float');
+      if(zona && fig && matchMedia('(min-width:901px) and (hover:hover)').matches){
+        zona.addEventListener('pointermove', e=>{
+          const r = zona.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width - .5;    // -0.5 .. 0.5
+          const y = (e.clientY - r.top) / r.height - .5;
+          fig.style.transform = 'rotateY(' + (x * 10).toFixed(2) + 'deg) rotateX(' + (-y * 8).toFixed(2) + 'deg)';
+        }, { passive:true });
+        zona.addEventListener('pointerleave', ()=>{ fig.style.transform = 'rotateY(0deg) rotateX(0deg)'; });
+      }
     })();
   </script>
 </body>
