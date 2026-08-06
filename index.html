@@ -260,6 +260,21 @@
       .mobile-buy{position:fixed;z-index:60;left:10px;right:10px;bottom:10px;padding:8px 8px 8px 16px;border:1px solid rgba(255,255,255,.2);background:rgba(23,23,19,.91);backdrop-filter:blur(18px);color:#fff;border-radius:18px;display:flex;align-items:center;justify-content:space-between;gap:10px;transform:translateY(130%);transition:.35s ease;box-shadow:0 20px 60px rgba(0,0,0,.3)}.mobile-buy.show{transform:none}.mobile-buy span{display:block;font-size:11px}.mobile-buy b{font-size:12px}.mobile-buy .btn{min-height:44px;padding:0 16px;font-size:12px;background:#fff;color:#171713}
     }
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+    /* ===== FX premium (rama efectos-premium): progreso + apariciones con blur + micro-interacciones ===== */
+    #fx-progreso{position:fixed;top:0;left:0;height:3px;width:0;z-index:2000;background:linear-gradient(90deg,#D7CDA9,#b9a56e);pointer-events:none;transition:width .08s linear}
+    .reveal{transition:opacity .95s cubic-bezier(.16,1,.3,1),transform .95s cubic-bezier(.16,1,.3,1),filter .95s cubic-bezier(.16,1,.3,1)}
+    @media(min-width:901px){
+      .reveal{filter:blur(6px);transform:translateY(26px)}
+      .reveal.visible{filter:blur(0)}
+      .campaign-card img{will-change:transform}
+      .tcard{transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s cubic-bezier(.16,1,.3,1)}
+      .tcard:hover{transform:translateY(-6px);box-shadow:0 26px 60px rgba(38,54,44,.13)}
+      .sc img,.case-grid img{transition:transform .9s cubic-bezier(.16,1,.3,1)}
+      .sc:hover img,.case-grid figure:hover img{transform:scale(1.035)}
+      .btn{transition:transform .25s cubic-bezier(.16,1,.3,1),opacity .2s,box-shadow .25s}
+      .btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(38,54,44,.18)}
+    }
+    @media(prefers-reduced-motion:reduce){#fx-progreso{display:none}.reveal{filter:none}}
   </style>
   <!-- Meta Pixel Code -->
   <script>
@@ -852,6 +867,35 @@
       if(event.key==='F12'||(event.ctrlKey&&event.shiftKey&&['i','j','c'].includes(key))||(event.ctrlKey&&key==='u'))event.preventDefault();
     });
     
+  </script>
+  <script>
+    // ===== FX premium: barra de progreso + parallax sutil en el hero (solo escritorio) =====
+    (function(){
+      if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const barra = document.createElement('div'); barra.id = 'fx-progreso'; document.body.appendChild(barra);
+      const capas = [];
+      if(matchMedia('(min-width:901px)').matches){
+        document.querySelectorAll('.campaign-card img').forEach((el, i)=>{
+          capas.push([el, (i % 2 ? -1 : 1) * (6 + (i % 3) * 3)]);   // velocidades alternadas ±6-12px
+        });
+      }
+      let pedido = false;
+      function cuadro(){
+        pedido = false;
+        const max = document.documentElement.scrollHeight - innerHeight;
+        barra.style.width = (max > 0 ? Math.min(100, scrollY / max * 100) : 0) + '%';
+        const vc = innerHeight * 0.5;
+        for(const [el, vel] of capas){
+          const r = el.getBoundingClientRect();
+          if(r.bottom < -80 || r.top > innerHeight + 80) continue;   // fuera de pantalla: no tocar
+          const p = ((r.top + r.height / 2) - vc) / innerHeight;
+          el.style.transform = 'translate3d(0,' + (p * vel).toFixed(1) + 'px,0) scale(1.06)';
+        }
+      }
+      addEventListener('scroll', ()=>{ if(!pedido){ pedido = true; requestAnimationFrame(cuadro); } }, { passive:true });
+      addEventListener('resize', ()=>{ if(!pedido){ pedido = true; requestAnimationFrame(cuadro); } }, { passive:true });
+      cuadro();
+    })();
   </script>
 </body>
 </html>
