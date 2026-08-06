@@ -91,7 +91,7 @@
     .after-buy{margin:26px 0 0;border-top:1px solid rgba(255,255,255,.16);padding-top:22px}.after-buy .ab-title{font:600 10px "DM Mono";letter-spacing:.09em;text-transform:uppercase;color:#d7cda9}.after-buy ol{margin:14px 0 0;padding:0;list-style:none;counter-reset:ab;display:grid;gap:11px}.after-buy li{counter-increment:ab;position:relative;padding-left:34px;color:#c8d0ca;font-size:14px;line-height:1.5}.after-buy li::before{content:counter(ab);position:absolute;left:0;top:-1px;width:24px;height:24px;border-radius:50%;background:rgba(215,205,169,.16);color:#d7cda9;font:600 11px "DM Mono";display:grid;place-items:center}.after-buy li b{color:#fff}
     .trust-row{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;margin:14px 0 0}.trust-row span{font:600 9px "DM Mono";letter-spacing:.04em;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:5px}.trust-row span::before{content:"✓";color:#4e6c54;font-weight:800}
     .cost-line{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:10px}.cost{padding:16px 14px 16px 0;border-top:1px solid rgba(255,255,255,.23)}.cost .who{display:block;font-size:11px;color:#aab9ae;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}.cost b{display:block;font:400 30px/1 "Instrument Serif";color:#fff}.cost span:last-child{display:block;margin-top:5px;font-size:11px;color:#abb9ae}.cost-intro{color:#c8d0ca;font-size:13px;margin:30px 0 0;letter-spacing:.02em}.cost-bridge{margin:18px 0 0;padding-top:16px;border-top:1px solid rgba(255,255,255,.23);color:#c8d0ca;font-size:15px;line-height:1.5}.cost-bridge b{color:#fff}.cost-ours{margin-top:14px;padding:18px 20px;border-radius:18px;background:rgba(215,205,169,.13);border:1px solid rgba(215,205,169,.55);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.cost-ours .who{font:500 10px "DM Mono";text-transform:uppercase;letter-spacing:.08em;color:#d7cda9}.cost-ours b{font:400 40px/1 "Instrument Serif";color:#fff}.cost-ours span:last-child{color:#e5dfd4;font-size:14px;line-height:1.4;flex:1;min-width:180px}
-    .price-card{margin:18px;background:var(--white);color:var(--ink);border-radius:30px;padding:38px}.price{font:400 88px/1 "Instrument Serif";margin:8px 0 0;letter-spacing:-.05em}.price sup{font:600 12px Inter;letter-spacing:0;margin-right:7px}
+    .price-card{scroll-margin-top:96px;margin:18px;background:var(--white);color:var(--ink);border-radius:30px;padding:38px}.price{font:400 88px/1 "Instrument Serif";margin:8px 0 0;letter-spacing:-.05em}.price sup{font:600 12px Inter;letter-spacing:0;margin-right:7px}
     .launch-tag{display:inline-block;font:600 10px "DM Mono";letter-spacing:.08em;text-transform:uppercase;color:#4e6c54;background:rgba(78,108,84,.1);border-radius:99px;padding:5px 11px;margin-top:14px}.price-was{color:var(--muted);font-size:15px;margin:6px 0 0}.price-was s{opacity:.75}.price-note{color:var(--muted);font-size:12px;line-height:1.5;margin:9px 0 0}
     .stack{list-style:none;padding:0;margin:18px 0 0}.stack li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}.stack li span{flex:1}.stack li span:before{content:"✓";color:#4e6c54;margin-right:9px;font-weight:800}.stack li b{font:500 13px Inter;color:var(--muted);white-space:nowrap}
     .stack-total{display:flex;justify-content:space-between;align-items:baseline;padding:15px 0 3px;font-size:14px}.stack-total span{font:600 11px "DM Mono";text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}.stack-total b{font:400 22px "Instrument Serif";color:var(--muted)}.stack-total b s{opacity:.7}
@@ -118,7 +118,10 @@
     .marquee::before,.marquee::after{content:"";position:absolute;top:0;bottom:0;width:13%;z-index:3;pointer-events:none}
     .marquee::before{left:0;background:linear-gradient(90deg,var(--paper),rgba(242,238,229,0))}
     .marquee::after{right:0;background:linear-gradient(270deg,var(--paper),rgba(242,238,229,0))}
-    .m-row{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;scroll-behavior:auto;scroll-snap-type:none}.m-row::-webkit-scrollbar{display:none}
+    /* Sin -webkit-overflow-scrolling:touch a proposito: en iOS crea una capa de GPU aparte y,
+       al mover scrollLeft por JS en cada fotograma, Safari deja de repintar y la fila sale vacia.
+       Desde iOS 13 la inercia ya es el comportamiento por defecto, asi que no hace falta. */
+    .m-row{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:auto;scroll-snap-type:none}.m-row::-webkit-scrollbar{display:none}
     .campaign-grid,.showcase-grid,.case-grid{scroll-behavior:auto}
     .m-track{display:flex;gap:18px;width:max-content}
     .tcard{flex:0 0 min(360px,82vw);background:var(--white);border:1px solid var(--line);border-radius:24px;padding:26px 28px 22px;box-shadow:0 14px 40px rgba(38,54,44,.06);display:flex;flex-direction:column;gap:16px}
@@ -160,15 +163,15 @@
     .showcase-note{text-align:center;margin:26px 0 0;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
     @media(max-width:900px){
       .showcase{padding:60px 0 54px;overflow:hidden}
-      .showcase-grid{display:flex;overflow-x:auto;overflow-y:hidden;align-items:flex-start;gap:10px;margin-right:-14px;padding-right:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+      .showcase-grid{display:flex;overflow-x:auto;overflow-y:hidden;align-items:flex-start;gap:10px;margin-right:-14px;padding-right:14px;scrollbar-width:none}
       .showcase-grid::-webkit-scrollbar{display:none}
       .sc{flex:0 0 46%}
     }
     @media(max-width:640px){
       .showcase{padding:60px 0 54px;overflow:hidden}.showcase-head{text-align:left;margin-bottom:26px}.showcase-head h2{font-size:41px}.showcase-head p{font-size:16px}
-      .showcase-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin-right:-14px;padding-right:14px;scrollbar-width:none}
+      .showcase-grid{display:flex;overflow-x:auto;scroll-snap-type:none;gap:10px;margin-right:-14px;padding-right:14px;scrollbar-width:none}
       .showcase-grid::-webkit-scrollbar{display:none}
-      .sc{flex:0 0 78%;scroll-snap-align:start;border-radius:18px}
+      .sc{flex:0 0 78%;border-radius:18px}
       .showcase-note{text-align:left;font-size:10px}
     }
     .case{padding:80px 0}
@@ -184,7 +187,7 @@
     .case-note{margin:22px 0 0;font-size:17px;line-height:1.6;color:var(--muted);max-width:760px}.case-note b{color:var(--ink)}
     @media(max-width:640px){
       .case{padding:56px 0;overflow:hidden}.case-steps{grid-template-columns:1fr;gap:10px;margin-bottom:20px}.case-step{padding:18px 20px}
-      .case-grid{display:flex;overflow-x:auto;overflow-y:hidden;align-items:flex-start;gap:9px;margin-right:-14px;padding-right:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+      .case-grid{display:flex;overflow-x:auto;overflow-y:hidden;align-items:flex-start;gap:9px;margin-right:-14px;padding-right:14px;scrollbar-width:none}
       .case-grid::-webkit-scrollbar{display:none}.case-grid figure{flex:0 0 62%}
       .case-note{font-size:16px}
     }
@@ -364,7 +367,7 @@
   <div class="announcement">
     <div class="shell announcement-inner">
       <span><b>Lanzamiento:</b> precio fundador <b>hasta el 15 de agosto</b> — el más bajo que va a tener. Al cerrar, sube.</span>
-      <a href="#oferta">Asegurar mi precio</a>
+      <a href="#precio">Asegurar mi precio</a>
     </div>
   </div>
   <header>
@@ -374,7 +377,7 @@
         <a href="#resultado">Resultados</a>
         <a href="#incluye">Qué incluye</a>
         <a href="#preguntas">Preguntas</a>
-        <a class="btn" href="#oferta">Conseguir Prompt Ads</a>
+        <a class="btn" href="#precio">Conseguir Prompt Ads</a>
       </nav>
     </div>
   </header>
@@ -384,10 +387,10 @@
       <div class="shell">
         <div class="hero-copy reveal">
           <span class="pill eyebrow"><i class="dot"></i> Prompts + guías + sistema de corrección</span>
-          <h1>Crea anuncios premium en <em>menos de 15 minutos</em> y <em>aumenta tus ventas.</em></h1>
-          <p>Prompt Ads es el sistema completo: <b>la guía paso a paso</b> + <b>los prompts</b> que arrastras a ChatGPT. Subes una foto de lo que vendes y en <b>menos de 15 minutos</b> tienes anuncios que una agencia te cobraría <b>+USD 1.000</b>. Más impacto, más ventas. Sin contratar a nadie, sin sesión de fotos y sin saber diseño.</p>
+          <h1>Crea anuncios premium en <em>menos de 5 minutos</em> y <em>aumenta tus ventas.</em></h1>
+          <p>El sistema que hace que tu marca se vea como las que facturan millones. Subes una foto de lo que vendes y sales con piezas que una agencia te cobraría <b>+USD 1.000</b> y tres semanas de espera. <b>Sin contratar a nadie, sin sesión de fotos y sin saber diseño.</b></p>
           <div class="hero-actions">
-            <a class="btn" href="#oferta">Quiero crear mis anuncios <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
+            <a class="btn" href="#precio">Quiero crear mis anuncios <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
             <a class="btn ghost" href="#resultado">Ver qué puedes crear</a>
           </div>
           <div class="hero-proof mono">Edición de lanzamiento · pago único · acceso inmediato por Hotmart</div>
@@ -428,9 +431,9 @@
     <section class="pain">
       <div class="shell pain-grid">
         <div class="reveal">
-          <span class="eyebrow muted">El problema no eres tú</span>
-          <h2>La IA no falla. <em>Falla la instrucción que recibe.</em></h2>
-          <div class="truth">Con las palabras correctas, el mismo modelo que te dio un anuncio genérico te entrega una pieza con <strong>nivel de agencia</strong>. Toda la diferencia está en cómo se dirige.</div>
+          <span class="eyebrow muted">El problema no es tu producto</span>
+          <h2>Tu producto es bueno. <em>Tus anuncios no lo demuestran.</em></h2>
+          <div class="truth">Nadie lee antes de juzgar. <strong>Deciden en dos segundos, con los ojos.</strong> Y si tu anuncio se ve improvisado, tu producto se ve improvisado — por bueno que sea.</div>
         </div>
         <div class="symptoms reveal">
           <div class="symptom"><span class="eyebrow">01</span><div><b>Piel que parece de muñeca</b><p>Rostros demasiado lisos, manos raras y ese brillo artificial que destruye la confianza.</p></div></div>
@@ -467,7 +470,7 @@
       <div class="shell">
         <div class="section-intro reveal">
           <span class="eyebrow muted">Caso real · así se hace, paso a paso</span>
-          <div><h2>De una simple foto a una campaña completa.</h2><p>Tomamos la foto de un producto cualquiera —unas zapatillas— y en 15 minutos salieron todos estos anuncios. Dentro del sistema ves <b>el proceso completo con capturas reales</b>: qué archivos se adjuntan, qué se escribe en el chat y cómo dirigir cada pieza. Repites los mismos pasos con tu producto.</p></div>
+          <div><h2>De una simple foto a una campaña completa.</h2><p>Tomamos la foto de un producto cualquiera —unas zapatillas— y en menos de 5 minutos salieron todos estos anuncios. Dentro del sistema ves <b>el proceso completo con capturas reales</b>: qué archivos se adjuntan, qué se escribe en el chat y cómo dirigir cada pieza. Repites los mismos pasos con tu producto.</p></div>
         </div>
         <div class="case-steps">
           <article class="case-step reveal"><span>Paso 01</span><b>Arrastras los archivos</b><p>Los PDFs del sistema + la foto de lo que vendes y tu logo. Sin escribir prompts a mano.</p></article>
@@ -565,15 +568,15 @@
       <div class="shell">
         <div class="offer-lead reveal">
           <span class="eyebrow">El momento es ahora</span>
-          <h2>La IA ya cambió las reglas. Llegá <em>primero</em>, no tarde.</h2>
+          <h2>No te quedes atrás. Sé de los <em>primeros.</em></h2>
           <div class="without"><span>Sin modelos</span><span>Sin sesión de fotos</span><span>Sin semanas de producción</span><span>Sin agencia</span></div>
-          <p>Mientras algunos todavía sacan imágenes genéricas, otros ya crean campañas que parecen producciones reales. La diferencia no es tener IA: es <b>saber dirigirla</b>. Los que aprenden a aprovecharla ahora avanzan mucho más rápido — <b>empieza hoy, antes de que sea lo que todos ya hacen.</b></p>
+          <p>Mientras algunos siguen publicando lo mismo de siempre, otros ya están creando piezas que parecen de una marca grande. Lo que antes costaba una agencia, un equipo y semanas de producción, hoy cabe en un sistema que puedes usar tú solo, esta tarde. <b>El que empieza ahora tiene meses de ventaja sobre el que empieza cuando ya todos lo hacen.</b></p>
         </div>
         <div class="offer-box reveal">
           <div class="offer-copy">
             <figure class="offer-visual"><img decoding="async" src="assets/producto-prompt-ads/producto-prompt-ads.webp" loading="lazy" alt="El sistema completo Prompt Ads con todas sus piezas"></figure>
             <span class="eyebrow">PROMPT ADS · ACCESO COMPLETO</span>
-            <h2>Empieza a crear anuncios premium en <em>menos de 15 minutos.</em></h2>
+            <h2>Empieza a crear anuncios premium en <em>menos de 5 minutos.</em></h2>
             <p>Entra con el sistema listo y <b>aprovecha la IA como los que ya van adelante</b>: produce anuncios con calidad de estudio que cobraría miles de dólares — sin diseñador, sin agencia y sin semanas de producción. El momento de empezar es ahora, no cuando ya lo haga todo el mundo.</p>
             <p class="offer-choice">Tu marca puede seguir pasando desapercibida, o volverse imposible de olvidar. <b>Hoy, esa decisión es tuya.</b></p>
             <p class="cost-intro">Producir estos mismos anuncios, por otro lado, te costaría:</p>
@@ -589,11 +592,11 @@
               <ol>
                 <li>Pagas de forma 100% segura por Hotmart, sin suscripciones.</li>
                 <li>Recibes el <b>acceso al instante</b> en tu email.</li>
-                <li>Entras, sigues la guía y creas tus primeros anuncios <b>en menos de 15 minutos</b>.</li>
+                <li>Entras, sigues la guía y creas tus primeros anuncios <b>en minutos</b>.</li>
               </ol>
             </div>
           </div>
-          <aside class="price-card">
+          <aside class="price-card" id="precio">
             <span class="eyebrow muted">Todo lo que te llevas</span>
             <ul class="stack">
               <li><span>Guía de uso del sistema</span><b>USD 19</b></li>
@@ -671,12 +674,12 @@
 
   <footer>
     <div class="shell">
-      <div class="footer-top"><div><div class="brand">simply <i>studio.</i></div><p>Herramientas simples para hacer trabajo que no parece simple.</p></div><a href="#oferta" class="btn light">Ver el acceso <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></a></div>
+      <div class="footer-top"><div><div class="brand">simply <i>studio.</i></div><p>Herramientas simples para hacer trabajo que no parece simple.</p></div><a href="#precio" class="btn light">Ver el acceso <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></a></div>
       <div class="footer-bottom"><span>© 2026 simply studio. Todos los derechos reservados.</span><span>Prompt Ads es un producto independiente. No está afiliado ni respaldado por OpenAI, ChatGPT, Meta o Hotmart.</span></div>
     </div>
   </footer>
 
-  <div class="mobile-buy" id="mobileBuy"><div><span>Prompt Ads</span><b>Oferta de lanzamiento</b></div><a href="#oferta" class="btn">Ver oferta</a></div>
+  <div class="mobile-buy" id="mobileBuy"><div><span>Prompt Ads</span><b>Oferta de lanzamiento</b></div><a href="#precio" class="btn">Ver oferta</a></div>
   <dialog class="lightbox" id="lightbox" aria-label="Vista ampliada del anuncio">
     <button class="lightbox-close" aria-label="Cerrar vista ampliada">×</button>
     <img loading="lazy" decoding="async" id="lightboxImage" alt="Anuncio ampliado">
@@ -686,6 +689,32 @@
     const items=document.querySelectorAll('.reveal');
     if(reduced)items.forEach(x=>x.classList.add('visible'));
     else{const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.1});items.forEach(x=>observer.observe(x))}
+    // Al saltar a un ancla (#precio), el destino y sus contenedores tienen que verse sí o sí:
+    // si el observador de scroll todavía no los marcó, la sección aparecería en blanco.
+    function ssRevelarDestino(){
+      const destino = location.hash && location.hash.length > 1 ? document.querySelector(location.hash) : null;
+      if(!destino) return;
+      let el = destino;
+      while(el && el !== document.body){ if(el.classList) el.classList.add('visible'); el = el.parentElement; }
+      destino.querySelectorAll('.reveal').forEach(n=>n.classList.add('visible'));
+    }
+    addEventListener('load', ssRevelarDestino);
+    addEventListener('hashchange', ssRevelarDestino);
+    // El CSS usa scroll suave, pero un salto de 11.000px tarda muchísimo y el visitante
+    // cree que el botón no funcionó. Para los enlaces internos hacemos un salto directo.
+    document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',ev=>{
+      const destino = document.querySelector(a.getAttribute('href'));
+      if(!destino) return;
+      ev.preventDefault();
+      destino.classList.add('visible');
+      let p = destino.parentElement;
+      while(p && p !== document.body){ if(p.classList) p.classList.add('visible'); p = p.parentElement; }
+      destino.querySelectorAll('.reveal').forEach(n=>n.classList.add('visible'));
+      const y = destino.getBoundingClientRect().top + (window.scrollY || 0) - 88;  // deja aire para la cabecera
+      window.scrollTo({ top: y, behavior: 'auto' });
+      history.replaceState(null, '', a.getAttribute('href'));
+    }));
+
     const mobileBuy=document.getElementById('mobileBuy');
     addEventListener('scroll',()=>mobileBuy.classList.toggle('show',scrollY>720&&scrollY<document.body.scrollHeight-innerHeight-500),{passive:true});
     const lightbox=document.getElementById('lightbox');
@@ -697,76 +726,106 @@
     }));
     document.querySelector('.lightbox-close').addEventListener('click',()=>lightbox.close());
     lightbox.addEventListener('click',event=>{if(event.target===lightbox)lightbox.close()});
-    document.querySelectorAll('.m-row').forEach(row=>{
-      const track=row.querySelector('.m-track');
-      const setHTML=track.innerHTML;
-      const setW=Math.max(1,track.scrollWidth);                    // ancho de una tanda
-      const reps=Math.max(1,Math.ceil((window.innerWidth+80)/setW)); // copias por bloque para tapar la pantalla
-      track.innerHTML=setHTML.repeat(reps*2);                       // 2 bloques idénticos -> loop sin costura, pocos nodos
-      const rev=row.classList.contains('rev');
-      let block=track.scrollWidth/2;                                // ancho de un bloque = punto de reciclado
-      const remeasure=()=>{block=track.scrollWidth/2;};
-      if(document.fonts&&document.fonts.ready)document.fonts.ready.then(remeasure); // recalcula al cargar las fuentes
-      addEventListener('resize',remeasure,{passive:true});
-      let pos=rev?Math.max(0,block-1):0;                           // acumulador decimal (scrollLeft redondea: sin esto se ve a tirones)
-      row.scrollLeft=pos;
-      let paused=false, resumeT;
-      const pauseNow=()=>{paused=true;clearTimeout(resumeT);resumeT=setTimeout(()=>{paused=false;},1600);};
-      row.addEventListener('pointerenter',()=>paused=true);
-      row.addEventListener('pointerleave',()=>{paused=false;});
-      ['wheel','touchstart','pointerdown'].forEach(ev=>row.addEventListener(ev,pauseNow,{passive:true}));
-      row.addEventListener('scroll',()=>{if(paused)pos=row.scrollLeft;},{passive:true}); // sigue al usuario al deslizar
-      const speed=rev?-0.55:0.55;
+    // ---- Carruseles infinitos: testimonios, muro de prueba y caso Nike ------------
+    // Una sola implementación para los tres. Corrige los tres defectos que hacían que
+    // la fila quedara vacía y se viera a tirones:
+    //  1. medía el ancho antes de cargar fuentes/imágenes -> ahora arranca con la página
+    //     lista y reintenta si la medida todavía no es fiable;
+    //  2. sin tope de repeticiones podía crear cientos de tarjetas -> ahora hay límite;
+    //  3. reemplazaba el HTML (destruía imágenes ya cargadas y dejaba los clones con
+    //     opacidad 0) -> ahora clona nodos y los marca visibles.
+    function ssCarrusel(row, track, speed, rev){
+      if(!row || !track) return true;
+      if(row.dataset.ssCarrusel) return true;                       // ya inicializado
+      const setW = track.scrollWidth;
+      if(!(setW > 200)) return false;                               // medida no fiable: reintentar
+      if(track === row && setW <= row.clientWidth + 8) return true; // no necesita desplazarse
+      const originales = Array.prototype.slice.call(track.children);
+      if(!originales.length) return true;
+      const reps = Math.min(3, Math.max(1, Math.ceil((row.clientWidth + 80) / setW)));
+      for(let r = 0; r < reps * 2 - 1; r++){
+        originales.forEach(n=>{
+          const c = n.cloneNode(true);
+          c.querySelectorAll('img').forEach(i=>{ i.loading = 'eager'; });
+          c.querySelectorAll('.zoomable').forEach(b=>b.addEventListener('click',()=>{
+            lightboxImage.src = b.dataset.full;
+            lightboxImage.alt = b.querySelector('img').alt;
+            lightbox.showModal();
+          }));
+          track.appendChild(c);
+        });
+      }
+      track.querySelectorAll('.reveal').forEach(n=>n.classList.add('visible'));
+      let block = track.scrollWidth / 2;
+      if(!(block > 0)) return false;
+      row.dataset.ssCarrusel = '1';
+      let pos = rev ? Math.max(0, block - 1) : 0;
+      row.scrollLeft = pos;
+      let paused = false, resumeT;
+      const remeasure = ()=>{ const b = track.scrollWidth / 2; if(b > 0){ block = b; if(pos >= block) pos = pos % block; } };
+      if(document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
+      addEventListener('resize', remeasure, { passive: true });
+      const pauseNow = ()=>{ paused = true; clearTimeout(resumeT); resumeT = setTimeout(()=>{ paused = false; }, 1600); };
+      row.addEventListener('pointerenter',()=>{ paused = true; });
+      row.addEventListener('pointerleave',()=>{ paused = false; });
+      ['wheel','touchstart','pointerdown'].forEach(ev=>row.addEventListener(ev, pauseNow, { passive: true }));
+      row.addEventListener('scroll',()=>{ if(paused) pos = row.scrollLeft; }, { passive: true });
       (function tick(){
-        if(!reduced&&!paused){
-          pos+=speed;
-          if(pos>=block)pos-=block; else if(pos<0)pos+=block;      // reciclado sin costura (contenido idéntico)
-          row.scrollLeft=pos;
+        if(!reduced && !paused){
+          pos += speed;
+          if(pos >= block) pos -= block; else if(pos < 0) pos += block;
+          row.scrollLeft = pos;                                     // acumulador decimal: sin esto avanza a tirones
         }
         requestAnimationFrame(tick);
       })();
-    });
-    // Carruseles del hero y del muro de prueba: en celular se desplazan solos (igual que
-    // los testimonios) para que el visitante vea todas las piezas sin tener que tocar nada.
-    // Se ejecuta con la página YA cargada: así los anchos son reales y no se duplica de más.
-    addEventListener('load',function(){
-      if(reduced) return;
-      if(!matchMedia('(max-width:900px)').matches) return;      // en escritorio son grillas: no se toca nada
-      document.querySelectorAll('.showcase-grid, .case-grid').forEach(row=>{
-        const setW=row.scrollWidth;
-        if(setW <= row.clientWidth + 8 || setW < 200) return;    // medida poco confiable o sin scroll: aborta
-        const originales=Array.prototype.slice.call(row.children);
-        originales.forEach(n=>{n.querySelectorAll('img').forEach(i=>{i.loading='eager';});});
-        const reps=Math.min(3,Math.max(1,Math.ceil((row.clientWidth+80)/setW)));  // tope de seguridad
-        // Clonamos (NO reemplazamos el HTML) para no destruir las imágenes ya cargadas.
-        for(let r=0;r<reps*2-1;r++){
-          originales.forEach(n=>{
-            const c=n.cloneNode(true);
-            c.querySelectorAll('img').forEach(i=>{i.loading='eager';});
-            c.querySelectorAll('.zoomable').forEach(b=>b.addEventListener('click',()=>{
-              lightboxImage.src=b.dataset.full;
-              lightboxImage.alt=b.querySelector('img').alt;
-              lightbox.showModal();
-            }));
-            row.appendChild(c);
-          });
+
+      // Red de seguridad: si por lo que sea la fila queda mostrando un hueco sin ninguna
+      // tarjeta (le pasaba a Safari en iOS al soltar el dedo en el borde), se vuelve al inicio.
+      // Comprueba cuatro veces por segundo y solo actua cuando de verdad no hay nada visible.
+      setInterval(function(){
+        if(document.hidden) return;
+        const caja = row.getBoundingClientRect();
+        if(caja.width <= 0 || caja.bottom < 0 || caja.top > innerHeight) return;   // fuera de pantalla: no gastar
+        const hijos = track.children;
+        for(let i = 0; i < hijos.length; i++){
+          const c = hijos[i].getBoundingClientRect();
+          if(c.width > 0 && c.right > caja.left + 4 && c.left < caja.right - 4) return;  // hay contenido: todo bien
         }
-        // Los clones nacen con la clase .reveal (opacidad 0) y nunca reciben el aviso del
-        // observador de scroll: hay que hacerlos visibles a mano o la sección queda en blanco.
-        row.querySelectorAll('.reveal').forEach(n=>n.classList.add('visible'));
-        const block=row.scrollWidth/2;
-        if(!(block>0)) return;
-        let pos=0, paused=false, t;
-        row.scrollLeft=0;
-        const pauseNow=()=>{paused=true;clearTimeout(t);t=setTimeout(()=>{paused=false;},1600);};
-        ['wheel','touchstart','pointerdown'].forEach(ev=>row.addEventListener(ev,pauseNow,{passive:true}));
-        row.addEventListener('scroll',()=>{if(paused)pos=row.scrollLeft;},{passive:true});
-        (function tick(){
-          if(!paused){ pos+=0.55; if(pos>=block)pos-=block; row.scrollLeft=pos; }
-          requestAnimationFrame(tick);
-        })();
+        pos = 0;
+        row.scrollLeft = 0;
+      }, 250);
+      return true;
+    }
+
+    function ssInitCarruseles(){
+      let listo = true;
+      document.querySelectorAll('.m-row').forEach(row=>{
+        const rev = row.classList.contains('rev');
+        if(!ssCarrusel(row, row.querySelector('.m-track'), rev ? -0.55 : 0.55, rev)) listo = false;
       });
-    });
+      if(matchMedia('(max-width:900px)').matches){                  // en escritorio son grillas: no se tocan
+        document.querySelectorAll('.showcase-grid, .case-grid').forEach(row=>{
+          if(!ssCarrusel(row, row, 0.55, false)) listo = false;
+        });
+      }
+      return listo;
+    }
+
+    (function(){
+      let intentos = 0;
+      // Al clonar tarjetas la página crece: si se entró por un ancla, hay que reubicarla.
+      const reubicarAncla = ()=>{
+        if(!location.hash || location.hash.length < 2) return;
+        const d = document.querySelector(location.hash);
+        if(!d) return;
+        const y = d.getBoundingClientRect().top + (window.scrollY || 0) - 90;   // 90 = alto de la cabecera fija
+        window.scrollTo({ top: y, behavior: 'auto' });
+      };
+      const arranca = ()=>{ const ok = ssInitCarruseles(); if(ok || ++intentos > 20) return; setTimeout(arranca, 250); };
+      addEventListener('hashchange', ()=>setTimeout(reubicarAncla, 60));   // al tocar un botón interno
+      if(document.readyState === 'complete') arranca(); else addEventListener('load', arranca);
+      if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>setTimeout(arranca, 0));
+    })();
 
     // Checkout: le pasa a Hotmart de dónde vino la persona (parámetro sck) para poder
     // ver el origen de cada venta en Hotmart, aunque Meta no la atribuya. Y avisa
