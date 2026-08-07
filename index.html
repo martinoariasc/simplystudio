@@ -279,6 +279,13 @@
     .hero-prod{max-width:620px;margin:8px auto 26px;perspective:1100px}
     .prod-float{margin:0;transform-style:preserve-3d;will-change:transform;transition:transform .45s cubic-bezier(.16,1,.3,1)}
     .prod-float img{width:100%;height:auto;display:block;border-radius:26px;box-shadow:0 34px 90px rgba(23,23,19,.22);animation:prodFlotar 7s ease-in-out infinite;will-change:transform}
+    /* El video ocupa el mismo lugar que la imagen y aparece cuando esta listo */
+    .prod-float video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:26px;opacity:0;transition:opacity .6s ease;pointer-events:none}
+    .prod-float.con-video{position:relative}
+    .prod-float.con-video video{opacity:1;box-shadow:0 34px 90px rgba(23,23,19,.22)}
+    .prod-float.con-video img{visibility:hidden}
+    .prod-float.con-video{animation:prodFlotar 7s ease-in-out infinite}
+    .prod-float.con-video img{animation:none}
     @keyframes prodFlotar{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-13px) rotate(.5deg)}}
     @media(max-width:900px){.hero-prod{max-width:min(92vw,480px);margin:4px auto 20px}.prod-float img{border-radius:20px;box-shadow:0 22px 60px rgba(23,23,19,.2)}}
     @media(prefers-reduced-motion:reduce){.prod-float img{animation:none}.prod-float{transition:none}}
@@ -414,11 +421,15 @@
 
         <div class="hero-prod reveal">
           <figure class="prod-float">
-            <img src="assets/producto/prompt-ads-hero.webp"
+            <!-- La imagen se ve siempre; el video la reemplaza solo cuando esta cargado
+                 y el visitante no pidio reducir movimiento. Asi nadie ve un hueco. -->
+            <img id="prodImg" src="assets/producto/prompt-ads-hero.webp"
                  srcset="assets/producto/prompt-ads-hero-640.webp 640w, assets/producto/prompt-ads-hero.webp 1100w"
                  sizes="(max-width:900px) 92vw, 620px"
                  width="1100" height="1100" fetchpriority="high" decoding="async"
                  alt="Prompt Ads — el sistema definitivo para crear anuncios de alta conversión, con ejemplos de piezas premium alrededor">
+            <video id="prodVid" playsinline muted preload="none" aria-hidden="true"
+                   poster="assets/producto/prompt-ads-hero.webp"></video>
           </figure>
         </div>
 
@@ -904,6 +915,57 @@
       addEventListener('scroll', ()=>{ if(!pedido){ pedido = true; requestAnimationFrame(cuadro); } }, { passive:true });
       addEventListener('resize', ()=>{ if(!pedido){ pedido = true; requestAnimationFrame(cuadro); } }, { passive:true });
       cuadro();
+
+      // ===== Video del producto atado al scroll =====
+      // No se reproduce solo: cada fotograma corresponde a cuánto bajó el visitante.
+      // Si el navegador no puede, la imagen se queda y no pasa nada.
+      (function(){
+        const vid = document.getElementById('prodVid');
+        const fig = document.querySelector('.prod-float');
+        if(!vid || !fig) return;
+        if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        // Solo escritorio: el video pesa 9 MB y en el celular la imagen flotante ya se ve bien.
+        // Casi todo el tráfico viene de Instagram, así que esto protege la velocidad donde importa.
+        if(!matchMedia('(min-width:901px)').matches) return;
+
+        // aunque sea escritorio, respetamos el ahorro de datos
+        const con = navigator.connection;
+        if(con && (con.saveData || /2g/.test(con.effectiveType || ''))) return;
+
+        const fuente = document.createElement('source');
+        fuente.src = 'assets/producto/hero-giro.mp4';
+        fuente.type = 'video/mp4';
+        vid.appendChild(fuente);
+        vid.preload = 'auto';
+        vid.load();
+
+        vid.addEventListener('loadeddata', function(){
+          fig.classList.add('con-video');
+          try{ vid.pause(); vid.currentTime = 0; }catch(e){}
+
+          // Recorrido del giro: desde que se carga la página (fotograma 0) hasta que
+          // el producto termina de salir por arriba (último fotograma).
+          let recorrido = 0;
+          function medir(){
+            const r = fig.getBoundingClientRect();
+            recorrido = Math.max(r.top + scrollY + r.height, 1);
+          }
+          medir();
+
+          let pedido = false;
+          function pintar(){
+            pedido = false;
+            const dur = vid.duration;
+            if(!dur || !isFinite(dur)) return;
+            const p = scrollY / recorrido;
+            const t = Math.min(Math.max(p, 0), 1) * dur;
+            if(Math.abs(vid.currentTime - t) > 0.02){ try{ vid.currentTime = t; }catch(e){} }
+          }
+          addEventListener('scroll', function(){ if(!pedido){ pedido = true; requestAnimationFrame(pintar); } }, { passive:true });
+          addEventListener('resize', function(){ medir(); if(!pedido){ pedido = true; requestAnimationFrame(pintar); } }, { passive:true });
+          pintar();
+        }, { once:true });
+      })();
 
       // Inclinación 3D del producto siguiendo el mouse (solo escritorio con puntero fino)
       const zona = document.querySelector('.hero-prod');
