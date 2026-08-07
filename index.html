@@ -924,7 +924,7 @@
         const fig = document.querySelector('.prod-float');
         if(!vid || !fig) return;
         if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        // Solo escritorio: el video pesa 9 MB y en el celular la imagen flotante ya se ve bien.
+        // Solo escritorio: en el celular la imagen flotante ya se ve bien y ahorramos 1,4 MB.
         // Casi todo el tráfico viene de Instagram, así que esto protege la velocidad donde importa.
         if(!matchMedia('(min-width:901px)').matches) return;
 
@@ -943,27 +943,29 @@
           fig.classList.add('con-video');
           try{ vid.pause(); vid.currentTime = 0; }catch(e){}
 
-          // Recorrido del giro: desde que se carga la página (fotograma 0) hasta que
-          // el producto termina de salir por arriba (último fotograma).
+          // Recorrido del giro. Se completa antes de que el producto salga del todo
+          // (factor 0.62) para que el giro se sienta ágil y no arrastrado.
           let recorrido = 0;
           function medir(){
             const r = fig.getBoundingClientRect();
-            recorrido = Math.max(r.top + scrollY + r.height, 1);
+            recorrido = Math.max((r.top + scrollY + r.height) * 0.62, 1);
           }
           medir();
+          addEventListener('resize', medir, { passive:true });
 
-          let pedido = false;
-          function pintar(){
-            pedido = false;
-            const dur = vid.duration;
-            if(!dur || !isFinite(dur)) return;
-            const p = scrollY / recorrido;
-            const t = Math.min(Math.max(p, 0), 1) * dur;
-            if(Math.abs(vid.currentTime - t) > 0.02){ try{ vid.currentTime = t; }catch(e){} }
-          }
-          addEventListener('scroll', function(){ if(!pedido){ pedido = true; requestAnimationFrame(pintar); } }, { passive:true });
-          addEventListener('resize', function(){ medir(); if(!pedido){ pedido = true; requestAnimationFrame(pintar); } }, { passive:true });
-          pintar();
+          // Bucle continuo que ACERCA el video al objetivo en vez de saltar de golpe.
+          // Eso es lo que lo hace sentir un video reproduciéndose y no una tira de fotos.
+          const dur = vid.duration;
+          let objetivo = 0, actual = 0;
+          (function animar(){
+            objetivo = Math.min(Math.max(scrollY / recorrido, 0), 1) * (dur || 1);
+            actual += (objetivo - actual) * 0.16;              // suavizado
+            if(Math.abs(objetivo - actual) < 0.004) actual = objetivo;
+            if(Math.abs(vid.currentTime - actual) > 0.008){
+              try{ vid.currentTime = actual; }catch(e){}
+            }
+            requestAnimationFrame(animar);
+          })();
         }, { once:true });
       })();
 
