@@ -127,13 +127,14 @@
     /* Sin -webkit-overflow-scrolling:touch a proposito: en iOS crea una capa de GPU aparte y,
        al mover scrollLeft por JS en cada fotograma, Safari deja de repintar y la fila sale vacia.
        Desde iOS 13 la inercia ya es el comportamiento por defecto, asi que no hace falta. */
-    .m-row{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:auto;scroll-snap-type:none;-webkit-overflow-scrolling:touch}.m-row::-webkit-scrollbar{display:none}
+    .m-row{overflow:hidden;cursor:grab;touch-action:pan-y}.m-row.agarrando{cursor:grabbing}.m-row::-webkit-scrollbar{display:none}
     .campaign-grid,.showcase-grid,.case-grid{scroll-behavior:auto}
     .m-track{display:flex;gap:18px;width:max-content}
-    /* Sin transform a propósito: el scroll nativo mide el contenido donde está
-       en el layout, y un transform lo pinta en otro sitio. Mezclar las dos cosas
-       es lo que dejaba el hueco en blanco al deslizar. Ahora desplaza el propio
-       navegador, que además lo anima solo y con la inercia de iOS. */
+    /* Todo se mueve con transform, que el compositor pinta con decimales: por eso
+       va suave y no de píxel en píxel. Y como la fila no tiene scroll propio, no
+       hay dos sistemas midiendo distinto: el hueco en blanco es imposible. */
+    .m-track{will-change:transform}
+    .m-track img,.m-track .tcard{user-select:none;-webkit-user-drag:none}
     .tcard{flex:0 0 min(360px,82vw);background:var(--white);border:1px solid var(--line);border-radius:24px;padding:26px 28px 22px;box-shadow:0 14px 40px rgba(38,54,44,.06);display:flex;flex-direction:column;gap:16px}
     .tcard-tag{align-self:flex-start;font:600 10px "DM Mono";letter-spacing:.06em;text-transform:uppercase;color:#4e6c54;background:rgba(78,108,84,.09);border-radius:99px;padding:5px 11px}
     .tcard-q{position:relative;color:var(--ink);font-size:15px;line-height:1.62;padding-top:16px}
@@ -850,35 +851,77 @@
 
       const copias = reps * COPIAS;
       const unaCopia = track.scrollWidth / copias;
-      const paso = Math.max(Math.round(originales[0].getBoundingClientRect().width + 18), 120);
       const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const VEL = 0.55 * (rev ? -1 : 1);          // píxeles por fotograma, como antes
 
-      // Mientras la persona toca o desliza, no se mueve solo.
-      let quieto = false, volver;
-      const frenar = ()=>{ quieto = true; clearTimeout(volver);
-                           volver = setTimeout(()=>{ quieto = false; }, 3500); };
-      ['pointerdown','touchstart','wheel'].forEach(ev=>row.addEventListener(ev, frenar, { passive:true }));
+      let x = rev ? -unaCopia : 0;                 // posición actual, en píxeles
+      let arrastrando = false, ultimo = 0, inercia = 0, quieto = false, volver;
+      let corriendo = false, aLaVista = false;
+
+      function pintar(){
+        // el contenido se repite cada copia: mantenemos x dentro de una copia
+        if(x <= -unaCopia) x += unaCopia;
+        else if(x > 0) x -= unaCopia;
+        track.style.transform = 'translate3d(' + x.toFixed(2) + 'px,0,0)';
+      }
+      pintar();
+
+      function paso(){
+        if(!aLaVista || document.hidden){ corriendo = false; return; }
+        if(arrastrando){ /* manda la mano */ }
+        else if(Math.abs(inercia) > 0.08){ x += inercia; inercia *= 0.93; }
+        else if(!quieto && !reducido){ x -= VEL; }
+        pintar();
+        requestAnimationFrame(paso);
+      }
+      function arrancar(){ if(!corriendo && aLaVista){ corriendo = true; requestAnimationFrame(paso); } }
+
+      // Solo gasta mientras se ve
+      try{
+        new IntersectionObserver(es=>{
+          es.forEach(e=>{ aLaVista = e.isIntersecting; if(aLaVista) arrancar(); });
+        }, { rootMargin: '120px' }).observe(row);
+      }catch(e){ aLaVista = true; arrancar(); }
+      addEventListener('visibilitychange', ()=>{ if(!document.hidden) arrancar(); });
+
+      // Frenar mientras se mira, para poder leer
       row.addEventListener('pointerenter', ()=>{ clearTimeout(volver); quieto = true; });
       row.addEventListener('pointerleave', ()=>{ quieto = false; });
 
-      // Al pasar una copia entera, retrocede una copia de golpe. Como el
-      // contenido se repite, cae en el mismo sitio y no se nota el salto.
-      row.addEventListener('scroll', ()=>{
-        if(row.scrollLeft >= unaCopia * 2) row.scrollLeft -= unaCopia;
-      }, { passive:true });
+      // Arrastre. Sobre la misma posición que el movimiento automático, así que
+      // no hay dos sistemas peleando ni forma de salirse del contenido.
+      row.addEventListener('pointerdown', e=>{
+        arrastrando = true; ultimo = e.clientX; inercia = 0;
+        quieto = true; clearTimeout(volver);
+        row.classList.add('agarrando');
+        try{ row.setPointerCapture(e.pointerId); }catch(err){}
+        arrancar();
+      });
+      row.addEventListener('pointermove', e=>{
+        if(!arrastrando) return;
+        const d = e.clientX - ultimo; ultimo = e.clientX;
+        x += d; inercia = d;
+        pintar();
+      });
+      const soltar = ()=>{
+        if(!arrastrando) return;
+        arrastrando = false;
+        row.classList.remove('agarrando');
+        clearTimeout(volver);
+        volver = setTimeout(()=>{ quieto = false; }, 1200);   // retoma la marcha sola
+      };
+      ['pointerup','pointercancel','pointerleave'].forEach(ev=>row.addEventListener(ev, soltar));
 
-      // Avanza una tarjeta cada 3,5 s, y lo anima el navegador. Un temporizador
-      // lento, no un bucle por fotograma: no se nota en la batería.
-      if(!reducido){
-        setInterval(()=>{
-          if(quieto || document.hidden) return;
-          const caja = row.getBoundingClientRect();
-          if(caja.bottom < 0 || caja.top > innerHeight) return;   // fuera de pantalla: no gastar
-          row.scrollBy({ left: rev ? -paso : paso, behavior: 'smooth' });
-        }, 3500);
-      }
-      // Las filas al revés arrancan más adelante, para tener sitio hacia atrás.
-      if(rev) row.scrollLeft = unaCopia * 1.5;
+      // La rueda del ratón también lo mueve en horizontal
+      row.addEventListener('wheel', e=>{
+        const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : 0;
+        if(!d) return;
+        e.preventDefault(); x -= d; inercia = -d * 0.3;
+        quieto = true; clearTimeout(volver);
+        volver = setTimeout(()=>{ quieto = false; }, 1200);
+        pintar(); arrancar();
+      }, { passive:false });
+
       return true;
     }
 
