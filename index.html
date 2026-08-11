@@ -316,11 +316,11 @@
     @media(prefers-reduced-motion:reduce){ body.fondo-grano::after,body.fondo-degradado::after{opacity:.03} }
     /* ===== Producto flotante en el hero ===== */
     .hero-prod{max-width:620px;margin:8px auto 26px;perspective:1100px}
-    .prod-float{margin:0;transform-style:preserve-3d;will-change:transform;transition:transform .45s cubic-bezier(.16,1,.3,1)}
+    .prod-float{position:relative;margin:0;transform-style:preserve-3d;will-change:transform;transition:transform .45s cubic-bezier(.16,1,.3,1)}
     .prod-float img{width:100%;height:auto;display:block;border-radius:26px;box-shadow:0 34px 90px rgba(23,23,19,.22);animation:prodFlotar 7s ease-in-out infinite;will-change:transform}
     /* El video ocupa el mismo lugar que la imagen y aparece cuando esta listo */
     .prod-float canvas{position:absolute;inset:0;width:100%;height:100%;display:block;border-radius:26px;opacity:0;transition:opacity .5s ease;pointer-events:none}
-    .prod-float.con-giro{position:relative;animation:prodFlotar 7s ease-in-out infinite}
+    .prod-float.con-giro{animation:prodFlotar 7s ease-in-out infinite}
     .prod-float.con-giro canvas{opacity:1;box-shadow:0 34px 90px rgba(23,23,19,.22)}
     .prod-float.con-giro img{visibility:hidden;animation:none}
     @keyframes prodFlotar{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-13px) rotate(.5deg)}}
@@ -465,7 +465,7 @@
                  sizes="(max-width:900px) 92vw, 620px"
                  width="1100" height="1100" fetchpriority="high" decoding="async"
                  alt="Prompt Ads — el sistema definitivo para crear anuncios de alta conversión, con ejemplos de piezas premium alrededor">
-            <canvas id="prodGiro" aria-hidden="true"></canvas>
+            <canvas id="prodGiro" width="1080" height="1080" aria-hidden="true"></canvas>
           </figure>
         </div>
 
@@ -1001,18 +1001,13 @@
           return null;
         }
 
-        function ajustar(){
-          var r = lienzo.getBoundingClientRect();
-          if(!(r.width > 0)) return;
-          var dpr = Math.min(window.devicePixelRatio || 1, 2);
-          var lado = Math.max(Math.round(r.width * dpr), 1);
-          if(lienzo.width !== lado){ lienzo.width = lado; lienzo.height = lado; pintado = -1; }
-        }
+        // El lienzo tiene tamaño fijo en el HTML (1080). No se mide nada: medir
+        // dependía del layout y en iOS podía pedir una superficie por encima del
+        // límite del sistema, con lo que el canvas quedaba en blanco.
         function medir(){
           var r = fig.getBoundingClientRect();
           var y = window.pageYOffset || document.documentElement.scrollTop || 0;
           recorrido = Math.max((r.top + y + r.height) * 0.62, 1);
-          ajustar();
         }
         function pide(){ if(!pedido){ pedido = true; requestAnimationFrame(pintar); } }
         function pintar(){
