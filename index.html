@@ -465,7 +465,7 @@
                  sizes="(max-width:900px) 92vw, 620px"
                  width="1100" height="1100" fetchpriority="high" decoding="async"
                  alt="Prompt Ads — el sistema definitivo para crear anuncios de alta conversión, con ejemplos de piezas premium alrededor">
-            <canvas id="prodGiro" width="620" height="620" aria-hidden="true"></canvas>
+            <canvas id="prodGiro" aria-hidden="true"></canvas>
           </figure>
         </div>
 
@@ -763,7 +763,7 @@
     </div>
   </footer>
 
-  <div class="mobile-buy" id="mobileBuy"><div><span>Prompt Ads</span><b>Oferta de lanzamiento</b></div><a href="#precio" class="btn">Ver oferta</a></div>
+  <div class="mobile-buy" id="mobileBuy"><div><span data-cuenta="movil-arriba">Precio fundador</span><b data-cuenta="movil">Después sube a USD 47</b></div><a href="#precio" class="btn">Aprovechar</a></div>
   <dialog class="lightbox" id="lightbox" aria-label="Vista ampliada del anuncio">
     <button class="lightbox-close" aria-label="Cerrar vista ampliada">×</button>
     <img loading="lazy" decoding="async" id="lightboxImage" alt="Anuncio ampliado" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
@@ -969,63 +969,104 @@
       cuadro();
 
       // ===== Giro del producto atado al scroll =====
-      // Secuencia de 16 imágenes sobre canvas, no un video. El video no se movía
-      // en iPhone: Safari no hace búsqueda fotograma a fotograma con fluidez, así
-      // que quedaba congelado. Con imágenes se mueve igual en todos los teléfonos.
-      // Se cargan cuando el navegador está libre, así no retrasan la primera vista.
+      // Secuencia de imágenes sobre canvas, no un video: el video se quedaba
+      // congelado en iPhone porque Safari no busca fotograma a fotograma con
+      // fluidez. Con imágenes se mueve igual en todos los teléfonos.
+      //
+      // Clave: NO espera a que carguen todas. Arranca con la primera que llegue
+      // y va usando la más cercana disponible. Así una imagen lenta o perdida
+      // nunca deja la animación muerta.
       (function(){
-        const lienzo = document.getElementById('prodGiro');
-        const fig = document.querySelector('.prod-float');
+        var lienzo = document.getElementById('prodGiro');
+        var fig = document.querySelector('.prod-float');
         if(!lienzo || !fig) return;
-        if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        const con = navigator.connection;
+        try{ if(matchMedia('(prefers-reduced-motion: reduce)').matches) return; }catch(e){}
+        var con = navigator.connection;
         if(con && (con.saveData || /2g/.test(con.effectiveType || ''))) return;
 
-        const TOTAL = 16, cuadros = [];
-        let hechos = 0, fallos = 0;
+        var TOTAL = 24;
+        var ANCHO = (window.innerWidth > 900) ? 'giro-1080' : 'giro-760';
+        var cuadros = new Array(TOTAL);
+        var ctx = null, arrancado = false, vivo = false;
+        var recorrido = 1, actual = 0, pintado = -1, pedido = false;
+
+        // el fotograma i, o el más cercano que ya esté cargado
+        function disponible(i){
+          if(cuadros[i] && cuadros[i].naturalWidth) return cuadros[i];
+          for(var d = 1; d < TOTAL; d++){
+            var a = i - d, b = i + d;
+            if(a >= 0 && cuadros[a] && cuadros[a].naturalWidth) return cuadros[a];
+            if(b < TOTAL && cuadros[b] && cuadros[b].naturalWidth) return cuadros[b];
+          }
+          return null;
+        }
+
+        function ajustar(){
+          var r = lienzo.getBoundingClientRect();
+          if(!(r.width > 0)) return;
+          var dpr = Math.min(window.devicePixelRatio || 1, 2);
+          var lado = Math.max(Math.round(r.width * dpr), 1);
+          if(lienzo.width !== lado){ lienzo.width = lado; lienzo.height = lado; pintado = -1; }
+        }
+        function medir(){
+          var r = fig.getBoundingClientRect();
+          var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+          recorrido = Math.max((r.top + y + r.height) * 0.62, 1);
+          ajustar();
+        }
+        function pide(){ if(!pedido){ pedido = true; requestAnimationFrame(pintar); } }
+        function pintar(){
+          pedido = false;
+          if(!ctx) return;
+          var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+          var objetivo = Math.min(Math.max(y / recorrido, 0), 1) * (TOTAL - 1);
+          actual += (objetivo - actual) * 0.24;
+          if(Math.abs(objetivo - actual) < 0.02) actual = objetivo;
+          var i = Math.min(Math.max(Math.round(actual), 0), TOTAL - 1);
+          if(i !== pintado){
+            var im = disponible(i);
+            if(im){
+              try{
+                ctx.drawImage(im, 0, 0, lienzo.width, lienzo.height);
+                pintado = i;
+                // la imagen fija se oculta recién cuando hay algo dibujado encima
+                if(!vivo){ vivo = true; fig.className += ' con-giro'; }
+              }catch(e){}
+            }
+          }
+          if(actual !== objetivo) pide();     // se detiene solo al llegar
+        }
 
         function arrancar(){
-          const ctx = lienzo.getContext('2d');
-          fig.classList.add('con-giro');
-
-          let recorrido = 1;
-          const medir = ()=>{ const r = fig.getBoundingClientRect();
-                              recorrido = Math.max((r.top + scrollY + r.height) * 0.62, 1); };
+          if(arrancado) return;
+          arrancado = true;
+          try{ ctx = lienzo.getContext('2d'); }catch(e){ return; }
+          if(!ctx) return;
           medir();
-          addEventListener('resize', medir, { passive:true });
-
-          // Se acerca al fotograma objetivo en vez de saltar, y deja de pedir
-          // cuadros cuando ya llegó: no hay bucle permanente gastando batería.
-          let actual = 0, pintado = -1, pedido = false;
-          function pide(){ if(!pedido){ pedido = true; requestAnimationFrame(pintar); } }
-          function pintar(){
-            pedido = false;
-            const objetivo = Math.min(Math.max(scrollY / recorrido, 0), 1) * (TOTAL - 1);
-            actual += (objetivo - actual) * 0.22;
-            if(Math.abs(objetivo - actual) < 0.02) actual = objetivo;
-            const i = Math.round(actual);
-            if(i !== pintado && cuadros[i]){
-              ctx.drawImage(cuadros[i], 0, 0, lienzo.width, lienzo.height);
-              pintado = i;
-            }
-            if(actual !== objetivo) pide();
-          }
-          addEventListener('scroll', pide, { passive:true });
+          addEventListener('resize', medir, false);
+          addEventListener('orientationchange', function(){ setTimeout(medir, 250); }, false);
+          addEventListener('scroll', pide, false);
           pintar();
         }
 
         function cargar(){
-          for(let n = 1; n <= TOTAL; n++){
-            const im = new Image();
-            im.decoding = 'async';
-            im.onload  = ()=>{ hechos++; if(hechos + fallos === TOTAL && !fallos) arrancar(); };
-            im.onerror = ()=>{ fallos++; };      // si falta alguno, se queda la imagen fija
-            im.src = 'assets/producto/giro/g' + (n < 10 ? '0' : '') + n + '.jpg';
-            cuadros[n - 1] = im;
+          for(var n = 1; n <= TOTAL; n++){
+            (function(n){
+              var im = new Image();
+              im.decoding = 'async';
+              im.onload = function(){
+                cuadros[n - 1] = im;
+                arrancar();      // con el primero que llegue ya se puede dibujar
+                pintado = -1; pide();
+              };
+              im.onerror = function(){};   // uno que falte no rompe nada
+              im.src = 'assets/producto/' + ANCHO + '/g' + (n < 10 ? '0' : '') + n + '.webp';
+            })(n);
           }
         }
-        if('requestIdleCallback' in window) requestIdleCallback(cargar, { timeout: 2500 });
-        else addEventListener('load', ()=>setTimeout(cargar, 400));
+
+        if(document.readyState === 'complete') setTimeout(cargar, 300);
+        else addEventListener('load', function(){ setTimeout(cargar, 300); }, false);
       })();
 
       // Inclinación 3D del producto siguiendo el mouse (solo escritorio con puntero fino)
@@ -1059,25 +1100,37 @@
 
     // Cómo se dice cada tramo. El último día es el que más vende, así que
     // tiene su propio texto y no uno genérico.
-    let banner, despues;
+    let banner, despues, movil, movilArriba;
     if (dias > 5) {
       banner  = '<b>Lanzamiento:</b> precio fundador — el más bajo que va a tener. Al cerrar, sube a USD ' + SUBE_A + '.';
       despues = 'Sube a <b>USD ' + SUBE_A + '</b> en <b>' + dias + ' días</b>';
+      movilArriba = 'Precio fundador';
+      movil       = 'Después sube a USD ' + SUBE_A;
     } else if (dias > 1) {
       banner  = '<b>Quedan ' + dias + ' días</b> de precio fundador. Después pasa a USD ' + SUBE_A + '.';
       despues = 'Quedan <b>' + dias + ' días</b> · después, <b>USD ' + SUBE_A + '</b>';
+      movilArriba = 'Precio fundador · quedan ' + dias + ' días';
+      movil       = 'Después sube a USD ' + SUBE_A;
     } else if (dias === 1) {
       banner  = '<b>Mañana sube.</b> Es el último día de precio fundador.';
       despues = '<b>Mañana</b> pasa a <b>USD ' + SUBE_A + '</b>';
+      movilArriba = 'Precio fundador · último día';
+      movil       = 'Mañana sube a USD ' + SUBE_A;
     } else if (dias === 0) {
       banner  = '<b>Último día.</b> Esta noche cierra el precio fundador y pasa a USD ' + SUBE_A + '.';
       despues = '<b>Hoy es el último día</b> a este precio';
+      movilArriba = 'Precio fundador · último día';
+      movil       = 'Hoy sube a USD ' + SUBE_A;
     } else {
       return;   // ya pasó: manda el texto del nuevo peldaño, no este reloj
     }
 
     const b = document.querySelector('[data-cuenta="banner"]');
     const d = document.querySelector('[data-cuenta="despues"]');
+    const m  = document.querySelector('[data-cuenta="movil"]');
+    const ma = document.querySelector('[data-cuenta="movil-arriba"]');
+    if (m && movil) m.textContent = movil;
+    if (ma && movilArriba) ma.textContent = movilArriba;
     if (b) b.innerHTML = banner;
     if (d) d.innerHTML = despues;
   })();
