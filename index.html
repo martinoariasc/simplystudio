@@ -322,8 +322,10 @@
     /* Pila de fotogramas: todos superpuestos, solo uno visible. Cambiar cuál se
        ve es lo más soportado que hay — no hace falta canvas ni dibujar nada. */
     .prod-float .giro{position:absolute;inset:0;border-radius:26px;overflow:hidden;opacity:0;transition:opacity .4s ease;pointer-events:none}
-    .prod-float .giro img{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;animation:none!important;border-radius:0;box-shadow:none}
-    .prod-float .giro img.on{opacity:1}
+    /* Todas opacas y apiladas: lo único que cambia es cuál queda encima. Así
+       nunca hay un instante con nada visible, que es lo que se veía como parpadeo. */
+    .prod-float .giro img{position:absolute;inset:0;width:100%;height:100%;display:block;animation:none!important;border-radius:0;box-shadow:none;z-index:0}
+    .prod-float .giro img.on{z-index:2}
     .prod-float.con-giro{animation:prodFlotar 7s ease-in-out infinite}
     .prod-float.con-giro .giro{opacity:1;box-shadow:0 34px 90px rgba(23,23,19,.22)}
     .prod-float.con-giro > #prodImg{visibility:hidden;animation:none}
@@ -1015,8 +1017,10 @@
           var p = Math.min(Math.max(scrollActual() / recorrido, 0), 1);
           var i = cercano(Math.min(Math.round(p * (TOTAL - 1)), TOTAL - 1));
           if(i < 0 || i === actual) return;
-          if(actual >= 0 && imgs[actual]) imgs[actual].className = '';
+          // Primero sube la nueva, después baja la anterior: en ningún momento
+          // quedan las dos abajo, que es lo que se veía como parpadeo.
           imgs[i].className = 'on';
+          if(actual >= 0 && imgs[actual]) imgs[actual].className = '';
           actual = i;
           if(!vivo){ vivo = true; fig.className += ' con-giro'; }
         }
@@ -1030,11 +1034,17 @@
               im.alt = '';
               im.decoding = 'async';
               im.onload = function(){
-                listo[n - 1] = true;
-                imgs[n - 1] = im;
-                caja.appendChild(im);
-                medir();
-                pide();
+                // Descodificar ANTES de que se vea. Si se descodifica en el
+                // momento de mostrarla, el teléfono deja un fotograma en blanco.
+                var soltar = function(){
+                  listo[n - 1] = true;
+                  imgs[n - 1] = im;
+                  caja.appendChild(im);
+                  medir();
+                  pide();
+                };
+                if(im.decode) im.decode().then(soltar, soltar);
+                else soltar();
               };
               im.onerror = function(){};
               im.src = 'assets/producto/' + ANCHO + '/g' + (n < 10 ? '0' : '') + n + '.webp';
