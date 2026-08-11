@@ -127,16 +127,13 @@
     /* Sin -webkit-overflow-scrolling:touch a proposito: en iOS crea una capa de GPU aparte y,
        al mover scrollLeft por JS en cada fotograma, Safari deja de repintar y la fila sale vacia.
        Desde iOS 13 la inercia ya es el comportamiento por defecto, asi que no hace falta. */
-    .m-row{overflow:hidden;scrollbar-width:none;-ms-overflow-style:none}.m-row::-webkit-scrollbar{display:none}
+    .m-row{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:auto;scroll-snap-type:none;-webkit-overflow-scrolling:touch}.m-row::-webkit-scrollbar{display:none}
     .campaign-grid,.showcase-grid,.case-grid{scroll-behavior:auto}
     .m-track{display:flex;gap:18px;width:max-content}
-    /* El desplazamiento va por transform (lo mueve el compositor, no el hilo
-       principal): es lo que hace que se vea fluido hasta en teléfonos viejos. */
-    @keyframes ssMarquee{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
-    .m-track.anda{animation:ssMarquee var(--dur,90s) linear infinite;will-change:transform}
-    .m-row.rev .m-track.anda{animation-direction:reverse}
-    .m-track.quieto{animation-play-state:paused}
-    @media(prefers-reduced-motion:reduce){.m-track.anda{animation:none}}
+    /* Sin transform a propósito: el scroll nativo mide el contenido donde está
+       en el layout, y un transform lo pinta en otro sitio. Mezclar las dos cosas
+       es lo que dejaba el hueco en blanco al deslizar. Ahora desplaza el propio
+       navegador, que además lo anima solo y con la inercia de iOS. */
     .tcard{flex:0 0 min(360px,82vw);background:var(--white);border:1px solid var(--line);border-radius:24px;padding:26px 28px 22px;box-shadow:0 14px 40px rgba(38,54,44,.06);display:flex;flex-direction:column;gap:16px}
     .tcard-tag{align-self:flex-start;font:600 10px "DM Mono";letter-spacing:.06em;text-transform:uppercase;color:#4e6c54;background:rgba(78,108,84,.09);border-radius:99px;padding:5px 11px}
     .tcard-q{position:relative;color:var(--ink);font-size:15px;line-height:1.62;padding-top:16px}
@@ -645,7 +642,7 @@
           <article class="tcard"><p class="tcard-q">Al principio no entendía nada y hasta desconfié un poco, pero adentro te explica tan bien cómo usarlo que <b>al ratito ya estaba sacando piezas</b>. Me da vergüenza haber dudado.</p><div class="tcard-foot"><div class="tcard-av">VG</div><div class="tcard-id"><b>Valentina G.</b><span>Dropshipping</span></div></div></article>
           <article class="tcard"><p class="tcard-q">Tengo una tienda online y renovar los creativos era un dolor de cabeza. Ahora <b>saco anuncios nuevos cada semana yo solo</b>, sin depender de nadie.</p><div class="tcard-foot"><div class="tcard-av">RG</div><div class="tcard-id"><b>Ricardo G.</b><span>Tienda online</span></div></div></article>
         </div></div>
-        <div class="marquee-hint">Tócalas para frenarlas y leer con calma</div>
+        <div class="marquee-hint"><span class="ar">‹</span> Desliza para ver más historias <span class="ar">›</span></div>
       </div>
     </section>
 
@@ -741,7 +738,7 @@
           <article class="tcard"><span class="tcard-tag">Nivel estudio, en minutos</span><p class="tcard-q">Hago contenido para varias marcas y esto me cambió el ritmo: <b>entrego piezas de nivel estudio en una fracción del tiempo</b>. Mis clientes ni saben cómo lo hago.</p><div class="tcard-foot"><div class="tcard-av">MD</div><div class="tcard-id"><b>Mathias D.</b><span>Freelance · contenido</span></div></div></article>
           <article class="tcard"><p class="tcard-q">Presento propuestas con <b>piezas que parecen de una agencia grande</b>, en la mitad del tiempo. En mi trabajo eso vale oro.</p><div class="tcard-foot"><div class="tcard-av">MV</div><div class="tcard-id"><b>Marta V.</b><span>Marketing</span></div></div></article>
         </div></div>
-        <div class="marquee-hint">Tócalas para frenarlas y leer con calma</div>
+        <div class="marquee-hint"><span class="ar">‹</span> Desliza para ver más historias <span class="ar">›</span></div>
       </div>
     </section>
 
@@ -832,8 +829,11 @@
       if(setW <= row.clientWidth + 8) return true;                  // no necesita desplazarse
       const originales = Array.prototype.slice.call(track.children);
       if(!originales.length) return true;
+      // Cuatro copias: el bucle avanza una copia entera y por delante quedan
+      // otras tres de margen, para que el dedo no llegue nunca al borde.
+      const COPIAS = 4;
       const reps = Math.min(3, Math.max(1, Math.ceil((row.clientWidth + 80) / setW)));
-      for(let r = 0; r < reps * 2 - 1; r++){
+      for(let r = 0; r < reps * COPIAS - 1; r++){
         originales.forEach(n=>{
           const c = n.cloneNode(true);
           c.querySelectorAll('img').forEach(i=>{ i.loading = 'eager'; });
@@ -848,26 +848,37 @@
       track.querySelectorAll('.reveal').forEach(n=>n.classList.add('visible'));
       row.dataset.ssCarrusel = '1';
 
-      // Mismo ritmo de antes (unos 33 px por segundo), pero como duración de una
-      // animación CSS. El -50% del recorrido cae justo en una copia entera, así
-      // que el bucle no tiene costura.
-      const vuelta = Math.max(Math.round(track.scrollWidth / 2 / 33), 20);
-      track.style.setProperty('--dur', vuelta + 's');
-      track.classList.add('anda');
+      const copias = reps * COPIAS;
+      const unaCopia = track.scrollWidth / copias;
+      const paso = Math.max(Math.round(originales[0].getBoundingClientRect().width + 18), 120);
+      const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      // Se frena mientras la persona está mirando o deslizando.
-      let volver;
-      const frenar = ()=>{ track.classList.add('quieto'); clearTimeout(volver);
-                           volver = setTimeout(()=>track.classList.remove('quieto'), 1800); };
+      // Mientras la persona toca o desliza, no se mueve solo.
+      let quieto = false, volver;
+      const frenar = ()=>{ quieto = true; clearTimeout(volver);
+                           volver = setTimeout(()=>{ quieto = false; }, 3500); };
       ['pointerdown','touchstart','wheel'].forEach(ev=>row.addEventListener(ev, frenar, { passive:true }));
-      row.addEventListener('pointerenter', ()=>{ clearTimeout(volver); track.classList.add('quieto'); });
-      row.addEventListener('pointerleave', ()=>track.classList.remove('quieto'));
+      row.addEventListener('pointerenter', ()=>{ clearTimeout(volver); quieto = true; });
+      row.addEventListener('pointerleave', ()=>{ quieto = false; });
 
-      // La fila ya no tiene scroll propio (overflow:hidden), asi que el dedo no
-      // puede sacarla de sitio. Pero el teclado si, al enfocar una tarjeta: el
-      // navegador la trae a la vista y desplaza la fila, dejando el hueco en
-      // blanco. Esto la devuelve a su sitio siempre.
-      row.addEventListener('scroll', ()=>{ if(row.scrollLeft !== 0) row.scrollLeft = 0; }, { passive:true });
+      // Al pasar una copia entera, retrocede una copia de golpe. Como el
+      // contenido se repite, cae en el mismo sitio y no se nota el salto.
+      row.addEventListener('scroll', ()=>{
+        if(row.scrollLeft >= unaCopia * 2) row.scrollLeft -= unaCopia;
+      }, { passive:true });
+
+      // Avanza una tarjeta cada 3,5 s, y lo anima el navegador. Un temporizador
+      // lento, no un bucle por fotograma: no se nota en la batería.
+      if(!reducido){
+        setInterval(()=>{
+          if(quieto || document.hidden) return;
+          const caja = row.getBoundingClientRect();
+          if(caja.bottom < 0 || caja.top > innerHeight) return;   // fuera de pantalla: no gastar
+          row.scrollBy({ left: rev ? -paso : paso, behavior: 'smooth' });
+        }, 3500);
+      }
+      // Las filas al revés arrancan más adelante, para tener sitio hacia atrás.
+      if(rev) row.scrollLeft = unaCopia * 1.5;
       return true;
     }
 
