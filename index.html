@@ -1082,6 +1082,9 @@
   (function(){
     const LIMITE = '2026-08-15';      // cuando sube el precio
     const SUBE_A = 47;
+    const PELDANO = 'precio fundador';   // cómo se llama el precio de ahora
+
+    const MAY = s => s.charAt(0).toUpperCase() + s.slice(1);
 
     const hoy = new Date(); hoy.setHours(0,0,0,0);
     const fin = new Date(LIMITE + 'T00:00:00'); fin.setHours(0,0,0,0);
@@ -1092,24 +1095,24 @@
     // tiene su propio texto y no uno genérico.
     let banner, despues, movil, movilArriba;
     if (dias > 5) {
-      banner  = '<b>Lanzamiento:</b> precio fundador — el más bajo que va a tener. Al cerrar, sube a USD ' + SUBE_A + '.';
+      banner  = '<b>Lanzamiento:</b> ' + PELDANO + ' — el más bajo que va a tener. Al cerrar, sube a USD ' + SUBE_A + '.';
       despues = 'Sube a <b>USD ' + SUBE_A + '</b> en <b>' + dias + ' días</b>';
-      movilArriba = 'Precio fundador';
+      movilArriba = MAY(PELDANO);
       movil       = 'Después sube a USD ' + SUBE_A;
     } else if (dias > 1) {
-      banner  = '<b>Quedan ' + dias + ' días</b> de precio fundador. Después pasa a USD ' + SUBE_A + '.';
+      banner  = '<b>Quedan ' + dias + ' días</b> de ' + PELDANO + '. Después pasa a USD ' + SUBE_A + '.';
       despues = 'Quedan <b>' + dias + ' días</b> · después, <b>USD ' + SUBE_A + '</b>';
-      movilArriba = 'Precio fundador · quedan ' + dias + ' días';
+      movilArriba = MAY(PELDANO) + ' · quedan ' + dias + ' días';
       movil       = 'Después sube a USD ' + SUBE_A;
     } else if (dias === 1) {
-      banner  = '<b>Mañana sube.</b> Es el último día de precio fundador.';
+      banner  = '<b>Mañana sube.</b> Es el último día de ' + PELDANO + '.';
       despues = '<b>Mañana</b> pasa a <b>USD ' + SUBE_A + '</b>';
-      movilArriba = 'Precio fundador · último día';
+      movilArriba = MAY(PELDANO) + ' · último día';
       movil       = 'Mañana sube a USD ' + SUBE_A;
     } else if (dias === 0) {
-      banner  = '<b>Último día.</b> Esta noche cierra el precio fundador y pasa a USD ' + SUBE_A + '.';
+      banner  = '<b>Último día.</b> Esta noche cierra el ' + PELDANO + ' y pasa a USD ' + SUBE_A + '.';
       despues = '<b>Hoy es el último día</b> a este precio';
-      movilArriba = 'Precio fundador · último día';
+      movilArriba = MAY(PELDANO) + ' · último día';
       movil       = 'Hoy sube a USD ' + SUBE_A;
     } else {
       return;   // ya pasó: manda el texto del nuevo peldaño, no este reloj
