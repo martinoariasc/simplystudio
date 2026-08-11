@@ -319,10 +319,14 @@
     .prod-float{position:relative;margin:0;transform-style:preserve-3d;will-change:transform;transition:transform .45s cubic-bezier(.16,1,.3,1)}
     .prod-float img{width:100%;height:auto;display:block;border-radius:26px;box-shadow:0 34px 90px rgba(23,23,19,.22);animation:prodFlotar 7s ease-in-out infinite;will-change:transform}
     /* El video ocupa el mismo lugar que la imagen y aparece cuando esta listo */
-    .prod-float canvas{position:absolute;inset:0;width:100%;height:100%;display:block;border-radius:26px;opacity:0;transition:opacity .5s ease;pointer-events:none}
+    /* Pila de fotogramas: todos superpuestos, solo uno visible. Cambiar cuál se
+       ve es lo más soportado que hay — no hace falta canvas ni dibujar nada. */
+    .prod-float .giro{position:absolute;inset:0;border-radius:26px;overflow:hidden;opacity:0;transition:opacity .4s ease;pointer-events:none}
+    .prod-float .giro img{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;animation:none!important;border-radius:0;box-shadow:none}
+    .prod-float .giro img.on{opacity:1}
     .prod-float.con-giro{animation:prodFlotar 7s ease-in-out infinite}
-    .prod-float.con-giro canvas{opacity:1;box-shadow:0 34px 90px rgba(23,23,19,.22)}
-    .prod-float.con-giro img{visibility:hidden;animation:none}
+    .prod-float.con-giro .giro{opacity:1;box-shadow:0 34px 90px rgba(23,23,19,.22)}
+    .prod-float.con-giro > #prodImg{visibility:hidden;animation:none}
     @keyframes prodFlotar{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-13px) rotate(.5deg)}}
     @media(max-width:900px){.hero-prod{max-width:min(92vw,480px);margin:4px auto 20px}.prod-float img{border-radius:20px;box-shadow:0 22px 60px rgba(23,23,19,.2)}}
     @media(prefers-reduced-motion:reduce){.prod-float img{animation:none}.prod-float{transition:none}}
@@ -465,7 +469,7 @@
                  sizes="(max-width:900px) 92vw, 620px"
                  width="1100" height="1100" fetchpriority="high" decoding="async"
                  alt="Prompt Ads — el sistema definitivo para crear anuncios de alta conversión, con ejemplos de piezas premium alrededor">
-            <canvas id="prodGiro" width="1080" height="1080" aria-hidden="true"></canvas>
+            <div id="prodGiro" class="giro" aria-hidden="true"></div>
           </figure>
         </div>
 
@@ -969,99 +973,80 @@
       cuadro();
 
       // ===== Giro del producto atado al scroll =====
-      // Secuencia de imágenes sobre canvas, no un video: el video se quedaba
-      // congelado en iPhone porque Safari no busca fotograma a fotograma con
-      // fluidez. Con imágenes se mueve igual en todos los teléfonos.
+      // 24 imágenes apiladas: se enciende la que corresponde a lo que bajaste.
+      // Sin canvas a propósito — ahí es donde fallaba en iPhone. Esto es lo más
+      // soportado que hay: mostrar y ocultar imágenes.
       //
-      // Clave: NO espera a que carguen todas. Arranca con la primera que llegue
-      // y va usando la más cercana disponible. Así una imagen lenta o perdida
-      // nunca deja la animación muerta.
+      // Arranca con el primer fotograma que llegue; si alguno falta usa el más
+      // cercano. Si no llega ninguno, se queda la foto de siempre y no se nota.
       (function(){
-        var lienzo = document.getElementById('prodGiro');
-        var fig = document.querySelector('.prod-float');
-        if(!lienzo || !fig) return;
+        var caja = document.getElementById('prodGiro');
+        var fig  = document.querySelector('.prod-float');
+        if(!caja || !fig) return;
         try{ if(matchMedia('(prefers-reduced-motion: reduce)').matches) return; }catch(e){}
         var con = navigator.connection;
         if(con && (con.saveData || /2g/.test(con.effectiveType || ''))) return;
 
-        var TOTAL = 24;
-        var ANCHO = (window.innerWidth > 900) ? 'giro-1080' : 'giro-760';
-        var cuadros = new Array(TOTAL);
-        var ctx = null, arrancado = false, vivo = false;
-        var recorrido = 1, actual = 0, pintado = -1, pedido = false;
+        var TOTAL  = 24;
+        var ANCHO  = (window.innerWidth > 900) ? 'giro-1080' : 'giro-760';
+        var imgs   = new Array(TOTAL);
+        var listo  = new Array(TOTAL);
+        var actual = -1, vivo = false, pedido = false, recorrido = 1;
 
-        // el fotograma i, o el más cercano que ya esté cargado
-        function disponible(i){
-          if(cuadros[i] && cuadros[i].naturalWidth) return cuadros[i];
-          for(var d = 1; d < TOTAL; d++){
-            var a = i - d, b = i + d;
-            if(a >= 0 && cuadros[a] && cuadros[a].naturalWidth) return cuadros[a];
-            if(b < TOTAL && cuadros[b] && cuadros[b].naturalWidth) return cuadros[b];
-          }
-          return null;
+        function scrollActual(){
+          return window.pageYOffset || document.documentElement.scrollTop || 0;
         }
-
-        // El lienzo tiene tamaño fijo en el HTML (1080). No se mide nada: medir
-        // dependía del layout y en iOS podía pedir una superficie por encima del
-        // límite del sistema, con lo que el canvas quedaba en blanco.
         function medir(){
           var r = fig.getBoundingClientRect();
-          var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-          recorrido = Math.max((r.top + y + r.height) * 0.62, 1);
+          recorrido = Math.max((r.top + scrollActual() + r.height) * 0.62, 1);
         }
-        function pide(){ if(!pedido){ pedido = true; requestAnimationFrame(pintar); } }
-        function pintar(){
-          pedido = false;
-          if(!ctx) return;
-          var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-          var objetivo = Math.min(Math.max(y / recorrido, 0), 1) * (TOTAL - 1);
-          actual += (objetivo - actual) * 0.24;
-          if(Math.abs(objetivo - actual) < 0.02) actual = objetivo;
-          var i = Math.min(Math.max(Math.round(actual), 0), TOTAL - 1);
-          if(i !== pintado){
-            var im = disponible(i);
-            if(im){
-              try{
-                ctx.drawImage(im, 0, 0, lienzo.width, lienzo.height);
-                pintado = i;
-                // la imagen fija se oculta recién cuando hay algo dibujado encima
-                if(!vivo){ vivo = true; fig.className += ' con-giro'; }
-              }catch(e){}
-            }
+        // el fotograma i, o el más cercano que ya haya cargado
+        function cercano(i){
+          if(listo[i]) return i;
+          for(var d = 1; d < TOTAL; d++){
+            if(i - d >= 0 && listo[i - d]) return i - d;
+            if(i + d < TOTAL && listo[i + d]) return i + d;
           }
-          if(actual !== objetivo) pide();     // se detiene solo al llegar
+          return -1;
         }
-
-        function arrancar(){
-          if(arrancado) return;
-          arrancado = true;
-          try{ ctx = lienzo.getContext('2d'); }catch(e){ return; }
-          if(!ctx) return;
-          medir();
-          addEventListener('resize', medir, false);
-          addEventListener('orientationchange', function(){ setTimeout(medir, 250); }, false);
-          addEventListener('scroll', pide, false);
-          pintar();
+        function mostrar(){
+          pedido = false;
+          medir();                    // se mide siempre: el layout se mueve mientras cargan
+          var p = Math.min(Math.max(scrollActual() / recorrido, 0), 1);
+          var i = cercano(Math.min(Math.round(p * (TOTAL - 1)), TOTAL - 1));
+          if(i < 0 || i === actual) return;
+          if(actual >= 0 && imgs[actual]) imgs[actual].className = '';
+          imgs[i].className = 'on';
+          actual = i;
+          if(!vivo){ vivo = true; fig.className += ' con-giro'; }
         }
+        function pide(){ if(!pedido){ pedido = true; requestAnimationFrame(mostrar); } }
 
         function cargar(){
+          medir();
           for(var n = 1; n <= TOTAL; n++){
             (function(n){
               var im = new Image();
+              im.alt = '';
               im.decoding = 'async';
               im.onload = function(){
-                cuadros[n - 1] = im;
-                arrancar();      // con el primero que llegue ya se puede dibujar
-                pintado = -1; pide();
+                listo[n - 1] = true;
+                imgs[n - 1] = im;
+                caja.appendChild(im);
+                medir();
+                pide();
               };
-              im.onerror = function(){};   // uno que falte no rompe nada
+              im.onerror = function(){};
               im.src = 'assets/producto/' + ANCHO + '/g' + (n < 10 ? '0' : '') + n + '.webp';
             })(n);
           }
+          addEventListener('scroll', pide, false);
+          addEventListener('resize', function(){ medir(); pide(); }, false);
+          addEventListener('orientationchange', function(){ setTimeout(function(){ medir(); pide(); }, 250); }, false);
         }
 
-        if(document.readyState === 'complete') setTimeout(cargar, 300);
-        else addEventListener('load', function(){ setTimeout(cargar, 300); }, false);
+        if(document.readyState === 'complete') setTimeout(cargar, 250);
+        else addEventListener('load', function(){ setTimeout(cargar, 250); }, false);
       })();
 
       // Inclinación 3D del producto siguiendo el mouse (solo escritorio con puntero fino)
