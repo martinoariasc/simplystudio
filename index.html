@@ -427,7 +427,7 @@
 <body>
   <div class="announcement">
     <div class="shell announcement-inner">
-      <span><b>Lanzamiento:</b> precio fundador <b>hasta el 15 de agosto</b> — el más bajo que va a tener. Al cerrar, sube.</span>
+      <span data-cuenta="banner"><b>Lanzamiento:</b> precio fundador <b>hasta el 15 de agosto</b> — el más bajo que va a tener. Al cerrar, sube.</span>
       <a href="#precio">Asegurar mi precio</a>
     </div>
   </div>
@@ -683,7 +683,7 @@
             <div class="price-reveal">
               <span class="launch-tag">Precio fundador · edición de lanzamiento</span>
               <div class="price"><sup>USD</sup>27</div>
-              <p class="price-after">El <b>15 de agosto</b> pasa a <b>USD 47</b></p>
+              <p class="price-after" data-cuenta="despues">El <b>15 de agosto</b> pasa a <b>USD 47</b></p>
             </div>
             <a class="btn checkout" href="https://pay.hotmart.com/Y106693224R?checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads</a>
             <div class="trust-row"><span>Pago único</span><span>Acceso inmediato</span><span>Compra segura</span><span>Garantía 7 días</span></div>
@@ -1023,6 +1023,46 @@
         zona.addEventListener('pointerleave', ()=>{ fig.style.transform = 'rotateY(0deg) rotateX(0deg)'; });
       }
     })();
+  </script>
+
+  <script>
+  /* ── Cuenta atrás del precio ──────────────────────────────────────────
+     Una sola fecha para toda la página. El script cambiar-precio.js la
+     actualiza sola cuando pasás de peldaño, así que esto no se toca a mano.
+     Si algo falla, queda el texto que ya estaba escrito en el HTML.        */
+  (function(){
+    const LIMITE = '2026-08-15';      // cuando sube el precio
+    const SUBE_A = 47;
+
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    const fin = new Date(LIMITE + 'T00:00:00'); fin.setHours(0,0,0,0);
+    const dias = Math.round((fin - hoy) / 86400000);
+    if (isNaN(dias)) return;
+
+    // Cómo se dice cada tramo. El último día es el que más vende, así que
+    // tiene su propio texto y no uno genérico.
+    let banner, despues;
+    if (dias > 5) {
+      banner  = '<b>Lanzamiento:</b> precio fundador — el más bajo que va a tener. Al cerrar, sube a USD ' + SUBE_A + '.';
+      despues = 'Sube a <b>USD ' + SUBE_A + '</b> en <b>' + dias + ' días</b>';
+    } else if (dias > 1) {
+      banner  = '<b>Quedan ' + dias + ' días</b> de precio fundador. Después pasa a USD ' + SUBE_A + '.';
+      despues = 'Quedan <b>' + dias + ' días</b> · después, <b>USD ' + SUBE_A + '</b>';
+    } else if (dias === 1) {
+      banner  = '<b>Mañana sube.</b> Es el último día de precio fundador.';
+      despues = '<b>Mañana</b> pasa a <b>USD ' + SUBE_A + '</b>';
+    } else if (dias === 0) {
+      banner  = '<b>Último día.</b> Esta noche cierra el precio fundador y pasa a USD ' + SUBE_A + '.';
+      despues = '<b>Hoy es el último día</b> a este precio';
+    } else {
+      return;   // ya pasó: manda el texto del nuevo peldaño, no este reloj
+    }
+
+    const b = document.querySelector('[data-cuenta="banner"]');
+    const d = document.querySelector('[data-cuenta="despues"]');
+    if (b) b.innerHTML = banner;
+    if (d) d.innerHTML = despues;
+  })();
   </script>
 </body>
 </html>
