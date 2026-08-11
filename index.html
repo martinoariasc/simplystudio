@@ -130,6 +130,13 @@
     .m-row{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:auto;scroll-snap-type:none}.m-row::-webkit-scrollbar{display:none}
     .campaign-grid,.showcase-grid,.case-grid{scroll-behavior:auto}
     .m-track{display:flex;gap:18px;width:max-content}
+    /* El desplazamiento va por transform (lo mueve el compositor, no el hilo
+       principal): es lo que hace que se vea fluido hasta en teléfonos viejos. */
+    @keyframes ssMarquee{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+    .m-track.anda{animation:ssMarquee var(--dur,90s) linear infinite;will-change:transform}
+    .m-row.rev .m-track.anda{animation-direction:reverse}
+    .m-track.quieto{animation-play-state:paused}
+    @media(prefers-reduced-motion:reduce){.m-track.anda{animation:none}}
     .tcard{flex:0 0 min(360px,82vw);background:var(--white);border:1px solid var(--line);border-radius:24px;padding:26px 28px 22px;box-shadow:0 14px 40px rgba(38,54,44,.06);display:flex;flex-direction:column;gap:16px}
     .tcard-tag{align-self:flex-start;font:600 10px "DM Mono";letter-spacing:.06em;text-transform:uppercase;color:#4e6c54;background:rgba(78,108,84,.09);border-radius:99px;padding:5px 11px}
     .tcard-q{position:relative;color:var(--ink);font-size:15px;line-height:1.62;padding-top:16px}
@@ -312,12 +319,10 @@
     .prod-float{margin:0;transform-style:preserve-3d;will-change:transform;transition:transform .45s cubic-bezier(.16,1,.3,1)}
     .prod-float img{width:100%;height:auto;display:block;border-radius:26px;box-shadow:0 34px 90px rgba(23,23,19,.22);animation:prodFlotar 7s ease-in-out infinite;will-change:transform}
     /* El video ocupa el mismo lugar que la imagen y aparece cuando esta listo */
-    .prod-float video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:26px;opacity:0;transition:opacity .6s ease;pointer-events:none}
-    .prod-float.con-video{position:relative}
-    .prod-float.con-video video{opacity:1;box-shadow:0 34px 90px rgba(23,23,19,.22)}
-    .prod-float.con-video img{visibility:hidden}
-    .prod-float.con-video{animation:prodFlotar 7s ease-in-out infinite}
-    .prod-float.con-video img{animation:none}
+    .prod-float canvas{position:absolute;inset:0;width:100%;height:100%;display:block;border-radius:26px;opacity:0;transition:opacity .5s ease;pointer-events:none}
+    .prod-float.con-giro{position:relative;animation:prodFlotar 7s ease-in-out infinite}
+    .prod-float.con-giro canvas{opacity:1;box-shadow:0 34px 90px rgba(23,23,19,.22)}
+    .prod-float.con-giro img{visibility:hidden;animation:none}
     @keyframes prodFlotar{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-13px) rotate(.5deg)}}
     @media(max-width:900px){.hero-prod{max-width:min(92vw,480px);margin:4px auto 20px}.prod-float img{border-radius:20px;box-shadow:0 22px 60px rgba(23,23,19,.2)}}
     @media(prefers-reduced-motion:reduce){.prod-float img{animation:none}.prod-float{transition:none}}
@@ -460,8 +465,7 @@
                  sizes="(max-width:900px) 92vw, 620px"
                  width="1100" height="1100" fetchpriority="high" decoding="async"
                  alt="Prompt Ads — el sistema definitivo para crear anuncios de alta conversión, con ejemplos de piezas premium alrededor">
-            <video id="prodVid" playsinline muted preload="none" aria-hidden="true"
-                   poster="assets/producto/prompt-ads-hero.webp"></video>
+            <canvas id="prodGiro" width="620" height="620" aria-hidden="true"></canvas>
           </figure>
         </div>
 
@@ -819,7 +823,7 @@
       if(row.dataset.ssCarrusel) return true;                       // ya inicializado
       const setW = track.scrollWidth;
       if(!(setW > 200)) return false;                               // medida no fiable: reintentar
-      if(track === row && setW <= row.clientWidth + 8) return true; // no necesita desplazarse
+      if(setW <= row.clientWidth + 8) return true;                  // no necesita desplazarse
       const originales = Array.prototype.slice.call(track.children);
       if(!originales.length) return true;
       const reps = Math.min(3, Math.max(1, Math.ceil((row.clientWidth + 80) / setW)));
@@ -836,45 +840,50 @@
         });
       }
       track.querySelectorAll('.reveal').forEach(n=>n.classList.add('visible'));
-      let block = track.scrollWidth / 2;
-      if(!(block > 0)) return false;
       row.dataset.ssCarrusel = '1';
-      let pos = rev ? Math.max(0, block - 1) : 0;
-      row.scrollLeft = pos;
-      let paused = false, resumeT;
-      const remeasure = ()=>{ const b = track.scrollWidth / 2; if(b > 0){ block = b; if(pos >= block) pos = pos % block; } };
-      if(document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
-      addEventListener('resize', remeasure, { passive: true });
-      const pauseNow = ()=>{ paused = true; clearTimeout(resumeT); resumeT = setTimeout(()=>{ paused = false; }, 1600); };
-      row.addEventListener('pointerenter',()=>{ paused = true; });
-      row.addEventListener('pointerleave',()=>{ paused = false; });
-      ['wheel','touchstart','pointerdown'].forEach(ev=>row.addEventListener(ev, pauseNow, { passive: true }));
-      row.addEventListener('scroll',()=>{ if(paused) pos = row.scrollLeft; }, { passive: true });
-      (function tick(){
-        if(!reduced && !paused){
-          pos += speed;
-          if(pos >= block) pos -= block; else if(pos < 0) pos += block;
-          row.scrollLeft = pos;                                     // acumulador decimal: sin esto avanza a tirones
-        }
-        requestAnimationFrame(tick);
-      })();
 
-      // Red de seguridad: si por lo que sea la fila queda mostrando un hueco sin ninguna
-      // tarjeta (le pasaba a Safari en iOS al soltar el dedo en el borde), se vuelve al inicio.
-      // Comprueba cuatro veces por segundo y solo actua cuando de verdad no hay nada visible.
-      setInterval(function(){
-        if(document.hidden) return;
-        const caja = row.getBoundingClientRect();
-        if(caja.width <= 0 || caja.bottom < 0 || caja.top > innerHeight) return;   // fuera de pantalla: no gastar
-        const hijos = track.children;
-        for(let i = 0; i < hijos.length; i++){
-          const c = hijos[i].getBoundingClientRect();
-          if(c.width > 0 && c.right > caja.left + 4 && c.left < caja.right - 4) return;  // hay contenido: todo bien
-        }
-        pos = 0;
-        row.scrollLeft = 0;
-      }, 250);
+      // Mismo ritmo de antes (unos 33 px por segundo), pero como duración de una
+      // animación CSS. El -50% del recorrido cae justo en una copia entera, así
+      // que el bucle no tiene costura.
+      const vuelta = Math.max(Math.round(track.scrollWidth / 2 / 33), 20);
+      track.style.setProperty('--dur', vuelta + 's');
+      track.classList.add('anda');
+
+      // Se frena mientras la persona está mirando o deslizando.
+      let volver;
+      const frenar = ()=>{ track.classList.add('quieto'); clearTimeout(volver);
+                           volver = setTimeout(()=>track.classList.remove('quieto'), 1800); };
+      ['pointerdown','touchstart','wheel'].forEach(ev=>row.addEventListener(ev, frenar, { passive:true }));
+      row.addEventListener('pointerenter', ()=>{ clearTimeout(volver); track.classList.add('quieto'); });
+      row.addEventListener('pointerleave', ()=>track.classList.remove('quieto'));
+
+      // Si alguien desliza hasta el borde, vuelve al principio. Sin temporizadores:
+      // solo reacciona cuando de verdad se llegó al final.
+      row.addEventListener('scroll', ()=>{
+        if(row.scrollLeft + row.clientWidth >= row.scrollWidth - 4) row.scrollLeft = 0;
+      }, { passive:true });
       return true;
+    }
+
+    // En celular el showcase y el caso son galerías que se deslizan con el dedo.
+    // Antes se movían solas sin parar: gastaba batería y se veía a tirones. Ahora
+    // se les da un empujón la primera vez que aparecen, para que se note que hay
+    // más a la derecha, y después mandas tú.
+    function ssEmpujon(row){
+      if(!row || row.dataset.ssEmpujon) return;
+      if(row.scrollWidth <= row.clientWidth + 8) return;
+      row.dataset.ssEmpujon = '1';
+      const ob = new IntersectionObserver(es=>{
+        es.forEach(e=>{
+          if(!e.isIntersecting) return;
+          ob.disconnect();
+          setTimeout(()=>{
+            row.scrollTo({ left: Math.min(90, row.scrollWidth - row.clientWidth), behavior:'smooth' });
+            setTimeout(()=>row.scrollTo({ left: 0, behavior:'smooth' }), 750);
+          }, 350);
+        });
+      }, { threshold: .35 });
+      ob.observe(row);
     }
 
     function ssInitCarruseles(){
@@ -884,9 +893,7 @@
         if(!ssCarrusel(row, row.querySelector('.m-track'), rev ? -0.55 : 0.55, rev)) listo = false;
       });
       if(matchMedia('(max-width:900px)').matches){                  // en escritorio son grillas: no se tocan
-        document.querySelectorAll('.showcase-grid, .case-grid').forEach(row=>{
-          if(!ssCarrusel(row, row, 0.55, false)) listo = false;
-        });
+        document.querySelectorAll('.showcase-grid, .case-grid').forEach(ssEmpujon);
       }
       return listo;
     }
@@ -961,57 +968,64 @@
       addEventListener('resize', ()=>{ if(!pedido){ pedido = true; requestAnimationFrame(cuadro); } }, { passive:true });
       cuadro();
 
-      // ===== Video del producto atado al scroll =====
-      // No se reproduce solo: cada fotograma corresponde a cuánto bajó el visitante.
-      // Si el navegador no puede, la imagen se queda y no pasa nada.
+      // ===== Giro del producto atado al scroll =====
+      // Secuencia de 16 imágenes sobre canvas, no un video. El video no se movía
+      // en iPhone: Safari no hace búsqueda fotograma a fotograma con fluidez, así
+      // que quedaba congelado. Con imágenes se mueve igual en todos los teléfonos.
+      // Se cargan cuando el navegador está libre, así no retrasan la primera vista.
       (function(){
-        const vid = document.getElementById('prodVid');
+        const lienzo = document.getElementById('prodGiro');
         const fig = document.querySelector('.prod-float');
-        if(!vid || !fig) return;
+        if(!lienzo || !fig) return;
         if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        // Solo escritorio: en el celular la imagen flotante ya se ve bien y ahorramos 1,4 MB.
-        // Casi todo el tráfico viene de Instagram, así que esto protege la velocidad donde importa.
-        if(!matchMedia('(min-width:901px)').matches) return;
-
-        // aunque sea escritorio, respetamos el ahorro de datos
         const con = navigator.connection;
         if(con && (con.saveData || /2g/.test(con.effectiveType || ''))) return;
 
-        const fuente = document.createElement('source');
-        fuente.src = 'assets/producto/hero-giro.mp4';
-        fuente.type = 'video/mp4';
-        vid.appendChild(fuente);
-        vid.preload = 'auto';
-        vid.load();
+        const TOTAL = 16, cuadros = [];
+        let hechos = 0, fallos = 0;
 
-        vid.addEventListener('loadeddata', function(){
-          fig.classList.add('con-video');
-          try{ vid.pause(); vid.currentTime = 0; }catch(e){}
+        function arrancar(){
+          const ctx = lienzo.getContext('2d');
+          fig.classList.add('con-giro');
 
-          // Recorrido del giro. Se completa antes de que el producto salga del todo
-          // (factor 0.62) para que el giro se sienta ágil y no arrastrado.
-          let recorrido = 0;
-          function medir(){
-            const r = fig.getBoundingClientRect();
-            recorrido = Math.max((r.top + scrollY + r.height) * 0.62, 1);
-          }
+          let recorrido = 1;
+          const medir = ()=>{ const r = fig.getBoundingClientRect();
+                              recorrido = Math.max((r.top + scrollY + r.height) * 0.62, 1); };
           medir();
           addEventListener('resize', medir, { passive:true });
 
-          // Bucle continuo que ACERCA el video al objetivo en vez de saltar de golpe.
-          // Eso es lo que lo hace sentir un video reproduciéndose y no una tira de fotos.
-          const dur = vid.duration;
-          let objetivo = 0, actual = 0;
-          (function animar(){
-            objetivo = Math.min(Math.max(scrollY / recorrido, 0), 1) * (dur || 1);
-            actual += (objetivo - actual) * 0.16;              // suavizado
-            if(Math.abs(objetivo - actual) < 0.004) actual = objetivo;
-            if(Math.abs(vid.currentTime - actual) > 0.008){
-              try{ vid.currentTime = actual; }catch(e){}
+          // Se acerca al fotograma objetivo en vez de saltar, y deja de pedir
+          // cuadros cuando ya llegó: no hay bucle permanente gastando batería.
+          let actual = 0, pintado = -1, pedido = false;
+          function pide(){ if(!pedido){ pedido = true; requestAnimationFrame(pintar); } }
+          function pintar(){
+            pedido = false;
+            const objetivo = Math.min(Math.max(scrollY / recorrido, 0), 1) * (TOTAL - 1);
+            actual += (objetivo - actual) * 0.22;
+            if(Math.abs(objetivo - actual) < 0.02) actual = objetivo;
+            const i = Math.round(actual);
+            if(i !== pintado && cuadros[i]){
+              ctx.drawImage(cuadros[i], 0, 0, lienzo.width, lienzo.height);
+              pintado = i;
             }
-            requestAnimationFrame(animar);
-          })();
-        }, { once:true });
+            if(actual !== objetivo) pide();
+          }
+          addEventListener('scroll', pide, { passive:true });
+          pintar();
+        }
+
+        function cargar(){
+          for(let n = 1; n <= TOTAL; n++){
+            const im = new Image();
+            im.decoding = 'async';
+            im.onload  = ()=>{ hechos++; if(hechos + fallos === TOTAL && !fallos) arrancar(); };
+            im.onerror = ()=>{ fallos++; };      // si falta alguno, se queda la imagen fija
+            im.src = 'assets/producto/giro/g' + (n < 10 ? '0' : '') + n + '.jpg';
+            cuadros[n - 1] = im;
+          }
+        }
+        if('requestIdleCallback' in window) requestIdleCallback(cargar, { timeout: 2500 });
+        else addEventListener('load', ()=>setTimeout(cargar, 400));
       })();
 
       // Inclinación 3D del producto siguiendo el mouse (solo escritorio con puntero fino)
