@@ -127,7 +127,7 @@
     /* Sin -webkit-overflow-scrolling:touch a proposito: en iOS crea una capa de GPU aparte y,
        al mover scrollLeft por JS en cada fotograma, Safari deja de repintar y la fila sale vacia.
        Desde iOS 13 la inercia ya es el comportamiento por defecto, asi que no hace falta. */
-    .m-row{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:auto;scroll-snap-type:none}.m-row::-webkit-scrollbar{display:none}
+    .m-row{overflow:hidden;scrollbar-width:none;-ms-overflow-style:none}.m-row::-webkit-scrollbar{display:none}
     .campaign-grid,.showcase-grid,.case-grid{scroll-behavior:auto}
     .m-track{display:flex;gap:18px;width:max-content}
     /* El desplazamiento va por transform (lo mueve el compositor, no el hilo
@@ -640,12 +640,12 @@
           <article class="tcard"><span class="tcard-tag">50+ piezas de una</span><p class="tcard-q">Con ChatGPT Plus saqué <b>más de 50 anuncios en una sentada</b>. Yo antes pagaba por cada pieza suelta. Todavía no lo termino de procesar.</p><div class="tcard-foot"><div class="tcard-av">LE</div><div class="tcard-id"><b>Lucía E.</b><span>Ecommerce</span></div></div></article>
           <article class="tcard"><p class="tcard-q">Recién después de aprender todo lo que hay acá adentro me di cuenta de que <b>los anuncios que yo hacía eran feísimos</b> jajaja. Ahora es otra cosa, se nota un montón la diferencia. Recomendado al máximo la verdad.</p><div class="tcard-foot"><div class="tcard-av">AT</div><div class="tcard-id"><b>Alejandro T.</b><span>Dropshipping</span></div></div></article>
           <article class="tcard"><span class="tcard-tag">Mueblería · fotos del celular</span><p class="tcard-q">Tengo una mueblería y siempre hice los anuncios a mano, con fotos que sacaba con el celular. Ahora <b>con una sola foto del mueble ya tengo los anuncios en un santiamén</b>, y la calidad mejoró muchísimo. Los textos también, genera todo muy bien. Si seguís los pasos y le ponés tu creatividad lo exprimís al máximo. Muy bueno y recomendado!</p><div class="tcard-foot"><div class="tcard-av">EV</div><div class="tcard-id"><b>Elías V.</b><span>Mueblería</span></div></div></article>
-          <article class="tcard"><p class="tcard-q">Siempre dije que el que no está dispuesto a invertir en su negocio no avanza. Me arriesgué y quedé iluminado. Me gusta aprender cosas que de verdad sirvan, y esta es una. <b>Una sola observación: hay que sentarse a leer</b>, no es apretar un botón. Pero por eso mismo funciona. Muy recomendado.</p><div class="tcard-foot"><div class="tcard-av">DB</div><div class="tcard-id"><b>Daniel B.</b><span>Ecommerce</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Siempre dije que el que no está dispuesto a invertir en su negocio no avanza. Me arriesgué y quedé iluminado. Me gusta aprender cosas que de verdad sirvan, y esta es una. <b>Y encima es rápido</b>, no te lleva la tarde. Muy recomendado.</p><div class="tcard-foot"><div class="tcard-av">DB</div><div class="tcard-id"><b>Daniel B.</b><span>Ecommerce</span></div></div></article>
           <article class="tcard"><span class="tcard-tag">Sin saber diseño</span><p class="tcard-q">No sé nada de diseño y pensé que no era para mí. Es <b>arrastrar los PDFs que te dan y leer un poco la guía</b>, y ahí se te ilumina todo. Mi primera tanda salió el mismo día. Buenísimo!</p><div class="tcard-foot"><div class="tcard-av">SE</div><div class="tcard-id"><b>Sofía E.</b><span>Marca propia</span></div></div></article>
           <article class="tcard"><p class="tcard-q">Al principio no entendía nada y hasta desconfié un poco, pero adentro te explica tan bien cómo usarlo que <b>al ratito ya estaba sacando piezas</b>. Me da vergüenza haber dudado.</p><div class="tcard-foot"><div class="tcard-av">VG</div><div class="tcard-id"><b>Valentina G.</b><span>Dropshipping</span></div></div></article>
           <article class="tcard"><p class="tcard-q">Tengo una tienda online y renovar los creativos era un dolor de cabeza. Ahora <b>saco anuncios nuevos cada semana yo solo</b>, sin depender de nadie.</p><div class="tcard-foot"><div class="tcard-av">RG</div><div class="tcard-id"><b>Ricardo G.</b><span>Tienda online</span></div></div></article>
         </div></div>
-        <div class="marquee-hint"><span class="ar">‹</span> Desliza para ver más historias <span class="ar">›</span></div>
+        <div class="marquee-hint">Tócalas para frenarlas y leer con calma</div>
       </div>
     </section>
 
@@ -741,7 +741,7 @@
           <article class="tcard"><span class="tcard-tag">Nivel estudio, en minutos</span><p class="tcard-q">Hago contenido para varias marcas y esto me cambió el ritmo: <b>entrego piezas de nivel estudio en una fracción del tiempo</b>. Mis clientes ni saben cómo lo hago.</p><div class="tcard-foot"><div class="tcard-av">MD</div><div class="tcard-id"><b>Mathias D.</b><span>Freelance · contenido</span></div></div></article>
           <article class="tcard"><p class="tcard-q">Presento propuestas con <b>piezas que parecen de una agencia grande</b>, en la mitad del tiempo. En mi trabajo eso vale oro.</p><div class="tcard-foot"><div class="tcard-av">MV</div><div class="tcard-id"><b>Marta V.</b><span>Marketing</span></div></div></article>
         </div></div>
-        <div class="marquee-hint"><span class="ar">‹</span> Desliza para ver más historias <span class="ar">›</span></div>
+        <div class="marquee-hint">Tócalas para frenarlas y leer con calma</div>
       </div>
     </section>
 
@@ -863,11 +863,11 @@
       row.addEventListener('pointerenter', ()=>{ clearTimeout(volver); track.classList.add('quieto'); });
       row.addEventListener('pointerleave', ()=>track.classList.remove('quieto'));
 
-      // Si alguien desliza hasta el borde, vuelve al principio. Sin temporizadores:
-      // solo reacciona cuando de verdad se llegó al final.
-      row.addEventListener('scroll', ()=>{
-        if(row.scrollLeft + row.clientWidth >= row.scrollWidth - 4) row.scrollLeft = 0;
-      }, { passive:true });
+      // La fila ya no tiene scroll propio (overflow:hidden), asi que el dedo no
+      // puede sacarla de sitio. Pero el teclado si, al enfocar una tarjeta: el
+      // navegador la trae a la vista y desplaza la fila, dejando el hueco en
+      // blanco. Esto la devuelve a su sitio siempre.
+      row.addEventListener('scroll', ()=>{ if(row.scrollLeft !== 0) row.scrollLeft = 0; }, { passive:true });
       return true;
     }
 
