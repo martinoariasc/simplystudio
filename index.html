@@ -133,7 +133,8 @@
     /* Todo se mueve con transform, que el compositor pinta con decimales: por eso
        va suave y no de píxel en píxel. Y como la fila no tiene scroll propio, no
        hay dos sistemas midiendo distinto: el hueco en blanco es imposible. */
-    .m-track{will-change:transform}
+    /* Sin will-change: la pista mide más de 16.000 px y pedirle al navegador que
+       la mantenga rasterizada entera son decenas de MB de textura por fila. */
     .m-track img,.m-track .tcard{user-select:none;-webkit-user-drag:none}
     .tcard{flex:0 0 min(360px,82vw);background:var(--white);border:1px solid var(--line);border-radius:24px;padding:26px 28px 22px;box-shadow:0 14px 40px rgba(38,54,44,.06);display:flex;flex-direction:column;gap:16px}
     .tcard-tag{align-self:flex-start;font:600 10px "DM Mono";letter-spacing:.06em;text-transform:uppercase;color:#4e6c54;background:rgba(78,108,84,.09);border-radius:99px;padding:5px 11px}
@@ -314,16 +315,22 @@
     @media(prefers-reduced-motion:reduce){ body.fondo-grano::after,body.fondo-degradado::after{opacity:.03} }
     /* ===== Producto flotante en el hero ===== */
     .hero-prod{max-width:620px;margin:8px auto 26px;perspective:1100px}
-    .prod-float{position:relative;margin:0;transform-style:preserve-3d;will-change:transform;transition:transform .45s cubic-bezier(.16,1,.3,1)}
-    .prod-float img{width:100%;height:auto;display:block;border-radius:26px;box-shadow:0 34px 90px rgba(23,23,19,.22);animation:prodFlotar 7s ease-in-out infinite;will-change:transform}
+    /* Sin preserve-3d a propósito: con 25 fotogramas hijos posicionados, esa
+       propiedad promovía cada uno a su propia capa de GPU. 25 capas de 1080px
+       es lo que hacía ir lenta la página. */
+    .prod-float{position:relative;margin:0;transition:transform .45s cubic-bezier(.16,1,.3,1)}
+    .prod-float img{width:100%;height:auto;display:block;border-radius:26px;box-shadow:0 34px 90px rgba(23,23,19,.22);animation:prodFlotar 7s ease-in-out infinite}
     /* El video ocupa el mismo lugar que la imagen y aparece cuando esta listo */
     /* Pila de fotogramas: todos superpuestos, solo uno visible. Cambiar cuál se
        ve es lo más soportado que hay — no hace falta canvas ni dibujar nada. */
     .prod-float .giro{position:absolute;inset:0;border-radius:26px;overflow:hidden;opacity:0;transition:opacity .4s ease;pointer-events:none}
     /* Todas opacas y apiladas: lo único que cambia es cuál queda encima. Así
        nunca hay un instante con nada visible, que es lo que se veía como parpadeo. */
-    .prod-float .giro img{position:absolute;inset:0;width:100%;height:100%;display:block;animation:none!important;border-radius:0;box-shadow:none;z-index:0}
-    .prod-float .giro img.on{z-index:2}
+    /* Solo el fotograma activo se pinta. Los demás quedan fuera del pintado:
+       con los 25 visibles a la vez el navegador rasterizaba 124 MB de imagen.
+       No parpadea porque cada uno se descodifica ANTES de entrar en la rotación. */
+    .prod-float .giro img{position:absolute;inset:0;width:100%;height:100%;display:block;animation:none!important;border-radius:0;box-shadow:none;visibility:hidden}
+    .prod-float .giro img.on{visibility:visible}
     .prod-float.con-giro{animation:prodFlotar 7s ease-in-out infinite}
     .prod-float.con-giro .giro{opacity:1;box-shadow:0 34px 90px rgba(23,23,19,.22)}
     .prod-float.con-giro > #prodImg{visibility:hidden;animation:none}
@@ -832,7 +839,10 @@
       if(!originales.length) return true;
       // Cuatro copias: el bucle avanza una copia entera y por delante quedan
       // otras tres de margen, para que el dedo no llegue nunca al borde.
-      const COPIAS = 4;
+      // Dos copias alcanzan: el bucle envuelve dentro de una copia y una copia
+      // ya es más ancha que la pantalla. Con cuatro se duplicaba el trabajo de
+      // pintado sin ganar nada.
+      const COPIAS = 2;
       const reps = Math.min(3, Math.max(1, Math.ceil((row.clientWidth + 80) / setW)));
       for(let r = 0; r < reps * COPIAS - 1; r++){
         originales.forEach(n=>{
@@ -1044,7 +1054,11 @@
         if(con && (con.saveData || /2g/.test(con.effectiveType || ''))) return;
 
         var TOTAL  = 25;
-        var ANCHO  = (window.innerWidth > 900) ? 'giro-1080' : 'giro-760';
+        // El juego grande solo donde de verdad se nota: pantallas de mucha
+        // densidad. Un monitor normal muestra el producto a unos 620 px reales,
+        // así que con 760 se ve idéntico y ocupa la mitad de memoria.
+        var densidad = window.devicePixelRatio || 1;
+        var ANCHO  = (window.innerWidth > 900 && densidad >= 1.5) ? 'giro-1080' : 'giro-760';
         var imgs   = new Array(TOTAL);
         var listo  = new Array(TOTAL);
         var actual = -1, vivo = false, pedido = false, recorrido = 1;
