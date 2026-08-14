@@ -1171,18 +1171,18 @@
     } else if (dias > 1) {
       banner  = '<b>Quedan ' + dias + ' días</b> a USD ' + PRECIO + '. Después sube a <b>USD ' + SUBE_A + '</b>.';
       despues = 'Quedan <b>' + dias + ' días</b> · después, <b>USD ' + SUBE_A + '</b>';
-      movilArriba = 'Quedan ' + dias + ' días a USD ' + PRECIO;
+      movilArriba = 'Quedan ' + dias + ' días';
       movil       = 'Después sube a USD ' + SUBE_A;
     } else if (dias === 1) {
       banner  = '<b>Último día con el precio más bajo que va a tener.</b> Mañana sube a <b>USD ' + SUBE_A + '</b>.';
       despues = '<b>Mañana sube a USD ' + SUBE_A + '</b>';
-      movilArriba = 'Último día a USD ' + PRECIO;
+      movilArriba = 'Último día';
       movil       = 'Mañana sube a USD ' + SUBE_A;
     } else if (dias === 0) {
       banner  = '<b>Hoy cierra a USD ' + PRECIO + '.</b> Esta noche pasa a <b>USD ' + SUBE_A + '</b>.';
       despues = '<b>Hoy es el último día</b> a USD ' + PRECIO;
-      movilArriba = 'Último día a USD ' + PRECIO;
-      movil       = 'Hoy sube a USD ' + SUBE_A;
+      movilArriba = 'Último día';
+      movil       = 'Esta noche sube a USD ' + SUBE_A;
     } else {
       return;   // ya pasó: manda el texto del nuevo peldaño, no este reloj
     }
