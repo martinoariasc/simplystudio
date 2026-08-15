@@ -443,7 +443,7 @@
 <body>
   <div class="announcement">
     <div class="shell announcement-inner">
-      <span data-cuenta="banner"><b>Lanzamiento:</b> precio fundador <b>hasta el 15 de agosto</b> — el más bajo que va a tener. Al cerrar, sube.</span>
+      <span data-cuenta="banner"><b>Cerró el precio fundador.</b> Este precio se mantiene <b>hasta el 31 de agosto</b> — después sube a USD 67.</span>
       <a href="#precio">Asegurar mi precio</a>
     </div>
   </div>
@@ -699,14 +699,14 @@
             </ul>
             <div class="stack-total"><span>Valor total</span><b><s>USD 154</s></b></div>
             <div class="price-reveal">
-              <span class="launch-tag">Precio fundador · edición de lanzamiento</span>
-              <div class="price"><sup>USD</sup>27</div>
-              <p class="price-after" data-cuenta="despues">El <b>15 de agosto</b> pasa a <b>USD 47</b></p>
+              <span class="launch-tag">Precio de lanzamiento</span>
+              <div class="price"><sup>USD</sup>47</div>
+              <p class="price-after" data-cuenta="despues">El <b>1 de septiembre</b> pasa a <b>USD 67</b></p>
             </div>
             <a class="btn checkout" href="https://pay.hotmart.com/Y106693224R?checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads</a>
             <div class="trust-row"><span>Pago único</span><span>Acceso inmediato</span><span>Compra segura</span><span>Garantía 7 días</span></div>
             <p class="secure">CHECKOUT SEGURO MEDIANTE HOTMART</p>
-            <p class="price-note">El lanzamiento cierra el <b>15 de agosto</b>. Comprando ahora aseguras el precio fundador para siempre, con todas las actualizaciones de esta edición incluidas.</p>
+            <p class="price-note">Este precio se mantiene <b>hasta el 31 de agosto</b>. Comprando ahora lo aseguras para siempre, con todas las actualizaciones de esta edición incluidas.</p>
           </aside>
         </div>
       </div>
@@ -774,7 +774,7 @@
     </div>
   </footer>
 
-  <div class="mobile-buy" id="mobileBuy"><div><span data-cuenta="movil-arriba">Precio fundador</span><b data-cuenta="movil">Después sube a USD 47</b></div><a href="#precio" class="btn">Aprovechar oferta</a></div>
+  <div class="mobile-buy" id="mobileBuy"><div><span data-cuenta="movil-arriba">Precio de lanzamiento</span><b data-cuenta="movil">Después sube a USD 67</b></div><a href="#precio" class="btn">Aprovechar oferta</a></div>
   <dialog class="lightbox" id="lightbox" aria-label="Vista ampliada del anuncio">
     <button class="lightbox-close" aria-label="Cerrar vista ampliada">×</button>
     <img loading="lazy" decoding="async" id="lightboxImage" alt="Anuncio ampliado" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
@@ -1000,7 +1000,7 @@
           }
           a.href=u.toString();
         }catch(e){}
-        a.addEventListener('click',()=>{ if(window.ssTrack) ssTrack('InitiateCheckout', false, {value:27, currency:'USD'}); });
+        a.addEventListener('click',()=>{ if(window.ssTrack) ssTrack('InitiateCheckout', false, {value:47, currency:'USD'}); });
       });
     })();
     addEventListener('contextmenu',event=>event.preventDefault());
@@ -1148,10 +1148,10 @@
      actualiza sola cuando pasás de peldaño, así que esto no se toca a mano.
      Si algo falla, queda el texto que ya estaba escrito en el HTML.        */
   (function(){
-    const LIMITE = '2026-08-15';      // cuando sube el precio
-    const PRECIO = 27;                // el de ahora
-    const SUBE_A = 47;
-    const PELDANO = 'precio fundador';   // cómo se llama el precio de ahora
+    const LIMITE = '2026-09-01';      // cuando sube el precio
+    const PRECIO = 47;                // el de ahora
+    const SUBE_A = 67;
+    const PELDANO = 'precio de lanzamiento';   // cómo se llama el precio de ahora
 
     const MAY = s => s.charAt(0).toUpperCase() + s.slice(1);
 
