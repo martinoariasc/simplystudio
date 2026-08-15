@@ -1164,12 +1164,12 @@
     // tiene su propio texto y no uno genérico.
     let banner, despues, movil, movilArriba;
     if (dias > 5) {
-      banner  = '<b>' + MAY(PELDANO) + ':</b> USD ' + PRECIO + '. Sube a <b>USD ' + SUBE_A + '</b> en ' + dias + ' días.';
+      banner  = '<b>' + MAY(PELDANO) + ':</b> sube a <b>USD ' + SUBE_A + '</b> en ' + dias + ' días.';
       despues = 'Sube a <b>USD ' + SUBE_A + '</b> en <b>' + dias + ' días</b>';
       movilArriba = MAY(PELDANO);
       movil       = 'Después sube a USD ' + SUBE_A;
     } else if (dias > 1) {
-      banner  = '<b>Quedan ' + dias + ' días</b> a USD ' + PRECIO + '. Después sube a <b>USD ' + SUBE_A + '</b>.';
+      banner  = '<b>Quedan ' + dias + ' días</b> de ' + PELDANO + '. Después sube a <b>USD ' + SUBE_A + '</b>.';
       despues = 'Quedan <b>' + dias + ' días</b> · después, <b>USD ' + SUBE_A + '</b>';
       movilArriba = 'Quedan ' + dias + ' días';
       movil       = 'Después sube a USD ' + SUBE_A;
@@ -1179,8 +1179,8 @@
       movilArriba = 'Último día';
       movil       = 'Mañana sube a USD ' + SUBE_A;
     } else if (dias === 0) {
-      banner  = '<b>Hoy cierra a USD ' + PRECIO + '.</b> Esta noche pasa a <b>USD ' + SUBE_A + '</b>.';
-      despues = '<b>Hoy es el último día</b> a USD ' + PRECIO;
+      banner  = '<b>Hoy cierra.</b> Esta noche sube a <b>USD ' + SUBE_A + '</b>.';
+      despues = '<b>Hoy es el último día</b> a este precio';
       movilArriba = 'Último día';
       movil       = 'Esta noche sube a USD ' + SUBE_A;
     } else {
