@@ -300,6 +300,9 @@ const miniScript = '\n<script>\n' +
 '  var h=document.querySelector("header");\n' +
 '  var f=function(){ h&&h.classList.toggle("con-linea", scrollY>10); };\n' +
 '  f(); addEventListener("scroll", f, {passive:true});\n' +
+'  /* la barra fija de compra se esconde mientras la tarjeta de precio esta a la vista (ahi sobra) */\n' +
+'  var pc=document.getElementById("precio");\n' +
+'  if(pc&&"IntersectionObserver" in window){ new IntersectionObserver(function(es){ document.documentElement.classList.toggle("precio-visible", es[0].isIntersecting); },{threshold:0.15}).observe(pc); }\n' +
 '  /* reveal robusto: cualquier interseccion enciende, y hay red a los 3 s */\n' +
 '  var rv=[].slice.call(document.querySelectorAll(".reveal"));\n' +
 '  if("IntersectionObserver" in window){\n' +
@@ -379,6 +382,7 @@ salida = salida.replace(/<div class="truth">[\s\S]*?<\/div>/,
   '<div class="truth">Nadie lee antes de juzgar. <strong>Deciden en dos segundos, con los ojos.</strong> Y si tu anuncio se ve barato, tu producto se ve barato, por bueno que sea. No es culpa tuya: nadie te enseñó a dirigir una imagen. <strong>No pierdes ventas por tu precio. Las pierdes antes, en la primera mirada.</strong></div>');
 parrafo('Mira los dos.',
   'Mira los dos. El primero es el típico anuncio que ves en todos lados y que se nota que está hecho con IA. El segundo es el mismo producto con <b>dirección visual de Prompt Ads</b>.');
+salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si no te sirve, te devolvemos tu dinero.</h2>');
 salida = salida.replace('<h2>Uno se ignora. El otro se siente como <em>marca.</em></h2>', '<h2>Uno se ignora. El otro se siente <em>premium.</em></h2>');
 parrafo('No son prompts sueltos',
   'No son prompts sueltos para que pruebes suerte. Son seis piezas que trabajan juntas y hacen el trabajo pesado por ti: el motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora.');

@@ -1311,6 +1311,32 @@ main{
 /* el problema quedó corto: menos aire abajo */
 .pain{padding-bottom:clamp(56px,7vw,96px)}
 
+/* ================================================================
+   v10 · TARJETA DE PRECIO: el orden de venta manda
+   Lista de valor → total tachado (USD 205) → precio (47) → botón.
+   En celular no se reordena (el ancla de valor tiene que ir antes del
+   precio); en cambio se compacta para que precio y botón entren en la
+   primera pantalla después del salto.
+   ================================================================ */
+@media (max-width:720px){
+  .price-card{display:block}
+  .price-card>.price-reveal,.price-card>.btn,.price-card>.trust-row,.price-card>.secure,.price-card>.eyebrow,.price-card>.stack,.price-card>.stack-total,.price-card>.price-note{order:0;margin-top:0}
+  .price-card{padding:22px 18px 20px}
+  .stack{margin-top:12px}
+  .stack li{font-size:13.5px;padding:8px 0}
+  .stack-total{font-size:20px;padding:12px 0 0}
+  .price-reveal{margin-top:14px;padding-top:14px}
+  .price{margin:6px 0 4px}
+  .price{font-size:64px}
+  .price-card .btn{margin-top:12px;min-height:54px}
+  .trust-row{margin-top:12px}
+  .secure{margin-top:8px}
+  .price-note{margin-top:12px;font-size:12.5px}
+}
+/* barra fija de compra: fuera de la vista mientras la tarjeta de precio está en pantalla */
+html.precio-visible .mobile-buy.show{transform:translateY(110%)}
+@media (max-width:720px){.secure{margin-top:12px}}
+
 /* ---- contrato del giro (verbatim del original) ---- */
     .hero-prod{max-width:620px;margin:8px auto 26px;perspective:1100px}
     .prod-float{position:relative;margin:0;transition:transform .45s cubic-bezier(.16,1,.3,1)}
@@ -1812,7 +1838,7 @@ main{
       <div class="shell guarantee-box reveal">
         <div class="seal"><div><b>7 días</b><span>Satisfacción o reembolso</span></div></div>
         <div>
-          <h2>Si no te sirve, te devolvemos todo.</h2>
+          <h2>Si no te sirve, te devolvemos tu dinero.</h2>
           <p>Pruébalo <b>7 días</b>. Si no es para ti, pides el reembolso y recibes el <b>100% de tu dinero</b>. Sin vueltas y sin preguntas incómodas: lo procesa Hotmart, así que tu compra está protegida de punta a punta. <b>Todo el riesgo lo ponemos nosotros.</b></p>
           <p>Y no te dejamos solo. Si te trabas en algún punto, escríbenos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a> y te damos una mano directa. Queremos que te salga, no que compres y te olvides.</p>
         </div>
@@ -2304,6 +2330,9 @@ main{
   var h=document.querySelector("header");
   var f=function(){ h&&h.classList.toggle("con-linea", scrollY>10); };
   f(); addEventListener("scroll", f, {passive:true});
+  /* la barra fija de compra se esconde mientras la tarjeta de precio esta a la vista (ahi sobra) */
+  var pc=document.getElementById("precio");
+  if(pc&&"IntersectionObserver" in window){ new IntersectionObserver(function(es){ document.documentElement.classList.toggle("precio-visible", es[0].isIntersecting); },{threshold:0.15}).observe(pc); }
   /* reveal robusto: cualquier interseccion enciende, y hay red a los 3 s */
   var rv=[].slice.call(document.querySelectorAll(".reveal"));
   if("IntersectionObserver" in window){

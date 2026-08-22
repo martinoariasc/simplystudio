@@ -425,3 +425,29 @@ main{
 
 /* el problema quedó corto: menos aire abajo */
 .pain{padding-bottom:clamp(56px,7vw,96px)}
+
+/* ================================================================
+   v10 · TARJETA DE PRECIO: el orden de venta manda
+   Lista de valor → total tachado (USD 205) → precio (47) → botón.
+   En celular no se reordena (el ancla de valor tiene que ir antes del
+   precio); en cambio se compacta para que precio y botón entren en la
+   primera pantalla después del salto.
+   ================================================================ */
+@media (max-width:720px){
+  .price-card{display:block}
+  .price-card>.price-reveal,.price-card>.btn,.price-card>.trust-row,.price-card>.secure,.price-card>.eyebrow,.price-card>.stack,.price-card>.stack-total,.price-card>.price-note{order:0;margin-top:0}
+  .price-card{padding:22px 18px 20px}
+  .stack{margin-top:12px}
+  .stack li{font-size:13.5px;padding:8px 0}
+  .stack-total{font-size:20px;padding:12px 0 0}
+  .price-reveal{margin-top:14px;padding-top:14px}
+  .price{margin:6px 0 4px}
+  .price{font-size:64px}
+  .price-card .btn{margin-top:12px;min-height:54px}
+  .trust-row{margin-top:12px}
+  .secure{margin-top:8px}
+  .price-note{margin-top:12px;font-size:12.5px}
+}
+/* barra fija de compra: fuera de la vista mientras la tarjeta de precio está en pantalla */
+html.precio-visible .mobile-buy.show{transform:translateY(110%)}
+@media (max-width:720px){.secure{margin-top:12px}}
