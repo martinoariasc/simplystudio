@@ -518,3 +518,11 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
 .v2-cuenta{border-color:rgba(179,69,59,.28)}
 .v2-cuenta-mini b{color:#F07A6E}
 .v2-cuenta-mini{border-color:rgba(240,122,110,.38)}
+
+/* el empujón final antes del botón: serif en itálica, humano, sin gritar */
+.v2-empuje{
+  margin:16px auto 14px;max-width:34ch;text-align:center;
+  font-family:var(--serif);font-style:italic;font-size:17px;line-height:1.4;color:var(--ink-2);
+}
+.v2-empuje b{font-style:normal;font-weight:400;color:var(--forest)}
+@media (max-width:720px){.v2-empuje{font-size:16px;margin:12px auto 10px}}

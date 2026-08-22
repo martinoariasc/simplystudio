@@ -430,6 +430,11 @@ salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si 
     const fin = card.indexOf('</p>', card.indexOf('class="price-after"'));
     if (fin === -1) avisos.push('tarjeta: no encontre price-after');
     else card = card.slice(0, fin + 4) + cuenta + card.slice(fin + 4);
+    /* el empujon final, justo antes del boton (Martino elige la version) */
+    const EMPUJE = 'Aprovecha la oportunidad: tienes <b>7 días de garantía</b> y, si no te sirve, recuperas tu dinero. <b>No te vas a arrepentir.</b>';
+    const btn = card.indexOf('<a class="btn checkout"');
+    if (btn === -1) avisos.push('tarjeta: no encontre el boton de compra');
+    else card = card.slice(0, btn) + '<p class="v2-empuje">' + EMPUJE + '</p>\n            ' + card.slice(btn);
     salida = salida.slice(0, c0) + card + salida.slice(c1);
   }
 }
