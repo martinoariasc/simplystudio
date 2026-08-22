@@ -448,7 +448,7 @@ parrafo('Entra con el sistema listo',
 parrafo('Pruébalo',
   'Pruébalo <b>7 días</b>. Si no es para ti, pides el reembolso y recibes el <b>100% de tu dinero</b>. Sin vueltas y sin preguntas incómodas: lo procesa Hotmart, así que tu compra está protegida de punta a punta. <b>Todo el riesgo lo ponemos nosotros.</b>');
 parrafo('Y no te dejamos solo',
-  'Y no te dejamos solo. Si te trabas en algún punto, escríbenos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a> y te damos una mano directa. Queremos que te salga, no que compres y te olvides.');
+  'Y no te dejamos solo. Si te trabas en algún punto, escríbenos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a> y te damos una mano directa. Queremos que de verdad te pueda ser útil, no que compres y no lo uses.');
 parrafo('Si vendes algo real y necesitas mostrarlo mejor, funciona.',
   'Si vendes algo real y estás cansado de crear anuncios o contenido que se nota que están hechos con IA, esto es para ti. <b>Tú pones la foto y tus datos; el sistema pone la dirección creativa.</b> El tiempo que te ahorra, lo usas en vender.');
 /* testimonios: vuelven las frases mas vivas de la version del 7/08 (!!, muuuy, taaan) y la de Martino tal cual */
