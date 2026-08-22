@@ -2391,7 +2391,7 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
   var h=document.querySelector("header");
   var f=function(){ h&&h.classList.toggle("con-linea", scrollY>10); };
   f(); addEventListener("scroll", f, {passive:true});
-  /* cuenta regresiva: toma LIMITE del script original del precio (cambiar-precio.js lo actualiza), asi no hay dos fechas */
+  /* cuenta regresiva: toma LIMITE del script original del precio (el script del precio la actualiza solo), asi no hay dos fechas */
   /* en la barra de arriba, el "en N dias" se vuelve contador; el script original ya escribio el texto (corre antes) */
   var ban=document.querySelector("[data-cuenta=banner]");
   if(ban){

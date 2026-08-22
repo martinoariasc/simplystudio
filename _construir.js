@@ -300,7 +300,7 @@ const miniScript = '\n<script>\n' +
 '  var h=document.querySelector("header");\n' +
 '  var f=function(){ h&&h.classList.toggle("con-linea", scrollY>10); };\n' +
 '  f(); addEventListener("scroll", f, {passive:true});\n' +
-'  /* cuenta regresiva: toma LIMITE del script original del precio (cambiar-precio.js lo actualiza), asi no hay dos fechas */\n' +
+'  /* cuenta regresiva: toma LIMITE del script original del precio (el script del precio la actualiza solo), asi no hay dos fechas */\n' +
 '  /* en la barra de arriba, el "en N dias" se vuelve contador; el script original ya escribio el texto (corre antes) */\n' +
 '  var ban=document.querySelector("[data-cuenta=banner]");\n' +
 '  if(ban){\n' +

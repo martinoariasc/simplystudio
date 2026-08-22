@@ -9,6 +9,8 @@ const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const base = fs.readFileSync('_nueva.html', 'utf8');
 const VISTAS = [
   ['hero', 1440, 1000, null],
+  ['barra', 1440, 160, null],
+  ['movil-barra', 500, 220, null],
   ['alto', 1440, 3200, null],
   ['hero-texto', 1440, 620, '.v2-hero-sub', -150],
   ['movil-hero-texto', 500, 760, '.v2-hero-sub', -120],
@@ -21,6 +23,8 @@ const VISTAS = [
   ['nichos', 1440, 1000, '.audience', 0],
   ['opiniones', 1440, 1000, '.proof', 0],
   ['oferta', 1440, 1100, '.offer', 0],
+  ['precio', 1440, 1000, '.price-card', -60],
+  ['cta-sistema', 1440, 500, '.inside .v2-cta', -200],
   ['faq', 1440, 800, '.faq', -140],
   ['movil-faq', 500, 900, '.faq', -120],
   ['movil-hero', 500, 1000, null],
