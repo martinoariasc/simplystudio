@@ -87,7 +87,7 @@ function rearmarHero(sec) {
   const figura = corta(sec, '<figure class="prod-float"', '</figure>');
   if (!h1 || !figura) { avisos.push('OJO: hero incompleto, va verbatim'); return sec; }
 
-  const sub = 'Sabemos lo que es perder una tarde entera peleando con un anuncio que al final no te trae los resultados que esperabas. Por eso existe Prompt Ads: <b>el sistema de PDFs que hace que tu marca se vea como las que facturan millones</b>. Subes una foto de lo que vendes y en minutos tienes una tanda de anuncios premium, de los que una agencia te cobraría <b>+USD 1.000</b>. Sin sesión de fotos, sin saber diseño y de la manera más fácil y rápida posible.';
+  const sub = 'Sabemos lo que es perder una tarde entera creando unos pocos anuncios y que al final, después de mucho esfuerzo, no traigan los resultados esperados o ningún resultado. Por eso existe Prompt Ads: <b>el sistema de PDFs que hace que tu marca se vea como las que facturan millones</b>. Subes una foto de lo que vendes y en minutos tienes una tanda de anuncios premium, de los que una agencia te cobraría <b>+USD 1.000</b>. Sin sesión de fotos, sin saber diseño y de la manera más fácil y rápida posible.';
   /* titular pedido para la nueva: arranca con la accion y el numero */
   h1.texto = '<h1>Empieza a crear <em>+50 anuncios premium</em> en menos de 5 minutos y <em>aumenta tus ventas.</em></h1>';
   if (pill) pill.texto = pill.texto.replace(/Prompts \+ gu[ií]as \+ sistema de correcci[oó]n/, 'Más de 50 anuncios premium en minutos');
