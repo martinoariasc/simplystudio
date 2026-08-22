@@ -248,7 +248,7 @@ function origen(sec) {
   const pasos = '<div class="v2-como reveal"><span class="eyebrow">Cómo se hace</span><h3>En tres pasos ya tienes tu tanda.</h3></div>\n' +
     '<div class="case-steps">\n' +
     '<article class="case-step reveal"><span>Paso 01</span><b>Arrastras los archivos</b><p>Los seis PDFs del sistema, al chat.</p></article>\n' +
-    '<article class="case-step reveal"><span>Paso 02</span><b>Sumas tu producto</b><p>También puedes agregar tu logo.</p></article>\n' +
+    '<article class="case-step reveal"><span>Paso 02</span><b>Sumas tu producto</b><p>Una foto, tu logo y un detalle que la guía te enseña en dos minutos.</p></article>\n' +
     '<article class="case-step reveal"><span>Paso 03</span><b>Envías el mensaje y esperas a que los anuncios estén listos</b><p>Puedes tener +50 anuncios en pocos minutos. Ahorras tiempo y dinero sin contratar a nadie.</p></article>\n' +
     '</div>';
   const finPasos = sec.indexOf('</div>', sec.indexOf('</article>', sec.lastIndexOf('<article class="case-step'))) + 6;
@@ -438,6 +438,29 @@ parrafo('Y no te dejamos solo',
   'Y no te dejamos solo. Si te trabas en algún punto, escríbenos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a> y te damos una mano directa. Queremos que te salga, no que compres y te olvides.');
 parrafo('Si vendes algo real y necesitas mostrarlo mejor, funciona.',
   'Si vendes algo real y estás cansado de crear anuncios o contenido que se nota que están hechos con IA, esto es para ti. <b>Tú pones la foto y tus datos; el sistema pone la dirección creativa.</b> El tiempo que te ahorra, lo usas en vender.');
+/* testimonios: vuelven las frases mas vivas de la version del 7/08 (!!, muuuy, taaan) y la de Martino tal cual */
+const TESTIMONIOS = {
+  'Michael T.': 'Empecé usándolo para mi propia marca y terminé armando una empresa aparte que le hace el contenido a otras agencias. <b>Nunca pensé que un producto de este precio me iba a abrir un ingreso nuevo!!</b>',
+  'Melanie D.': 'Mis primeros anuncios los tuve en 5 minutos, y después <b>una tanda de más de 100 anuncios en menos de media hora</b>. Estoy muuuy agradecida con esta empresa, el producto es genial!!',
+  'Sofía E.': 'No sé nada de diseño y pensé que no era para mí… es arrastrar archivos y escribir lo que quieres nomás. <b>Mi primera tanda me salió el mismo día!!</b>',
+  'Valentina G.': 'Al principio no entendía nada y ni confiaba, pero adentro te explica taaan bien cómo usarlo que <b>al ratito ya tenía muchísimos anuncios listos jajjaja</b>',
+  'Ricardo G.': 'Tengo una tienda online y renovar los creativos era un dolor de cabeza total. Ahora saco anuncios nuevos cada semana yo solo, <b>y se nota en las ventas!!</b>',
+  'Enrique G.': 'Tengo un local y nunca pude pagarme una sesión de fotos. Ahora mis publicaciones se ven como las de las marcas grandes <b>y me lo dicen los clientes!!</b>',
+  'Mathias D.': 'Creo contenido para varias marcas y esto me cambió el ritmo: entrego piezas de nivel estudio en una fracción del tiempo. <b>Mis clientes quedan felices!!</b>',
+  'Lucía E.': 'Con ChatGPT Plus saqué más de 50 anuncios en una sentada, y todos con <b>calidad de un diseñador que me cobraría miles de dólares</b>. Todavía no lo puedo creer.',
+  'Camila S.': 'Increíble cómo ayuda a crear mejores anuncios. La diferencia con lo que hacía antes es enorme, <b>no hay con qué darle</b>.',
+  'Cesar T.': 'El producto está muy pero muy bueno y súper fácil de usar. Pensé que iba a ser complicadísimo y en realidad <b>lo puede hacer cualquiera</b>.',
+};
+{
+  const vistos = {};
+  salida = salida.replace(/(<p class="tcard-q">)([\s\S]*?)(<\/p>[\s\S]{0,400}?<b>)([^<]*)(<\/b>)/g, (m, a, q, mid, quien, z) => {
+    const k = quien.trim(); if (!TESTIMONIOS[k]) return m; vistos[k] = (vistos[k] || 0) + 1; return a + TESTIMONIOS[k] + mid + quien + z;
+  });
+  Object.keys(TESTIMONIOS).forEach(k => { if (!vistos[k]) avisos.push('testimonio sin aplicar: ' + k); });
+}
+
+parrafo('Ángulos de venta distintos del mismo producto',
+  'Hay un paso más, y es el que separa un anuncio genérico de uno premium. No lo contamos acá: está dentro de la guía, con capturas, y lleva dos minutos. <b>Es lo que hace que esto no se pueda copiar con prompts sueltos.</b> Solo necesitas ChatGPT y una foto.');
 parrafo('Tomamos la foto de un producto cualquiera',
   'Tomamos la foto de un producto cualquiera, unas zapatillas, y en menos de 5 minutos salieron todos estos anuncios. Dentro del sistema ves <b>el proceso completo con capturas reales</b>, paso a paso, para que lo repitas con tu producto sin adivinar nada.');
 parrafo('El mismo sistema de seis PDFs',

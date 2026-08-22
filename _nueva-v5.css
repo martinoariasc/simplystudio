@@ -491,3 +491,8 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
   .v2-cuenta>div{min-width:40px}
   .v2-cuenta b{font-size:19px}
 }
+
+/* menos hueco entre el cierre del caso y "Qué incluye" */
+.case{padding-bottom:clamp(40px,5vw,72px)}
+.inside{padding-top:clamp(64px,8vw,112px)}
+.v2-cta{margin-bottom:0}
