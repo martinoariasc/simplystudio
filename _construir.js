@@ -87,7 +87,7 @@ function rearmarHero(sec) {
   const figura = corta(sec, '<figure class="prod-float"', '</figure>');
   if (!h1 || !figura) { avisos.push('OJO: hero incompleto, va verbatim'); return sec; }
 
-  const sub = 'Sabemos lo que es perder una tarde entera creando unos pocos anuncios y que al final, después de mucho esfuerzo, no se vean como esperabas ni traigan los resultados que buscabas, o directamente ninguno. Por eso existe Prompt Ads: <b>el sistema de PDFs que hace que tu marca se vea como las que facturan millones</b>. Subes una foto de lo que vendes y en minutos tienes una tanda de anuncios premium, de los que una agencia te cobraría <b>+USD 1.000</b>. Sin sesión de fotos, sin saber diseño y de la manera más fácil y rápida posible.';
+  const sub = 'Sabemos lo que es perder una tarde entera creando unos pocos anuncios y que al final, después de mucho esfuerzo, no traigan los resultados esperados o ningún resultado. Por eso existe Prompt Ads: <b>el sistema de PDFs que hace que tu marca se vea como las que facturan millones</b>. Subes una foto de lo que vendes y en minutos tienes una tanda de anuncios premium, de los que una agencia te cobraría <b>+USD 1.000</b>. Sin sesión de fotos, sin saber diseño y de la manera más fácil y rápida posible.';
   /* titular pedido para la nueva: arranca con la accion y el numero */
   h1.texto = '<h1>Empieza a crear <em>+50 anuncios premium</em> en menos de 5 minutos y <em>aumenta tus ventas.</em></h1>';
   if (pill) pill.texto = pill.texto.replace(/Prompts \+ gu[ií]as \+ sistema de correcci[oó]n/, 'Más de 50 anuncios premium en minutos');
@@ -472,8 +472,12 @@ const TESTIMONIOS = {
   Object.keys(TESTIMONIOS).forEach(k => { if (!vistos[k]) avisos.push('testimonio sin aplicar: ' + k); });
 }
 
-parrafo('Ángulos de venta distintos del mismo producto',
-  'Hay un paso más, y es el que separa un anuncio genérico de uno premium. No lo contamos acá: está dentro de la guía, con capturas, y lleva dos minutos. <b>Es lo que hace que esto no se pueda copiar con prompts sueltos.</b> Solo necesitas ChatGPT y una foto.');
+/* la nota bajo los pasos se quita entera (pedido del 22/08): los pasos cierran directo con el boton */
+{
+  const re = /<p class="case-note[^"]*">[\s\S]*?<\/p>/;
+  if (!re.test(salida)) avisos.push('no encontre la nota bajo los pasos');
+  else salida = salida.replace(re, '');
+}
 parrafo('Tomamos la foto de un producto cualquiera',
   'Tomamos la foto de un producto cualquiera, unas zapatillas, y en menos de 5 minutos salieron todos estos anuncios. Dentro del sistema ves <b>el proceso completo con capturas reales</b>, paso a paso, para que lo repitas con tu producto sin adivinar nada.');
 parrafo('El mismo sistema de seis PDFs',
