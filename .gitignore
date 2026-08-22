@@ -1,0 +1,13 @@
+
+# intermedios del constructor de la landing (se regeneran con node _preparar-colabs.js / _webp.js)
+_cap_*.html
+_wrap_*.html
+_hoja_movil.html
+_contacto.html
+_webp_tmp.html
+_vivo-preview.html
+assets/colabs/*.jpg
+assets/fondos/*.jpg
+assets/fondos/_*
+assets/deco/*.jpg
+assets/caso-nike/real.jpg

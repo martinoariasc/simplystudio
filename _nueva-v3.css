@@ -1,0 +1,137 @@
+/* ================================================================
+   v3 · CORRECCIONES DE LA OFERTA Y LA GARANTÍA
+   ================================================================ */
+.offer-lead{max-width:none;font-size:inherit}
+.offer-lead>p{max-width:58ch;font-size:18px;color:#A9B3A7;margin-top:22px}
+.without{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 0}
+.without span{
+  border:1px solid var(--line-inv);border-radius:999px;padding:7px 13px;
+  font:400 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#CFCBBE;
+}
+.offer-box{align-items:start;margin-top:clamp(40px,6vw,80px)}
+.offer-visual{margin:0 0 28px;max-width:440px;border-radius:14px;overflow:hidden;background:var(--forest)}
+.offer-copy>h2{font-size:clamp(40px,5.4vw,76px)}
+.offer-copy>p{color:#C8CFC6;max-width:58ch}
+.offer-copy>p b{color:var(--paper)}
+.offer-choice{font-family:var(--serif);font-size:clamp(22px,2.4vw,30px);line-height:1.15;color:var(--paper);margin-top:8px}
+.cost-intro{margin-top:40px;color:#A9B3A7;font-size:15px}
+.cost-line{display:grid;grid-template-columns:1fr 1fr;gap:12px;border:0;padding:0;margin-top:14px;font-size:inherit}
+.cost{border:1px solid var(--line-inv);border-radius:12px;padding:18px 20px;display:grid;gap:4px}
+.offer .who{
+  display:block;grid-template-columns:none;padding:0;border:0;transition:none;
+  font:400 9.5px/1.4 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:#8FA192;
+}
+.cost b{font-family:var(--serif);font-size:clamp(26px,2.6vw,34px);font-weight:400;line-height:1;color:var(--paper)}
+.cost span:last-child{font-size:13px;color:#A9B3A7}
+.cost-bridge{margin-top:24px;font-family:var(--serif);font-size:clamp(22px,2.6vw,32px);line-height:1.15;color:var(--paper)}
+.cost-bridge b{color:var(--gold);font-weight:400}
+.after-buy{margin-top:40px;padding-top:28px;border-top:1px solid var(--line-inv)}
+.ab-title{display:block;font-family:var(--serif);font-size:clamp(24px,2.4vw,30px);margin-bottom:14px;color:var(--paper)}
+.after-buy ol{list-style:none;margin:0;padding:0;counter-reset:ab;display:grid;gap:10px}
+.after-buy li{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:baseline;color:#C8CFC6;font-size:15.5px}
+.after-buy li::before{counter-increment:ab;content:counter(ab,decimal-leading-zero);font:400 10px/1.6 var(--mono);letter-spacing:.14em;color:var(--gold)}
+.after-buy li b{color:var(--paper)}
+
+.price-card{position:sticky;top:90px;text-align:left}
+.stack{list-style:none;padding:0;margin:18px 0 0}
+.stack li{font-size:15px}
+.stack li b{font-weight:500;color:var(--ink);white-space:nowrap}
+.stack li span:first-child{color:var(--ink-2)}
+.stack-total{font-size:24px;align-items:baseline}
+.stack-total s{color:var(--muted);text-decoration-thickness:1px}
+.price-reveal{margin-top:22px;padding-top:24px;border-top:1px solid var(--line);text-align:center}
+.price{display:flex;align-items:flex-start;justify-content:center;gap:8px;margin:14px 0 8px}
+.price sup{
+  font:400 12px/1 var(--mono);letter-spacing:.22em;color:var(--muted);
+  vertical-align:top;margin-top:22px;
+}
+.price-after{font-size:14px}
+.price-after b{color:var(--ink)}
+.trust-row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 0;margin-top:18px;letter-spacing:.12em}
+.trust-row span{padding:0 12px;position:relative}
+.trust-row span+span::before{content:"";position:absolute;left:0;top:50%;width:1px;height:10px;background:var(--line-strong);transform:translateY(-50%)}
+.secure{margin-top:12px;text-align:center;font-size:9px;letter-spacing:.24em;color:var(--forest)}
+.price-note{margin-top:16px;font-size:13px;line-height:1.55;text-align:center}
+
+/* garantía: sello grande, anillo que gira */
+.guarantee-box{grid-template-columns:auto 1fr;align-items:center;gap:clamp(28px,5vw,64px);max-width:1040px}
+.seal{
+  width:164px;height:164px;border-radius:50%;border:1px solid var(--line-strong);
+  display:grid;place-items:center;text-align:center;position:relative;
+  font:inherit;letter-spacing:0;color:var(--ink);
+}
+.seal::before{
+  content:"";position:absolute;inset:-12px;border-radius:50%;
+  border:1px dashed var(--line-strong);animation:sello 60s linear infinite;
+}
+@keyframes sello{to{transform:rotate(360deg)}}
+.seal b{display:block;font-family:var(--serif);font-size:40px;font-weight:400;line-height:1;letter-spacing:-.02em}
+.seal span{display:block;margin:10px auto 0;max-width:112px;font:400 8.5px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.guarantee-box a{text-decoration:underline;text-underline-offset:4px}
+
+/* ================================================================
+   v3 · HERO APILADO: título, animación, texto, botón
+   ================================================================ */
+.v2-hero{text-align:center;padding-top:clamp(36px,6vw,80px)}
+.v2-hero-grid{display:block;min-height:0}
+.v2-hero-copy{display:contents}
+.v2-hero .pill{margin-bottom:24px}
+.v2-hero h1{max-width:15ch;margin-inline:auto;font-size:clamp(50px,7.3vw,120px)}
+.v2-prod{margin:clamp(26px,4vw,48px) auto 0;max-width:760px}
+.v2-prod::before{width:min(100%,640px);height:84%}
+.v2-hero-sub{margin:clamp(26px,4vw,44px) auto 0;max-width:52ch;text-align:center}
+.v2-hero .hero-actions{justify-content:center}
+
+/* ritmo de cierre: botón al final de cada escena */
+.v2-cta{display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:clamp(40px,6vw,72px);text-align:center}
+.v2-cta-nota{font:400 10px/1.8 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.pain .v2-cta .btn,.inside .v2-cta .btn{background:var(--paper);color:var(--ink)}
+.pain .v2-cta .btn:hover,.inside .v2-cta .btn:hover{background:var(--white)}
+.pain .v2-cta-nota{color:#8E8E81}
+
+/* detalle: la línea del eyebrow se dibuja al aparecer */
+.eyebrow:not(.pill){display:flex;align-items:center;gap:12px}
+.eyebrow:not(.pill)::before{content:"";width:26px;height:1px;background:currentColor;opacity:.5;flex:none;transition:width 1s var(--ease) .15s}
+.reveal:not(.visible) .eyebrow:not(.pill)::before{width:0}
+
+/* ================================================================
+   v3 · LA LECCIÓN: lo que el cliente juzga sin leer
+   ================================================================ */
+.v2-lec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.6vw,40px);counter-reset:lec;border-top:1px solid var(--line-strong)}
+.v2-lec-item{padding:30px 0 0}
+.v2-lec-item::before{
+  counter-increment:lec;content:counter(lec,decimal-leading-zero);
+  display:block;font-family:var(--serif);font-size:clamp(44px,5vw,72px);line-height:1;color:var(--forest);opacity:.18;margin-bottom:18px;
+}
+.v2-lec-item h3{font-size:clamp(26px,2.8vw,38px);margin:0 0 12px}
+.v2-lec-item p{color:var(--muted);margin:0;font-size:15.5px;max-width:34ch}
+.v2-lec-cierre{margin-top:clamp(36px,5vw,64px);font-family:var(--serif);font-size:clamp(26px,3.4vw,46px);line-height:1.05;max-width:22ch}
+.v2-lec-cierre em{color:var(--forest);font-style:italic}
+
+@media (max-width:1080px){
+  .offer-box{grid-template-columns:1fr}
+  .price-card{position:relative;top:auto}
+  .v2-lec-grid{grid-template-columns:1fr}
+  .v2-lec-item p{max-width:none}
+}
+@media (max-width:720px){
+  .cost-line{grid-template-columns:1fr}
+  .guarantee-box{grid-template-columns:1fr;justify-items:start}
+  .seal{width:140px;height:140px}
+}
+
+/* lista "que pasa cuando compras": el numero va absoluto, el texto fluye entero */
+.after-buy li{display:block;position:relative;padding-left:36px;grid-template-columns:none}
+.after-buy li::before{position:absolute;left:0;top:.3em}
+.offer-copy>h2,.guarantee h2{margin-bottom:18px}
+
+/* ================================================================
+   v3 · A PRUEBA DE FALLOS: nada puede quedar invisible
+   ================================================================ */
+/* el hero arranca visible; la animacion solo lo adorna */
+.v2-sube{opacity:1;transform:none;animation:v2sube 1.1s var(--ease) both}
+@keyframes v2sube{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+/* el titulo nunca se sale de la pantalla */
+.v2-hero h1{max-width:min(15ch,100%)}
+/* si el observador no llega, a los 3 s se muestra todo igual */
+html.sin-reveal .reveal{opacity:1;transform:none}

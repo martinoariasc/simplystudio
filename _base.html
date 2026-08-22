@@ -1,0 +1,1203 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Prompt Ads — Crea anuncios premium con ChatGPT | simply studio.</title>
+  <meta name="description" content="El sistema de prompts y guías para convertir fotos reales en anuncios premium con ChatGPT, crear variaciones y corregir resultados que parecen hechos por IA.">
+  <meta name="theme-color" content="#f2eee5">
+  <meta name="p:domain_verify" content="376eb74e74220b9e5da7296927fb3342"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    /* Foco visible: sin esto, quien navega con teclado no ve donde esta parado.
+       Va con :focus-visible para que no salte en cada clic del mouse. */
+    :focus-visible{outline:2px solid var(--forest,#26362c);outline-offset:3px;border-radius:4px}
+    .nav :focus-visible,.announcement :focus-visible,.offer :focus-visible,
+    .footer :focus-visible{outline-color:var(--gold,#d7cda9)}
+
+    :root{
+      --paper:#f2eee5;--paper-2:#e8e1d5;--ink:#171713;--muted:#5f5f57;
+      --forest:#26362c;--forest-2:#34483a;--forest-vivo:#2f5c3d;--line:rgba(23,23,19,.14);
+      --white:#fffdf8;--radius:30px;--shadow:0 30px 80px rgba(25,24,18,.14);
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+    img{display:block;width:100%;height:auto}a{color:inherit;text-decoration:none}button{font:inherit}.serif{font-family:"Instrument Serif",Georgia,serif}.mono{font-family:"DM Mono",monospace}
+    .shell{width:min(1180px,calc(100% - 42px));margin:auto}.eyebrow{font:500 11px/1.4 "DM Mono",monospace;text-transform:uppercase;letter-spacing:.13em}
+    .muted{color:var(--muted)}.pill{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.42)}
+    .dot{width:7px;height:7px;border-radius:50%;background:#5c7c62;box-shadow:0 0 0 5px rgba(92,124,98,.13)}
+    .btn{min-height:54px;padding:0 23px;border:0;border-radius:99px;background:var(--forest);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:14px;font-weight:700;cursor:pointer;transition:.25s ease;box-shadow:0 10px 24px rgba(38,54,44,.18)}
+    .btn:hover{transform:translateY(-2px);background:var(--forest-2)}.btn.light{background:var(--white);color:var(--ink)}.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+    svg.arrow{width:17px;height:17px;flex:none;display:block}.arrow{font-size:19px}.reveal{opacity:0;transform:translateY(20px);transition:.7s ease}.reveal.visible{opacity:1;transform:none}
+
+    header{position:sticky;top:0;z-index:50;background:rgba(242,238,229,.82);backdrop-filter:blur(18px);border-bottom:1px solid rgba(23,23,19,.08)}
+    .nav{height:74px;display:flex;align-items:center;justify-content:space-between}.brand{font-size:20px;font-weight:800;letter-spacing:-.05em}.brand i{font-family:"Instrument Serif";font-weight:400}
+    .nav-links{display:flex;align-items:center;gap:28px;font-size:13px;font-weight:600}.nav .btn{min-height:42px;padding:0 18px;font-size:13px}
+
+    .hero{padding:34px 0 34px}.hero-copy{text-align:center;max-width:930px;margin:0 auto 24px}.hero-copy h1{font:400 clamp(55px,7.2vw,88px)/.88 "Instrument Serif",Georgia,serif;letter-spacing:-.055em;margin:18px 0 18px}
+    .hero-copy h1 em{color:var(--forest-vivo);font-weight:400}.hero-copy>p{max-width:760px;margin:0 auto;font-size:clamp(18px,2vw,22px);line-height:1.5;color:#46463f}
+    .hero-actions{display:flex;justify-content:center;gap:12px;margin-top:22px}.hero-proof{margin-top:12px;font-size:12px;color:var(--muted)}
+    .campaign-stage{position:relative;padding:18px;background:rgba(255,255,255,.36);border:1px solid rgba(255,255,255,.7);border-radius:40px;box-shadow:var(--shadow)}
+    .campaign-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .campaign-card{margin:0;overflow:hidden;border-radius:24px;background:#e5dfd4;border:1px solid rgba(23,23,19,.08)}
+    .campaign-card button,.result-card button{display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
+    .campaign-card img{aspect-ratio:1;object-fit:contain;transition:transform .6s ease}.campaign-card:hover img{transform:scale(1.012)}
+    .campaign-card figcaption{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 14px;background:rgba(255,255,255,.55);font:500 9px "DM Mono";text-transform:uppercase;letter-spacing:.08em}
+    .campaign-card figcaption:after{content:"Abrir imagen";font-size:9px;font-family:"DM Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--forest);border:1px solid var(--line);border-radius:99px;padding:5px 10px;white-space:nowrap}
+    .stage-note{display:flex;justify-content:space-between;gap:20px;padding:15px 5px 2px;color:var(--muted);font-size:11px}
+
+    section{padding:102px 0}.section-intro{display:grid;grid-template-columns:190px 1fr;gap:48px;margin-bottom:48px}.section-intro h2{font:400 clamp(44px,6vw,76px)/.97 "Instrument Serif",Georgia,serif;letter-spacing:-.04em;margin:0;max-width:850px}
+    .section-intro p{font-size:18px;line-height:1.65;max-width:720px;color:var(--muted);margin:20px 0 0}
+
+    .pain{background:var(--ink);color:var(--white);border-radius:48px;margin:34px 16px;padding:96px 0}.pain .muted{color:#aaa99f}.pain-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:65px;align-items:start}
+    .pain h2{font:400 clamp(48px,6vw,80px)/.94 "Instrument Serif";letter-spacing:-.045em;margin:0}.pain h2 em{color:#b9c9b9;font-weight:400}
+    .symptoms{border-top:1px solid rgba(255,255,255,.17)}.symptom{display:grid;grid-template-columns:50px 1fr;padding:22px 0;border-bottom:1px solid rgba(255,255,255,.17)}
+    .symptom b{font-size:18px}.symptom p{margin:7px 0 0;color:#aaa99f;line-height:1.55}
+    .truth{margin-top:32px;padding:22px;border:1px solid rgba(255,255,255,.2);border-radius:20px;color:#d8d6cc;line-height:1.55}.truth strong{color:#fff}
+
+    .difference{padding-bottom:38px}.difference-card{background:var(--white);border-radius:40px;padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:18px;box-shadow:var(--shadow)}
+    .difference-copy{padding:44px;display:flex;flex-direction:column;justify-content:center}.difference-copy h3{font:400 clamp(42px,5vw,67px)/.95 "Instrument Serif";margin:19px 0}
+    .difference-copy p{font-size:17px;line-height:1.65;color:var(--muted)}.difference-copy ul{list-style:none;padding:0;margin:22px 0 0}.difference-copy li{padding:11px 0;border-top:1px solid var(--line);display:flex;gap:11px;font-weight:600}.difference-copy li:before{content:"✓";color:#4e6c54}
+    .difference-proof{border-radius:28px;background:var(--forest);color:#fff;padding:42px;display:flex;flex-direction:column;justify-content:space-between;min-height:580px}.difference-proof .big{font:400 clamp(58px,8vw,100px)/.82 "Instrument Serif";letter-spacing:-.055em}.difference-proof .big em{color:#b9c9b9}.difference-proof p{color:#c5d0c7;max-width:430px;line-height:1.6}.difference-proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.proof-cell{border-top:1px solid rgba(255,255,255,.22);padding-top:14px}.proof-cell b{display:block;font-size:24px}.proof-cell span{font-size:11px;color:#aab9ae}
+    .versus-grid{display:grid;grid-template-columns:1fr 56px 1fr;gap:18px;align-items:center}.versus-card{background:var(--white);border-radius:30px;padding:12px;box-shadow:var(--shadow)}.versus-image{overflow:hidden;border-radius:22px;background:#ddd}.versus-image button{display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in}.versus-image img{aspect-ratio:1;object-fit:contain}.versus-copy{padding:20px 16px 16px}.versus-copy span{font:500 10px "DM Mono";letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.versus-copy h3{font:400 36px/1 "Instrument Serif";margin:9px 0}.versus-copy p{color:var(--muted);line-height:1.55;margin:0}.versus-badge{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:var(--forest);color:#fff;font:500 12px "DM Mono";z-index:2}
+    .versus-tag{display:inline-block;margin:4px 0 10px 6px;font:600 10px "DM Mono";letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border-radius:99px}.versus-tag.bad{color:var(--muted);background:rgba(23,23,19,.05);border:1px solid var(--line)}.versus-tag.good{color:#efe9df;background:var(--forest)}
+
+    .results{padding-top:80px}.result-head{text-align:center;max-width:830px;margin:0 auto 44px}.result-head h2{font:400 clamp(48px,6vw,78px)/.94 "Instrument Serif";letter-spacing:-.045em;margin:16px 0}.result-head p{font-size:18px;color:var(--muted);line-height:1.6}
+    .result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.result-card{overflow:hidden;border-radius:24px;background:rgba(255,255,255,.5);border:1px solid rgba(23,23,19,.09)}.result-card img{aspect-ratio:1;object-fit:contain;background:#ded8cd;transition:transform .5s ease}.result-card:hover img{transform:scale(1.012)}
+    .result-meta{padding:15px 16px 17px;color:var(--ink)}.result-meta span{font:500 9px "DM Mono";letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.result-meta b{display:block;font-size:15px;margin-top:6px}
+    .result-note{text-align:center;color:var(--muted);font-size:12px;line-height:1.5;margin:19px auto 0;max-width:760px}
+
+    .process{background:#ddd5c7;margin:80px 16px 0;border-radius:48px}.process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.process-card{background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8);border-radius:28px;padding:30px;min-height:300px}
+    .process-req{max-width:660px;margin:32px auto 0;text-align:center;color:#5c584e;line-height:1.6;font-size:15px}.process-req b{color:var(--ink)}
+    .process-card .n{font:500 11px "DM Mono";color:var(--muted)}.process-card h3{font:400 36px/1 "Instrument Serif";margin:50px 0 15px}.process-card p{line-height:1.6;color:#55564f}.process-card .input{margin-top:22px;padding:13px;border-radius:13px;background:var(--white);font:10px/1.5 "DM Mono";color:#555}
+    .reference-finder{padding-top:84px}.finder-box{background:var(--ink);color:#fff;border-radius:42px;padding:56px;display:grid;grid-template-columns:.9fr 1.1fr;gap:58px}.finder-box h2{font:400 clamp(48px,6vw,75px)/.93 "Instrument Serif";margin:18px 0}.finder-box h2 em{color:#b9c9b9}.finder-box>div>p{color:#aaa99f;line-height:1.65;font-size:17px}
+    .locked-stack{display:grid;gap:11px;align-content:center}.locked-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:22px;display:grid;grid-template-columns:45px 1fr auto;gap:16px;align-items:center}.locked-icon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#d7cda9;color:#171713}.locked-card b{display:block;font-size:16px}.locked-card p{margin:5px 0 0;color:#aaa99f;font-size:13px;line-height:1.45}.locked-card>span:last-child{font:9px "DM Mono";text-transform:uppercase;color:#d7cda9;letter-spacing:.08em}
+
+    .inside{padding-bottom:76px}.inside-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.inside-card{border:1px solid var(--line);border-radius:24px;overflow:hidden;background:var(--white);display:flex;flex-direction:column}
+    .card-cover{position:relative;aspect-ratio:1;overflow:hidden;background:var(--paper-2)}.card-cover img{width:100%;height:100%;object-fit:cover;display:block}
+    .card-tag{position:absolute;top:14px;left:14px;font:10px "DM Mono";text-transform:uppercase;letter-spacing:.08em;color:#fff;background:rgba(23,23,19,.55);backdrop-filter:blur(4px);border-radius:99px;padding:5px 11px}
+    .card-body{padding:22px 24px 26px}.inside-card h3{font:400 23px "Instrument Serif";margin:0 0 8px}.inside-card p{margin:0;line-height:1.55;color:var(--muted);font-size:14px}
+
+    .product-showcase{padding:20px 0 34px}.product-box{border-radius:44px;background:var(--white);border:1px solid rgba(23,23,19,.09);box-shadow:var(--shadow);overflow:hidden}
+    .product-main{display:grid;grid-template-columns:.88fr 1.12fr;gap:0;align-items:stretch}.product-copy{padding:54px 48px;display:flex;flex-direction:column;justify-content:center}
+    .product-copy h2{font:400 clamp(48px,5.8vw,76px)/.92 "Instrument Serif";letter-spacing:-.045em;margin:18px 0}.product-copy h2 em{color:var(--forest);font-weight:400}
+    .product-copy p{font-size:18px;line-height:1.65;color:var(--muted);margin:0 0 24px}.product-points{display:grid;gap:10px;margin-top:8px}
+    .product-point{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}.product-point span{font:500 10px "DM Mono";color:var(--muted)}.product-point b{font-size:15px}
+    .product-visual{padding:18px;background:#e1d9cc}.product-visual img{height:100%;object-fit:contain;border-radius:30px;background:#d9d1c5}
+    .product-strip{display:grid;grid-template-columns:1.12fr .88fr;border-top:1px solid var(--line)}.product-strip figure{margin:0;padding:14px;background:#e8e1d5}.product-strip img{border-radius:28px;background:#d9d1c5}.product-note{padding:34px 42px;display:flex;flex-direction:column;justify-content:center}
+    .product-note b{font:400 38px/1 "Instrument Serif";letter-spacing:-.025em}.product-note p{color:var(--muted);line-height:1.6;margin:12px 0 0}
+
+    .audience{padding-top:60px}.audience-list{border-top:1px solid var(--line)}.audience-row{display:grid;grid-template-columns:50px .7fr 1fr;gap:28px;align-items:center;padding:25px 0;border-bottom:1px solid var(--line)}
+    .audience-row .n{font:11px "DM Mono";color:var(--muted)}.audience-row h3{font-size:22px;margin:0}.audience-row p{color:var(--muted);line-height:1.55;margin:0}
+
+    .offer{padding:80px 0 110px}.offer-box{display:grid;grid-template-columns:1.05fr .95fr;background:var(--forest);color:white;border-radius:44px;overflow:hidden;box-shadow:0 40px 100px rgba(38,54,44,.27)}
+    .offer-copy{padding:64px}.offer-copy h2{font:400 clamp(49px,6vw,78px)/.93 "Instrument Serif";letter-spacing:-.04em;margin:22px 0}.offer-copy>p{color:#c8d0ca;line-height:1.65;font-size:18px}
+    .offer-visual{margin:0 0 30px;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.16);box-shadow:0 20px 50px rgba(0,0,0,.22)}.offer-visual img{width:100%;height:auto;display:block}
+    .offer-choice{margin:16px 0 0;padding:16px 18px;border:1px solid rgba(215,205,169,.34);background:rgba(215,205,169,.1);border-radius:12px;color:#d3d9d1;font-size:16px;line-height:1.55}.offer-choice b{color:#fff}
+    .after-buy{margin:26px 0 0;border-top:1px solid rgba(255,255,255,.16);padding-top:22px}.after-buy .ab-title{font:600 10px "DM Mono";letter-spacing:.09em;text-transform:uppercase;color:#d7cda9}.after-buy ol{margin:14px 0 0;padding:0;list-style:none;counter-reset:ab;display:grid;gap:11px}.after-buy li{counter-increment:ab;position:relative;padding-left:34px;color:#c8d0ca;font-size:14px;line-height:1.5}.after-buy li::before{content:counter(ab);position:absolute;left:0;top:-1px;width:24px;height:24px;border-radius:50%;background:rgba(215,205,169,.16);color:#d7cda9;font:600 11px "DM Mono";display:grid;place-items:center}.after-buy li b{color:#fff}
+    .trust-row{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;margin:14px 0 0}.trust-row span{font:600 9px "DM Mono";letter-spacing:.04em;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:5px}.trust-row span::before{content:"✓";color:#4e6c54;font-weight:800}
+    .cost-line{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:10px}.cost{padding:16px 14px 16px 0;border-top:1px solid rgba(255,255,255,.23)}.cost .who{display:block;font-size:11px;color:#aab9ae;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}.cost b{display:block;font:400 30px/1 "Instrument Serif";color:#fff}.cost span:last-child{display:block;margin-top:5px;font-size:11px;color:#abb9ae}.cost-intro{color:#c8d0ca;font-size:13px;margin:30px 0 0;letter-spacing:.02em}.cost-bridge{margin:18px 0 0;padding-top:16px;border-top:1px solid rgba(255,255,255,.23);color:#c8d0ca;font-size:15px;line-height:1.5}.cost-bridge b{color:#fff}.cost-ours{margin-top:14px;padding:18px 20px;border-radius:18px;background:rgba(215,205,169,.13);border:1px solid rgba(215,205,169,.55);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.cost-ours .who{font:500 10px "DM Mono";text-transform:uppercase;letter-spacing:.08em;color:#d7cda9}.cost-ours b{font:400 40px/1 "Instrument Serif";color:#fff}.cost-ours span:last-child{color:#e5dfd4;font-size:14px;line-height:1.4;flex:1;min-width:180px}
+    .price-card{scroll-margin-top:96px;margin:18px;background:var(--white);color:var(--ink);border-radius:30px;padding:38px}.price{font:400 88px/1 "Instrument Serif";margin:8px 0 0;letter-spacing:-.05em}.price sup{font:600 12px Inter;letter-spacing:0;margin-right:7px}
+    .launch-tag{display:inline-block;font:600 10px "DM Mono";letter-spacing:.08em;text-transform:uppercase;color:#4e6c54;background:rgba(78,108,84,.1);border-radius:99px;padding:5px 11px;margin-top:14px}.price-was{color:var(--muted);font-size:15px;margin:6px 0 0}.price-was s{opacity:.75}.price-note{color:var(--muted);font-size:12px;line-height:1.5;margin:9px 0 0}
+    .stack{list-style:none;padding:0;margin:18px 0 0}.stack li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}.stack li span{flex:1}.stack li span:before{content:"✓";color:#4e6c54;margin-right:9px;font-weight:800}.stack li b{font:500 13px Inter;color:var(--muted);white-space:nowrap}
+    .stack-total{display:flex;justify-content:space-between;align-items:baseline;padding:15px 0 3px;font-size:14px}.stack-total span{font:600 11px "DM Mono";text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}.stack-total b{font:400 22px "Instrument Serif";color:var(--muted)}.stack-total b s{opacity:.7}
+    .price-reveal{margin-top:14px;padding:22px;border-radius:22px;background:var(--forest);color:#fff;text-align:center}.price-reveal .launch-tag{color:#d7cda9;background:rgba(215,205,169,.15);margin:0 0 6px}.price-reveal .price{color:#fff;margin:2px 0 0}.price-reveal .price sup{color:#c6d0c8}.price-sub{color:#c6d0c8;font:10px "DM Mono";text-transform:uppercase;letter-spacing:.08em;margin:8px 0 0}.price-after{margin:10px 0 0;padding-top:10px;border-top:1px solid rgba(255,255,255,.16);color:#c6d0c8;font-size:12px}.price-after b{color:#d7cda9;font-weight:600}
+    .price-card .btn{width:100%;margin-top:16px}.secure{text-align:center;color:var(--muted);font:10px "DM Mono";margin:13px 0 0}
+
+    .guarantee{padding:0 0 95px}.guarantee-box{display:grid;grid-template-columns:200px 1fr;gap:45px;align-items:start;border:1px solid var(--line);padding:38px;border-radius:30px}.seal{aspect-ratio:1;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;text-align:center}.seal b{font:400 45px "Instrument Serif";display:block}.seal span{font:10px "DM Mono";text-transform:uppercase;letter-spacing:.09em}
+    .guarantee h2{font:400 41px/1 "Instrument Serif";margin:0 0 14px}.guarantee p{color:var(--muted);line-height:1.65;margin:0}.guarantee p a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}.guarantee small{display:block;color:var(--muted);margin-top:16px;line-height:1.5}
+    .g-steps{list-style:none;counter-reset:g;padding:0;margin:18px 0 0;display:grid;gap:12px}.g-steps li{counter-increment:g;position:relative;padding-left:40px;min-height:26px;color:var(--ink);line-height:1.55;font-size:15px}.g-steps li:before{content:counter(g);position:absolute;left:0;top:0;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--forest);color:#fff;font:500 12px "DM Mono"}.g-steps li b{color:var(--ink)}.g-steps li a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+
+    .faq{background:var(--white);border-radius:48px 48px 0 0}.faq-wrap{max-width:900px}.faq h2{font:400 70px/1 "Instrument Serif";margin:0 0 34px}.faq details{border-top:1px solid var(--line)}.faq details:last-child{border-bottom:1px solid var(--line)}
+    .faq summary{list-style:none;cursor:pointer;padding:24px 42px 24px 0;font-size:18px;font-weight:700;position:relative}.faq summary::-webkit-details-marker{display:none}.faq summary:after{content:"+";position:absolute;right:4px;font-size:24px;font-weight:400}.faq details[open] summary:after{content:"−"}
+    .faq details p{max-width:760px;margin:-7px 0 24px;color:var(--muted);line-height:1.7}
+
+    footer{background:var(--ink);color:white;padding:54px 0 95px}.footer-top{display:flex;justify-content:space-between;align-items:end;gap:30px}.footer-top p{color:#aaa99f}.footer-bottom{display:flex;justify-content:space-between;gap:30px;padding-top:28px;margin-top:40px;border-top:1px solid rgba(255,255,255,.15);font-size:11px;color:#88887f;line-height:1.5}
+    dialog.lightbox{width:min(94vw,980px);max-height:94vh;padding:0;border:0;border-radius:24px;background:#111;box-shadow:0 30px 120px rgba(0,0,0,.55);overflow:hidden}.lightbox::backdrop{background:rgba(10,10,8,.88);backdrop-filter:blur(8px)}.lightbox img{width:100%;height:min(86vh,980px);object-fit:contain;background:#111}.lightbox-close{position:absolute;right:12px;top:12px;width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.92);font-size:24px;cursor:pointer}
+    .mobile-buy{display:none}
+    .proof{background:var(--paper);padding:96px 0;overflow:hidden}
+    .proof-head{text-align:center;max-width:720px;margin:0 auto 48px}
+    .proof-head h2{font:400 clamp(38px,5vw,62px)/.98 "Instrument Serif";letter-spacing:-.03em;margin:14px 0 0;text-wrap:balance}
+    .proof-head h2 em{font-style:italic;color:var(--forest)}
+    .proof-head p{color:var(--muted);font-size:17px;line-height:1.6;margin:16px auto 0;max-width:560px}
+    .marquee{position:relative;display:grid;gap:18px}
+    .marquee::before,.marquee::after{content:"";position:absolute;top:0;bottom:0;width:13%;z-index:3;pointer-events:none}
+    .marquee::before{left:0;background:linear-gradient(90deg,var(--paper),rgba(242,238,229,0))}
+    .marquee::after{right:0;background:linear-gradient(270deg,var(--paper),rgba(242,238,229,0))}
+    /* Sin -webkit-overflow-scrolling:touch a proposito: en iOS crea una capa de GPU aparte y,
+       al mover scrollLeft por JS en cada fotograma, Safari deja de repintar y la fila sale vacia.
+       Desde iOS 13 la inercia ya es el comportamiento por defecto, asi que no hace falta. */
+    .m-row{overflow:hidden;cursor:grab;touch-action:pan-y}.m-row.agarrando{cursor:grabbing}.m-row::-webkit-scrollbar{display:none}
+    .campaign-grid,.showcase-grid,.case-grid{scroll-behavior:auto}
+    .m-track{display:flex;gap:18px;width:max-content}
+    /* Todo se mueve con transform, que el compositor pinta con decimales: por eso
+       va suave y no de píxel en píxel. Y como la fila no tiene scroll propio, no
+       hay dos sistemas midiendo distinto: el hueco en blanco es imposible. */
+    /* Sin will-change: la pista mide más de 16.000 px y pedirle al navegador que
+       la mantenga rasterizada entera son decenas de MB de textura por fila. */
+    .m-track img,.m-track .tcard{user-select:none;-webkit-user-drag:none}
+    .tcard{flex:0 0 min(360px,82vw);background:var(--white);border:1px solid var(--line);border-radius:24px;padding:26px 28px 22px;box-shadow:0 14px 40px rgba(38,54,44,.06);display:flex;flex-direction:column;gap:16px}
+    .tcard-tag{align-self:flex-start;font:600 10px "DM Mono";letter-spacing:.06em;text-transform:uppercase;color:#4e6c54;background:rgba(78,108,84,.09);border-radius:99px;padding:5px 11px}
+    .tcard-q{position:relative;color:var(--ink);font-size:15px;line-height:1.62;padding-top:16px}
+    .tcard-q::before{content:"\201C";position:absolute;top:-12px;left:-3px;font:400 46px "Instrument Serif";color:#c9b989;line-height:1}
+    .tcard-q b{font-weight:600}
+    .tcard-foot{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);padding-top:16px;margin-top:auto}
+    .tcard-av{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--forest);color:#efe9df;font:600 13px "DM Mono";letter-spacing:.02em}
+    .tcard-id b{display:block;font-size:14px;font-weight:700;color:var(--ink)}
+    .tcard-id span{font:500 10px "DM Mono";text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+    .marquee-hint{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:18px;font:500 11px/1 "DM Mono";text-transform:uppercase;letter-spacing:.14em;color:var(--muted);text-align:center}
+    @media(min-width:901px){.campaign-stage .marquee-hint,.showcase .marquee-hint,.case .marquee-hint{display:none}}
+    .marquee-hint .ar{font-size:18px;color:var(--forest);animation:hintp 1.5s ease-in-out infinite}
+    .marquee-hint .ar:last-child{animation-delay:.18s}
+    @keyframes hintp{0%,100%{opacity:.32}50%{opacity:1}}
+    .manifesto{background:var(--forest);color:#fff;border-radius:48px;margin:34px 16px;padding:96px 0}
+    .manifesto .eyebrow{color:#c9b989}
+    .manifesto h2{font:400 clamp(46px,6vw,82px)/.94 "Instrument Serif";letter-spacing:-.045em;margin:14px 0 0;max-width:920px}
+    .manifesto h2 em{color:#b9c9b9;font-style:italic}
+    .manifesto .m-without{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+    .manifesto .m-without span{font:600 11px "DM Mono";letter-spacing:.05em;text-transform:uppercase;color:#cdd6cf;border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:9px 15px}
+    .manifesto .m-without span s{text-decoration-color:#b9c9b9}
+    .manifesto .m-lead{margin-top:32px;display:grid;gap:18px;max-width:740px}
+    .manifesto .m-lead p{font-size:18px;line-height:1.62;color:#d8ddd5;margin:0}.manifesto .m-lead p b{color:#fff}
+    .manifesto .m-cta{margin-top:40px;display:flex;flex-wrap:wrap;align-items:center;gap:20px}
+    .manifesto .m-cta .kick{font:400 clamp(23px,3vw,31px)/1.18 "Instrument Serif";color:#fff;max-width:520px}
+    .manifesto .btn.light{background:var(--white);color:var(--ink)}
+    @media(max-width:640px){.manifesto{margin:18px 8px;border-radius:30px;padding:60px 0}.manifesto h2{font-size:43px}.manifesto .m-lead p{font-size:16px}}
+    .showcase{padding:86px 0 78px}
+    .showcase-head{text-align:center;max-width:840px;margin:0 auto 40px}
+    .showcase-head h2{font:400 clamp(42px,5.6vw,72px)/.96 "Instrument Serif";letter-spacing:-.04em;margin:14px 0 0}
+    .showcase-head h2 em{font-style:italic;color:var(--forest)}
+    .showcase-head p{font-size:17px;line-height:1.6;color:var(--muted);margin:18px auto 0;max-width:620px}.showcase-head p b{color:var(--ink)}
+    .showcase-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    .sc{margin:0;overflow:hidden;border-radius:22px;background:#e5dfd4;border:1px solid rgba(23,23,19,.08);box-shadow:0 16px 44px rgba(25,24,18,.07)}
+    .sc button{display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
+    .sc img{aspect-ratio:1;object-fit:cover;transition:transform .55s ease}.sc:hover img{transform:scale(1.03)}
+    .showcase-note{text-align:center;margin:26px 0 0;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+    @media(max-width:900px){
+      .showcase{padding:60px 0 54px;overflow:hidden}
+      .showcase-grid{display:flex;overflow-x:auto;overflow-y:hidden;align-items:flex-start;gap:10px;margin-right:-14px;padding-right:14px;scrollbar-width:none}
+      .showcase-grid::-webkit-scrollbar{display:none}
+      .sc{flex:0 0 46%}
+    }
+    @media(max-width:640px){
+      .showcase{padding:60px 0 54px;overflow:hidden}.showcase-head{text-align:left;margin-bottom:26px}.showcase-head h2{font-size:41px}.showcase-head p{font-size:16px}
+      .showcase-grid{display:flex;overflow-x:auto;scroll-snap-type:none;gap:10px;margin-right:-14px;padding-right:14px;scrollbar-width:none}
+      .showcase-grid::-webkit-scrollbar{display:none}
+      .sc{flex:0 0 78%;border-radius:18px}
+      .showcase-note{text-align:left;font-size:10px}
+    }
+    .case{padding:80px 0}
+    .case-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px}
+    .case-step{border:1px solid var(--line);border-radius:20px;padding:22px 24px;background:rgba(255,255,255,.42)}
+    .case-step span{font:500 10px "DM Mono";letter-spacing:.14em;text-transform:uppercase;color:#4e6c54}
+    .case-step b{display:block;font-size:18px;margin:9px 0 5px}
+    .case-step p{margin:0;font-size:15px;line-height:1.5;color:var(--muted)}
+    .case-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    .case-grid figure{margin:0;overflow:hidden;border-radius:16px;background:#e5dfd4;border:1px solid rgba(23,23,19,.08)}
+    .case-grid button{display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
+    .case-grid img{aspect-ratio:1;object-fit:cover}
+    .case-note{margin:22px 0 0;font-size:17px;line-height:1.6;color:var(--muted);max-width:760px}.case-note b{color:var(--ink)}
+    @media(max-width:640px){
+      .case{padding:56px 0;overflow:hidden}.case-steps{grid-template-columns:1fr;gap:10px;margin-bottom:20px}.case-step{padding:18px 20px}
+      .case-grid{display:flex;overflow-x:auto;overflow-y:hidden;align-items:flex-start;gap:9px;margin-right:-14px;padding-right:14px;scrollbar-width:none}
+      .case-grid::-webkit-scrollbar{display:none}.case-grid figure{flex:0 0 62%}
+      .case-note{font-size:16px}
+    }
+    .audience-chips{display:flex;flex-wrap:wrap;gap:10px}
+    .audience-chips span{font-size:15px;font-weight:600;color:var(--ink);background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:99px;padding:12px 20px}
+    .audience-note{margin:26px 0 0;font-size:17px;line-height:1.6;color:var(--muted);max-width:720px}.audience-note b{color:var(--ink)}
+    @media(max-width:640px){
+      .audience-chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+      .audience-chips span{display:flex;align-items:center;justify-content:center;text-align:center;min-height:52px;font-size:12.5px;line-height:1.25;padding:8px 10px}
+      .audience-note{font-size:16px}
+    }
+    .offer-lead{max-width:850px;margin:0 auto 42px;text-align:center}
+    .offer-lead .eyebrow{color:#4e6c54}
+    .offer-lead h2{font:400 clamp(38px,5vw,64px)/.98 "Instrument Serif";letter-spacing:-.03em;margin:12px 0 0}
+    .offer-lead h2 em{font-style:italic;color:var(--forest)}
+    .offer-lead .without{display:inline-flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px}
+    .offer-lead .without span{font:600 10px "DM Mono";letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:7px 13px}
+    .offer-lead p{font-size:17px;line-height:1.62;color:var(--muted);margin:18px auto 0;max-width:670px}.offer-lead p b{color:var(--ink)}
+    @media(max-width:640px){.offer-lead{margin-bottom:28px}.offer-lead h2{font-size:37px}.offer-lead p{font-size:16px}}
+    .announcement{background:var(--forest);color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
+    .announcement-inner{min-height:38px;display:flex;align-items:center;justify-content:center;gap:14px;text-align:center;font-size:12px;line-height:1.35;color:#dfe7df}
+    .announcement-inner b{color:#fff}.announcement-inner a{min-height:44px;display:inline-flex;align-items:center;text-decoration:underline;text-underline-offset:3px;font-weight:700}
+    .art-direction{padding:92px 0;background:var(--white)}
+    .art-board{display:grid;grid-template-columns:.78fr 1.22fr;gap:44px;align-items:center}
+    .art-copy{position:sticky;top:104px;align-self:start}
+    .art-copy h2{font:400 clamp(48px,6vw,82px)/.9 "Instrument Serif";letter-spacing:-.045em;margin:18px 0}
+    .art-copy p{font-size:18px;line-height:1.65;color:var(--muted)}
+    .art-list{display:grid;gap:10px;margin-top:24px}
+    .art-list div{display:grid;grid-template-columns:32px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line)}
+    .art-list span{font:500 10px "DM Mono";color:var(--muted)}
+    .art-list b{font-size:15px}
+    .mosaic{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;align-items:start}
+    .mosaic figure{margin:0;overflow:hidden;border-radius:24px;background:#ded8cd;border:1px solid rgba(23,23,19,.08);box-shadow:0 18px 50px rgba(25,24,18,.08)}
+    .mosaic img{width:100%;height:100%;object-fit:contain;background:#ded8cd}
+    .mosaic .tall{grid-column:span 4;height:430px}.mosaic .wide{grid-column:span 8;height:300px}.mosaic .small{grid-column:span 4;height:245px}.mosaic .medium{grid-column:span 5;height:315px}.mosaic .large{grid-column:span 7;height:315px}
+    .buyer-lens{padding:30px 0 90px}
+    .buyer-box{border-radius:42px;background:var(--ink);color:#fff;padding:54px;display:grid;grid-template-columns:.86fr 1.14fr;gap:54px;align-items:start}
+    .buyer-box h2{font:400 clamp(48px,6vw,78px)/.92 "Instrument Serif";letter-spacing:-.045em;margin:16px 0 0}.buyer-box h2 em{color:#b9c9b9}
+    .buyer-box p{color:#aaa99f;line-height:1.65;font-size:17px}
+    .buyer-points{display:grid;gap:10px}
+    .buyer-point{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);border-radius:22px;padding:22px;display:grid;grid-template-columns:58px 1fr;gap:16px}
+    .buyer-point span{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#d7cda9;color:#171713;font:500 11px "DM Mono"}
+    .buyer-point b{display:block;font-size:18px}.buyer-point p{font-size:14px;margin:7px 0 0}
+
+    @media(max-width:900px){
+      .nav-links a:not(.btn){display:none}.campaign-grid{grid-template-columns:1fr 1fr}
+      .section-intro{grid-template-columns:1fr;gap:14px}.pain-grid,.difference-card,.offer-box,.finder-box{grid-template-columns:1fr}.difference-proof{min-height:480px}
+      .art-board,.buyer-box{grid-template-columns:1fr}.art-copy{position:static}.mosaic .tall,.mosaic .wide,.mosaic .small,.mosaic .medium,.mosaic .large{grid-column:span 6;height:300px}
+      .result-grid{grid-template-columns:repeat(2,1fr)}.versus-grid{grid-template-columns:1fr 1fr;gap:9px;position:relative;align-items:start}.versus-badge{position:absolute;left:50%;top:34%;transform:translate(-50%,-50%) rotate(-6deg);width:46px;height:46px;font-size:11px;margin:0;z-index:5}.process-grid{grid-template-columns:1fr}.process-card{min-height:auto}.inside-grid{grid-template-columns:1fr}.inside-card.featured{grid-column:auto}.product-main,.product-strip{grid-template-columns:1fr}.audience-row{grid-template-columns:40px 1fr}.audience-row p{grid-column:2}.guarantee-box{grid-template-columns:150px 1fr}
+    }
+    @media(max-width:640px){
+      :root{--radius:22px}.shell{width:min(100% - 28px,1180px)}.nav{height:65px}.brand{font-size:18px}.nav .btn{min-height:40px;padding:0 15px}.hero{padding:32px 0 18px}.hero-copy{text-align:left;margin-bottom:25px}
+      .hero-copy h1{font-size:56px;line-height:.91;margin:19px 0 18px}.hero-copy>p{font-size:17px;line-height:1.5}.hero-actions{display:grid;justify-content:stretch}.hero-actions .btn{width:100%}.hero-actions .btn.ghost{display:none}.hero-proof{text-align:center}
+      .campaign-stage{padding:8px;border-radius:25px}.campaign-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.campaign-card,.campaign-card:first-child,.campaign-card:last-child{display:block;height:auto;border-radius:14px}.campaign-card figcaption{padding:9px 10px;font-size:8px;gap:6px}.stage-note{padding:12px 6px 4px}.stage-note span:last-child{display:none}
+      .announcement-inner{font-size:11px;padding:9px 8px}.art-direction{padding:68px 0}.mosaic{gap:8px}.mosaic .tall,.mosaic .wide,.mosaic .small,.mosaic .medium,.mosaic .large{grid-column:1/-1;height:auto}.mosaic figure img{aspect-ratio:1;object-fit:contain}.buyer-lens{padding:10px 0 70px}.buyer-box{padding:31px 20px;border-radius:28px;gap:30px}.buyer-point{grid-template-columns:42px 1fr;padding:18px}.buyer-point span{width:38px;height:38px}
+      section{padding:72px 0}.section-intro h2,.result-head h2{font-size:46px}.section-intro p,.result-head p{font-size:16px}.pain{margin:18px 8px;border-radius:30px;padding:68px 0}.pain h2{font-size:48px}.pain-grid{gap:36px}.symptom{grid-template-columns:38px 1fr}
+      .versus-grid{gap:7px}.versus-badge{width:40px;height:40px;font-size:9px;top:31%}
+      .versus-card{padding:6px;border-radius:16px}.versus-image{border-radius:12px}
+      .versus-tag{margin:2px 0 5px 3px;font-size:8px;padding:4px 8px;letter-spacing:.04em}
+      .versus-copy{padding:9px 7px 4px}.versus-copy span{font-size:8px;letter-spacing:.06em}
+      .versus-copy h3{font-size:18px;line-height:1.05;margin:5px 0}.versus-copy p{font-size:11.5px;line-height:1.42}
+      .difference{padding-bottom:20px}.difference-card{padding:8px;border-radius:27px}.difference-proof{min-height:420px;border-radius:21px;padding:28px 22px}.difference-copy{padding:25px 16px 30px}.difference-copy h3{font-size:44px}
+      .results{overflow:hidden}.result-head{text-align:left}.result-grid{display:flex;overflow:auto;scroll-snap-type:x mandatory;margin-right:-14px;padding-right:14px}.result-card{flex:0 0 82%;scroll-snap-align:start}
+      .process{margin:58px 8px 0;border-radius:30px}.process-card{padding:25px}.process-card h3{margin-top:32px}
+      .finder-box{padding:31px 20px;border-radius:28px;gap:32px}.finder-box h2{font-size:49px}.locked-card{grid-template-columns:40px 1fr}.locked-card>span:last-child{grid-column:2}
+      .inside-grid{grid-template-columns:repeat(2,1fr)}.audience-row{gap:13px}.audience-row h3{font-size:19px}
+      .product-showcase{padding:0 0 34px}.product-box{border-radius:28px}.product-copy{padding:30px 22px}.product-copy h2{font-size:48px}.product-copy p{font-size:16px}.product-visual{padding:8px}.product-visual img,.product-strip img{border-radius:20px}.product-strip figure{padding:8px}.product-note{padding:26px 22px}.product-note b{font-size:34px}
+      .offer{padding:60px 0 85px}.offer-box{border-radius:28px}.offer-copy{padding:34px 24px}.offer-copy h2{font-size:51px}.cost-line{grid-template-columns:1fr}.cost{padding:12px 0}.price-card{margin:8px;padding:27px 22px}.price{font-size:76px}
+      .guarantee-box{grid-template-columns:1fr;padding:26px}.seal{width:135px}.guarantee h2{font-size:36px}.faq{border-radius:30px 30px 0 0}.faq h2{font-size:55px}.footer-top{display:block}.footer-top .btn{margin-top:20px}.footer-bottom{display:block}.footer-bottom span{display:block;margin-top:10px}
+      .mobile-buy{position:fixed;z-index:60;left:10px;right:10px;bottom:10px;padding:8px 8px 8px 16px;border:1px solid rgba(255,255,255,.2);background:rgba(23,23,19,.91);backdrop-filter:blur(18px);color:#fff;border-radius:18px;display:flex;align-items:center;justify-content:space-between;gap:10px;transform:translateY(130%);transition:.35s ease;box-shadow:0 20px 60px rgba(0,0,0,.3)}.mobile-buy.show{transform:none}.mobile-buy span{display:block;font-size:11px}.mobile-buy b{font-size:12px}.mobile-buy .btn{min-height:44px;padding:0 16px;font-size:12px;background:#fff;color:#171713}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+    /* ===== FX premium (rama efectos-premium): progreso + apariciones con blur + micro-interacciones ===== */
+    #fx-progreso{position:fixed;top:0;left:0;height:3px;width:100%;transform:scaleX(0);transform-origin:0 50%;z-index:2000;background:linear-gradient(90deg,#D7CDA9,#b9a56e);pointer-events:none;will-change:transform;transition:transform .08s linear}
+    .reveal{transition:opacity .95s cubic-bezier(.16,1,.3,1),transform .95s cubic-bezier(.16,1,.3,1),filter .95s cubic-bezier(.16,1,.3,1)}
+    @media(min-width:901px){
+      .reveal{filter:blur(6px);transform:translateY(26px)}
+      .reveal.visible{filter:blur(0)}
+      .campaign-card img{will-change:transform}
+      .tcard{transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s cubic-bezier(.16,1,.3,1)}
+      .tcard:hover{transform:translateY(-6px);box-shadow:0 26px 60px rgba(38,54,44,.13)}
+      .sc img,.case-grid img{transition:transform .9s cubic-bezier(.16,1,.3,1)}
+      .sc:hover img,.case-grid figure:hover img{transform:scale(1.035)}
+      .btn{transition:transform .25s cubic-bezier(.16,1,.3,1),opacity .2s,box-shadow .25s}
+      .btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(38,54,44,.18)}
+    }
+    @media(prefers-reduced-motion:reduce){#fx-progreso{display:none}.reveal{filter:none}}
+
+    /* ===== FONDOS DE TEXTURA (probando dos opciones) =====
+       Los dos son una sola capa fija, sin animación y sin eventos: el navegador la
+       compone una vez y no vuelve a repintarla al hacer scroll. Coste ~0 en móvil.
+       Se activan poniendo la clase "fondo-grano" o "fondo-degradado" en <body>. */
+
+    /* A · GRANO — textura de papel, muy sutil */
+    body.fondo-grano::after{
+      content:"";position:fixed;inset:0;z-index:1500;pointer-events:none;
+      opacity:.055;mix-blend-mode:multiply;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>");
+      background-size:180px 180px;
+    }
+    /* en móvil, aún más leve: las pantallas chicas exageran el ruido */
+    @media(max-width:900px){ body.fondo-grano::after{opacity:.035} }
+
+    /* B · DEGRADADO — halos de luz cálidos, apenas perceptibles */
+    body.fondo-degradado::after{
+      content:"";position:fixed;inset:0;z-index:1500;pointer-events:none;
+      background:
+        radial-gradient(58% 42% at 12% 6%,  rgba(215,205,169,.34), transparent 68%),
+        radial-gradient(46% 36% at 90% 26%, rgba(38,54,44,.10),    transparent 70%),
+        radial-gradient(60% 42% at 48% 98%, rgba(215,205,169,.22), transparent 70%);
+    }
+
+    @media(prefers-reduced-motion:reduce){ body.fondo-grano::after,body.fondo-degradado::after{opacity:.03} }
+    /* ===== Producto flotante en el hero ===== */
+    .hero-prod{max-width:620px;margin:8px auto 26px;perspective:1100px}
+    /* Sin preserve-3d a propósito: con 25 fotogramas hijos posicionados, esa
+       propiedad promovía cada uno a su propia capa de GPU. 25 capas de 1080px
+       es lo que hacía ir lenta la página. */
+    .prod-float{position:relative;margin:0;transition:transform .45s cubic-bezier(.16,1,.3,1)}
+    .prod-float img{width:100%;height:auto;display:block;border-radius:26px;box-shadow:0 34px 90px rgba(23,23,19,.22);animation:prodFlotar 7s ease-in-out infinite}
+    /* El video ocupa el mismo lugar que la imagen y aparece cuando esta listo */
+    /* Pila de fotogramas: todos superpuestos, solo uno visible. Cambiar cuál se
+       ve es lo más soportado que hay — no hace falta canvas ni dibujar nada. */
+    .prod-float .giro{position:absolute;inset:0;border-radius:26px;overflow:hidden;opacity:0;transition:opacity .4s ease;pointer-events:none}
+    /* Todas opacas y apiladas: lo único que cambia es cuál queda encima. Así
+       nunca hay un instante con nada visible, que es lo que se veía como parpadeo. */
+    /* Solo el fotograma activo se pinta. Los demás quedan fuera del pintado:
+       con los 25 visibles a la vez el navegador rasterizaba 124 MB de imagen.
+       No parpadea porque cada uno se descodifica ANTES de entrar en la rotación. */
+    .prod-float .giro img{position:absolute;inset:0;width:100%;height:100%;display:block;animation:none!important;border-radius:0;box-shadow:none;visibility:hidden}
+    .prod-float .giro img.on{visibility:visible}
+    .prod-float.con-giro{animation:prodFlotar 7s ease-in-out infinite}
+    .prod-float.con-giro .giro{opacity:1;box-shadow:0 34px 90px rgba(23,23,19,.22)}
+    .prod-float.con-giro > #prodImg{visibility:hidden;animation:none}
+    @keyframes prodFlotar{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-13px) rotate(.5deg)}}
+    @media(max-width:900px){.hero-prod{max-width:min(92vw,480px);margin:4px auto 20px}.prod-float img{border-radius:20px;box-shadow:0 22px 60px rgba(23,23,19,.2)}}
+    @media(prefers-reduced-motion:reduce){.prod-float img{animation:none}.prod-float{transition:none}}
+  </style>
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1448725857302388');
+
+  // --- Identidad de atribución -------------------------------------------------
+  // Meta necesita fbc (id de clic del anuncio) + fbp (id de navegador) para poder
+  // vincular una compra con el anuncio que la generó. Sin esto la calidad de
+  // coincidencias queda en ~3/10 y las ventas no se atribuyen.
+  window.ssIdent = (function(){
+    var LS = 'ss_attr_v1';
+    function q(n){ try { return new URLSearchParams(location.search).get(n) || ''; } catch(e){ return ''; } }
+    function cookie(n){ var m = document.cookie.match('(^|;)\\s*'+n+'\\s*=\\s*([^;]+)'); return m ? m.pop() : ''; }
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(LS) || '{}') || {}; } catch(e){ saved = {}; }
+
+    // fbc: se arma con el fbclid que Meta agrega a la URL al hacer clic en el anuncio.
+    var fbclid = q('fbclid');
+    if (fbclid) saved.fbc = 'fb.1.' + Date.now() + '.' + fbclid;
+
+    // Guarda de dónde vino (primer toque) para poder pasárselo a Hotmart.
+    ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(function(k){
+      var v = q(k); if (v && !saved[k]) saved[k] = v;
+    });
+    if (!saved.external_id) saved.external_id = 'ss.' + Date.now() + '.' + Math.random().toString(36).slice(2);
+    try { localStorage.setItem(LS, JSON.stringify(saved)); } catch(e){}
+
+    return {
+      get: function(){
+        return {
+          fbc: saved.fbc || cookie('_fbc') || '',
+          fbp: cookie('_fbp') || '',
+          external_id: saved.external_id || ''
+        };
+      },
+      // Etiqueta de origen para Hotmart: así ves en Hotmart de dónde vino la venta.
+      // Funciona sin configurar nada: si vino de un anuncio, Meta agrega ?fbclid= solo.
+      // Si además usas UTMs, los aprovecha para dar más detalle.
+      sck: function(){
+        var origen = saved.utm_source || (saved.fbc ? 'meta-ads' : '');
+        if (!origen) {
+          try {
+            var r = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+            origen = r && r.indexOf(location.hostname.replace(/^www\./, '')) === -1 ? r : 'directo';
+          } catch (e) { origen = 'directo'; }
+        }
+        var p = [origen, saved.utm_campaign || '', saved.utm_content || ''];
+        return p.filter(Boolean).join('_').replace(/[^A-Za-z0-9_.-]/g, '-').slice(0, 90);
+      }
+    };
+  })();
+
+  // Dispara cada evento en el navegador (Pixel) y en el servidor (CAPI) con el MISMO event_id,
+  // para que Meta los deduplique y no los cuente dos veces.
+  window.ssTrack = function(name, custom, params){
+    var id = name + '.' + Date.now() + '.' + Math.random().toString(36).slice(2);
+    var ident = {};
+    try { ident = window.ssIdent ? window.ssIdent.get() : {}; } catch(e){}
+    try {
+      if (custom) fbq('trackCustom', name, params || {}, { eventID: id });
+      else fbq('track', name, params || {}, { eventID: id });
+    } catch(e){}
+    try {
+      fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        keepalive: true,
+        body: JSON.stringify({ event_name: name, event_id: id, custom: !!custom, event_source_url: location.href, params: params || {}, ident: ident })
+      });
+    } catch(e){}
+  };
+  ssTrack('PageView', false);
+  </script>
+  <noscript><img fetchpriority="high" decoding="async" height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1448725857302388&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+  <!-- Eventos personalizados: tiempo en la página (Pixel + CAPI) -->
+  <script>
+  (function(){
+    var hitos = [
+      {s:30,  ev:'TiempoEnPagina_30s'},
+      {s:90,  ev:'TiempoEnPagina_90s'},
+      {s:180, ev:'TiempoEnPagina_3min'},
+      {s:300, ev:'TiempoEnPagina_5min'}
+    ];
+    hitos.forEach(function(h){
+      setTimeout(function(){
+        if(window.ssTrack) ssTrack(h.ev, true, {segundos:h.s});
+      }, h.s*1000);
+    });
+  })();
+  </script>
+  <!-- End eventos personalizados -->
+</head>
+<body>
+  <div class="announcement">
+    <div class="shell announcement-inner">
+      <span data-cuenta="banner"><b>Cerró el precio fundador.</b> Este precio se mantiene <b>hasta el 31 de agosto</b> — después sube a USD 67.</span>
+      <a href="#precio">Asegurar mi precio</a>
+    </div>
+  </div>
+  <header>
+    <div class="shell nav">
+      <a class="brand" href="#">simply <i>studio.</i></a>
+      <nav class="nav-links" aria-label="Principal">
+        <a href="#resultado">Resultados</a>
+        <a href="#incluye">Qué incluye</a>
+        <a href="#preguntas">Preguntas</a>
+        <a class="btn" href="#precio">Conseguir Prompt Ads</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="shell">
+        <div class="hero-copy reveal">
+          <span class="pill eyebrow"><i class="dot"></i> Prompts + guías + sistema de corrección</span>
+          <h1>Crea anuncios premium en <em>menos de 5 minutos</em> y <em>aumenta tus ventas.</em></h1>
+        </div>
+
+        <div class="hero-prod reveal">
+          <figure class="prod-float">
+            <!-- La imagen se ve siempre; el video la reemplaza solo cuando esta cargado
+                 y el visitante no pidio reducir movimiento. Asi nadie ve un hueco. -->
+            <img id="prodImg" src="assets/producto/prompt-ads-hero.webp"
+                 srcset="assets/producto/prompt-ads-hero-640.webp 640w, assets/producto/prompt-ads-hero.webp 1100w"
+                 sizes="(max-width:900px) 92vw, 620px"
+                 width="1100" height="1100" fetchpriority="high" decoding="async"
+                 alt="Prompt Ads — el sistema definitivo para crear anuncios de alta conversión, con ejemplos de piezas premium alrededor">
+            <div id="prodGiro" class="giro" aria-hidden="true"></div>
+          </figure>
+        </div>
+
+        <div class="hero-copy reveal">
+          <p>El sistema que hace que tu marca se vea como las que facturan millones. Subes una foto de lo que vendes y sales con piezas que una agencia te cobraría <b>+USD 1.000</b> y tres semanas de espera. <b>Sin contratar a nadie, sin sesión de fotos y sin saber diseño.</b></p>
+          <div class="hero-actions">
+            <a class="btn" href="#precio">Quiero crear mis anuncios <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
+            <a class="btn ghost" href="#resultado">Ver qué puedes crear</a>
+          </div>
+          <div class="hero-proof mono">Edición de lanzamiento · pago único · acceso inmediato por Hotmart</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase" id="resultado">
+      <div class="shell">
+        <div class="showcase-head reveal">
+          <span class="eyebrow muted">Hecho con Prompt Ads · sin agencia</span>
+          <h2>Todo esto lo hizo una persona sola. <em>Sin agencia.</em></h2>
+          <p>Sin sesión de fotos, sin modelos y sin diseñador. Cada anuncio salió de una foto común y el sistema, en minutos. <b>Es exactamente lo que puedes hacer con lo que tú vendes.</b></p>
+        </div>
+        <div class="campaign-stage reveal">
+          <div class="campaign-grid" aria-label="Anuncios creados aplicando Prompt Ads">
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p7.webp" aria-label="Ampliar anuncio de vía pública"><img loading="lazy" decoding="async" src="assets/premium/p7.webp" width="1000" height="1000" alt="Anuncio de alto impacto en vía pública"></button><figcaption>Marca · impacto</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p1.webp" aria-label="Ampliar anuncio automotor"><img loading="lazy" decoding="async" src="assets/premium/p1.webp" width="1000" height="1000" alt="Anuncio automotor con estética premium"></button><figcaption>Autos · percepción</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p6.webp" aria-label="Ampliar anuncio deportivo"><img loading="lazy" decoding="async" src="assets/premium/p6.webp" width="1000" height="1000" alt="Anuncio deportivo que frena el scroll"></button><figcaption>Deporte · frena el scroll</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p4.webp" aria-label="Ampliar anuncio de estética"><img loading="lazy" decoding="async" src="assets/premium/p4.webp" width="1000" height="1000" alt="Anuncio de clínica estética con detalle macro"></button><figcaption>Estética · detalle real</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p5.webp" aria-label="Ampliar anuncio de lujo"><img loading="lazy" decoding="async" src="assets/premium/p5.webp" width="1000" height="1000" alt="Anuncio de lujo con estética aspiracional"></button><figcaption>Lujo · deseo</figcaption></figure>
+            <figure class="campaign-card"><button class="zoomable" data-full="assets/premium/p2.webp" aria-label="Ampliar anuncio de moda"><img loading="lazy" decoding="async" src="assets/premium/p2.webp" width="1000" height="1000" alt="Anuncio de moda masculina editorial"></button><figcaption>Moda · deseo</figcaption></figure>
+          </div>
+        </div>
+        <p class="showcase-note mono">Rubros distintos · el mismo sistema · cada pieza lista para publicar</p>
+      </div>
+    </section>
+
+    <section class="pain">
+      <div class="shell pain-grid">
+        <div class="reveal">
+          <span class="eyebrow muted">El problema no es tu producto</span>
+          <h2>Tu producto es bueno. <em>Tus anuncios no lo demuestran.</em></h2>
+          <div class="truth">Nadie lee antes de juzgar. <strong>Deciden en dos segundos, con los ojos.</strong> Y si tu anuncio se ve barato, tu producto se ve barato — por bueno que sea. <strong>No pierdes ventas por tu precio: las pierdes antes, en la primera mirada.</strong></div>
+        </div>
+        <div class="symptoms reveal">
+          <div class="symptom"><span class="eyebrow">01</span><div><b>Piel que parece de muñeca</b><p>Rostros demasiado lisos, manos raras y ese brillo artificial que destruye la confianza.</p></div></div>
+          <div class="symptom"><span class="eyebrow">02</span><div><b>Producto que cambia en cada imagen</b><p>La forma, el tamaño, el color o la etiqueta dejan de parecerse a lo que realmente vendes.</p></div></div>
+          <div class="symptom"><span class="eyebrow">03</span><div><b>Diseños que se ven baratos</b><p>Mucho texto, poca jerarquía y composiciones que parecen una plantilla improvisada.</p></div></div>
+          <div class="symptom"><span class="eyebrow">04</span><div><b>Horas corrigiendo sin saber qué pedir</b><p>Cambias palabras al azar, pierdes el resultado anterior y empiezas otra vez desde cero.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="difference">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <span class="eyebrow muted">El mismo producto · dos anuncios</span>
+          <div><h2>Uno se ignora. El otro se siente como <em>marca.</em></h2><p>Mira los dos. <b>El primero</b> es el típico anuncio saturado que scrolleas sin pensar. <b>El segundo</b> es el mismo producto, pero con dirección visual. La diferencia no es más texto ni más colores: es saber qué mostrar y qué eliminar.</p></div>
+        </div>
+        <div class="versus-grid reveal">
+          <article class="versus-card">
+            <span class="versus-tag bad">El anuncio genérico</span>
+            <div class="versus-image"><button class="zoomable" data-full="assets/prompt-ads/05-comparacion-anuncio-generico.webp" aria-label="Ampliar anuncio genérico"><img decoding="async" src="assets/prompt-ads/05-comparacion-anuncio-generico.webp" width="1254" height="1254" loading="lazy" alt="Anuncio genérico saturado con demasiado texto"></button></div>
+            <div class="versus-copy"><span>Sin dirección · genérico</span><h3>Mucho ruido. Cero deseo.</h3><p>Promesas vacías, texto por todas partes y una imagen que parece pedir desesperadamente un clic.</p></div>
+          </article>
+          <div class="versus-badge">VS.</div>
+          <article class="versus-card">
+            <span class="versus-tag good">Con Prompt Ads</span>
+            <div class="versus-image"><button class="zoomable" data-full="assets/prompt-ads/06-comparacion-anuncio-premium.webp" aria-label="Ampliar anuncio premium"><img decoding="async" src="assets/prompt-ads/06-comparacion-anuncio-premium.webp" width="1254" height="1254" loading="lazy" alt="Anuncio premium claro del mismo producto"></button></div>
+            <div class="versus-copy"><span>Con dirección · premium</span><h3>Una idea. Una jerarquía. Una razón para mirar.</h3><p>El mismo producto se siente más confiable, más valioso y mucho más fácil de recordar.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="case">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <span class="eyebrow muted">Caso real · así se hace, paso a paso</span>
+          <div><h2>De una simple foto a una campaña completa.</h2><p>Tomamos la foto de un producto cualquiera —unas zapatillas— y en menos de 5 minutos salieron todos estos anuncios. Dentro del sistema ves <b>el proceso completo con capturas reales</b>: qué archivos se adjuntan, qué se escribe en el chat y cómo dirigir cada pieza. Repites los mismos pasos con tu producto.</p></div>
+        </div>
+        <div class="case-steps">
+          <article class="case-step reveal"><span>Paso 01</span><b>Arrastras los archivos</b><p>Los PDFs del sistema + la foto de lo que vendes y tu logo. Sin escribir prompts a mano.</p></article>
+          <article class="case-step reveal"><span>Paso 02</span><b>Eliges el estilo</b><p>Guardas las referencias del look que quieres y le dices cómo respetar tu marca.</p></article>
+          <article class="case-step reveal"><span>Paso 03</span><b>Generas tu tanda</b><p>Cada pieza con un ángulo de venta distinto, misma marca. Tú revisas y eliges las mejores.</p></article>
+        </div>
+        <div class="case-grid">
+          <figure class="reveal"><button class="zoomable" data-full="assets/caso-nike/n1.webp" aria-label="Ampliar anuncio del caso"><img decoding="async" src="assets/caso-nike/n1.webp" width="1000" height="1000" loading="lazy" alt="Anuncio editorial de zapatilla generado con el sistema"></button></figure>
+          <figure class="reveal"><button class="zoomable" data-full="assets/caso-nike/n2.webp" aria-label="Ampliar anuncio del caso"><img decoding="async" src="assets/caso-nike/n2.webp" width="1000" height="1000" loading="lazy" alt="Anuncio lifestyle de zapatilla generado con el sistema"></button></figure>
+          <figure class="reveal"><button class="zoomable" data-full="assets/caso-nike/n3.webp" aria-label="Ampliar anuncio del caso"><img decoding="async" src="assets/caso-nike/n3.webp" width="1000" height="1000" loading="lazy" alt="Anuncio urbano de zapatilla generado con el sistema"></button></figure>
+          <figure class="reveal"><button class="zoomable" data-full="assets/caso-nike/n4.webp" aria-label="Ampliar anuncio del caso"><img decoding="async" src="assets/caso-nike/n4.webp" width="1000" height="1000" loading="lazy" alt="Anuncio de producto con detalle de material"></button></figure>
+          <figure class="reveal"><button class="zoomable" data-full="assets/caso-nike/n5.webp" aria-label="Ampliar anuncio del caso"><img decoding="async" src="assets/caso-nike/n5.webp" width="1000" height="1000" loading="lazy" alt="Anuncio de campaña de zapatilla generado con el sistema"></button></figure>
+        </div>
+        <div class="marquee-hint"><span class="ar">‹</span> Desliza para ver la tanda completa <span class="ar">›</span></div>
+        <p class="case-note reveal">Ángulos de venta distintos del mismo producto, con la misma marca. Solo necesitas <b>ChatGPT</b> (con Plus le sacas el máximo) y una foto. <b>Cero diseño, cero marketing técnico.</b></p>
+      </div>
+    </section>
+
+    <section class="inside" id="incluye">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <span class="eyebrow muted">Qué incluye</span>
+          <div><h2>¿Qué incluye el sistema Prompt Ads?</h2><p>No son prompts sueltos. Son <b>seis piezas que trabajan juntas</b>: el motor que genera los anuncios, el sistema de realismo, el de dirección visual y el de correcciones —cosas que se enseñan por separado y se cobran carísimo— más la <b>guía paso a paso con ejemplos reales</b>. Teoría y práctica, todo resuelto adentro.</p></div>
+        </div>
+        <div class="inside-grid">
+          <article class="inside-card reveal">
+            <div class="card-cover"><span class="card-tag">Pieza 01</span><img decoding="async" src="assets/mockups-modulos/guia-de-uso.webp" loading="lazy" alt="Guía de uso del sistema Prompt Ads"></div>
+            <div class="card-body"><h3>Guía de uso del sistema</h3><p>El paso a paso completo: qué juntar, cómo dirigir a la IA y cómo resolver los problemas más comunes.</p></div>
+          </article>
+          <article class="inside-card reveal">
+            <div class="card-cover"><span class="card-tag">Pieza 02</span><img decoding="async" src="assets/mockups-modulos/protocolo-maestro.webp" loading="lazy" alt="Protocolo Maestro Prompt Ads"></div>
+            <div class="card-body"><h3>Protocolo Maestro</h3><p>La instrucción central que hace que la IA genere tus anuncios con criterio de agencia.</p></div>
+          </article>
+          <article class="inside-card reveal">
+            <div class="card-cover"><span class="card-tag">Pieza 03</span><img decoding="async" src="assets/mockups-modulos/reality-layer.webp" loading="lazy" alt="Reality Layer Prompt Ads"></div>
+            <div class="card-body"><h3>Reality Layer</h3><p>Bloques de realismo para pedir piel, manos, luz y materiales más creíbles, sin look plástico.</p></div>
+          </article>
+          <article class="inside-card reveal">
+            <div class="card-cover"><span class="card-tag">Pieza 04</span><img decoding="async" src="assets/mockups-modulos/direccion-visual.webp" loading="lazy" alt="Dirección Visual Prompt Ads"></div>
+            <div class="card-body"><h3>Dirección Visual</h3><p>Qué pedir cuando no sabes qué pedir: convierte una idea vaga en la estética exacta que buscas.</p></div>
+          </article>
+          <article class="inside-card reveal">
+            <div class="card-cover"><span class="card-tag">Pieza 05</span><img decoding="async" src="assets/mockups-modulos/corregi-continua.webp" loading="lazy" alt="Corregí y Continuá Prompt Ads"></div>
+            <div class="card-body"><h3>Corregí y Continuá</h3><p>Qué escribir cuando el modelo entrega menos piezas, arma una grilla o cambia tu producto.</p></div>
+          </article>
+          <article class="inside-card reveal">
+            <div class="card-cover"><span class="card-tag">Pieza 06</span><img decoding="async" src="assets/mockups-modulos/variedad-total.webp" loading="lazy" alt="Variedad Total Prompt Ads"></div>
+            <div class="card-body"><h3>Variedad Total</h3><p>Fuerza ángulos, escenas y copy nuevos cuando los anuncios empiezan a parecerse — sin perder coherencia.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="audience">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <span class="eyebrow muted">¿Para quién es?</span>
+          <div><h2>Para gente que vende algo real y necesita mostrarlo mejor.</h2></div>
+        </div>
+        <div class="audience-chips reveal">
+          <span>Tiendas y dropshipping</span>
+          <span>Restaurantes y gastronomía</span>
+          <span>Bienes raíces e inmobiliarias</span>
+          <span>Gimnasios y bienestar</span>
+          <span>Salones, barberías y estética</span>
+          <span>Servicios y profesionales</span>
+          <span>Productos digitales y SaaS</span>
+          <span>Marcas de ropa y accesorios</span>
+          <span>Freelancers y agencias chicas</span>
+          <span>Creadores de contenido</span>
+        </div>
+        <p class="audience-note reveal">Si vendes algo real y necesitas mostrarlo mejor, funciona. <b>Tú pones la foto y tus datos; el sistema pone la dirección creativa.</b></p>
+      </div>
+    </section>
+
+    <section class="proof">
+      <div class="shell proof-head reveal">
+        <span class="eyebrow muted">Lo que dicen los primeros</span>
+        <h2>Dejaron de improvisar y <em>empezaron a vender.</em></h2>
+        <p>Dropshippers, gente de ecommerce y equipos de marketing que ya usan Prompt Ads todos los días. Esto es lo que nos cuentan.</p>
+      </div>
+      <div class="marquee reveal">
+        <div class="m-row"><div class="m-track">
+          <article class="tcard"><span class="tcard-tag">Dropshipping · velocidad</span><p class="tcard-q">La velocidad con la que sacamos los creativos ahora <b>es una barbaridad</b>. Nosotros necesitamos anuncios nuevos todas las semanas y eso era el cuello de botella de todo. Ya no.</p><div class="tcard-foot"><div class="tcard-av">OS</div><div class="tcard-id"><b>Oikostore</b><span>Dropshipping</span></div></div></article>
+          <article class="tcard"><span class="tcard-tag">Montó un negocio con esto</span><p class="tcard-q">Empecé usándolo para mi propia marca y sin buscarlo terminé <b>armando algo aparte, haciéndole el contenido a otras agencias</b>. Todavía me río de que haya salido de acá.</p><div class="tcard-foot"><div class="tcard-av">MI</div><div class="tcard-id"><b>Michael T.</b><span>Contenido para agencias</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">En unas semanas mi negocio quedó <b>completamente distinto</b>. Se ve como esas marcas que uno mira y piensa «yo quiero eso». No sé explicarlo mejor.</p><div class="tcard-foot"><div class="tcard-av">LR</div><div class="tcard-id"><b>Luis R.</b><span>Negocio digital</span></div></div></article>
+          <article class="tcard"><span class="tcard-tag">100+ anuncios · media hora</span><p class="tcard-q">Mis primeros anuncios los tuve en <b>5 minutos</b>. Después me enganché y en menos de media hora tenía más de 100. Perdón el entusiasmo pero estoy feliz con esta compra.</p><div class="tcard-foot"><div class="tcard-av">ME</div><div class="tcard-id"><b>Melanie D.</b><span>Ecommerce</span></div></div></article>
+          <article class="tcard"><span class="tcard-tag">50+ piezas de una</span><p class="tcard-q">Con ChatGPT Plus saqué <b>más de 50 anuncios en una sentada</b>. Yo antes pagaba por cada pieza suelta. Todavía no lo termino de procesar.</p><div class="tcard-foot"><div class="tcard-av">LE</div><div class="tcard-id"><b>Lucía E.</b><span>Ecommerce</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Recién después de aprender todo lo que hay acá adentro me di cuenta de que <b>los anuncios que yo hacía eran feísimos</b> jajaja. Ahora es otra cosa, se nota un montón la diferencia. Recomendado al máximo la verdad.</p><div class="tcard-foot"><div class="tcard-av">AT</div><div class="tcard-id"><b>Alejandro T.</b><span>Dropshipping</span></div></div></article>
+          <article class="tcard"><span class="tcard-tag">Mueblería · fotos del celular</span><p class="tcard-q">Tengo una mueblería y siempre hice los anuncios a mano, con fotos que sacaba con el celular. Ahora <b>con una sola foto del mueble ya tengo los anuncios en un santiamén</b>, y la calidad mejoró muchísimo. Los textos también, genera todo muy bien. Si seguís los pasos y le ponés tu creatividad lo exprimís al máximo. Muy bueno y recomendado!</p><div class="tcard-foot"><div class="tcard-av">EV</div><div class="tcard-id"><b>Elías V.</b><span>Mueblería</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Siempre dije que el que no está dispuesto a invertir en su negocio no avanza. Me arriesgué y quedé iluminado. Me gusta aprender cosas que de verdad sirvan, y esta es una. <b>Y encima es rápido</b>, no te lleva la tarde. Muy recomendado.</p><div class="tcard-foot"><div class="tcard-av">DB</div><div class="tcard-id"><b>Daniel B.</b><span>Ecommerce</span></div></div></article>
+          <article class="tcard"><span class="tcard-tag">Sin saber diseño</span><p class="tcard-q">No sé nada de diseño y pensé que no era para mí. Es <b>arrastrar los PDFs que te dan y leer un poco la guía</b>, y ahí se te ilumina todo. Mi primera tanda salió el mismo día. Buenísimo!</p><div class="tcard-foot"><div class="tcard-av">SE</div><div class="tcard-id"><b>Sofía E.</b><span>Marca propia</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Al principio no entendía nada y hasta desconfié un poco, pero adentro te explica tan bien cómo usarlo que <b>al ratito ya estaba sacando piezas</b>. Me da vergüenza haber dudado.</p><div class="tcard-foot"><div class="tcard-av">VG</div><div class="tcard-id"><b>Valentina G.</b><span>Dropshipping</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Tengo una tienda online y renovar los creativos era un dolor de cabeza. Ahora <b>saco anuncios nuevos cada semana yo solo</b>, sin depender de nadie.</p><div class="tcard-foot"><div class="tcard-av">RG</div><div class="tcard-id"><b>Ricardo G.</b><span>Tienda online</span></div></div></article>
+        </div></div>
+        <div class="marquee-hint"><span class="ar">‹</span> Desliza para ver más historias <span class="ar">›</span></div>
+      </div>
+    </section>
+
+    <section class="offer" id="oferta">
+      <div class="shell">
+        <div class="offer-lead reveal">
+          <span class="eyebrow">El momento es ahora</span>
+          <h2>No te quedes atrás. Sé de los <em>primeros.</em></h2>
+          <div class="without"><span>Sin modelos</span><span>Sin sesión de fotos</span><span>Sin semanas de producción</span><span>Sin agencia</span></div>
+          <p>Mientras algunos siguen publicando lo mismo de siempre, otros ya están creando piezas que parecen de una marca grande. Lo que antes costaba una agencia, un equipo y semanas de producción, hoy cabe en un sistema que puedes usar tú solo, esta tarde. <b>El que empieza ahora tiene meses de ventaja sobre el que empieza cuando ya todos lo hacen.</b></p>
+        </div>
+        <div class="offer-box reveal">
+          <div class="offer-copy">
+            <figure class="offer-visual"><img decoding="async" src="assets/producto/prompt-ads-oferta.webp" width="900" height="900" loading="lazy" alt="Prompt Ads en las manos: el sistema de visuales estratégicos que venden"></figure>
+            <span class="eyebrow">PROMPT ADS · ACCESO COMPLETO</span>
+            <h2>Empieza a crear anuncios premium en <em>menos de 5 minutos.</em></h2>
+            <p>Entra con el sistema listo y <b>aprovecha la IA como los que ya van adelante</b>: produce anuncios con calidad de estudio que cobraría miles de dólares — sin diseñador, sin agencia y sin semanas de producción. El momento de empezar es ahora, no cuando ya lo haga todo el mundo.</p>
+            <p class="offer-choice">Tu marca puede seguir pasando desapercibida, o volverse imposible de olvidar. <b>Hoy, esa decisión es tuya.</b></p>
+            <p class="cost-intro">Producir estos mismos anuncios, por otro lado, te costaría:</p>
+            <div class="cost-line">
+              <div class="cost"><span class="who">Una agencia creativa</span><b>USD 1.000+</b><span>por una sola campaña</span></div>
+              <div class="cost"><span class="who">Una sesión de fotos</span><b>USD 500+</b><span>estudio, modelo y fotógrafo</span></div>
+              <div class="cost"><span class="who">Un director de arte</span><b>USD 50+</b><span>por hora de trabajo</span></div>
+              <div class="cost"><span class="who">Un diseñador freelance</span><b>USD 30+</b><span>por cada anuncio suelto</span></div>
+            </div>
+            <p class="cost-bridge">Y cada vez que necesites anuncios nuevos, <b>vuelves a pagar todo otra vez.</b></p>
+            <div class="after-buy">
+              <span class="ab-title">Qué pasa cuando compras</span>
+              <ol>
+                <li>Pagas de forma 100% segura por Hotmart, sin suscripciones.</li>
+                <li>Recibes el <b>acceso al instante</b> en tu email.</li>
+                <li>Entras, sigues la guía y creas tus primeros anuncios <b>en minutos</b>.</li>
+              </ol>
+            </div>
+          </div>
+          <aside class="price-card" id="precio">
+            <span class="eyebrow muted">Todo lo que te llevas</span>
+            <ul class="stack">
+              <li><span>Guía de uso del sistema</span><b>GRATIS</b></li>
+              <li><span>Protocolo Maestro</span><b>USD 69</b></li>
+              <li><span>Reality Layer</span><b>USD 49</b></li>
+              <li><span>Dirección Visual</span><b>USD 39</b></li>
+              <li><span>Corregí y Continuá</span><b>USD 24</b></li>
+              <li><span>Variedad Total</span><b>USD 24</b></li>
+              <li><span>Actualizaciones de esta edición</span><b>Incluido</b></li>
+            </ul>
+            <div class="stack-total"><span>Valor total</span><b><s>USD 205</s></b></div>
+            <div class="price-reveal">
+              <span class="launch-tag">Precio de lanzamiento</span>
+              <div class="price"><sup>USD</sup>47</div>
+              <p class="price-after" data-cuenta="despues">El <b>1 de septiembre</b> pasa a <b>USD 67</b></p>
+            </div>
+            <a class="btn checkout" href="https://pay.hotmart.com/Y106693224R?checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads</a>
+            <div class="trust-row"><span>Pago único</span><span>Acceso inmediato</span><span>Compra segura</span><span>Garantía 7 días</span></div>
+            <p class="secure">CHECKOUT SEGURO MEDIANTE HOTMART</p>
+            <p class="price-note">Este precio se mantiene <b>hasta el 31 de agosto</b>. Comprando ahora lo aseguras para siempre, con todas las actualizaciones de esta edición incluidas.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="guarantee">
+      <div class="shell guarantee-box reveal">
+        <div class="seal"><div><b>7 días</b><span>Satisfacción o reembolso</span></div></div>
+        <div>
+          <h2>Si no te sirve, te devolvemos todo.</h2>
+          <p>Pruébalo <b>7 días</b>. Si no es para ti o sientes que no te sirve, pides el reembolso y te devolvemos el <b>100% de tu dinero</b>. Sin vueltas y sin preguntas incómodas — el reembolso lo procesa <b>Hotmart</b>, así que tu compra está protegida de punta a punta.</p>
+          <p>Y no te dejamos solo: si te trabas en algún punto, escríbenos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a> y te damos una mano directa para que le saques el máximo provecho.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="proof proof-2">
+      <div class="shell proof-head reveal">
+        <span class="eyebrow muted">Más historias reales</span>
+        <h2>Fácil de usar. Y se <em>nota en las ventas.</em></h2>
+        <p>Lo que nos cuentan quienes ya lo están usando para su propia marca.</p>
+      </div>
+      <div class="marquee reveal">
+        <div class="m-row"><div class="m-track">
+          <article class="tcard"><span class="tcard-tag">Fácil de usar</span><p class="tcard-q">El producto está <b>muy pero muy bueno</b> y fácil de usar. Yo pensaba que iba a ser complicadísimo y la verdad que no, lo hace cualquiera.</p><div class="tcard-foot"><div class="tcard-av">CT</div><div class="tcard-id"><b>Cesar T.</b><span>Emprendedor</span></div></div></article>
+          <article class="tcard"><span class="tcard-tag">Menos de 5 minutos</span><p class="tcard-q">Lo que más me sorprendió fue el tiempo. <b>Con las fotos ya listas, una tanda sale en menos de 5 minutos.</b> A mí antes se me iba una tarde entera.</p><div class="tcard-foot"><div class="tcard-av">CV</div><div class="tcard-id"><b>Carol V.</b><span>Tienda online</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Lo mejor no son los prompts, es que <b>te enseña qué pedir</b>. Yo antes cambiaba palabras al azar a ver qué salía. Ahora entiendo por qué una imagen funciona.</p><div class="tcard-foot"><div class="tcard-av">DP</div><div class="tcard-id"><b>David P.</b><span>Marketing</span></div></div></article>
+          <article class="tcard"><span class="tcard-tag">Se nota en el CTR</span><p class="tcard-q">Cambié los creativos de mis campañas por estos y <b>la gente frena a mirarlos</b>. Eso solo ya me justificó la compra.</p><div class="tcard-foot"><div class="tcard-av">TM</div><div class="tcard-id"><b>Tobías M.</b><span>Dropshipping</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Tengo un local y nunca me pude pagar una sesión de fotos. <b>Ahora mis publicaciones se ven como las de las marcas grandes</b> y hasta me lo comentan los clientes.</p><div class="tcard-foot"><div class="tcard-av">EG</div><div class="tcard-id"><b>Enrique G.</b><span>Negocio local</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Está todo <b>muy bien detallado, el paso a paso</b>. No me perdí en ningún momento, que es lo que me suele pasar con estas cosas.</p><div class="tcard-foot"><div class="tcard-av">JR</div><div class="tcard-id"><b>Julián R.</b><span>Tienda online</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">La diferencia con lo que hacía antes es enorme. No hay comparación, de verdad.</p><div class="tcard-foot"><div class="tcard-av">CS</div><div class="tcard-id"><b>Camila S.</b><span>Ecommerce</span></div></div></article>
+          <article class="tcard"><span class="tcard-tag">10/10</span><p class="tcard-q">Muy buena inversión para mejorar el negocio, no me arrepiento para nada. <b>Estoy muy agradecido</b>, 10/10.</p><div class="tcard-foot"><div class="tcard-av">DI</div><div class="tcard-id"><b>Didier P.</b><span>Emprendedor</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Mis anuncios ahora <b>inspiran mucha más confianza</b>, y eso se nota en la gente que me escribe. Contentísima con la compra.</p><div class="tcard-foot"><div class="tcard-av">AW</div><div class="tcard-id"><b>Analia W.</b><span>Marca propia</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Vendo productos digitales y siempre me costó mostrarlos sin que parezcan un mockup falso. Con esto <b>por fin transmiten el valor real</b> de lo que ofrezco.</p><div class="tcard-foot"><div class="tcard-av">AC</div><div class="tcard-id"><b>Arthur C.</b><span>Productos digitales</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Desde que pauto con estos anuncios mi marca <b>se ve mucho más premium</b> y la gente confía más. Se nota un montón.</p><div class="tcard-foot"><div class="tcard-av">PA</div><div class="tcard-id"><b>Pether A.</b><span>Ecommerce</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Trabajo en diseño gráfico y esto me ahorra muchísimo tiempo. <b>La calidad es de estudio</b>, no de esas imágenes genéricas de siempre. Lo digo yo, que vivo de esto.</p><div class="tcard-foot"><div class="tcard-av">SM</div><div class="tcard-id"><b>Steve M.</b><span>Diseño gráfico</span></div></div></article>
+          <article class="tcard"><span class="tcard-tag">Nivel estudio, en minutos</span><p class="tcard-q">Hago contenido para varias marcas y esto me cambió el ritmo: <b>entrego piezas de nivel estudio en una fracción del tiempo</b>. Mis clientes ni saben cómo lo hago.</p><div class="tcard-foot"><div class="tcard-av">MD</div><div class="tcard-id"><b>Mathias D.</b><span>Freelance · contenido</span></div></div></article>
+          <article class="tcard"><p class="tcard-q">Presento propuestas con <b>piezas que parecen de una agencia grande</b>, en la mitad del tiempo. En mi trabajo eso vale oro.</p><div class="tcard-foot"><div class="tcard-av">MV</div><div class="tcard-id"><b>Marta V.</b><span>Marketing</span></div></div></article>
+        </div></div>
+        <div class="marquee-hint"><span class="ar">‹</span> Desliza para ver más historias <span class="ar">›</span></div>
+      </div>
+    </section>
+
+    <section class="faq" id="preguntas">
+      <div class="shell faq-wrap">
+        <span class="eyebrow muted">Preguntas claras</span>
+        <h2>Antes de comprar.</h2>
+        <details><summary>¿Qué es exactamente Prompt Ads? ¿Son prompts?</summary><p>Sí, en parte. Son <b>6 piezas en PDF</b> que trabajan juntas: <b>2 son guías que lees tú</b> —la guía de uso paso a paso (te enseña todo el proceso, con capturas) y la de dirección visual— y <b>4 son archivos de prompts e instrucciones</b> que arrastras directo al chat de ChatGPT (el Protocolo Maestro, el de realismo, el de correcciones y el de variedad). No es un software ni una app: <b>lees la guía, subes la foto de lo que vendes, pegas los archivos en ChatGPT y te genera los anuncios</b>. Funciona para cualquier negocio — producto físico, servicio, local, inmobiliaria o producto digital.</p></details>
+        <details><summary>¿Necesito saber diseño?</summary><p>No. El sistema te da una estructura concreta. Tú aportas la información verdadera de tu negocio, eliges las referencias y revisas el resultado final antes de publicarlo.</p></details>
+        <details><summary>¿Necesito ChatGPT pago (Plus)?</summary><p>Para producir en serio, lo mejor es <b>ChatGPT Plus</b>: te da más capacidad por sesión, mantiene mejor el contexto de tu marca y entrega las tandas de forma más fluida. Con la versión gratuita puedes arrancar y probar el sistema, pero vas a chocar con los límites: menos generaciones, piezas que a veces salen de a una y cortes al llegar al tope diario. Y si ya pagas Plus, Prompt Ads es justamente la forma de exprimir esa suscripción y convertirla en una máquina de producir anuncios.</p></details>
+        <details><summary>¿Qué pasa si no sé qué estilo pedir?</summary><p>El pack incluye un sistema guiado para definir la apariencia que necesita tu campaña y convertir una idea vaga en instrucciones claras para ChatGPT.</p></details>
+        <details><summary>¿Genera siempre la misma cantidad de anuncios?</summary><p>No. La cantidad puede variar según el modelo, el plan y la complejidad. Por eso Prompt Ads trabaja con tandas e incluye instrucciones para pedir las siguientes piezas sin perder el contexto.</p></details>
+        <details><summary>¿Sirve para servicios o productos digitales?</summary><p>Sí. La ficha cambia la forma de representar la oferta: puede mostrar la experiencia, el resultado, el entorno, el proceso o una escena real coherente con el beneficio.</p></details>
+        <details><summary>¿Mantiene mi producto exactamente igual?</summary><p>La fidelidad mejora cuanto mejores y más claras sean tus referencias. El pack te enseña qué material aportar y cómo corregir forma, escala, ángulos y detalles. Ningún modelo garantiza reproducción perfecta en todos los intentos.</p></details>
+        <details><summary>¿Puedo usarlo para clientes?</summary><p>Sí, puedes usar el sistema para producir piezas para tus propios proyectos o servicios. No puedes revender, compartir ni distribuir los archivos y prompts del pack como si fueran tuyos.</p></details>
+        <details><summary>¿Esto me va a ayudar a vender más?</summary><p>Prompt Ads mejora la <b>calidad y la presentación</b> de tus anuncios, y eso puede aumentar tus ventas: una pieza que se ve profesional genera más confianza, frena el scroll y hace que tu producto se perciba más valioso. Ten en cuenta que tus resultados también dependen de tu oferta, el precio, la segmentación, tu página y el presupuesto que inviertas.</p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell">
+      <div class="footer-top"><div><div class="brand">simply <i>studio.</i></div><p>Herramientas simples para hacer trabajo que no parece simple.</p></div><a href="#precio" class="btn light">Ver el acceso <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></a></div>
+      <div class="footer-bottom"><span>© 2026 simply studio. Todos los derechos reservados.</span><span>Prompt Ads es un producto independiente. No está afiliado ni respaldado por OpenAI, ChatGPT, Meta o Hotmart.</span></div>
+    </div>
+  </footer>
+
+  <div class="mobile-buy" id="mobileBuy"><div><span data-cuenta="movil-arriba">Precio de lanzamiento</span><b data-cuenta="movil">Después sube a USD 67</b></div><a href="#precio" class="btn">Aprovechar oferta</a></div>
+  <dialog class="lightbox" id="lightbox" aria-label="Vista ampliada del anuncio">
+    <button class="lightbox-close" aria-label="Cerrar vista ampliada">×</button>
+    <img loading="lazy" decoding="async" id="lightboxImage" alt="Anuncio ampliado" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+  </dialog>
+  <script>
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const items=document.querySelectorAll('.reveal');
+    if(reduced)items.forEach(x=>x.classList.add('visible'));
+    else{const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.1});items.forEach(x=>observer.observe(x))}
+    // Al saltar a un ancla (#precio), el destino y sus contenedores tienen que verse sí o sí:
+    // si el observador de scroll todavía no los marcó, la sección aparecería en blanco.
+    function ssRevelarDestino(){
+      const destino = location.hash && location.hash.length > 1 ? document.querySelector(location.hash) : null;
+      if(!destino) return;
+      let el = destino;
+      while(el && el !== document.body){ if(el.classList) el.classList.add('visible'); el = el.parentElement; }
+      destino.querySelectorAll('.reveal').forEach(n=>n.classList.add('visible'));
+    }
+    addEventListener('load', ssRevelarDestino);
+    addEventListener('hashchange', ssRevelarDestino);
+    // El CSS usa scroll suave, pero un salto de 11.000px tarda muchísimo y el visitante
+    // cree que el botón no funcionó. Para los enlaces internos hacemos un salto directo.
+    document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',ev=>{
+      const destino = document.querySelector(a.getAttribute('href'));
+      if(!destino) return;
+      ev.preventDefault();
+      destino.classList.add('visible');
+      let p = destino.parentElement;
+      while(p && p !== document.body){ if(p.classList) p.classList.add('visible'); p = p.parentElement; }
+      destino.querySelectorAll('.reveal').forEach(n=>n.classList.add('visible'));
+      const y = destino.getBoundingClientRect().top + (window.scrollY || 0) - 88;  // deja aire para la cabecera
+      window.scrollTo({ top: y, behavior: 'auto' });
+      history.replaceState(null, '', a.getAttribute('href'));
+    }));
+
+    const mobileBuy=document.getElementById('mobileBuy');
+    addEventListener('scroll',()=>mobileBuy.classList.toggle('show',scrollY>720&&scrollY<document.body.scrollHeight-innerHeight-500),{passive:true});
+    const lightbox=document.getElementById('lightbox');
+    const lightboxImage=document.getElementById('lightboxImage');
+    document.querySelectorAll('.zoomable').forEach(button=>button.addEventListener('click',()=>{
+      lightboxImage.src=button.dataset.full;
+      lightboxImage.alt=button.querySelector('img').alt;
+      lightbox.showModal();
+    }));
+    document.querySelector('.lightbox-close').addEventListener('click',()=>lightbox.close());
+    lightbox.addEventListener('click',event=>{if(event.target===lightbox)lightbox.close()});
+    // ---- Carruseles infinitos: testimonios, muro de prueba y caso Nike ------------
+    // Una sola implementación para los tres. Corrige los tres defectos que hacían que
+    // la fila quedara vacía y se viera a tirones:
+    //  1. medía el ancho antes de cargar fuentes/imágenes -> ahora arranca con la página
+    //     lista y reintenta si la medida todavía no es fiable;
+    //  2. sin tope de repeticiones podía crear cientos de tarjetas -> ahora hay límite;
+    //  3. reemplazaba el HTML (destruía imágenes ya cargadas y dejaba los clones con
+    //     opacidad 0) -> ahora clona nodos y los marca visibles.
+    function ssCarrusel(row, track, speed, rev){
+      if(!row || !track) return true;
+      if(row.dataset.ssCarrusel) return true;                       // ya inicializado
+      const setW = track.scrollWidth;
+      if(!(setW > 200)) return false;                               // medida no fiable: reintentar
+      if(setW <= row.clientWidth + 8) return true;                  // no necesita desplazarse
+      const originales = Array.prototype.slice.call(track.children);
+      if(!originales.length) return true;
+      // Cuatro copias: el bucle avanza una copia entera y por delante quedan
+      // otras tres de margen, para que el dedo no llegue nunca al borde.
+      // Dos copias alcanzan: el bucle envuelve dentro de una copia y una copia
+      // ya es más ancha que la pantalla. Con cuatro se duplicaba el trabajo de
+      // pintado sin ganar nada.
+      const COPIAS = 2;
+      const reps = Math.min(3, Math.max(1, Math.ceil((row.clientWidth + 80) / setW)));
+      for(let r = 0; r < reps * COPIAS - 1; r++){
+        originales.forEach(n=>{
+          const c = n.cloneNode(true);
+          c.querySelectorAll('img').forEach(i=>{ i.loading = 'eager'; });
+          c.querySelectorAll('.zoomable').forEach(b=>b.addEventListener('click',()=>{
+            lightboxImage.src = b.dataset.full;
+            lightboxImage.alt = b.querySelector('img').alt;
+            lightbox.showModal();
+          }));
+          track.appendChild(c);
+        });
+      }
+      track.querySelectorAll('.reveal').forEach(n=>n.classList.add('visible'));
+      row.dataset.ssCarrusel = '1';
+
+      const copias = reps * COPIAS;
+      const unaCopia = track.scrollWidth / copias;
+      const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const VEL = 0.55 * (rev ? -1 : 1);          // píxeles por fotograma, como antes
+
+      let x = rev ? -unaCopia : 0;                 // posición actual, en píxeles
+      let arrastrando = false, ultimo = 0, inercia = 0, quieto = false, volver;
+      let corriendo = false, aLaVista = false;
+
+      function pintar(){
+        // el contenido se repite cada copia: mantenemos x dentro de una copia
+        if(x <= -unaCopia) x += unaCopia;
+        else if(x > 0) x -= unaCopia;
+        track.style.transform = 'translate3d(' + x.toFixed(2) + 'px,0,0)';
+      }
+      pintar();
+
+      function paso(){
+        if(!aLaVista || document.hidden){ corriendo = false; return; }
+        if(arrastrando){ /* manda la mano */ }
+        else if(Math.abs(inercia) > 0.08){ x += inercia; inercia *= 0.93; }
+        else if(!quieto && !reducido){ x -= VEL; }
+        pintar();
+        requestAnimationFrame(paso);
+      }
+      function arrancar(){ if(!corriendo && aLaVista){ corriendo = true; requestAnimationFrame(paso); } }
+
+      // Solo gasta mientras se ve
+      try{
+        new IntersectionObserver(es=>{
+          es.forEach(e=>{ aLaVista = e.isIntersecting; if(aLaVista) arrancar(); });
+        }, { rootMargin: '120px' }).observe(row);
+      }catch(e){ aLaVista = true; arrancar(); }
+      addEventListener('visibilitychange', ()=>{ if(!document.hidden) arrancar(); });
+
+      // Frenar mientras se mira, para poder leer
+      row.addEventListener('pointerenter', ()=>{ clearTimeout(volver); quieto = true; });
+      row.addEventListener('pointerleave', ()=>{ quieto = false; });
+
+      // Arrastre. Sobre la misma posición que el movimiento automático, así que
+      // no hay dos sistemas peleando ni forma de salirse del contenido.
+      row.addEventListener('pointerdown', e=>{
+        arrastrando = true; ultimo = e.clientX; inercia = 0;
+        quieto = true; clearTimeout(volver);
+        row.classList.add('agarrando');
+        try{ row.setPointerCapture(e.pointerId); }catch(err){}
+        arrancar();
+      });
+      row.addEventListener('pointermove', e=>{
+        if(!arrastrando) return;
+        const d = e.clientX - ultimo; ultimo = e.clientX;
+        x += d; inercia = d;
+        pintar();
+      });
+      const soltar = ()=>{
+        if(!arrastrando) return;
+        arrastrando = false;
+        row.classList.remove('agarrando');
+        clearTimeout(volver);
+        volver = setTimeout(()=>{ quieto = false; }, 1200);   // retoma la marcha sola
+      };
+      ['pointerup','pointercancel','pointerleave'].forEach(ev=>row.addEventListener(ev, soltar));
+
+      // La rueda del ratón también lo mueve en horizontal
+      row.addEventListener('wheel', e=>{
+        const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : 0;
+        if(!d) return;
+        e.preventDefault(); x -= d; inercia = -d * 0.3;
+        quieto = true; clearTimeout(volver);
+        volver = setTimeout(()=>{ quieto = false; }, 1200);
+        pintar(); arrancar();
+      }, { passive:false });
+
+      return true;
+    }
+
+    // En celular el showcase y el caso son galerías que se deslizan con el dedo.
+    // Antes se movían solas sin parar: gastaba batería y se veía a tirones. Ahora
+    // se les da un empujón la primera vez que aparecen, para que se note que hay
+    // más a la derecha, y después mandas tú.
+    function ssEmpujon(row){
+      if(!row || row.dataset.ssEmpujon) return;
+      if(row.scrollWidth <= row.clientWidth + 8) return;
+      row.dataset.ssEmpujon = '1';
+      const ob = new IntersectionObserver(es=>{
+        es.forEach(e=>{
+          if(!e.isIntersecting) return;
+          ob.disconnect();
+          setTimeout(()=>{
+            row.scrollTo({ left: Math.min(90, row.scrollWidth - row.clientWidth), behavior:'smooth' });
+            setTimeout(()=>row.scrollTo({ left: 0, behavior:'smooth' }), 750);
+          }, 350);
+        });
+      }, { threshold: .35 });
+      ob.observe(row);
+    }
+
+    function ssInitCarruseles(){
+      let listo = true;
+      document.querySelectorAll('.m-row').forEach(row=>{
+        const rev = row.classList.contains('rev');
+        if(!ssCarrusel(row, row.querySelector('.m-track'), rev ? -0.55 : 0.55, rev)) listo = false;
+      });
+      if(matchMedia('(max-width:900px)').matches){                  // en escritorio son grillas: no se tocan
+        document.querySelectorAll('.showcase-grid, .case-grid').forEach(ssEmpujon);
+      }
+      return listo;
+    }
+
+    (function(){
+      let intentos = 0;
+      // Al clonar tarjetas la página crece: si se entró por un ancla, hay que reubicarla.
+      const reubicarAncla = ()=>{
+        if(!location.hash || location.hash.length < 2) return;
+        const d = document.querySelector(location.hash);
+        if(!d) return;
+        const y = d.getBoundingClientRect().top + (window.scrollY || 0) - 90;   // 90 = alto de la cabecera fija
+        window.scrollTo({ top: y, behavior: 'auto' });
+      };
+      const arranca = ()=>{ const ok = ssInitCarruseles(); if(ok || ++intentos > 20) return; setTimeout(arranca, 250); };
+      addEventListener('hashchange', ()=>setTimeout(reubicarAncla, 60));   // al tocar un botón interno
+      if(document.readyState === 'complete') arranca(); else addEventListener('load', arranca);
+      if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>setTimeout(arranca, 0));
+    })();
+
+    // Checkout: le pasa a Hotmart de dónde vino la persona (parámetro sck) para poder
+    // ver el origen de cada venta en Hotmart, aunque Meta no la atribuya. Y avisa
+    // "Iniciar pago" a Meta al tocar el botón.
+    (function(){
+      const ident = window.ssIdent;
+      document.querySelectorAll('a[href*="pay.hotmart.com"]').forEach(a=>{
+        try{
+          const u=new URL(a.href);
+          if(ident){
+            const s=ident.sck();
+            if(s) u.searchParams.set('sck', s);
+            const i=ident.get();
+            if(i.external_id) u.searchParams.set('xcod', i.external_id);
+          }
+          a.href=u.toString();
+        }catch(e){}
+        a.addEventListener('click',()=>{ if(window.ssTrack) ssTrack('InitiateCheckout', false, {value:47, currency:'USD'}); });
+      });
+    })();
+    addEventListener('contextmenu',event=>event.preventDefault());
+    addEventListener('keydown',event=>{
+      const key=event.key.toLowerCase();
+      if(event.key==='F12'||(event.ctrlKey&&event.shiftKey&&['i','j','c'].includes(key))||(event.ctrlKey&&key==='u'))event.preventDefault();
+    });
+    
+  </script>
+  <script>
+    // ===== FX premium: barra de progreso + parallax sutil en el hero (solo escritorio) =====
+    (function(){
+      if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const barra = document.createElement('div'); barra.id = 'fx-progreso'; document.body.appendChild(barra);
+      const capas = [];
+      if(matchMedia('(min-width:901px)').matches){
+        document.querySelectorAll('.campaign-card img').forEach((el, i)=>{
+          capas.push([el, (i % 2 ? -1 : 1) * (6 + (i % 3) * 3)]);   // velocidades alternadas ±6-12px
+        });
+      }
+      let pedido = false;
+      function cuadro(){
+        pedido = false;
+        const max = document.documentElement.scrollHeight - innerHeight;
+        barra.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, scrollY / max) : 0).toFixed(4) + ')';
+        const vc = innerHeight * 0.5;
+        for(const [el, vel] of capas){
+          const r = el.getBoundingClientRect();
+          if(r.bottom < -80 || r.top > innerHeight + 80) continue;   // fuera de pantalla: no tocar
+          const p = ((r.top + r.height / 2) - vc) / innerHeight;
+          el.style.transform = 'translate3d(0,' + (p * vel).toFixed(1) + 'px,0) scale(1.06)';
+        }
+      }
+      addEventListener('scroll', ()=>{ if(!pedido){ pedido = true; requestAnimationFrame(cuadro); } }, { passive:true });
+      addEventListener('resize', ()=>{ if(!pedido){ pedido = true; requestAnimationFrame(cuadro); } }, { passive:true });
+      cuadro();
+
+      // ===== Giro del producto atado al scroll =====
+      // 24 imágenes apiladas: se enciende la que corresponde a lo que bajaste.
+      // Sin canvas a propósito — ahí es donde fallaba en iPhone. Esto es lo más
+      // soportado que hay: mostrar y ocultar imágenes.
+      //
+      // Arranca con el primer fotograma que llegue; si alguno falta usa el más
+      // cercano. Si no llega ninguno, se queda la foto de siempre y no se nota.
+      (function(){
+        var caja = document.getElementById('prodGiro');
+        var fig  = document.querySelector('.prod-float');
+        if(!caja || !fig) return;
+        try{ if(matchMedia('(prefers-reduced-motion: reduce)').matches) return; }catch(e){}
+        var con = navigator.connection;
+        if(con && (con.saveData || /2g/.test(con.effectiveType || ''))) return;
+
+        var TOTAL  = 25;
+        // El juego grande solo donde de verdad se nota: pantallas de mucha
+        // densidad. Un monitor normal muestra el producto a unos 620 px reales,
+        // así que con 760 se ve idéntico y ocupa la mitad de memoria.
+        var densidad = window.devicePixelRatio || 1;
+        var ANCHO  = (window.innerWidth > 900 && densidad >= 1.5) ? 'giro-1080' : 'giro-760';
+        var imgs   = new Array(TOTAL);
+        var listo  = new Array(TOTAL);
+        var actual = -1, vivo = false, pedido = false, recorrido = 1;
+
+        function scrollActual(){
+          return window.pageYOffset || document.documentElement.scrollTop || 0;
+        }
+        function medir(){
+          var r = fig.getBoundingClientRect();
+          recorrido = Math.max((r.top + scrollActual() + r.height) * 0.62, 1);
+        }
+        // el fotograma i, o el más cercano que ya haya cargado
+        function cercano(i){
+          if(listo[i]) return i;
+          for(var d = 1; d < TOTAL; d++){
+            if(i - d >= 0 && listo[i - d]) return i - d;
+            if(i + d < TOTAL && listo[i + d]) return i + d;
+          }
+          return -1;
+        }
+        function mostrar(){
+          pedido = false;
+          medir();                    // se mide siempre: el layout se mueve mientras cargan
+          var p = Math.min(Math.max(scrollActual() / recorrido, 0), 1);
+          var i = cercano(Math.min(Math.round(p * (TOTAL - 1)), TOTAL - 1));
+          if(i < 0 || i === actual) return;
+          // Primero sube la nueva, después baja la anterior: en ningún momento
+          // quedan las dos abajo, que es lo que se veía como parpadeo.
+          imgs[i].className = 'on';
+          if(actual >= 0 && imgs[actual]) imgs[actual].className = '';
+          actual = i;
+          if(!vivo){ vivo = true; fig.className += ' con-giro'; }
+        }
+        function pide(){ if(!pedido){ pedido = true; requestAnimationFrame(mostrar); } }
+
+        function cargar(){
+          medir();
+          for(var n = 1; n <= TOTAL; n++){
+            (function(n){
+              var im = new Image();
+              im.alt = '';
+              im.decoding = 'async';
+              im.onload = function(){
+                // Descodificar ANTES de que se vea. Si se descodifica en el
+                // momento de mostrarla, el teléfono deja un fotograma en blanco.
+                var soltar = function(){
+                  listo[n - 1] = true;
+                  imgs[n - 1] = im;
+                  caja.appendChild(im);
+                  medir();
+                  pide();
+                };
+                if(im.decode) im.decode().then(soltar, soltar);
+                else soltar();
+              };
+              im.onerror = function(){};
+              im.src = 'assets/producto/' + ANCHO + '/g' + (n < 10 ? '0' : '') + n + '.webp';
+            })(n);
+          }
+          addEventListener('scroll', pide, false);
+          addEventListener('resize', function(){ medir(); pide(); }, false);
+          addEventListener('orientationchange', function(){ setTimeout(function(){ medir(); pide(); }, 250); }, false);
+        }
+
+        if(document.readyState === 'complete') setTimeout(cargar, 250);
+        else addEventListener('load', function(){ setTimeout(cargar, 250); }, false);
+      })();
+
+      // Inclinación 3D del producto siguiendo el mouse (solo escritorio con puntero fino)
+      const zona = document.querySelector('.hero-prod');
+      const fig = document.querySelector('.prod-float');
+      if(zona && fig && matchMedia('(min-width:901px) and (hover:hover)').matches){
+        zona.addEventListener('pointermove', e=>{
+          const r = zona.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width - .5;    // -0.5 .. 0.5
+          const y = (e.clientY - r.top) / r.height - .5;
+          fig.style.transform = 'rotateY(' + (x * 10).toFixed(2) + 'deg) rotateX(' + (-y * 8).toFixed(2) + 'deg)';
+        }, { passive:true });
+        zona.addEventListener('pointerleave', ()=>{ fig.style.transform = 'rotateY(0deg) rotateX(0deg)'; });
+      }
+    })();
+  </script>
+
+  <script>
+  /* ── Cuenta atrás del precio ──────────────────────────────────────────
+     Una sola fecha para toda la página. El script cambiar-precio.js la
+     actualiza sola cuando pasás de peldaño, así que esto no se toca a mano.
+     Si algo falla, queda el texto que ya estaba escrito en el HTML.        */
+  (function(){
+    const LIMITE = '2026-09-01';      // cuando sube el precio
+    const PRECIO = 47;                // el de ahora
+    const SUBE_A = 67;
+    const PELDANO = 'precio de lanzamiento';   // cómo se llama el precio de ahora
+
+    const MAY = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    const fin = new Date(LIMITE + 'T00:00:00'); fin.setHours(0,0,0,0);
+    const dias = Math.round((fin - hoy) / 86400000);
+    if (isNaN(dias)) return;
+
+    // Cómo se dice cada tramo. El último día es el que más vende, así que
+    // tiene su propio texto y no uno genérico.
+    let banner, despues, movil, movilArriba;
+    if (dias > 5) {
+      banner  = '<b>' + MAY(PELDANO) + ':</b> sube a <b>USD ' + SUBE_A + '</b> en ' + dias + ' días.';
+      despues = 'Sube a <b>USD ' + SUBE_A + '</b> en <b>' + dias + ' días</b>';
+      movilArriba = MAY(PELDANO);
+      movil       = 'Después sube a USD ' + SUBE_A;
+    } else if (dias > 1) {
+      banner  = '<b>Quedan ' + dias + ' días</b> de ' + PELDANO + '. Después sube a <b>USD ' + SUBE_A + '</b>.';
+      despues = 'Quedan <b>' + dias + ' días</b> · después, <b>USD ' + SUBE_A + '</b>';
+      movilArriba = 'Quedan ' + dias + ' días';
+      movil       = 'Después sube a USD ' + SUBE_A;
+    } else if (dias === 1) {
+      banner  = '<b>Último día con el precio más bajo que va a tener.</b> Mañana sube a <b>USD ' + SUBE_A + '</b>.';
+      despues = '<b>Mañana sube a USD ' + SUBE_A + '</b>';
+      movilArriba = 'Último día';
+      movil       = 'Mañana sube a USD ' + SUBE_A;
+    } else if (dias === 0) {
+      banner  = '<b>Hoy cierra.</b> Esta noche sube a <b>USD ' + SUBE_A + '</b>.';
+      despues = '<b>Hoy es el último día</b> a este precio';
+      movilArriba = 'Último día';
+      movil       = 'Esta noche sube a USD ' + SUBE_A;
+    } else {
+      return;   // ya pasó: manda el texto del nuevo peldaño, no este reloj
+    }
+
+    const b = document.querySelector('[data-cuenta="banner"]');
+    const d = document.querySelector('[data-cuenta="despues"]');
+    const m  = document.querySelector('[data-cuenta="movil"]');
+    const ma = document.querySelector('[data-cuenta="movil-arriba"]');
+    if (m && movil) m.textContent = movil;
+    if (ma && movilArriba) ma.textContent = movilArriba;
+    if (b) b.innerHTML = banner;
+    if (d) d.innerHTML = despues;
+  })();
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,431 @@
+/*  Construye _nueva.html: markup nuevo, copy y tracking del original.
+ *
+ *    node _construir.js
+ *
+ *  Fuente: _base.html (el index.html viejo, congelado). Salida: _nueva.html; publicar = copiarla a index.html.
+ *  Regla: nada de tocar _base.html. Todo lo sensible (pixel, ssTrack,
+ *  cuenta atras del precio, lightbox, giro del ebook, testimonios, oferta,
+ *  FAQ, footer) se trasplanta VERBATIM. Solo el hero y la galeria se
+ *  rearman, y el CSS es nuevo por completo.
+ */
+const fs = require('fs');
+const path = require('path');
+
+/* fuente: el index.html ORIGINAL (congelado el 21/08/2026 al migrar). No leer index.html: desde la migracion es la salida, no la entrada. */
+const src = fs.readFileSync('_base.html', 'utf8');
+const css = fs.readFileSync('_nueva.css', 'utf8')
+  /* .who es el rotulo de cada costo en la oferta, no una fila de audiencia */
+  .replace(/,\.who(?::hover| \.n| h3| p)?(?=[\s{,])/g, '') +
+  '\n' + fs.readFileSync('_nueva-v3.css', 'utf8') +
+  '\n' + fs.readFileSync('_nueva-v4.css', 'utf8') +
+  '\n' + fs.readFileSync('_nueva-v5.css', 'utf8');
+const avisos = [];
+const corta = (s, a, b, desde) => {
+  const i = s.indexOf(a, desde || 0);
+  if (i === -1) return null;
+  const j = s.indexOf(b, i + a.length);
+  if (j === -1) return null;
+  return { texto: s.slice(i, j + b.length), ini: i, fin: j + b.length };
+};
+
+/* ---------- 1 · cabeza: mismo head, CSS nuevo + contrato del giro ---------- */
+const finHead = src.indexOf('</head>');
+let head = src.slice(0, finHead);
+
+const estilo = corta(head, '<style>', '</style>');
+const viejoCSS = estilo.texto.slice(7, -8);
+const giroCSS = viejoCSS.split('\n')
+  .filter(l => /prod-float|prodFlotar|\.giro|#prodImg\{|hero-prod\{/.test(l))
+  .join('\n');
+if (!/prodFlotar/.test(giroCSS)) avisos.push('OJO: no encontre los keyframes del giro');
+
+head = head.slice(0, estilo.ini) +
+  '<style>\n' + css + '\n/* ---- contrato del giro (verbatim del original) ---- */\n' + giroCSS + '\n</style>' +
+  head.slice(estilo.fin);
+
+/* ---------- 2 · cuerpo: bloques del original ---------- */
+const iBody = src.indexOf('<body', finHead);
+const cuerpo = src.slice(src.indexOf('>', iBody) + 1, src.lastIndexOf('</body>'));
+const abreBody = src.slice(iBody, src.indexOf('>', iBody) + 1);
+
+const iAnn = cuerpo.indexOf('<div class="announcement"');
+const iHead2 = cuerpo.indexOf('<header');
+const antes = cuerpo.slice(0, iAnn);
+const announcement = cuerpo.slice(iAnn, iHead2);
+const headerFin = cuerpo.indexOf('</header>') + 9;
+const headerHTML = cuerpo.slice(iHead2, headerFin);
+
+const secciones = [];
+let p = headerFin;
+while (true) {
+  const i = cuerpo.indexOf('<section', p);
+  if (i === -1) break;
+  const j = cuerpo.indexOf('</section>', i) + 10;
+  secciones.push(cuerpo.slice(i, j));
+  p = j;
+}
+const cola = cuerpo.slice(p);
+console.log('  secciones: ' + secciones.length);
+
+/* ---------- 3 · transformaciones ---------- */
+const ESCENAS = [
+  [/class="hero/, 'Inicio'], [/class="showcase/, 'Resultados'],
+  [/class="pain/, 'El problema'], [/class="difference/, 'La diferencia'],
+  [/class="case/, 'El caso'], [/class="inside/, 'El sistema'],
+  [/class="audience/, 'Para quién'], [/class="proof proof-2/, 'Opiniones'],
+  [/class="proof/, 'Opiniones'], [/class="offer/, 'La oferta'],
+  [/class="guarantee/, 'Garantía'], [/class="faq/, 'Preguntas'],
+];
+const nombreEscena = s => (ESCENAS.find(([re]) => re.test(s.slice(0, 90))) || [null, ''])[1];
+
+/* HERO: dos columnas, entrada por lineas, giro intacto */
+function rearmarHero(sec) {
+  const pill = corta(sec, '<span class="pill', '</span>');
+  const h1 = corta(sec, '<h1', '</h1>');
+  const acciones = corta(sec, '<div class="hero-actions"', '</div>');
+  const prueba = corta(sec, '<div class="hero-proof"', '</div>') || corta(sec, '<p class="hero-proof"', '</p>');
+  const figura = corta(sec, '<figure class="prod-float"', '</figure>');
+  if (!h1 || !figura) { avisos.push('OJO: hero incompleto, va verbatim'); return sec; }
+
+  const sub = 'Sabemos lo que es perder una tarde entera peleando con un anuncio que después nadie mira. Por eso existe Prompt Ads: <b>el sistema de PDFs que hace que tu marca se vea como las que facturan millones</b>. Subes una foto de lo que vendes y en minutos tienes una tanda de anuncios premium, de los que una agencia te cobraría <b>+USD 1.000</b>. Sin sesión de fotos, sin saber diseño y de la manera más fácil y rápida posible.';
+  /* titular pedido para la nueva: arranca con la accion y el numero */
+  h1.texto = '<h1>Empieza a crear <em>+50 anuncios premium</em> en menos de 5 minutos y <em>aumenta tus ventas.</em></h1>';
+  if (pill) pill.texto = pill.texto.replace(/Prompts \+ gu[ií]as \+ sistema de correcci[oó]n/, 'Más de 50 anuncios premium por sesión');
+
+  /* orden que manda: titulo, animacion, texto chico, boton */
+  return '<section class="hero v2-hero" data-esc="Inicio">\n<div class="shell">\n' +
+    '<div class="v2-hero-grid">\n' +
+    (pill ? '<div class="v2-sube d1">' + pill.texto + '</div>\n' : '') +
+    '<div class="v2-sube d2">' + h1.texto + '</div>\n' +
+    '<div class="v2-prod v2-sube d3"><div class="hero-prod">' + figura.texto + '</div></div>\n' +
+    '<p class="v2-hero-sub v2-sube d4">' + sub + '</p>\n' +
+    (acciones ? '<div class="v2-sube d5">' + acciones.texto + '</div>\n' : '') +
+    (prueba ? '<div class="v2-sube d5">' + prueba.texto + '</div>\n' : '') +
+    '</div>\n</div>\n</section>';
+}
+
+/* el boton principal del hero, reutilizado al cierre de cada escena */
+function botonPrincipal() {
+  const hero = secciones.find(s => /^<section class="hero/.test(s.trim())) || '';
+  const a = corta(hero, '<a class="btn" href="#precio"', '</a>');
+  return a ? a.texto : '<a class="btn" href="#precio">Quiero crear mis anuncios</a>';
+}
+function cierreCTA(oscura) {
+  return '\n<div class="shell v2-cta reveal">' + botonPrincipal() +
+    '<span class="v2-cta-nota">Pago único · acceso inmediato · 7 días de garantía</span></div>\n';
+}
+
+/* LA LECCION: vende ensenando, sin mostrar el metodo */
+const LECCION = '<section class="v2-lec" data-esc="Lo que juzgan">\n<div class="shell">\n' +
+  '<div class="section-intro reveal">\n' +
+  '<span class="eyebrow">Lo que tu cliente juzga sin darse cuenta</span>\n' +
+  '<h2>Nadie lee tu anuncio.<br><em>Lo siente.</em></h2>\n' +
+  '<p>Antes de entender una sola palabra, ya decidieron cuánto vale lo que vendes. Lo deciden con tres cosas que casi nadie mira.</p>\n' +
+  '</div>\n' +
+  '<div class="v2-lec-grid reveal">\n' +
+  '<div class="v2-lec-item"><h3>La tipografía.</h3><p>Una letra mal elegida hace que un producto caro parezca barato. Hasta el texto que pones encima de la foto cambia lo que piensan de tu marca.</p></div>\n' +
+  '<div class="v2-lec-item"><h3>La cantidad de texto.</h3><p>Cuanto más explica un anuncio, menos confianza transmite. Las marcas grandes dicen una sola cosa, y la dicen enorme.</p></div>\n' +
+  '<div class="v2-lec-item"><h3>La luz.</h3><p>Una foto con luz real vende más que un render perfecto. Si parece hecho por computadora, parece falso, y lo falso no se compra.</p></div>\n' +
+  '</div>\n' +
+  '<p class="v2-lec-cierre reveal">Prompt Ads decide estas tres cosas por ti, <em>en cada pieza.</em></p>\n' +
+  '</div>\n' + cierreCTA() + '</section>';
+
+/* GALERIA: piezas reales, marquesina automatica como los testimonios */
+/* la lista la arma _preparar-colabs.js: 3 por marca, sin vitrinas, las elegidas a mano primero */
+const PIEZAS = JSON.parse(fs.readFileSync('_galeria.json', 'utf8')).map(p => [p.archivo, p.marca]);
+function figuras(clon) {
+  return PIEZAS.map(([f, marca], i) =>
+    '<figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/colabs/' + f + '.jpg"' +
+    (clon ? ' tabindex="-1"' : '') + ' aria-label="Ampliar anuncio de ' + marca + '">' +
+    '<img src="assets/colabs/' + f + '.jpg" srcset="assets/colabs/' + f + '-m.webp 600w, assets/colabs/' + f + '.webp 900w" sizes="(max-width:720px) 72vw, 440px" loading="lazy" decoding="async" width="1100" height="1375" alt="Anuncio de ' + marca + ' hecho con Prompt Ads">' +
+    '</button><figcaption><b>' + marca + '</b><span>' + String(i + 1).padStart(2, '0') + ' / ' + String(PIEZAS.length).padStart(2, '0') + '</span></figcaption></figure>'
+  ).join('\n');
+}
+function rearmarShowcase(sec) {
+  const iStage = sec.indexOf('<div class="campaign-stage');
+  if (iStage === -1) { avisos.push('OJO: no encontre campaign-stage, showcase verbatim'); return sec; }
+  let cabeza = sec.slice(0, iStage);
+  /* el titulo ahora vende el sistema, no solo el resultado */
+  cabeza = cabeza
+    .replace(/<h2>[\s\S]*?<\/h2>/, '<h2>Todos estos anuncios salieron de <em>Prompt Ads.</em></h2>')
+    .replace(/<p>[\s\S]*?<\/p>/, '<p>El mismo sistema de seis PDFs que te llevas hoy. Sin agencia, sin sesión de fotos y sin diseñador: cada pieza salió de una foto común y del sistema, en minutos. <b>Es exactamente lo que puedes hacer con lo que tú vendes.</b></p>');
+  return cabeza +
+    '<div class="v2-gal reveal"><div class="v2-gal-track">' +
+    '<div class="v2-gal-set">\n' + figuras(false) + '\n</div>' +
+    '<div class="v2-gal-set" aria-hidden="true">\n' + figuras(true) + '\n</div>' +
+    '</div></div>' +
+    '<div class="v2-gal-nota"><span>Rubros distintos · el mismo sistema · cada pieza lista para publicar</span><span class="v2-gal-desliza"><svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>desliza<svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span></div>' +
+    '\n</div>\n</section>';
+}
+
+/* escenas que cierran con boton: titulo, visual, texto, boton */
+const CON_CTA = /class="(showcase|difference|case|inside|audience|proof proof-2)/;
+const conCierre = sec => CON_CTA.test(sec.slice(0, 90))
+  ? sec.replace(/<\/section>\s*$/, cierreCTA() + '</section>')
+  : sec;
+
+/* MARCAS: marquesina de logos reales, normalizados y en monocromo */
+const LOGOS = ['nike', 'rolex', 'cocacola', 'redbull', 'newbalance', 'aesop', 'apple', 'leica',
+  'adidas', 'dior', 'puma', 'sony', 'starbucks', 'dyson', 'bmw', 'samsung', 'jordan',
+  'porsche', 'zara', 'uniqlo', 'sprite', 'audi', 'thenorthface', 'ikea', 'tesla', 'ferrari'];
+const NOMBRE = { cocacola: 'Coca-Cola', redbull: 'Red Bull', newbalance: 'New Balance', ralphlauren: 'Ralph Lauren',
+  thenorthface: 'The North Face', bmw: 'BMW', ikea: 'IKEA', zara: 'Zara' };
+const MEDIDAS = JSON.parse(fs.readFileSync('assets/logos/norm/_medidas.json', 'utf8'));
+const SIMBOLOS = [];
+function marca(f) {
+  const ruta = 'assets/logos/norm/' + f + '.svg';
+  if (!fs.existsSync(ruta)) { avisos.push('sin logo: ' + f); return ''; }
+  const b = MEDIDAS[f]; const aspecto = b ? b[2] / b[3] : 1;
+  /* misma presencia visual: los anchos mas bajos, los cuadrados mas altos */
+  /* mismo peso visual: area constante, con piso y techo para que nada quede ilegible ni gigante */
+  const alto = Math.max(22, Math.min(46, Math.round(Math.sqrt(2600 / aspecto))));
+  const nombre = NOMBRE[f] || f.charAt(0).toUpperCase() + f.slice(1);
+  let svg = fs.readFileSync(ruta, 'utf8').replace(/<!--[\s\S]*?-->/g, '').replace(/\s+/g, ' ').trim();
+  const vb = (svg.match(/viewBox="([^"]+)"/) || [])[1] || '0 0 24 24';
+  if (!SIMBOLOS.some(x => x.id === f)) {
+    /* dentro de un sprite el CSS de la pagina no llega: el color se limpia aca */
+    const inner = svg.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '')
+      .replace(/<metadata[\s\S]*?<\/metadata>/g, '').replace(/<sodipodi:namedview[\s\S]*?(\/>|<\/sodipodi:namedview>)/g, '')
+      .replace(/<style[\s\S]*?<\/style>/g, '').replace(/<defs[^>]*>\s*<\/defs>/g, '')
+      .replace(/\s(fill|stroke|style|class)="[^"]*"/g, '');
+    SIMBOLOS.push({ id: f, vb, inner });
+  }
+  const [, , vbW, vbH] = vb.trim().split(' ');
+  return '<span class="v2-marca" title="' + nombre + '" style="--h:' + alto + 'px"><svg viewBox="0 0 ' + vbW + ' ' + vbH + '" aria-hidden="true" focusable="false"><use href="#l-' + f + '"/></svg></span>';
+}
+function setMarcas(clon) {
+  return '<div class="v2-marcas-set"' + (clon ? ' aria-hidden="true"' : '') + '>' + LOGOS.map(marca).join('') + '</div>';
+}
+const PISTA = setMarcas(false) + setMarcas(true);
+const SPRITE = '<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">' +
+  SIMBOLOS.map(x => '<symbol id="l-' + x.id + '" viewBox="' + x.vb + '">' + x.inner + '</symbol>').join('') + '</svg>';
+const MARCAS = SPRITE + '\n<div class="v2-marcas" aria-label="Marcas de referencia">\n' +
+  '<div class="v2-marcas-track">' + PISTA + '</div>\n</div>';
+
+/* LA LECCION, plegada dentro de "el problema": tres lineas que venden */
+const JUICIO = '<div class="v2-juicio"><b>Tres cosas que juzgan sin darse cuenta.</b>' +
+  '<p>La tipografía, cuánto texto hay y si la luz parece real. Hasta la letra que pones encima de la foto cambia cuánto creen que vale tu producto. <strong>Prompt Ads resuelve las tres en cada pieza.</strong></p></div>';
+function plegarLeccion(sec) {
+  const i = sec.indexOf('<div class="truth">');
+  if (i === -1) { avisos.push('OJO: no encontre .truth, la leccion no se plego'); return sec; }
+  const j = sec.indexOf('</div>', i) + 6;
+  return sec.slice(0, j) + '\n' + JUICIO + sec.slice(j);
+}
+
+/* DECORACION: anuncios tenues detras del contenido en las escenas crema (solo escritorio) */
+const DECO = {
+  difference: ['rolex', 'fenty'], case: ['coca-nieve'], audience: ['redbull-gafas', 'leica'],
+  guarantee: ['glossier'], faq: ['rolex'],
+};
+function decorar(sec) {
+  const cls = (sec.match(/^<section[^>]*class="([a-z-]+)/) || [])[1];
+  const piezas = DECO[cls];
+  if (!piezas) return sec;
+  const capa = '<div class="v2-deco" aria-hidden="true">' +
+    piezas.map((p, i) => '<img class="d' + (i + 1) + '" src="assets/deco/' + p + '.jpg" alt="" loading="lazy" decoding="async" width="520" height="650">').join('') +
+    '</div>\n';
+  const fin = sec.indexOf('>') + 1;
+  return sec.slice(0, fin) + '\n' + capa + sec.slice(fin);
+}
+
+/* EL CASO: la foto de partida, real, antes de los pasos. Vende que con la suya pasa lo mismo. */
+const ORIGEN = '<div class="v2-origen reveal">\n' +
+  '<figure class="v2-origen-foto"><button class="zoomable" type="button" data-full="assets/caso-nike/real.jpg" aria-label="Ampliar la foto original del producto">' +
+  '<img src="assets/caso-nike/real.jpg" loading="lazy" decoding="async" width="900" height="1200" alt="Foto original de las zapatillas, sacada con un celular sobre una cama"></button>' +
+  '<figcaption>La foto de partida · sacada con un celular</figcaption></figure>\n' +
+  '<div class="v2-origen-texto"><span class="eyebrow">Esto es todo lo que hizo falta</span>' +
+  '<b>De esta foto salieron todos los anuncios que vas a ver a continuación.</b>' +
+  '<p>Sin estudio, sin modelo, sin retoque. Una foto común sobre la cama, como la que puedes sacarle hoy a lo que vendes. ' +
+  'El sistema la convirtió en una campaña entera en minutos. <strong>Con la tuya pasa exactamente lo mismo.</strong></p></div>\n' +
+  '</div>\n';
+/* orden nuevo: la foto de partida, los anuncios, y recien ahi "como se hace" */
+function origen(sec) {
+  const i = sec.indexOf('<div class="case-steps">');
+  const g0 = sec.indexOf('<div class="case-grid">');
+  const g1 = sec.indexOf('<div class="marquee-hint"', g0);
+  if (i === -1 || g0 === -1 || g1 === -1) { avisos.push('OJO: no encontre case-steps o case-grid'); return sec; }
+  const grid = sec.slice(g0, g1);
+  const pasos = '<div class="v2-como reveal"><span class="eyebrow">Cómo se hace</span><h3>En tres pasos ya tienes tu tanda.</h3></div>\n' +
+    '<div class="case-steps">\n' +
+    '<article class="case-step reveal"><span>Paso 01</span><b>Arrastras los archivos</b><p>Los seis PDFs del sistema, al chat.</p></article>\n' +
+    '<article class="case-step reveal"><span>Paso 02</span><b>Sumas tu producto</b><p>También puedes agregar tu logo.</p></article>\n' +
+    '<article class="case-step reveal"><span>Paso 03</span><b>Envías el mensaje y esperas a que los anuncios estén listos</b><p>Puedes tener +50 anuncios en pocos minutos. Ahorras tiempo y dinero sin contratar a nadie.</p></article>\n' +
+    '</div>';
+  const finPasos = sec.indexOf('</div>', sec.indexOf('</article>', sec.lastIndexOf('<article class="case-step'))) + 6;
+  const cola = sec.slice(finPasos).replace(grid, '');
+  return sec.slice(0, i) + ORIGEN + grid + pasos + cola;
+}
+
+/* PARA QUIEN: los nichos como tarjetas, cada una con un gancho corto */
+const GANCHO = {
+  'Tiendas y dropshipping': 'Cada producto, con foto de catálogo.',
+  'Restaurantes y gastronomía': 'Platos que dan hambre en el feed.',
+  'Bienes raíces e inmobiliarias': 'Propiedades que se ven caras.',
+  'Gimnasios y bienestar': 'Resultados que entran por los ojos.',
+  'Salones, barberías y estética': 'Antes y después con nivel de revista.',
+  'Servicios y profesionales': 'Autoridad sin posar para nadie.',
+  'Productos digitales y SaaS': 'Tu pantalla, en una escena real.',
+  'Marcas de ropa y accesorios': 'Editorial de moda, sin sesión.',
+  'Freelancers y agencias chicas': 'Entregas de agencia grande.',
+  'Creadores de contenido': 'Piezas que se ven de marca.',
+};
+function nichos(sec) {
+  let n = 0;
+  return sec.replace(/<div class="audience-chips reveal">([\s\S]*?)<\/div>/, (todo, interior) => {
+    const tarjetas = interior.replace(/<span>([^<]+)<\/span>/g, (m, nombre) => {
+      n++;
+      return '<div class="v2-nicho"><span class="n">' + String(n).padStart(2, '0') + '</span><b>' + nombre + '</b>' +
+        (GANCHO[nombre] ? '<p>' + GANCHO[nombre] + '</p>' : '') + '</div>';
+    });
+    return '<div class="audience-chips v2-nichos reveal">' + tarjetas + '</div>';
+  });
+}
+
+const nuevas = [];
+secciones.forEach(sec => {
+  const esc = nombreEscena(sec);
+  /* la marquesina de marcas va justo debajo del boton del hero */
+  if (/^<section class="hero/.test(sec.trim())) { nuevas.push(rearmarHero(sec)); nuevas.push(MARCAS); return; }
+  if (/class="showcase/.test(sec.slice(0, 90))) { nuevas.push(conCierre(rearmarShowcase(sec))); return; }
+  if (/class="pain/.test(sec.slice(0, 90))) sec = plegarLeccion(sec);
+  if (/class="case/.test(sec.slice(0, 90))) sec = origen(sec);
+  if (/class="audience/.test(sec.slice(0, 90))) sec = nichos(sec);
+  sec = decorar(sec);
+  nuevas.push(conCierre(sec.replace('<section', '<section data-esc="' + esc + '"')));
+});
+
+/* ---------- 4 · riel de escenas + linea del header ---------- */
+const miniScript = '\n<script>\n' +
+'(function(){\n' +
+'  var h=document.querySelector("header");\n' +
+'  var f=function(){ h&&h.classList.toggle("con-linea", scrollY>10); };\n' +
+'  f(); addEventListener("scroll", f, {passive:true});\n' +
+'  /* reveal robusto: cualquier interseccion enciende, y hay red a los 3 s */\n' +
+'  var rv=[].slice.call(document.querySelectorAll(".reveal"));\n' +
+'  if("IntersectionObserver" in window){\n' +
+'    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("visible"); io.unobserve(e.target); } }); },{threshold:0,rootMargin:"0px 0px 12% 0px"});\n' +
+'    rv.forEach(function(el){ io.observe(el); });\n' +
+'  } else { rv.forEach(function(el){ el.classList.add("visible"); }); }\n' +
+'  setTimeout(function(){ document.documentElement.classList.add("sin-reveal"); }, 3000);\n' +
+'  var riel=document.getElementById("escRiel");\n' +
+'  var escenas=[].slice.call(document.querySelectorAll("[data-esc]"));\n' +
+'  if(riel && "IntersectionObserver" in window){\n' +
+'    var ob=new IntersectionObserver(function(es){\n' +
+'      es.forEach(function(e){ if(e.isIntersecting){\n' +
+'        var n=escenas.indexOf(e.target)+1;\n' +
+'        riel.textContent=(n<10?"0"+n:n)+" · "+e.target.getAttribute("data-esc");\n' +
+'      }});\n' +
+'    },{rootMargin:"-40% 0px -55% 0px"});\n' +
+'    escenas.forEach(function(s){ ob.observe(s); });\n' +
+'  }\n' +
+'})();\n' +
+'</script>\n' +
+/* galeria: avanza sola por GPU, se arrastra con dedo o mouse, y un toque abre */
+'<script>\n' +
+'(function(){\n' +
+'  var gal=document.querySelector(".v2-gal"); if(!gal) return;\n' +
+'  var track=gal.querySelector(".v2-gal-track"), set=gal.querySelector(".v2-gal-set"); if(!track||!set) return;\n' +
+'  var quieto=matchMedia("(prefers-reduced-motion: reduce)").matches;\n' +
+'  var x=0, vel=0, VEL=0.45, pausaHasta=0, encima=false, arr=null, movio=false, visible=true, w=0;\n' +
+'  function medir(){ w=set.getBoundingClientRect().width; }\n' +
+'  function pintar(){ if(w){ if(x>=w) x-=w; if(x<0) x+=w; } track.style.transform="translate3d("+(-x)+"px,0,0)"; }\n' +
+'  function paso(t){\n' +
+'    if(visible && !document.hidden){\n' +
+'      if(!arr){\n' +
+'        if(Math.abs(vel)>0.05){ x+=vel; vel*=0.94; }\n' +
+'        else if(!quieto && !encima && t>pausaHasta){ x+=VEL; }\n' +
+'      }\n' +
+'      pintar();\n' +
+'    }\n' +
+'    requestAnimationFrame(paso);\n' +
+'  }\n' +
+'  var tocar=function(){ pausaHasta=performance.now()+3500; };\n' +
+'  gal.addEventListener("pointerdown",function(e){\n' +
+'    if(e.pointerType==="mouse" && e.button!==0) return;\n' +
+'    arr={x:e.clientX,x0:x,ult:e.clientX,ultT:performance.now(),id:e.pointerId}; movio=false; vel=0; tocar();\n' +
+'  });\n' +
+'  gal.addEventListener("pointermove",function(e){\n' +
+'    if(!arr || e.pointerId!==arr.id) return;\n' +
+'    var d=e.clientX-arr.x;\n' +
+'    if(!movio && Math.abs(d)>6){ movio=true; gal.classList.add("arrastrando"); try{ gal.setPointerCapture(e.pointerId); }catch(_){} }\n' +
+'    if(movio){ x=arr.x0-d; var ahora=performance.now(); vel=-(e.clientX-arr.ult)/Math.max(1,(ahora-arr.ultT))*16; arr.ult=e.clientX; arr.ultT=ahora; pintar(); }\n' +
+'  });\n' +
+'  var soltar=function(){ if(!arr) return; arr=null; gal.classList.remove("arrastrando"); tocar(); };\n' +
+'  gal.addEventListener("pointerup",soltar); gal.addEventListener("pointercancel",soltar);\n' +
+'  gal.addEventListener("click",function(e){ if(movio){ e.preventDefault(); e.stopPropagation(); movio=false; } },true);\n' +
+'  gal.addEventListener("wheel",function(e){ if(Math.abs(e.deltaX)>Math.abs(e.deltaY)){ e.preventDefault(); x+=e.deltaX; pintar(); tocar(); } },{passive:false});\n' +
+'  if(matchMedia("(hover: hover)").matches){ gal.addEventListener("mouseenter",function(){ encima=true; }); gal.addEventListener("mouseleave",function(){ encima=false; }); }\n' +
+'  if("IntersectionObserver" in window){ new IntersectionObserver(function(es){ visible=es[0].isIntersecting; },{rootMargin:"200px 0px"}).observe(gal); }\n' +
+'  addEventListener("resize",medir,{passive:true}); addEventListener("load",medir); medir();\n' +
+'  requestAnimationFrame(paso);\n' +
+'})();\n' +
+'</script>\n';
+
+/* ---------- 5 · armar y escribir ---------- */
+const html = head + '</head>\n' + abreBody + '\n' +
+  antes + announcement + headerHTML + '\n' +
+  '<div class="esc-riel" id="escRiel" aria-hidden="true">01 · Inicio</div>\n' +
+  '<main>\n' + nuevas.join('\n\n') + '\n' + cola + miniScript + '\n</body>\n</html>\n';
+
+/* ---------- 5b · el copy, en la voz de la marca: empatico y directo ---------- */
+let salida = html;
+const parrafo = (inicio, nuevo) => {
+  const re = new RegExp('<p([^>]*)>\\s*' + inicio.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[\\s\\S]*?<\\/p>');
+  if (!re.test(salida)) { avisos.push('copy sin aplicar: ' + inicio.slice(0, 40)); return; }
+  salida = salida.replace(re, (m, attrs) => '<p' + attrs + '>' + nuevo + '</p>');
+};
+/* el problema: el recuadro de la verdad */
+salida = salida.replace(/<div class="truth">[\s\S]*?<\/div>/,
+  '<div class="truth">Nadie lee antes de juzgar. <strong>Deciden en dos segundos, con los ojos.</strong> Y si tu anuncio se ve barato, tu producto se ve barato, por bueno que sea. No es culpa tuya: nadie te enseñó a dirigir una imagen. <strong>No pierdes ventas por tu precio. Las pierdes antes, en la primera mirada.</strong></div>');
+parrafo('Mira los dos.',
+  'Mira los dos. El primero es el típico anuncio que ves en todos lados y que se nota que está hecho con IA. El segundo es el mismo producto con <b>dirección visual de Prompt Ads</b>.');
+salida = salida.replace('<h2>Uno se ignora. El otro se siente como <em>marca.</em></h2>', '<h2>Uno se ignora. El otro se siente <em>premium.</em></h2>');
+parrafo('No son prompts sueltos',
+  'No son prompts sueltos para que pruebes suerte. Son seis piezas que trabajan juntas y hacen el trabajo pesado por ti: el motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora.');
+parrafo('Mientras algunos siguen publicando',
+  'Sabemos cómo se siente publicar lo mismo de siempre y ver que no pasa nada. Mientras tanto, otros ya están sacando piezas que parecen de marca grande con una foto y un chat. Lo que antes costaba una agencia, un equipo y semanas, <b>hoy lo haces tú solo, esta misma tarde</b>. Y el que empieza ahora le saca meses de ventaja al que espera.');
+parrafo('Entra con el sistema listo',
+  'Entra con el sistema listo y deja de regalarle horas a un diseño que no vende. Produce anuncios con calidad de estudio, de los que cobrarían miles de dólares, <b>sin diseñador, sin agencia y sin semanas de producción</b>. No tienes que aprender nada nuevo: solo seguir los pasos.');
+parrafo('Pruébalo',
+  'Pruébalo <b>7 días</b>. Si no es para ti, pides el reembolso y recibes el <b>100% de tu dinero</b>. Sin vueltas y sin preguntas incómodas: lo procesa Hotmart, así que tu compra está protegida de punta a punta. <b>Todo el riesgo lo ponemos nosotros.</b>');
+parrafo('Y no te dejamos solo',
+  'Y no te dejamos solo. Si te trabas en algún punto, escríbenos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a> y te damos una mano directa. Queremos que te salga, no que compres y te olvides.');
+parrafo('Si vendes algo real y necesitas mostrarlo mejor, funciona.',
+  'Si vendes algo real y estás cansado de crear anuncios o contenido que se nota que están hechos con IA, esto es para ti. <b>Tú pones la foto y tus datos; el sistema pone la dirección creativa.</b> El tiempo que te ahorra, lo usas en vender.');
+parrafo('Tomamos la foto de un producto cualquiera',
+  'Tomamos la foto de un producto cualquiera, unas zapatillas, y en menos de 5 minutos salieron todos estos anuncios. Dentro del sistema ves <b>el proceso completo con capturas reales</b>, paso a paso, para que lo repitas con tu producto sin adivinar nada.');
+parrafo('El mismo sistema de seis PDFs',
+  'Ninguna la hizo una agencia. Cada una salió de una foto común y de los seis PDFs del sistema, en minutos. <b>Es exactamente lo que puedes hacer hoy con lo que tú vendes.</b>');
+
+/* el problema, mas corto (pedido del 21/08): fuera 'Tres cosas que juzgan' y la lista de sintomas 01-04 */
+salida = salida.replace(/<div class="v2-juicio">[\s\S]*?<\/div>/, '');
+{
+  const p0 = salida.indexOf('<div class="symptoms reveal">');
+  if (p0 !== -1) {
+    const pCta = salida.indexOf('<div class="shell v2-cta', p0);
+    const pSec = salida.indexOf('</section>', p0);
+    const corte = (pCta !== -1 && pCta < pSec) ? pCta : pSec;
+    salida = salida.slice(0, p0) + '</div>\n' + salida.slice(corte);
+  } else avisos.push('no encontre la lista de sintomas');
+}
+
+/* pie: fuera la nota de no afiliacion (pedido del 21/08) */
+salida = salida.replace('<span>Prompt Ads es un producto independiente. No está afiliado ni respaldado por OpenAI, ChatGPT, Meta o Hotmart.</span>', '');
+
+/* ---------- 5c · todas las imagenes nuevas en WebP ---------- */
+salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+)\.jpg/g, (m, c, f) =>
+  fs.existsSync(path.join('assets', c, f + '.webp')) ? 'assets/' + c + '/' + f + '.webp' : m);
+
+fs.writeFileSync('_nueva.html', salida, 'utf8');
+console.log('  _nueva.html: ' + Math.round(salida.length / 1024) + ' KB');
+
+/* ---------- 6 · verificacion ---------- */
+const debe = ['id="resultado"', 'id="incluye"', 'id="oferta"', 'id="preguntas"', 'id="precio"',
+  'id="prodImg"', 'id="prodGiro"', 'id="lightbox"', 'id="mobileBuy"',
+  'data-cuenta="banner"', 'fbq(', 'ssTrack', 'LIMITE', 'const PRECIO = 47',
+  'v2-gal-set', 'esc-riel', 'prodFlotar', 'v2-sube d1'];
+debe.forEach(m => { if (!salida.includes(m)) avisos.push('FALTA: ' + m); });
+['vitrina-inexistente'].forEach(m => { if (salida.includes(m)) avisos.push('SOBRA: ' + m); });
+console.log('  piezas: ' + PIEZAS.length + ' x2  ·  scripts: ' + (html.match(/<script/g) || []).length +
+  '  ·  main: ' + (html.match(/<main>/g) || []).length + '/' + (html.match(/<\/main>/g) || []).length);
+console.log(avisos.length ? avisos.map(a => '  ' + a).join('\n') : '  verificacion: todo presente');

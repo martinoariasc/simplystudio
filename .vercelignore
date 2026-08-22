@@ -1,0 +1,8 @@
+# No viaja al deploy: herramientas de construcción de la landing y fuentes
+# que la página ya lleva adentro (CSS inline, logos en sprite).
+_*
+*.md
+.claude
+herramientas
+servidor-preview.js
+assets/logos
