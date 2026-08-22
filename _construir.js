@@ -320,9 +320,10 @@ const miniScript = '\n<script>\n' +
 '      cajas.forEach(function(c){ [].slice.call(c.querySelectorAll("[data-c]")).forEach(function(e){ var k=e.getAttribute("data-c"); if(e.textContent!==v[k]) e.textContent=v[k]; }); }); };\n' +
 '    tic(); setInterval(tic,1000);\n' +
 '  }\n' +
-'  /* la barra fija de compra se esconde mientras la tarjeta de precio esta a la vista (ahi sobra) */\n' +
-'  var pc=document.getElementById("precio");\n' +
-'  if(pc&&"IntersectionObserver" in window){ new IntersectionObserver(function(es){ document.documentElement.classList.toggle("precio-visible", es[0].isIntersecting); },{threshold:0.15}).observe(pc); }\n' +
+'  /* la barra fija de compra se aparta solo cuando el boton de compra real ya esta en pantalla:\n' +
+'     asi el visitante siempre tiene un boton a mano, incluso al saltar a la tarjeta de precio */\n' +
+'  var bc=document.querySelector("#precio .btn.checkout") || document.getElementById("precio");\n' +
+'  if(bc&&"IntersectionObserver" in window){ new IntersectionObserver(function(es){ document.documentElement.classList.toggle("precio-visible", es[0].isIntersecting); },{threshold:0.9}).observe(bc); }\n' +
 '  /* reveal robusto: cualquier interseccion enciende, y hay red a los 3 s */\n' +
 '  var rv=[].slice.call(document.querySelectorAll(".reveal"));\n' +
 '  if("IntersectionObserver" in window){\n' +

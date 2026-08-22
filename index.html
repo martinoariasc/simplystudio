@@ -1412,6 +1412,20 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
 .v2-empuje b{font-style:normal;font-weight:400;color:var(--forest)}
 @media (max-width:720px){.v2-empuje{font-size:16px;margin:12px auto 10px}}
 
+/* celular: la tarjeta de precio, un punto más compacta, para que el botón entre en la pantalla del salto */
+@media (max-width:720px){
+  .price-card{padding:18px 16px 18px}
+  .stack li{font-size:13px;padding:6px 0}
+  .stack-total{font-size:18px;padding:10px 0 0}
+  .price-reveal{margin-top:10px;padding-top:10px}
+  .price{font-size:56px}
+  .v2-cuenta{padding:8px 10px;margin-top:8px}
+  .v2-cuenta b{font-size:17px}
+  .v2-cuenta>div{min-width:36px}
+  .v2-empuje{font-size:14.5px;margin:10px auto 8px;max-width:32ch}
+  .price-card .btn{margin-top:8px}
+}
+
 /* ---- contrato del giro (verbatim del original) ---- */
     .hero-prod{max-width:620px;margin:8px auto 26px;perspective:1100px}
     .prod-float{position:relative;margin:0;transition:transform .45s cubic-bezier(.16,1,.3,1)}
@@ -2427,9 +2441,10 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
       cajas.forEach(function(c){ [].slice.call(c.querySelectorAll("[data-c]")).forEach(function(e){ var k=e.getAttribute("data-c"); if(e.textContent!==v[k]) e.textContent=v[k]; }); }); };
     tic(); setInterval(tic,1000);
   }
-  /* la barra fija de compra se esconde mientras la tarjeta de precio esta a la vista (ahi sobra) */
-  var pc=document.getElementById("precio");
-  if(pc&&"IntersectionObserver" in window){ new IntersectionObserver(function(es){ document.documentElement.classList.toggle("precio-visible", es[0].isIntersecting); },{threshold:0.15}).observe(pc); }
+  /* la barra fija de compra se aparta solo cuando el boton de compra real ya esta en pantalla:
+     asi el visitante siempre tiene un boton a mano, incluso al saltar a la tarjeta de precio */
+  var bc=document.querySelector("#precio .btn.checkout") || document.getElementById("precio");
+  if(bc&&"IntersectionObserver" in window){ new IntersectionObserver(function(es){ document.documentElement.classList.toggle("precio-visible", es[0].isIntersecting); },{threshold:0.9}).observe(bc); }
   /* reveal robusto: cualquier interseccion enciende, y hay red a los 3 s */
   var rv=[].slice.call(document.querySelectorAll(".reveal"));
   if("IntersectionObserver" in window){
