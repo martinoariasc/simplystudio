@@ -511,3 +511,10 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
   .v2-cuenta-mini{margin:4px 0 0;padding:3px 8px 2px}
   .v2-cuenta-mini b{font-size:11.5px}
 }
+
+/* contadores en rojo: ladrillo sobre crema (tarjeta), coral legible sobre negro (barra) */
+.v2-cuenta b{color:#B3453B}
+.v2-cuenta i{background:rgba(179,69,59,.25)}
+.v2-cuenta{border-color:rgba(179,69,59,.28)}
+.v2-cuenta-mini b{color:#F07A6E}
+.v2-cuenta-mini{border-color:rgba(240,122,110,.38)}
