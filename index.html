@@ -1382,6 +1382,21 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
 .inside{padding-top:clamp(64px,8vw,112px)}
 .v2-cta{margin-bottom:0}
 
+/* contador chico en la barra de arriba: pastilla con borde fino, dígitos mono tabulares */
+.v2-cuenta-mini{
+  display:inline-flex;align-items:baseline;gap:2px;margin-left:8px;padding:3px 9px 2px;
+  border:1px solid rgba(255,255,255,.22);border-radius:999px;vertical-align:middle;white-space:nowrap;
+}
+.v2-cuenta-mini b{font:500 12px/1 var(--mono);color:var(--paper);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.v2-cuenta-mini i{font:400 9px/1 var(--mono);font-style:normal;color:#9A9688;margin:0 6px 0 2px;letter-spacing:.08em}
+.v2-cuenta-mini i:last-child{margin-right:0}
+.v2-cuenta-mini[hidden]{display:none}
+@media (max-width:720px){
+  .announcement-inner span[data-cuenta="banner"]{display:inline}
+  .v2-cuenta-mini{margin:4px 0 0;padding:3px 8px 2px}
+  .v2-cuenta-mini b{font-size:11.5px}
+}
+
 /* ---- contrato del giro (verbatim del original) ---- */
     .hero-prod{max-width:620px;margin:8px auto 26px;perspective:1100px}
     .prod-float{position:relative;margin:0;transition:transform .45s cubic-bezier(.16,1,.3,1)}
@@ -2377,15 +2392,23 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
   var f=function(){ h&&h.classList.toggle("con-linea", scrollY>10); };
   f(); addEventListener("scroll", f, {passive:true});
   /* cuenta regresiva: toma LIMITE del script original del precio (cambiar-precio.js lo actualiza), asi no hay dos fechas */
-  var cu=document.querySelector(".v2-cuenta");
-  if(cu){
+  /* en la barra de arriba, el "en N dias" se vuelve contador; el script original ya escribio el texto (corre antes) */
+  var ban=document.querySelector("[data-cuenta=banner]");
+  if(ban){
+    var mini=document.createElement("span"); mini.className="v2-cuenta-mini";
+    mini.innerHTML="<b data-c=d>00</b><i>d</i><b data-c=h>00</b><i>h</i><b data-c=m>00</b><i>m</i><b data-c=s>00</b><i>s</i>";
+    if(/ en \d+ d\u00edas\.?\s*$/.test(ban.innerHTML)) ban.innerHTML=ban.innerHTML.replace(/ en \d+ d\u00edas\.?\s*$/, " en");
+    ban.parentNode.insertBefore(mini, ban.nextSibling);
+  }
+  var cajas=[].slice.call(document.querySelectorAll(".v2-cuenta,.v2-cuenta-mini"));
+  if(cajas.length){
     var lim=null; [].slice.call(document.scripts).forEach(function(s){ var m=/const LIMITE = \x27(\d{4}-\d{2}-\d{2})\x27/.exec(s.textContent||""); if(m) lim=m[1]; });
     var fin=lim?new Date(lim+"T00:00:00").getTime():NaN;
-    var c={d:cu.querySelector("[data-c=d]"),h:cu.querySelector("[data-c=h]"),m:cu.querySelector("[data-c=m]"),s:cu.querySelector("[data-c=s]")};
     var dd=function(n){ return (n<10?"0":"")+n; };
-    var tic=function(){ var r=fin-Date.now(); if(isNaN(r)||r<=0){ cu.hidden=true; return; }
-      var d=Math.floor(r/864e5), h=Math.floor(r%864e5/36e5), m=Math.floor(r%36e5/6e4), s=Math.floor(r%6e4/1e3);
-      c.d.textContent=dd(d); c.h.textContent=dd(h); c.m.textContent=dd(m); c.s.textContent=dd(s); };
+    var tic=function(){ var r=fin-Date.now();
+      if(isNaN(r)||r<=0){ cajas.forEach(function(c){ c.hidden=true; }); return; }
+      var v={d:dd(Math.floor(r/864e5)),h:dd(Math.floor(r%864e5/36e5)),m:dd(Math.floor(r%36e5/6e4)),s:dd(Math.floor(r%6e4/1e3))};
+      cajas.forEach(function(c){ [].slice.call(c.querySelectorAll("[data-c]")).forEach(function(e){ var k=e.getAttribute("data-c"); if(e.textContent!==v[k]) e.textContent=v[k]; }); }); };
     tic(); setInterval(tic,1000);
   }
   /* la barra fija de compra se esconde mientras la tarjeta de precio esta a la vista (ahi sobra) */

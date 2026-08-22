@@ -301,15 +301,23 @@ const miniScript = '\n<script>\n' +
 '  var f=function(){ h&&h.classList.toggle("con-linea", scrollY>10); };\n' +
 '  f(); addEventListener("scroll", f, {passive:true});\n' +
 '  /* cuenta regresiva: toma LIMITE del script original del precio (cambiar-precio.js lo actualiza), asi no hay dos fechas */\n' +
-'  var cu=document.querySelector(".v2-cuenta");\n' +
-'  if(cu){\n' +
+'  /* en la barra de arriba, el "en N dias" se vuelve contador; el script original ya escribio el texto (corre antes) */\n' +
+'  var ban=document.querySelector("[data-cuenta=banner]");\n' +
+'  if(ban){\n' +
+'    var mini=document.createElement("span"); mini.className="v2-cuenta-mini";\n' +
+'    mini.innerHTML="<b data-c=d>00</b><i>d</i><b data-c=h>00</b><i>h</i><b data-c=m>00</b><i>m</i><b data-c=s>00</b><i>s</i>";\n' +
+'    if(/ en \\d+ d\\u00edas\\.?\\s*$/.test(ban.innerHTML)) ban.innerHTML=ban.innerHTML.replace(/ en \\d+ d\\u00edas\\.?\\s*$/, " en");\n' +
+'    ban.parentNode.insertBefore(mini, ban.nextSibling);\n' +
+'  }\n' +
+'  var cajas=[].slice.call(document.querySelectorAll(".v2-cuenta,.v2-cuenta-mini"));\n' +
+'  if(cajas.length){\n' +
 '    var lim=null; [].slice.call(document.scripts).forEach(function(s){ var m=/const LIMITE = \\x27(\\d{4}-\\d{2}-\\d{2})\\x27/.exec(s.textContent||""); if(m) lim=m[1]; });\n' +
 '    var fin=lim?new Date(lim+"T00:00:00").getTime():NaN;\n' +
-'    var c={d:cu.querySelector("[data-c=d]"),h:cu.querySelector("[data-c=h]"),m:cu.querySelector("[data-c=m]"),s:cu.querySelector("[data-c=s]")};\n' +
 '    var dd=function(n){ return (n<10?"0":"")+n; };\n' +
-'    var tic=function(){ var r=fin-Date.now(); if(isNaN(r)||r<=0){ cu.hidden=true; return; }\n' +
-'      var d=Math.floor(r/864e5), h=Math.floor(r%864e5/36e5), m=Math.floor(r%36e5/6e4), s=Math.floor(r%6e4/1e3);\n' +
-'      c.d.textContent=dd(d); c.h.textContent=dd(h); c.m.textContent=dd(m); c.s.textContent=dd(s); };\n' +
+'    var tic=function(){ var r=fin-Date.now();\n' +
+'      if(isNaN(r)||r<=0){ cajas.forEach(function(c){ c.hidden=true; }); return; }\n' +
+'      var v={d:dd(Math.floor(r/864e5)),h:dd(Math.floor(r%864e5/36e5)),m:dd(Math.floor(r%36e5/6e4)),s:dd(Math.floor(r%6e4/1e3))};\n' +
+'      cajas.forEach(function(c){ [].slice.call(c.querySelectorAll("[data-c]")).forEach(function(e){ var k=e.getAttribute("data-c"); if(e.textContent!==v[k]) e.textContent=v[k]; }); }); };\n' +
 '    tic(); setInterval(tic,1000);\n' +
 '  }\n' +
 '  /* la barra fija de compra se esconde mientras la tarjeta de precio esta a la vista (ahi sobra) */\n' +

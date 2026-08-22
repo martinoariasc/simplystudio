@@ -496,3 +496,18 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
 .case{padding-bottom:clamp(40px,5vw,72px)}
 .inside{padding-top:clamp(64px,8vw,112px)}
 .v2-cta{margin-bottom:0}
+
+/* contador chico en la barra de arriba: pastilla con borde fino, dígitos mono tabulares */
+.v2-cuenta-mini{
+  display:inline-flex;align-items:baseline;gap:2px;margin-left:8px;padding:3px 9px 2px;
+  border:1px solid rgba(255,255,255,.22);border-radius:999px;vertical-align:middle;white-space:nowrap;
+}
+.v2-cuenta-mini b{font:500 12px/1 var(--mono);color:var(--paper);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.v2-cuenta-mini i{font:400 9px/1 var(--mono);font-style:normal;color:#9A9688;margin:0 6px 0 2px;letter-spacing:.08em}
+.v2-cuenta-mini i:last-child{margin-right:0}
+.v2-cuenta-mini[hidden]{display:none}
+@media (max-width:720px){
+  .announcement-inner span[data-cuenta="banner"]{display:inline}
+  .v2-cuenta-mini{margin:4px 0 0;padding:3px 8px 2px}
+  .v2-cuenta-mini b{font-size:11.5px}
+}
