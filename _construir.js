@@ -300,6 +300,18 @@ const miniScript = '\n<script>\n' +
 '  var h=document.querySelector("header");\n' +
 '  var f=function(){ h&&h.classList.toggle("con-linea", scrollY>10); };\n' +
 '  f(); addEventListener("scroll", f, {passive:true});\n' +
+'  /* cuenta regresiva: toma LIMITE del script original del precio (cambiar-precio.js lo actualiza), asi no hay dos fechas */\n' +
+'  var cu=document.querySelector(".v2-cuenta");\n' +
+'  if(cu){\n' +
+'    var lim=null; [].slice.call(document.scripts).forEach(function(s){ var m=/const LIMITE = \\x27(\\d{4}-\\d{2}-\\d{2})\\x27/.exec(s.textContent||""); if(m) lim=m[1]; });\n' +
+'    var fin=lim?new Date(lim+"T00:00:00").getTime():NaN;\n' +
+'    var c={d:cu.querySelector("[data-c=d]"),h:cu.querySelector("[data-c=h]"),m:cu.querySelector("[data-c=m]"),s:cu.querySelector("[data-c=s]")};\n' +
+'    var dd=function(n){ return (n<10?"0":"")+n; };\n' +
+'    var tic=function(){ var r=fin-Date.now(); if(isNaN(r)||r<=0){ cu.hidden=true; return; }\n' +
+'      var d=Math.floor(r/864e5), h=Math.floor(r%864e5/36e5), m=Math.floor(r%36e5/6e4), s=Math.floor(r%6e4/1e3);\n' +
+'      c.d.textContent=dd(d); c.h.textContent=dd(h); c.m.textContent=dd(m); c.s.textContent=dd(s); };\n' +
+'    tic(); setInterval(tic,1000);\n' +
+'  }\n' +
 '  /* la barra fija de compra se esconde mientras la tarjeta de precio esta a la vista (ahi sobra) */\n' +
 '  var pc=document.getElementById("precio");\n' +
 '  if(pc&&"IntersectionObserver" in window){ new IntersectionObserver(function(es){ document.documentElement.classList.toggle("precio-visible", es[0].isIntersecting); },{threshold:0.15}).observe(pc); }\n' +
@@ -383,6 +395,36 @@ salida = salida.replace(/<div class="truth">[\s\S]*?<\/div>/,
 parrafo('Mira los dos.',
   'Mira los dos. El primero es el típico anuncio que ves en todos lados y que se nota que está hecho con IA. El segundo es el mismo producto con <b>dirección visual de Prompt Ads</b>.');
 salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si no te sirve, te devolvemos tu dinero.</h2>');
+
+/* tarjeta de precio (pedido del 22/08): escalera de valor a USD 500, y cuenta regresiva bajo el precio */
+{
+  const c0 = salida.indexOf('<aside class="price-card" id="precio">');
+  const c1 = salida.indexOf('</aside>', c0);
+  if (c0 === -1 || c1 === -1) avisos.push('no encontre la tarjeta de precio');
+  else {
+    let card = salida.slice(c0, c1);
+    const valores = [
+      ['<span>Protocolo Maestro</span><b>USD 69</b>', '<span>Protocolo Maestro</span><b>USD 159</b>'],
+      ['<span>Reality Layer</span><b>USD 49</b>', '<span>Reality Layer</span><b>USD 99</b>'],
+      ['<span>Dirección Visual</span><b>USD 39</b>', '<span>Dirección Visual</span><b>USD 89</b>'],
+      ['<span>Corregí y Continuá</span><b>USD 24</b>', '<span>Corregí y Continuá</span><b>USD 79</b>'],
+      ['<span>Variedad Total</span><b>USD 24</b>', '<span>Variedad Total</span><b>USD 74</b>'],
+      ['<b>GRATIS</b>', '<b class="v2-si">GRATIS</b>'],
+      ['<b>Incluido</b>', '<b class="v2-si">Incluido</b>'],
+      ['<b><s>USD 205</s></b>', '<b><s>USD 500</s></b>'],
+    ];
+    valores.forEach(([a, b]) => { if (!card.includes(a)) avisos.push('tarjeta: no encontre ' + a.slice(0, 40)); card = card.replace(a, b); });
+    const cuenta = '\n              <div class="v2-cuenta" aria-label="Cuenta regresiva hasta que suba el precio">' +
+      '<div><b data-c="d">00</b><span>días</span></div><i></i>' +
+      '<div><b data-c="h">00</b><span>horas</span></div><i></i>' +
+      '<div><b data-c="m">00</b><span>min</span></div><i></i>' +
+      '<div><b data-c="s">00</b><span>seg</span></div></div>';
+    const fin = card.indexOf('</p>', card.indexOf('class="price-after"'));
+    if (fin === -1) avisos.push('tarjeta: no encontre price-after');
+    else card = card.slice(0, fin + 4) + cuenta + card.slice(fin + 4);
+    salida = salida.slice(0, c0) + card + salida.slice(c1);
+  }
+}
 salida = salida.replace('<h2>Uno se ignora. El otro se siente como <em>marca.</em></h2>', '<h2>Uno se ignora. El otro se siente <em>premium.</em></h2>');
 parrafo('No son prompts sueltos',
   'No son prompts sueltos para que pruebes suerte. Son seis piezas que trabajan juntas y hacen el trabajo pesado por ti: el motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora.');

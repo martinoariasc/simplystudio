@@ -1337,6 +1337,46 @@ main{
 html.precio-visible .mobile-buy.show{transform:translateY(110%)}
 @media (max-width:720px){.secure{margin-top:12px}}
 
+/* el cierre de "El sistema" heredaba el botón color papel de cuando la sección era oscura: negro como todos */
+.inside .v2-cta .btn{background:var(--ink);color:var(--paper)}
+.inside .v2-cta .btn:hover{background:var(--forest)}
+
+/* ================================================================
+   v11 · TARJETA DE PRECIO: color con criterio y cuenta regresiva
+   Lo que suma, en verde bosque (GRATIS, Incluido, el 47). Lo que se
+   tacha, en rojo ladrillo apagado (nada de rojo chillón). La cuenta
+   regresiva: dígitos mono tabulares, separadores finos, sin cajas rojas.
+   ================================================================ */
+:root{--rojo-tachado:#A8433A;--verde-si:#1E5A3A}
+.stack li b{color:var(--ink)}
+.stack li b.v2-si{color:var(--verde-si);font-weight:600;letter-spacing:.02em}
+.stack-total b{color:var(--ink)}
+.stack-total s{color:var(--rojo-tachado);text-decoration-color:var(--rojo-tachado);text-decoration-thickness:1.5px;opacity:.95}
+.price{color:var(--forest)}
+.price sup{color:var(--verde-si)}
+.launch-tag{color:var(--muted)}
+.price-after b{color:var(--ink)}
+
+.v2-cuenta{
+  display:flex;align-items:center;justify-content:center;gap:clamp(6px,1.6vw,14px);
+  margin:14px auto 2px;padding:12px 14px;width:max-content;max-width:100%;
+  border:1px solid rgba(30,58,43,.18);border-radius:14px;
+  background:rgba(255,255,255,.55);
+}
+.v2-cuenta>div{display:flex;flex-direction:column;align-items:center;min-width:44px}
+.v2-cuenta b{
+  font:500 clamp(20px,2vw,24px)/1 var(--mono);letter-spacing:.02em;color:var(--forest);
+  font-variant-numeric:tabular-nums;
+}
+.v2-cuenta span{margin-top:5px;font:400 8.5px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.v2-cuenta i{width:1px;height:26px;background:rgba(30,58,43,.18)}
+.v2-cuenta[hidden]{display:none}
+@media (max-width:720px){
+  .v2-cuenta{padding:10px 10px;gap:8px;margin-top:10px}
+  .v2-cuenta>div{min-width:40px}
+  .v2-cuenta b{font-size:19px}
+}
+
 /* ---- contrato del giro (verbatim del original) ---- */
     .hero-prod{max-width:620px;margin:8px auto 26px;perspective:1100px}
     .prod-float{position:relative;margin:0;transition:transform .45s cubic-bezier(.16,1,.3,1)}
@@ -1809,19 +1849,20 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
           <aside class="price-card" id="precio">
             <span class="eyebrow muted">Todo lo que te llevas</span>
             <ul class="stack">
-              <li><span>Guía de uso del sistema</span><b>GRATIS</b></li>
-              <li><span>Protocolo Maestro</span><b>USD 69</b></li>
-              <li><span>Reality Layer</span><b>USD 49</b></li>
-              <li><span>Dirección Visual</span><b>USD 39</b></li>
-              <li><span>Corregí y Continuá</span><b>USD 24</b></li>
-              <li><span>Variedad Total</span><b>USD 24</b></li>
-              <li><span>Actualizaciones de esta edición</span><b>Incluido</b></li>
+              <li><span>Guía de uso del sistema</span><b class="v2-si">GRATIS</b></li>
+              <li><span>Protocolo Maestro</span><b>USD 159</b></li>
+              <li><span>Reality Layer</span><b>USD 99</b></li>
+              <li><span>Dirección Visual</span><b>USD 89</b></li>
+              <li><span>Corregí y Continuá</span><b>USD 79</b></li>
+              <li><span>Variedad Total</span><b>USD 74</b></li>
+              <li><span>Actualizaciones de esta edición</span><b class="v2-si">Incluido</b></li>
             </ul>
-            <div class="stack-total"><span>Valor total</span><b><s>USD 205</s></b></div>
+            <div class="stack-total"><span>Valor total</span><b><s>USD 500</s></b></div>
             <div class="price-reveal">
               <span class="launch-tag">Precio de lanzamiento</span>
               <div class="price"><sup>USD</sup>47</div>
               <p class="price-after" data-cuenta="despues">El <b>1 de septiembre</b> pasa a <b>USD 67</b></p>
+              <div class="v2-cuenta" aria-label="Cuenta regresiva hasta que suba el precio"><div><b data-c="d">00</b><span>días</span></div><i></i><div><b data-c="h">00</b><span>horas</span></div><i></i><div><b data-c="m">00</b><span>min</span></div><i></i><div><b data-c="s">00</b><span>seg</span></div></div>
             </div>
             <a class="btn checkout" href="https://pay.hotmart.com/Y106693224R?checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads</a>
             <div class="trust-row"><span>Pago único</span><span>Acceso inmediato</span><span>Compra segura</span><span>Garantía 7 días</span></div>
@@ -2330,6 +2371,18 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
   var h=document.querySelector("header");
   var f=function(){ h&&h.classList.toggle("con-linea", scrollY>10); };
   f(); addEventListener("scroll", f, {passive:true});
+  /* cuenta regresiva: toma LIMITE del script original del precio (cambiar-precio.js lo actualiza), asi no hay dos fechas */
+  var cu=document.querySelector(".v2-cuenta");
+  if(cu){
+    var lim=null; [].slice.call(document.scripts).forEach(function(s){ var m=/const LIMITE = \x27(\d{4}-\d{2}-\d{2})\x27/.exec(s.textContent||""); if(m) lim=m[1]; });
+    var fin=lim?new Date(lim+"T00:00:00").getTime():NaN;
+    var c={d:cu.querySelector("[data-c=d]"),h:cu.querySelector("[data-c=h]"),m:cu.querySelector("[data-c=m]"),s:cu.querySelector("[data-c=s]")};
+    var dd=function(n){ return (n<10?"0":"")+n; };
+    var tic=function(){ var r=fin-Date.now(); if(isNaN(r)||r<=0){ cu.hidden=true; return; }
+      var d=Math.floor(r/864e5), h=Math.floor(r%864e5/36e5), m=Math.floor(r%36e5/6e4), s=Math.floor(r%6e4/1e3);
+      c.d.textContent=dd(d); c.h.textContent=dd(h); c.m.textContent=dd(m); c.s.textContent=dd(s); };
+    tic(); setInterval(tic,1000);
+  }
   /* la barra fija de compra se esconde mientras la tarjeta de precio esta a la vista (ahi sobra) */
   var pc=document.getElementById("precio");
   if(pc&&"IntersectionObserver" in window){ new IntersectionObserver(function(es){ document.documentElement.classList.toggle("precio-visible", es[0].isIntersecting); },{threshold:0.15}).observe(pc); }
