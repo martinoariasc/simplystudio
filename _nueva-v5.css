@@ -540,3 +540,51 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
   .v2-empuje{font-size:14.5px;margin:10px auto 8px;max-width:32ch}
   .price-card .btn{margin-top:8px}
 }
+
+/* ══ Memoria de video: por qué se cerraba la pestaña en el teléfono ══════════
+   Safari en iPhone mostraba "Ocurrió un problema varias veces" al bajar rápido.
+   No era el peso de las imágenes (eso ya se arregló): era la memoria de GPU.
+
+   El carrusel de la galería mide 31.065 px de ancho. Con will-change:transform
+   se le ordena al navegador reservarle una capa propia ENTERA: 48 MB de memoria
+   de video por un solo elemento. Con los otros dos carruseles, 69 MB. Sumado a
+   los 65 MB de imágenes, un iPhone se queda sin memoria y mata la pestaña.
+
+   Sin will-change el navegador rasteriza solo los pedazos visibles, que es lo
+   correcto para un elemento tan ancho. La animación no cambia: los transform se
+   componen igual. backface-visibility:hidden fuerza otra capa por lo mismo. */
+.m-track, .v2-marcas-track, .v2-gal-track{
+  will-change:auto;
+  backface-visibility:visible;
+}
+
+/* ── El desenfoque de fondo, en el teléfono ─────────────────────────────────
+   backdrop-filter obliga a recalcular el desenfoque de todo lo que hay detrás
+   en cada cuadro del scroll. Eran 19 elementos, 1,03 millones de px² sumados:
+   más de tres pantallas enteras desenfocándose mientras se baja.
+
+   Y no se veía. Las cuatro tarjetas grandes están sobre color plano
+   (rgb(21,34,24) la de precio, rgb(20,20,16) la barra de arriba) o sobre un
+   degradado muy suave. Un blur de 12 px sobre eso no cambia un píxel. Se va el
+   costo y no el aspecto.
+
+   Va con el selector universal a propósito: así no se escapa ninguno, ni los
+   que aparezcan más adelante. El fondo del lightbox es un pseudo-elemento, no
+   lo alcanza el selector, y se queda como está (solo existe al abrirlo). */
+@media (hover:none), (max-width:900px){
+  *{ backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+
+  /* La etiqueta de cada pieza sí va sobre una foto, que es el único sitio donde
+     el desenfoque tapaba algo. Se compensa con un poco más de opacidad para que
+     el texto siga leyéndose igual de bien. */
+  .card-tag{ background:rgba(20,20,16,.72) }
+}
+
+/* El header tiene fondo al 55% y contaba con el desenfoque para tapar lo que
+   pasa por debajo. Sin blur habría que ver el contenido a través del header.
+   Debajo de 720 px ya estaba resuelto en _nueva-v4.css; esto cubre la franja
+   de 721 a 900 y cualquier pantalla táctil más grande. */
+@media (hover:none), (max-width:900px){
+  header{ background:var(--paper) }
+  .mobile-buy{ background:var(--paper) }
+}
