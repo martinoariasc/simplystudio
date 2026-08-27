@@ -11,3 +11,6 @@ assets/fondos/*.jpg
 assets/fondos/_*
 assets/deco/*.jpg
 assets/caso-nike/real.jpg
+
+# config local del navegador de vista previa (no viaja al deploy)
+.claude/

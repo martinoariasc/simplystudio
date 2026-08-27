@@ -89,7 +89,7 @@ function rearmarHero(sec) {
 
   const sub = 'Sabemos lo que es perder una tarde entera creando unos pocos anuncios y que al final, después de mucho esfuerzo, no traigan los resultados esperados o ningún resultado. Por eso existe Prompt Ads: <b>el sistema de PDFs que hace que tu marca se vea como las que facturan millones</b>. Subes una foto de lo que vendes y en minutos tienes una tanda de anuncios premium, de los que una agencia te cobraría <b>+USD 1.000</b>. Sin sesión de fotos, sin saber diseño y de la manera más fácil y rápida posible.';
   /* titular pedido para la nueva: arranca con la accion y el numero */
-  h1.texto = '<h1>Empieza a crear <em>+50 anuncios premium</em> en menos de 5 minutos y <em>aumenta tus ventas.</em></h1>';
+  h1.texto = '<h1>Empieza a crear <em>+50 anuncios premium</em> en minutos y <em>aumenta tus ventas.</em></h1>';
   if (pill) pill.texto = pill.texto.replace(/Prompts \+ gu[ií]as \+ sistema de correcci[oó]n/, 'Más de 50 anuncios premium en minutos');
 
   /* orden que manda: titulo, animacion, texto chico, boton */
@@ -231,7 +231,7 @@ function decorar(sec) {
 /* EL CASO: la foto de partida, real, antes de los pasos. Vende que con la suya pasa lo mismo. */
 const ORIGEN = '<div class="v2-origen reveal">\n' +
   '<figure class="v2-origen-foto"><button class="zoomable" type="button" data-full="assets/caso-nike/real.jpg" aria-label="Ampliar la foto original del producto">' +
-  '<img src="assets/caso-nike/real.jpg" loading="lazy" decoding="async" width="900" height="1200" alt="Foto original de las zapatillas, sacada con un celular sobre una cama"></button>' +
+  '<picture><source media="(max-width:760px)" srcset="assets/caso-nike/real-600.webp"><source srcset="assets/caso-nike/real-600.webp 600w, assets/caso-nike/real.webp 900w" sizes="330px"><img src="assets/caso-nike/real.jpg" loading="lazy" decoding="async" width="900" height="1200" alt="Foto original de las zapatillas, sacada con un celular sobre una cama"></picture></button>' +
   '<figcaption>La foto de partida · sacada con un celular</figcaption></figure>\n' +
   '<div class="v2-origen-texto"><span class="eyebrow">Esto es todo lo que hizo falta</span>' +
   '<b>De esta foto salieron todos los anuncios que vas a ver a continuación.</b>' +
