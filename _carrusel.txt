@@ -1,0 +1,40 @@
+/* galeria: avanza sola por GPU, se arrastra con dedo o mouse, y un toque abre */
+'<script>\n' +
+'(function(){\n' +
+'  var gal=document.querySelector(".v2-gal"); if(!gal) return;\n' +
+'  var track=gal.querySelector(".v2-gal-track"), set=gal.querySelector(".v2-gal-set"); if(!track||!set) return;\n' +
+'  var quieto=matchMedia("(prefers-reduced-motion: reduce)").matches;\n' +
+'  var x=0, vel=0, VEL=0.45, pausaHasta=0, encima=false, arr=null, movio=false, visible=true, w=0;\n' +
+'  function medir(){ w=set.getBoundingClientRect().width; }\n' +
+'  function pintar(){ if(w){ if(x>=w) x-=w; if(x<0) x+=w; } track.style.transform="translate3d("+(-x)+"px,0,0)"; }\n' +
+'  function paso(t){\n' +
+'    if(visible && !document.hidden){\n' +
+'      if(!arr){\n' +
+'        if(Math.abs(vel)>0.05){ x+=vel; vel*=0.94; }\n' +
+'        else if(!quieto && !encima && t>pausaHasta){ x+=VEL; }\n' +
+'      }\n' +
+'      pintar();\n' +
+'    }\n' +
+'    requestAnimationFrame(paso);\n' +
+'  }\n' +
+'  var tocar=function(){ pausaHasta=performance.now()+3500; };\n' +
+'  gal.addEventListener("pointerdown",function(e){\n' +
+'    if(e.pointerType==="mouse" && e.button!==0) return;\n' +
+'    arr={x:e.clientX,x0:x,ult:e.clientX,ultT:performance.now(),id:e.pointerId}; movio=false; vel=0; tocar();\n' +
+'  });\n' +
+'  gal.addEventListener("pointermove",function(e){\n' +
+'    if(!arr || e.pointerId!==arr.id) return;\n' +
+'    var d=e.clientX-arr.x;\n' +
+'    if(!movio && Math.abs(d)>6){ movio=true; gal.classList.add("arrastrando"); try{ gal.setPointerCapture(e.pointerId); }catch(_){} }\n' +
+'    if(movio){ x=arr.x0-d; var ahora=performance.now(); vel=-(e.clientX-arr.ult)/Math.max(1,(ahora-arr.ultT))*16; arr.ult=e.clientX; arr.ultT=ahora; pintar(); }\n' +
+'  });\n' +
+'  var soltar=function(){ if(!arr) return; arr=null; gal.classList.remove("arrastrando"); tocar(); };\n' +
+'  gal.addEventListener("pointerup",soltar); gal.addEventListener("pointercancel",soltar);\n' +
+'  gal.addEventListener("click",function(e){ if(movio){ e.preventDefault(); e.stopPropagation(); movio=false; } },true);\n' +
+'  gal.addEventListener("wheel",function(e){ if(Math.abs(e.deltaX)>Math.abs(e.deltaY)){ e.preventDefault(); x+=e.deltaX; pintar(); tocar(); } },{passive:false});\n' +
+'  if(matchMedia("(hover: hover)").matches){ gal.addEventListener("mouseenter",function(){ encima=true; }); gal.addEventListener("mouseleave",function(){ encima=false; }); }\n' +
+'  if("IntersectionObserver" in window){ new IntersectionObserver(function(es){ visible=es[0].isIntersecting; },{rootMargin:"200px 0px"}).observe(gal); }\n' +
+'  addEventListener("resize",medir,{passive:true}); addEventListener("load",medir); medir();\n' +
+'  requestAnimationFrame(paso);\n' +
+'})();\n' +
+'</script>\n';

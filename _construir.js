@@ -87,10 +87,10 @@ function rearmarHero(sec) {
   const figura = corta(sec, '<figure class="prod-float"', '</figure>');
   if (!h1 || !figura) { avisos.push('OJO: hero incompleto, va verbatim'); return sec; }
 
-  const sub = 'Sabemos lo que es perder una tarde entera creando unos pocos anuncios y que al final, después de mucho esfuerzo, no traigan los resultados esperados o ningún resultado. Por eso existe Prompt Ads: <b>el sistema de PDFs que hace que tu marca se vea como las que facturan millones</b>. Subes una foto de lo que vendes y en minutos tienes una tanda de anuncios premium, de los que una agencia te cobraría <b>+USD 1.000</b>. Sin sesión de fotos, sin saber diseño y de la manera más fácil y rápida posible.';
+  const sub = 'Ahorra tiempo y dinero con Prompt Ads: <b>el método que hace que tu marca se vea como las que facturan millones</b>. Subes una foto de lo que vendes, sigues unas instrucciones y en minutos tienes una tanda de anuncios premium, de los que una agencia te cobraría <b>+USD 1.000</b>. Sin sesión de fotos, sin saber diseño y de la manera más fácil y rápida posible.';
   /* titular pedido para la nueva: arranca con la accion y el numero */
-  h1.texto = '<h1>Empieza a crear <em>+50 anuncios premium</em> en minutos y <em>aumenta tus ventas.</em></h1>';
-  if (pill) pill.texto = pill.texto.replace(/Prompts \+ gu[ií]as \+ sistema de correcci[oó]n/, 'Más de 50 anuncios premium en minutos');
+  h1.texto = '<h1>Aprende a crear <em>+50 anuncios premium</em> en minutos y <em>aumenta tus ventas.</em></h1>';
+  if (pill) pill.texto = pill.texto.replace(/Prompts \+ gu[ií]as \+ sistema de correcci[oó]n/, 'El método para crear +50 anuncios premium en minutos');
 
   /* orden que manda: titulo, animacion, texto chico, boton */
   return '<section class="hero v2-hero" data-esc="Inicio">\n<div class="shell">\n' +
@@ -147,14 +147,14 @@ function rearmarShowcase(sec) {
   let cabeza = sec.slice(0, iStage);
   /* el titulo ahora vende el sistema, no solo el resultado */
   cabeza = cabeza
-    .replace(/<h2>[\s\S]*?<\/h2>/, '<h2>Todos estos anuncios salieron de <em>Prompt Ads.</em></h2>')
+    .replace(/<h2>[\s\S]*?<\/h2>/, '<h2>Todos estos anuncios salieron con el Método <em>Prompt Ads.</em></h2>')
     .replace(/<p>[\s\S]*?<\/p>/, '<p>El mismo sistema de seis PDFs que te llevas hoy. Sin agencia, sin sesión de fotos y sin diseñador: cada pieza salió de una foto común y del sistema, en minutos. <b>Es exactamente lo que puedes hacer con lo que tú vendes.</b></p>');
   return cabeza +
     '<div class="v2-gal reveal"><div class="v2-gal-track">' +
     '<div class="v2-gal-set">\n' + figuras(false) + '\n</div>' +
     '<div class="v2-gal-set" aria-hidden="true">\n' + figuras(true) + '\n</div>' +
     '</div></div>' +
-    '<div class="v2-gal-nota"><span>Rubros distintos · el mismo sistema · cada pieza lista para publicar</span><span class="v2-gal-desliza"><svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>desliza<svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span></div>' +
+    '<div class="v2-gal-nota"><span>Rubros distintos · el mismo sistema · cada anuncio listo para publicar</span><span class="v2-gal-desliza"><svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>desliza<svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span></div>' +
     '\n</div>\n</section>';
 }
 
@@ -245,7 +245,7 @@ function origen(sec) {
   const g1 = sec.indexOf('<div class="marquee-hint"', g0);
   if (i === -1 || g0 === -1 || g1 === -1) { avisos.push('OJO: no encontre case-steps o case-grid'); return sec; }
   const grid = sec.slice(g0, g1);
-  const pasos = '<div class="v2-como reveal"><span class="eyebrow">Cómo se hace</span><h3>En tres pasos ya tienes tu tanda.</h3></div>\n' +
+  const pasos = '<div class="v2-como reveal"><span class="eyebrow">Cómo se hace</span><h3>Aprendes el método una vez. Después, cada tanda es esto.</h3></div>\n' +
     '<div class="case-steps">\n' +
     '<article class="case-step reveal"><span>Paso 01</span><b>Arrastras los archivos</b><p>Los seis PDFs del sistema, al chat.</p></article>\n' +
     '<article class="case-step reveal"><span>Paso 02</span><b>Sumas tu producto</b><p>Una foto, tu logo y un detalle que la guía te enseña en dos minutos.</p></article>\n' +
@@ -257,18 +257,9 @@ function origen(sec) {
 }
 
 /* PARA QUIEN: los nichos como tarjetas, cada una con un gancho corto */
-const GANCHO = {
-  'Tiendas y dropshipping': 'Cada producto, con foto de catálogo.',
-  'Restaurantes y gastronomía': 'Platos que dan hambre en el feed.',
-  'Bienes raíces e inmobiliarias': 'Propiedades que se ven caras.',
-  'Gimnasios y bienestar': 'Resultados que entran por los ojos.',
-  'Salones, barberías y estética': 'Antes y después con nivel de revista.',
-  'Servicios y profesionales': 'Autoridad sin posar para nadie.',
-  'Productos digitales y SaaS': 'Tu pantalla, en una escena real.',
-  'Marcas de ropa y accesorios': 'Editorial de moda, sin sesión.',
-  'Freelancers y agencias chicas': 'Entregas de agencia grande.',
-  'Creadores de contenido': 'Piezas que se ven de marca.',
-};
+/* Sin ganchos: los nombres solos venden mejor que una frase corta que
+     tiene que resumir un rubro entero en cinco palabras. */
+  const GANCHO = {};
 function nichos(sec) {
   let n = 0;
   return sec.replace(/<div class="audience-chips reveal">([\s\S]*?)<\/div>/, (todo, interior) => {
@@ -312,7 +303,7 @@ const miniScript = '\n<script>\n' +
 '  var cajas=[].slice.call(document.querySelectorAll(".v2-cuenta,.v2-cuenta-mini"));\n' +
 '  if(cajas.length){\n' +
 '    var lim=null; [].slice.call(document.scripts).forEach(function(s){ var m=/const LIMITE = \\x27(\\d{4}-\\d{2}-\\d{2})\\x27/.exec(s.textContent||""); if(m) lim=m[1]; });\n' +
-'    var fin=lim?new Date(lim+"T00:00:00").getTime():NaN;\n' +
+'    var fin=lim?new Date(lim+"T12:00:00-04:00").getTime():NaN;   /* mismo instante para todos, no la medianoche de cada visitante */\n' +
 '    var dd=function(n){ return (n<10?"0":"")+n; };\n' +
 '    var tic=function(){ var r=fin-Date.now();\n' +
 '      if(isNaN(r)||r<=0){ cajas.forEach(function(c){ c.hidden=true; }); return; }\n' +
@@ -403,7 +394,7 @@ salida = salida.replace(/<div class="truth">[\s\S]*?<\/div>/,
   '<div class="truth">Nadie lee antes de juzgar. <strong>Deciden en dos segundos, con los ojos.</strong> Y si tu anuncio se ve barato, tu producto se ve barato, por bueno que sea. No es culpa tuya: nadie te enseñó a dirigir una imagen. <strong>No pierdes ventas por tu precio. Las pierdes antes, en la primera mirada.</strong></div>');
 parrafo('Mira los dos.',
   'Mira los dos. El primero es el típico anuncio que ves en todos lados y que se nota que está hecho con IA. El segundo es el mismo producto con <b>dirección visual de Prompt Ads</b>.');
-salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si no te sirve, te devolvemos tu dinero.</h2>');
+salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si no aprendes a crear estos anuncios, te devolvemos el 100%.</h2>');
 
 /* tarjeta de precio (pedido del 22/08): escalera de valor a USD 500, y cuenta regresiva bajo el precio */
 {
@@ -413,12 +404,11 @@ salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si 
   else {
     let card = salida.slice(c0, c1);
     const valores = [
-      ['<span>Protocolo Maestro</span><b>USD 69</b>', '<span>Protocolo Maestro</span><b>USD 159</b>'],
-      ['<span>Reality Layer</span><b>USD 49</b>', '<span>Reality Layer</span><b>USD 99</b>'],
-      ['<span>Dirección Visual</span><b>USD 39</b>', '<span>Dirección Visual</span><b>USD 89</b>'],
-      ['<span>Corregí y Continuá</span><b>USD 24</b>', '<span>Corregí y Continuá</span><b>USD 79</b>'],
-      ['<span>Variedad Total</span><b>USD 24</b>', '<span>Variedad Total</span><b>USD 74</b>'],
-      ['<b>GRATIS</b>', '<b class="v2-si">GRATIS</b>'],
+      ['<span>Corregí y Continuá</span><b>USD 24</b>', '<span>Corregí y Continuá</span><b>USD 34</b>'],
+      ['<span>Variedad Total</span><b>USD 24</b>', '<span>Variedad Total</span><b>USD 30</b>'],
+        /* La guia es la pieza que manda, asi que es la cara: 279 de los 500.
+           Decir que era gratis contradecia toda la pagina. */
+        ['<span>Guía de uso del sistema</span><b>GRATIS</b>', '<span><b>La guía del método</b></span><b>USD 279</b>'],
       ['<b>Incluido</b>', '<b class="v2-si">Incluido</b>'],
       ['<b><s>USD 205</s></b>', '<b><s>USD 500</s></b>'],
     ];
@@ -432,7 +422,7 @@ salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si 
     if (fin === -1) avisos.push('tarjeta: no encontre price-after');
     else card = card.slice(0, fin + 4) + cuenta + card.slice(fin + 4);
     /* el empujon final, justo antes del boton (Martino elige la version) */
-    const EMPUJE = 'Sabemos que dudar es normal. Por eso tienes <b>7 días de garantía</b>: pruébalo con calma y, si no es para ti, recuperas tu dinero. <b>No te vas a arrepentir.</b>';
+    const EMPUJE = 'El riesgo es nuestro, no tuyo. Tienes <b>7 días de garantía</b> para aprender el método con calma. Si no aprendes a crear estos anuncios, recuperas el 100% de tu dinero. <b>No te vas a arrepentir.</b>';
     const btn = card.indexOf('<a class="btn checkout"');
     if (btn === -1) avisos.push('tarjeta: no encontre el boton de compra');
     else card = card.slice(0, btn) + '<p class="v2-empuje">' + EMPUJE + '</p>\n            ' + card.slice(btn);
@@ -441,13 +431,13 @@ salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si 
 }
 salida = salida.replace('<h2>Uno se ignora. El otro se siente como <em>marca.</em></h2>', '<h2>Uno se ignora. El otro se siente <em>premium.</em></h2>');
 parrafo('No son prompts sueltos',
-  'No son prompts sueltos para que pruebes suerte. Son seis piezas que trabajan juntas y hacen el trabajo pesado por ti: el motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora.');
+  'No son prompts sueltos para que pruebes suerte. Es un método de seis archivos: empiezas por la guía, que te enseña a dirigir la IA, y las otras cinco son las que ella ejecuta. El motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora.');
 parrafo('Mientras algunos siguen publicando',
-  'Sabemos cómo se siente publicar lo mismo de siempre y ver que no pasa nada. Mientras tanto, otros ya están sacando piezas que parecen de marca grande con una foto y un chat. Lo que antes costaba una agencia, un equipo y semanas, <b>hoy lo haces tú solo, esta misma tarde</b>. Y el que empieza ahora le saca meses de ventaja al que espera.');
+  'Sabemos cómo se siente publicar lo mismo de siempre y ver que no pasa nada. Mientras tanto, otros ya están sacando anuncios que parecen de marca grande con una foto y un chat. Lo que antes costaba una agencia, un equipo y semanas, <b>hoy lo haces tú solo, esta misma tarde</b>. Y el que empieza ahora le saca meses de ventaja al que espera.');
 parrafo('Entra con el sistema listo',
   'Entra con el sistema listo y deja de regalarle horas a un diseño que no vende. Produce anuncios con calidad de estudio, de los que cobrarían miles de dólares, <b>sin diseñador, sin agencia y sin semanas de producción</b>. No tienes que aprender nada nuevo: solo seguir los pasos.');
 parrafo('Pruébalo',
-  'Pruébalo <b>7 días</b>. Si no es para ti, pides el reembolso y recibes el <b>100% de tu dinero</b>. Sin vueltas y sin preguntas incómodas: lo procesa Hotmart, así que tu compra está protegida de punta a punta. <b>Todo el riesgo lo ponemos nosotros.</b>');
+  'Pruébalo <b>7 días</b>. Lee la guía, crea tu primera tanda, y si al terminar no sabes hacerlo con tu producto, pides el reembolso y recibes el <b>100% de tu dinero</b>. Sin vueltas y sin preguntas incómodas: lo procesa Hotmart, así que tu compra está protegida de punta a punta. <b>Todo el riesgo lo ponemos nosotros.</b>');
 parrafo('Y no te dejamos solo',
   'Y no te dejamos solo. Si te trabas en algún punto, escríbenos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a> y te damos una mano directa. Queremos que de verdad te pueda ser útil, no que compres y no lo uses.');
 parrafo('Si vendes algo real y necesitas mostrarlo mejor, funciona.',
@@ -460,7 +450,7 @@ const TESTIMONIOS = {
   'Valentina G.': 'Al principio no entendía nada y ni confiaba, pero adentro te explica taaan bien cómo usarlo que <b>al ratito ya tenía muchísimos anuncios listos jajjaja</b>',
   'Ricardo G.': 'Tengo una tienda online y renovar los creativos era un dolor de cabeza total. Ahora saco anuncios nuevos cada semana yo solo, <b>y se nota en las ventas!!</b>',
   'Enrique G.': 'Tengo un local y nunca pude pagarme una sesión de fotos. Ahora mis publicaciones se ven como las de las marcas grandes <b>y me lo dicen los clientes!!</b>',
-  'Mathias D.': 'Creo contenido para varias marcas y esto me cambió el ritmo: entrego piezas de nivel estudio en una fracción del tiempo. <b>Mis clientes quedan felices!!</b>',
+  'Mathias D.': 'Creo contenido para varias marcas y esto me cambió el ritmo: entrego anuncios de nivel estudio en una fracción del tiempo. <b>Mis clientes quedan felices!!</b>',
   'Lucía E.': 'Con ChatGPT Plus saqué más de 50 anuncios en una sentada, y todos con <b>calidad de un diseñador que me cobraría miles de dólares</b>. Todavía no lo puedo creer.',
   'Camila S.': 'Increíble cómo ayuda a crear mejores anuncios. La diferencia con lo que hacía antes es enorme, <b>no hay con qué darle</b>.',
   'Cesar T.': 'El producto está muy pero muy bueno y súper fácil de usar. Pensé que iba a ser complicadísimo y en realidad <b>lo puede hacer cualquiera</b>.',
@@ -502,6 +492,46 @@ salida = salida.replace('<span>Prompt Ads es un producto independiente. No está
 /* ---------- 5c · todas las imagenes nuevas en WebP ---------- */
 salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+)\.jpg/g, (m, c, f) =>
   fs.existsSync(path.join('assets', c, f + '.webp')) ? 'assets/' + c + '/' + f + '.webp' : m);
+
+/* ---------- 5d · vocabulario: es un METODO, no un sistema ---------- */
+/*  Los seis PDFs ya dicen "metodo" y "anuncios"; la web seguia diciendo
+ *  "sistema" y "piezas". El que compraba leia una cosa y abria otra.
+ *  Corre al final, sobre la salida ya armada, para alcanzar tambien lo que
+ *  viene trasplantado de _base.html (alt, meta, FAQ).
+ *  Nunca toca <script> ni <style>: ahi viven el pixel, ssTrack y la cuenta
+ *  atras, y un reemplazo suelto ahi dentro rompe el tracking.
+ */
+{
+  const VOZ = [
+    ['El sistema de prompts y guías para convertir', 'El método de seis archivos para convertir'],
+    ['el sistema definitivo para crear anuncios de alta conversión, con ejemplos de piezas premium', 'el método definitivo para crear anuncios de alta conversión, con ejemplos de anuncios premium'],
+    ['de los seis PDFs del sistema, en minutos', 'de los seis PDFs del método, en minutos'],
+    ['el mismo sistema · cada anuncio', 'el mismo método · cada anuncio'],
+    ['Dentro del sistema ves', 'Dentro del método ves'],
+    ['El sistema la convirtió en una campaña', 'El método la convirtió en una campaña'],
+    ['de zapatilla generado con el sistema', 'de zapatilla generado con el Método Prompt Ads', true],
+    ['Los seis PDFs del sistema, al chat.', 'Los seis PDFs del método, al chat.'],
+    ['data-esc="El sistema"', 'data-esc="El método"'],
+    ['el sistema pone la dirección creativa', 'el método pone la dirección creativa'],
+    ['el sistema de visuales estratégicos que venden', 'el método de visuales estratégicos que venden'],
+    ['Entra con el sistema listo', 'Entra con el método listo', true],
+    ['No. El sistema te da una estructura concreta', 'No. El método te da una estructura concreta'],
+    ['puedes arrancar y probar el sistema', 'puedes arrancar y probar el método'],
+    ['El pack incluye un sistema guiado', 'El método incluye un archivo guiado'],
+    ['puedes usar el sistema para producir anuncios', 'puedes usar el método para producir anuncios'],
+  ];
+  const trozos = salida.split(new RegExp("(<script[^]*?<\/script>|<style[^]*?<\/style>)", "i"));
+  for (const [a, b, todas] of VOZ) {
+    let hubo = false;
+    for (let i = 0; i < trozos.length; i += 2) {
+      if (!trozos[i].includes(a)) continue;
+      hubo = true;
+      trozos[i] = todas ? trozos[i].split(a).join(b) : trozos[i].replace(a, b);
+    }
+    if (!hubo) avisos.push('vocabulario: no encontre "' + a.slice(0, 46) + '"');
+  }
+  salida = trozos.join('');
+}
 
 fs.writeFileSync('_nueva.html', salida, 'utf8');
 console.log('  _nueva.html: ' + Math.round(salida.length / 1024) + ' KB');

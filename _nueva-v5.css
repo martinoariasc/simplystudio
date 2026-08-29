@@ -588,3 +588,17 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
   header{ background:var(--paper) }
   .mobile-buy{ background:var(--paper) }
 }
+
+
+/* ══ Arrastre de las filas de opiniones ═════════════════════════════════════
+   Sin touch-action el navegador retiene los eventos del dedo mientras decide
+   si es scroll o arrastre, y eso se siente como que el carrusel va lento.
+   pan-y le deja el vertical al navegador y nos da el horizontal a nosotros. */
+.m-row{
+  touch-action:pan-y;
+  cursor:grab;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.m-row.agarrando{ cursor:grabbing }
