@@ -431,7 +431,7 @@ salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si 
 }
 salida = salida.replace('<h2>Uno se ignora. El otro se siente como <em>marca.</em></h2>', '<h2>Uno se ignora. El otro se siente <em>premium.</em></h2>');
 parrafo('No son prompts sueltos',
-  'No son prompts sueltos para que pruebes suerte. Es un método de seis archivos: empiezas por la guía, que te enseña a dirigir la IA, y las otras cinco son las que ella ejecuta. El motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora.');
+  'No son prompts sueltos para que pruebes suerte. Es un método de seis archivos: empiezas por la guía, que te enseña a dirigir la IA, y las otras cinco son las que ella ejecuta. El motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora. Y el estilo lo eliges tú: el método te enseña a trasladar la estética que quieras a tu producto, sin que la IA la cambie.');
 parrafo('Mientras algunos siguen publicando',
   'Sabemos cómo se siente publicar lo mismo de siempre y ver que no pasa nada. Mientras tanto, otros ya están sacando anuncios que parecen de marca grande con una foto y un chat. Lo que antes costaba una agencia, un equipo y semanas, <b>hoy lo haces tú solo, esta misma tarde</b>. Y el que empieza ahora le saca meses de ventaja al que espera.');
 parrafo('Entra con el sistema listo',
@@ -569,28 +569,34 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     salida = salida.replace(a, b);   /* primera aparicion = bloque es; pt/en quedan como estan */
   }
 
-  /* la seccion nueva, antes de las preguntas */
-  const CARD = 'background:rgba(255,255,255,.55);border:1px solid rgba(23,23,19,.08);border-radius:14px;padding:22px';
-  const IMG = 'width:100%;height:auto;border-radius:12px;box-shadow:0 10px 30px rgba(23,23,19,.14)';
-  const SECCION = '<section data-esc="Tú decides" class="difference">\n' +
-    '<div class="shell">\n' +
-    '<div class="section-intro reveal"><span class="eyebrow muted">La duda que más nos preguntan</span>' +
-    '<div><h2>El estilo lo eliges tú. La IA <em>obedece.</em></h2>' +
-    '<p>Nada sale "como la IA quiera". Tú guardas referencias del estilo que te gusta —de cualquier marca, de Pinterest, de un anuncio que viste pasar— y el método te enseña a trasladar ese estilo a tu marca: colores, luz y composición, con tu producto exactamente como es.</p></div></div>\n' +
-    '<div class="reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:34px">' +
-    '<div style="' + CARD + '"><b>Tú mandas</b><p style="margin:8px 0 0">Eliges 3–6 referencias del estilo que quieres lograr. Un archivo entero del método —Dirección Visual— está dedicado a convertir tu gusto en instrucciones que la IA respeta.</p></div>' +
-    '<div style="' + CARD + '"><b>Paso a paso, con capturas</b><p style="margin:8px 0 0">La guía te lleva de la mano por cada pantalla: qué arrastrar, qué escribir y qué tiene que aparecer, con capturas reales de ChatGPT en cada paso.</p></div>' +
-    '<div style="' + CARD + '"><b>Y si algo sale distinto</b><p style="margin:8px 0 0">El archivo de correcciones trae la línea exacta para cada caso: te cambió el producto, te dio un collage, se desvió del estilo. La copias, la pegas y sigues.</p></div></div>\n' +
-    '<div class="reveal" style="margin-top:38px"><p class="eyebrow muted" style="margin:0 0 14px">Así se ve por dentro — páginas reales de la guía</p>' +
-    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">' +
-    '<img src="assets/guia/interior-paso1.webp" alt="Página real de la guía: cómo arrancar poniendo los PDFs en el chat, con captura de ChatGPT" loading="lazy" decoding="async" width="648" height="864" style="' + IMG + '">' +
-    '<img src="assets/guia/interior-paso4.webp" alt="Página real de la guía: los 10 anuncios por separado, con capturas de los dos modos" loading="lazy" decoding="async" width="648" height="864" style="' + IMG + '">' +
-    '<img src="assets/guia/interior-resultados.webp" alt="Página real de la guía: una tanda de diez anuncios terminados" loading="lazy" decoding="async" width="648" height="864" style="' + IMG + '"></div>' +
-    '<p style="margin:16px 0 0;max-width:70ch">33 páginas así: cada paso con su captura, cada problema con su solución escrita. <b>Se aprende en una tarde y queda para siempre.</b></p></div>\n' +
-    '</div>\n</section>\n\n';
-  const iFaq = salida.indexOf('<section data-esc="Preguntas"');
-  if (iFaq === -1) avisos.push('no encontre la seccion de preguntas para inyectar la seccion nueva');
-  else salida = salida.slice(0, iFaq) + SECCION + salida.slice(iFaq);
+  /* ---------- marquesina 2: "Hazlo", tras la garantia ---------- */
+  /*  Genera deseo despues del cierre: 20 anuncios de 5 marcas que NO estan en
+   *  la galeria del principio (perfume, sillas, comida, termos, skincare).
+   *  Mismo mecanismo de scroll que la galeria de arriba, con su propio motor
+   *  porque el original solo agarra la primera .v2-gal de la pagina.
+   */
+  {
+    const PIEZAS2 = [["g2-01-byredo","Anuncio editorial de perfume creado con el Método Prompt Ads"],["g2-02-muuto","Anuncio de diseño de una silla creado con el Método Prompt Ads"],["g2-03-burguer","Anuncio gastronómico creado con el Método Prompt Ads"],["g2-04-stanley","Anuncio comparativo de un termo creado con el Método Prompt Ads"],["g2-05-ordinary","Anuncio de skincare creado con el Método Prompt Ads"],["g2-06-byredo","Anuncio de perfume con dirección de arte, hecho con el método"],["g2-07-muuto","Anuncio minimalista de mobiliario, hecho con el método"],["g2-08-burguer","Anuncio de hamburguesa bajo el agua, hecho con el método"],["g2-09-stanley","Anuncio deportivo de un termo, hecho con el método"],["g2-10-ordinary","Anuncio editorial de sérum, hecho con el método"],["g2-11-byredo","Anuncio de lujo de perfume, hecho con el método"],["g2-12-muuto","Anuncio de una silla sobre el agua, hecho con el método"],["g2-13-burguer","Anuncio de hamburguesa con auto clásico, hecho con el método"],["g2-14-stanley","Anuncio de termo en cielo abierto, hecho con el método"],["g2-15-ordinary","Anuncio de textura de sérum, hecho con el método"],["g2-16-byredo","Anuncio de perfume en atardecer, hecho con el método"],["g2-17-muuto","Anuncio de silla con modelo, hecho con el método"],["g2-18-burguer","Anuncio creativo de hamburguesa, hecho con el método"],["g2-19-stanley","Anuncio urbano de termo, hecho con el método"],["g2-20-ordinary","Anuncio científico de skincare, hecho con el método"]];
+    const piezas2 = PIEZAS2.map(([f, alt]) =>
+      '<figure class="v2-piece"><img src="assets/galeria2/' + f + '.webp" alt="' + alt + '" loading="lazy" decoding="async" width="600" height="750"></figure>').join('');
+    const GAL2 =
+      '<section data-esc="Hazlo" class="difference v2-hazlo">\n' +
+      '<div class="shell"><div class="section-intro reveal">' +
+      '<span class="eyebrow muted">Todo esto salió del método</span>' +
+      '<div><h2>Hazlo. <em>Empieza a crear anuncios así.</em></h2>' +
+      '<p>Perfume, muebles, comida, deporte, skincare. Ninguno pasó por una agencia: cada uno salió de una foto real, referencias y dirección. <b>El próximo puede ser de tu producto.</b></p></div></div></div>\n' +
+      '<div class="v2-gal" id="galeria2"><div class="v2-gal-track">' +
+      '<div class="v2-gal-set">' + piezas2 + '</div>' +
+      '<div class="v2-gal-set" aria-hidden="true">' + piezas2 + '</div>' +
+      '</div></div>\n' +
+      '<div class="shell" style="text-align:center;margin-top:28px"><a href="#precio" style="display:inline-block;background:var(--ink,#171713);color:#F2EEE5;padding:17px 34px;border-radius:999px;font-weight:600;text-decoration:none">Quiero crear los míos</a></div>\n' +
+      '<style>#galeria2 .v2-gal-track{animation:g2marq 80s linear infinite !important}#galeria2:hover .v2-gal-track{animation-play-state:paused}@keyframes g2marq{to{transform:translateX(-50%)}}@media (prefers-reduced-motion:reduce){#galeria2 .v2-gal-track{animation:none !important}}</style>' +
+      '</section>\n\n';
+    const iProof2 = salida.indexOf('<section data-esc="Opiniones" class="proof proof-2"');
+    if (iProof2 === -1) avisos.push('marquesina 2: no encontre proof-2 para inyectar');
+    else salida = salida.slice(0, iProof2) + GAL2 + salida.slice(iProof2);
+  }
+
 
   /* dos preguntas nuevas en la FAQ, antes de la de diseno */
   const FAQ1 = '<details><summary>¿Puedo elegir yo el estilo o lo decide la IA?</summary><p>Lo eliges tú, siempre. Guardas referencias del estilo que quieres —de cualquier marca o rubro— y el método te enseña a trasladarlo a tu producto sin que la IA lo cambie. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas. Y si un resultado se desvía, el archivo de correcciones trae la línea para enderezarlo.</p></details>';
