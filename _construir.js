@@ -431,7 +431,7 @@ salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si 
 }
 salida = salida.replace('<h2>Uno se ignora. El otro se siente como <em>marca.</em></h2>', '<h2>Uno se ignora. El otro se siente <em>premium.</em></h2>');
 parrafo('No son prompts sueltos',
-  'No son prompts sueltos para que pruebes suerte. Es un método de seis archivos: empiezas por la guía, que te enseña a dirigir la IA, y las otras cinco son las que ella ejecuta. El motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora. Y el estilo lo eliges tú: el método te enseña a trasladar la estética que quieras a tu producto, sin que la IA la cambie.');
+  'No son prompts sueltos para que pruebes suerte. Es un método de seis archivos: empiezas por la guía, que te enseña a dirigir la IA, y las otras cinco son las que ella ejecuta. El motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora. Y el estilo lo eliges tú: el método te enseña a trasladar la estética que quieras a tu producto, sin que la IA la cambie. Y nada de documentos de puro texto: cada archivo está diseñado, con ejemplos visuales en cada paso, para que el método se entienda a la primera.');
 parrafo('Mientras algunos siguen publicando',
   'Sabemos cómo se siente publicar lo mismo de siempre y ver que no pasa nada. Mientras tanto, otros ya están sacando anuncios que parecen de marca grande con una foto y un chat. Lo que antes costaba una agencia, un equipo y semanas, <b>hoy lo haces tú solo, esta misma tarde</b>. Y el que empieza ahora le saca meses de ventaja al que espera.');
 parrafo('Entra con el sistema listo',
@@ -520,6 +520,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     ['El pack incluye un sistema guiado', 'El método incluye un archivo guiado'],
     ['puedes usar el sistema para producir anuncios', 'puedes usar el método para producir anuncios'],
     ['Corregí y Continuá', 'Corrige y Continúa', true],
+    ['producto físico, servicio, local, inmobiliaria o producto digital.', 'producto físico, servicio, local, inmobiliaria o producto digital. Y no es un PDF de puro texto hecho sin ganas: cada archivo está diseñado y acompañado de ejemplos visuales y capturas reales, para que entiendas el método de la forma más clara posible.'],
   ];
   const trozos = salida.split(new RegExp("(<script[^]*?<\/script>|<style[^]*?<\/style>)", "i"));
   for (const [a, b, todas] of VOZ) {
