@@ -520,6 +520,9 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     ['El pack incluye un sistema guiado', 'El método incluye un archivo guiado'],
     ['puedes usar el sistema para producir anuncios', 'puedes usar el método para producir anuncios'],
     ['Corregí y Continuá', 'Corrige y Continúa', true],
+    ['Es el archivo que más vale y el que hay que leer primero. Aquí aprendes a hablarle a la IA: las palabras exactas que entiende, cómo pasarle una referencia para que la respete de verdad, y qué escribir cuando el resultado no es el que querías. Los otros cinco son los que ella ejecuta.', 'Hay una diferencia entre pedirle un anuncio a la IA y dirigirla. Esa diferencia es este archivo: las palabras exactas que la IA obedece, el secreto para que cada anuncio salga exactamente como lo imaginaste, y la línea que lo endereza cuando sale distinto. Se lee en una tarde. Los otros cinco archivos los ejecuta ella.'],
+    ['eliges las referencias y revisas el resultado final antes de publicarlo', 'eliges el estilo que quieres y revisas el resultado final antes de publicarlo'],
+    ['La fidelidad mejora cuanto mejores y más claras sean tus referencias. El pack te enseña qué material aportar y', 'La fidelidad mejora cuanto mejor aplicas el método: el pack te enseña exactamente qué aportar y'],
     ['producto físico, servicio, local, inmobiliaria o producto digital.', 'producto físico, servicio, local, inmobiliaria o producto digital. Y no es un PDF de puro texto hecho sin ganas: cada archivo está diseñado y acompañado de ejemplos visuales y capturas reales, para que entiendas el método de la forma más clara posible.'],
   ];
   const trozos = salida.split(new RegExp("(<script[^]*?<\/script>|<style[^]*?<\/style>)", "i"));
@@ -585,7 +588,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
       '<div class="shell"><div class="section-intro reveal">' +
       '<span class="eyebrow muted">Todo esto salió del método</span>' +
       '<div><h2>Hazlo. <em>Empieza a crear anuncios así.</em></h2>' +
-      '<p>Perfume, muebles, comida, deporte, skincare. Ninguno pasó por una agencia: cada uno salió de una foto real, referencias y dirección. <b>El próximo puede ser de tu producto.</b></p></div></div></div>\n' +
+      '<p>Perfume, muebles, comida, deporte, skincare. Ninguno pasó por una agencia: cada uno salió de una foto real y del método. <b>El próximo puede ser de tu producto.</b></p></div></div></div>\n' +
       '<div class="v2-gal" id="galeria2"><div class="v2-gal-track">' +
       '<div class="v2-gal-set">' + piezas2 + '</div>' +
       '<div class="v2-gal-set" aria-hidden="true">' + piezas2 + '</div>' +
@@ -600,7 +603,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
 
 
   /* dos preguntas nuevas en la FAQ, antes de la de diseno */
-  const FAQ1 = '<details><summary>¿Puedo elegir yo el estilo o lo decide la IA?</summary><p>Lo eliges tú, siempre. Guardas referencias del estilo que quieres —de cualquier marca o rubro— y el método te enseña a trasladarlo a tu producto sin que la IA lo cambie. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas. Y si un resultado se desvía, el archivo de correcciones trae la línea para enderezarlo.</p></details>';
+  const FAQ1 = '<details><summary>¿Puedo elegir yo el estilo o lo decide la IA?</summary><p>Tú mandas, siempre. Ves un estilo que te gusta —de cualquier marca, de cualquier rubro— y el método te enseña a ponerlo al servicio de TU producto, sin que la IA lo cambie ni invente nada. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas. Y si un resultado se desvía, el archivo de correcciones trae la línea para enderezarlo.</p></details>';
   const FAQ2 = '<details><summary>¿Es un curso en video?</summary><p>No: es una guía visual paso a paso, con capturas reales de cada pantalla — qué arrastrar, qué escribir y qué tiene que aparecer. Se termina en una tarde y después la consultas en segundos, sin buscar el minuto exacto de ningún video. Y si algo no te sale, nos escribes a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a> y te ayudamos directo.</p></details>';
   /* el boton del banner: ya no hay suba de precio que asegurar */
   salida = salida.split('Asegurar mi precio').join('Quiero el bonus');
