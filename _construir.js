@@ -338,7 +338,7 @@ const miniScript = '\n<script>\n' +
 /* galeria: avanza sola por GPU, se arrastra con dedo o mouse, y un toque abre */
 '<script>\n' +
 '(function(){\n' +
-'  var gal=document.querySelector(".v2-gal"); if(!gal) return;\n' +
+'  document.querySelectorAll(".v2-gal").forEach(function(gal){\n' +
 '  var track=gal.querySelector(".v2-gal-track"), set=gal.querySelector(".v2-gal-set"); if(!track||!set) return;\n' +
 '  var quieto=matchMedia("(prefers-reduced-motion: reduce)").matches;\n' +
 '  var x=0, vel=0, VEL=0.45, pausaHasta=0, encima=false, arr=null, movio=false, visible=true, w=0;\n' +
@@ -373,6 +373,7 @@ const miniScript = '\n<script>\n' +
 '  if("IntersectionObserver" in window){ new IntersectionObserver(function(es){ visible=es[0].isIntersecting; },{rootMargin:"200px 0px"}).observe(gal); }\n' +
 '  addEventListener("resize",medir,{passive:true}); addEventListener("load",medir); medir();\n' +
 '  requestAnimationFrame(paso);\n' +
+'  });\n' +
 '})();\n' +
 '</script>\n';
 
@@ -598,7 +599,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
    *  porque el original solo agarra la primera .v2-gal de la pagina.
    */
   {
-    const PIEZAS2 = [["g2-01-byredo","Anuncio editorial de perfume creado con el Método Prompt Ads"],["g2-02-muuto","Anuncio de diseño de una silla creado con el Método Prompt Ads"],["g2-03-burguer","Anuncio gastronómico creado con el Método Prompt Ads"],["g2-04-stanley","Anuncio comparativo de un termo creado con el Método Prompt Ads"],["g2-05-ordinary","Anuncio de skincare creado con el Método Prompt Ads"],["g2-06-byredo","Anuncio de perfume con dirección de arte, hecho con el método"],["g2-07-muuto","Anuncio minimalista de mobiliario, hecho con el método"],["g2-08-burguer","Anuncio de hamburguesa bajo el agua, hecho con el método"],["g2-09-stanley","Anuncio deportivo de un termo, hecho con el método"],["g2-10-ordinary","Anuncio editorial de sérum, hecho con el método"],["g2-11-byredo","Anuncio de lujo de perfume, hecho con el método"],["g2-12-muuto","Anuncio de una silla sobre el agua, hecho con el método"],["g2-13-burguer","Anuncio de hamburguesa con auto clásico, hecho con el método"],["g2-14-stanley","Anuncio de termo en cielo abierto, hecho con el método"],["g2-15-ordinary","Anuncio de textura de sérum, hecho con el método"],["g2-16-byredo","Anuncio de perfume en atardecer, hecho con el método"],["g2-17-muuto","Anuncio de silla con modelo, hecho con el método"],["g2-18-burguer","Anuncio creativo de hamburguesa, hecho con el método"],["g2-19-stanley","Anuncio urbano de termo, hecho con el método"],["g2-20-ordinary","Anuncio científico de skincare, hecho con el método"]];
+    const PIEZAS2 = [["g2-01-byredo","Anuncio editorial de perfume creado con el Método Prompt Ads"],["g2-02-muuto","Anuncio de diseño de una silla creado con el Método Prompt Ads"],["g2-03-burguer","Anuncio gastronómico creado con el Método Prompt Ads"],["g2-04-stanley","Anuncio comparativo de un termo creado con el Método Prompt Ads"],["g2-05-ordinary","Anuncio de skincare creado con el Método Prompt Ads"],["g2-06-byredo","Anuncio de perfume con dirección de arte, hecho con el método"],["g2-07-muuto","Anuncio minimalista de mobiliario, hecho con el método"],["g2-08-burguer","Anuncio de hamburguesa bajo el agua, hecho con el método"],["g2-09-stanley","Anuncio deportivo de un termo, hecho con el método"],["g2-10-ordinary","Anuncio editorial de sérum, hecho con el método"],["g2-11-byredo","Anuncio de lujo de perfume, hecho con el método"],["g2-12-muuto","Anuncio de una silla sobre el agua, hecho con el método"],["g2-13-burguer","Anuncio de hamburguesa con auto clásico, hecho con el método"],["g2-14-stanley","Anuncio de termo en cielo abierto, hecho con el método"],["g2-15-ordinary","Anuncio de textura de sérum, hecho con el método"],["g2-16-byredo","Anuncio de perfume en atardecer, hecho con el método"],["g2-17-muuto","Anuncio de silla con modelo, hecho con el método"],["g2-18-burguer","Anuncio creativo de hamburguesa, hecho con el método"],["g2-19-stanley","Anuncio urbano de termo, hecho con el método"],["g2-20-ordinary","Anuncio científico de skincare, hecho con el método"],["g2-21-byredo","Anuncio de perfume con cielo abierto, hecho con el método"],["g2-22-muuto","Anuncio de dos sillas en el campo, hecho con el método"],["g2-23-burguer","Anuncio de la anatomía de una hamburguesa, hecho con el método"],["g2-24-stanley","Anuncio de termo en movimiento, hecho con el método"],["g2-25-ordinary","Anuncio editorial de sérum puro, hecho con el método"],["g2-26-byredo","Anuncio floral de perfume, hecho con el método"],["g2-27-muuto","Anuncio de silla flotante, hecho con el método"],["g2-28-burguer","Anuncio de capas de hamburguesa, hecho con el método"],["g2-29-stanley","Anuncio deportivo de pausa e hidratación, hecho con el método"],["g2-30-ordinary","Anuncio de equilibrio de skincare, hecho con el método"],["g2-31-byredo","Anuncio de perfume en el desierto, hecho con el método"],["g2-32-muuto","Anuncio de dos formas de habitar, hecho con el método"],["g2-33-burguer","Anuncio de pausa con hamburguesa, hecho con el método"],["g2-34-stanley","Anuncio urbano de termo en uso, hecho con el método"],["g2-35-ordinary","Anuncio clínico de skincare, hecho con el método"]];
     const piezas2 = PIEZAS2.map(([f, alt]) =>
       '<figure class="v2-piece"><img src="assets/galeria2/' + f + '.webp" alt="' + alt + '" loading="lazy" decoding="async" width="600" height="750"></figure>').join('');
     const GAL2 =
@@ -612,7 +613,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
       '<div class="v2-gal-set" aria-hidden="true">' + piezas2 + '</div>' +
       '</div></div>\n' +
       '<div class="shell" style="text-align:center;margin-top:28px"><a href="#precio" style="display:inline-block;background:var(--ink,#171713);color:#F2EEE5;padding:17px 34px;border-radius:999px;font-weight:600;text-decoration:none">Quiero crear los míos</a></div>\n' +
-      '<style>#galeria2 .v2-gal-track{animation:g2marq 80s linear infinite !important}#galeria2:hover .v2-gal-track{animation-play-state:paused}@keyframes g2marq{to{transform:translateX(-50%)}}@media (prefers-reduced-motion:reduce){#galeria2 .v2-gal-track{animation:none !important}}</style>' +
+      
       '</section>\n\n';
     const iProof2 = salida.indexOf('<section data-esc="Opiniones" class="proof proof-2"');
     if (iProof2 === -1) avisos.push('marquesina 2: no encontre proof-2 para inyectar');
