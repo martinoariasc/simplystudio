@@ -583,8 +583,8 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
       '<section data-esc="Dos caminos" class="difference">\n' +
       '<div class="shell"><div class="section-intro reveal">' +
       '<span class="eyebrow muted">Los dos caminos</span>' +
-      '<div><h2>Puedes aprender esto a los golpes. O <em>saltarte los golpes.</em></h2>' +
-      '<p>Todo lo que hay dentro se puede descubrir por tu cuenta: son meses de pruebas, resultados que no salen y horas que nadie te devuelve. El Método Prompt Ads es ese recorrido ya hecho: <b>los errores ya cometidos por otros, las soluciones ya escritas</b>, empaquetado para que llegues al resultado sin pagar el peaje. Tú decides cuál de los dos precios prefieres pagar.</p>' +
+      '<div><h2>Hazlo solo. O <em>hazlo ya.</em></h2>' +
+      '<p>Aprender esto por tu cuenta se puede: cuesta meses de prueba y error. El Método Prompt Ads es eso mismo, ya resuelto: <b>cada error ya cometido, cada solución ya escrita, cada paso en orden</b>. Tú solo sigues los pasos, y en una tarde estás creando. Pagas una vez y te ahorras el camino entero.</p>' +
       '</div></div></div>\n</section>\n\n';
     const iOferta = salida.indexOf('<section data-esc="La oferta"');
     if (iOferta === -1) avisos.push('dos caminos: no encontre la oferta');
