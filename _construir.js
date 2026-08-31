@@ -519,6 +519,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     ['puedes arrancar y probar el sistema', 'puedes arrancar y probar el método'],
     ['El pack incluye un sistema guiado', 'El método incluye un archivo guiado'],
     ['puedes usar el sistema para producir anuncios', 'puedes usar el método para producir anuncios'],
+    ['Corregí y Continuá', 'Corrige y Continúa', true],
   ];
   const trozos = salida.split(new RegExp("(<script[^]*?<\/script>|<style[^]*?<\/style>)", "i"));
   for (const [a, b, todas] of VOZ) {
@@ -531,6 +532,75 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     if (!hubo) avisos.push('vocabulario: no encontre "' + a.slice(0, 46) + '"');
   }
   salida = trozos.join('');
+}
+
+/* ---------- 5e · el estilo lo decides tu + el reloj pasa a ser el bonus ---------- */
+/*  Las dos objeciones que frenan compradores calientes (comentario publico del
+ *  30/08: "puedo elegir yo el estilo?" y "hay paso a paso?") se responden EN EL
+ *  CUERPO de la pagina, con capturas reales del interior de la guia, y ademas
+ *  en la FAQ. Y desde el peldano 67 (ultimo precio) el reloj ya no anuncia una
+ *  suba: cuenta el fin del BONUS semanal. Para rotar el regalo cada lunes:
+ *  cambiar REGALO aca y cierra_iso en herramientas/escalera-de-precios.json,
+ *  despues reconstruir y correr cambiar-precio.js 67.
+ */
+{
+  const REGALO = 'Prompts de Estilos';
+
+  /* los textos vivos del reloj: de anunciar la suba a anunciar el bonus */
+  const RELOJ = [
+    ["lejos:   p => '<b>' + MAY(p) + ':</b> sube a <b>USD ' + SUBE_A + '</b> en'",
+     "lejos:   p => '<b>Bonus de la semana:</b> el pack <b>" + REGALO + "</b> de regalo con tu compra. Termina en'"],
+    ["cerca:   p => '<b>Últimos días</b> de ' + p + '. Sube a <b>USD ' + SUBE_A + '</b> en'",
+     "cerca:   p => '<b>Últimos días del bonus:</b> <b>" + REGALO + "</b> de regalo con tu compra. Termina en'"],
+    ["ultimo:  () => '<b>Último día con el precio más bajo que va a tener.</b> Mañana sube a <b>USD ' + SUBE_A + '</b>.'",
+     "ultimo:  () => '<b>Último día del bonus:</b> hoy tu compra incluye <b>" + REGALO + "</b> de regalo.'"],
+    ["fecha:   f => 'El <b>' + f + '</b> pasa a <b>USD ' + SUBE_A + '</b>'",
+     "fecha:   f => 'Esta semana tu compra incluye <b>" + REGALO + "</b> de regalo'"],
+    ["manana:  () => '<b>Mañana sube a USD ' + SUBE_A + '</b>'",
+     "manana:  () => '<b>Último día: " + REGALO + " de regalo</b>'"],
+    ["arribaLejos: p => MAY(p)", "arribaLejos: p => 'Bonus de la semana'"],
+    ["arribaCerca: 'Últimos días'", "arribaCerca: 'Bonus termina pronto'"],
+    ["arribaUltimo: 'Último día'", "arribaUltimo: 'Último día del bonus'"],
+    ["pie: 'Después sube a USD ' + SUBE_A", "pie: '" + REGALO + " de regalo'"],
+    ["pieManana: 'Mañana sube a USD ' + SUBE_A", "pieManana: 'Último día del bonus'"],
+  ];
+  for (const [a, b] of RELOJ) {
+    if (!salida.includes(a)) { avisos.push('reloj-bonus: no encontre ' + a.slice(0, 38)); continue; }
+    salida = salida.replace(a, b);   /* primera aparicion = bloque es; pt/en quedan como estan */
+  }
+
+  /* la seccion nueva, antes de las preguntas */
+  const CARD = 'background:rgba(255,255,255,.55);border:1px solid rgba(23,23,19,.08);border-radius:14px;padding:22px';
+  const IMG = 'width:100%;height:auto;border-radius:12px;box-shadow:0 10px 30px rgba(23,23,19,.14)';
+  const SECCION = '<section data-esc="Tú decides" class="difference">\n' +
+    '<div class="shell">\n' +
+    '<div class="section-intro reveal"><span class="eyebrow muted">La duda que más nos preguntan</span>' +
+    '<div><h2>El estilo lo eliges tú. La IA <em>obedece.</em></h2>' +
+    '<p>Nada sale "como la IA quiera". Tú guardas referencias del estilo que te gusta —de cualquier marca, de Pinterest, de un anuncio que viste pasar— y el método te enseña a trasladar ese estilo a tu marca: colores, luz y composición, con tu producto exactamente como es.</p></div></div>\n' +
+    '<div class="reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:34px">' +
+    '<div style="' + CARD + '"><b>Tú mandas</b><p style="margin:8px 0 0">Eliges 3–6 referencias del estilo que quieres lograr. Un archivo entero del método —Dirección Visual— está dedicado a convertir tu gusto en instrucciones que la IA respeta.</p></div>' +
+    '<div style="' + CARD + '"><b>Paso a paso, con capturas</b><p style="margin:8px 0 0">La guía te lleva de la mano por cada pantalla: qué arrastrar, qué escribir y qué tiene que aparecer, con capturas reales de ChatGPT en cada paso.</p></div>' +
+    '<div style="' + CARD + '"><b>Y si algo sale distinto</b><p style="margin:8px 0 0">El archivo de correcciones trae la línea exacta para cada caso: te cambió el producto, te dio un collage, se desvió del estilo. La copias, la pegas y sigues.</p></div></div>\n' +
+    '<div class="reveal" style="margin-top:38px"><p class="eyebrow muted" style="margin:0 0 14px">Así se ve por dentro — páginas reales de la guía</p>' +
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">' +
+    '<img src="assets/guia/interior-paso1.webp" alt="Página real de la guía: cómo arrancar poniendo los PDFs en el chat, con captura de ChatGPT" loading="lazy" decoding="async" width="648" height="864" style="' + IMG + '">' +
+    '<img src="assets/guia/interior-paso4.webp" alt="Página real de la guía: los 10 anuncios por separado, con capturas de los dos modos" loading="lazy" decoding="async" width="648" height="864" style="' + IMG + '">' +
+    '<img src="assets/guia/interior-resultados.webp" alt="Página real de la guía: una tanda de diez anuncios terminados" loading="lazy" decoding="async" width="648" height="864" style="' + IMG + '"></div>' +
+    '<p style="margin:16px 0 0;max-width:70ch">33 páginas así: cada paso con su captura, cada problema con su solución escrita. <b>Se aprende en una tarde y queda para siempre.</b></p></div>\n' +
+    '</div>\n</section>\n\n';
+  const iFaq = salida.indexOf('<section data-esc="Preguntas"');
+  if (iFaq === -1) avisos.push('no encontre la seccion de preguntas para inyectar la seccion nueva');
+  else salida = salida.slice(0, iFaq) + SECCION + salida.slice(iFaq);
+
+  /* dos preguntas nuevas en la FAQ, antes de la de diseno */
+  const FAQ1 = '<details><summary>¿Puedo elegir yo el estilo o lo decide la IA?</summary><p>Lo eliges tú, siempre. Guardas referencias del estilo que quieres —de cualquier marca o rubro— y el método te enseña a trasladarlo a tu producto sin que la IA lo cambie. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas. Y si un resultado se desvía, el archivo de correcciones trae la línea para enderezarlo.</p></details>';
+  const FAQ2 = '<details><summary>¿Es un curso en video?</summary><p>No: es una guía visual paso a paso, con capturas reales de cada pantalla — qué arrastrar, qué escribir y qué tiene que aparecer. Se termina en una tarde y después la consultas en segundos, sin buscar el minuto exacto de ningún video. Y si algo no te sale, nos escribes a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a> y te ayudamos directo.</p></details>';
+  /* el boton del banner: ya no hay suba de precio que asegurar */
+  salida = salida.split('Asegurar mi precio').join('Quiero el bonus');
+
+  const anclaFaq = '<details><summary>¿Necesito saber diseño?';
+  if (!salida.includes(anclaFaq)) avisos.push('no encontre la FAQ para las preguntas nuevas');
+  else salida = salida.replace(anclaFaq, FAQ1 + FAQ2 + anclaFaq);
 }
 
 fs.writeFileSync('_nueva.html', salida, 'utf8');
