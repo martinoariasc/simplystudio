@@ -573,6 +573,24 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     salida = salida.replace(a, b);   /* primera aparicion = bloque es; pt/en quedan como estan */
   }
 
+  /* ---------- los dos caminos: el cierre antes de la oferta ---------- */
+  /*  El argumento hazlo-solo-o-compra-el-atajo, corto y sin seccion pesada:
+   *  el que llega hasta aca ya quiere el resultado; esto le pone precio al
+   *  camino de aprenderlo a los golpes.
+   */
+  {
+    const CAMINOS =
+      '<section data-esc="Dos caminos" class="difference">\n' +
+      '<div class="shell"><div class="section-intro reveal">' +
+      '<span class="eyebrow muted">Los dos caminos</span>' +
+      '<div><h2>Puedes aprender esto a los golpes. O <em>saltarte los golpes.</em></h2>' +
+      '<p>Todo lo que hay dentro se puede descubrir por tu cuenta: son meses de pruebas, resultados que no salen y horas que nadie te devuelve. El Método Prompt Ads es ese recorrido ya hecho: <b>los errores ya cometidos por otros, las soluciones ya escritas</b>, empaquetado para que llegues al resultado sin pagar el peaje. Tú decides cuál de los dos precios prefieres pagar.</p>' +
+      '</div></div></div>\n</section>\n\n';
+    const iOferta = salida.indexOf('<section data-esc="La oferta"');
+    if (iOferta === -1) avisos.push('dos caminos: no encontre la oferta');
+    else salida = salida.slice(0, iOferta) + CAMINOS + salida.slice(iOferta);
+  }
+
   /* ---------- marquesina 2: "Hazlo", tras la garantia ---------- */
   /*  Genera deseo despues del cierre: 20 anuncios de 5 marcas que NO estan en
    *  la galeria del principio (perfume, sillas, comida, termos, skincare).
