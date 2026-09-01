@@ -568,7 +568,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
       '<div class="shell announcement-inner">' +
       '<span><b>El precio sube sin aviso.</b> Ya pasó de USD 27 a USD 67 este año. ' +
       'Asegúralo hoy, antes de la próxima subida.</span>' +
-      '<a href="#precio">Conseguirlo hoy</a>' +
+      '<a href="#precio">Consíguelo hoy</a>' +
       '</div></div>';
     const iBan = salida.indexOf('<div class="announcement">');
     const iHdr = salida.indexOf('<header>', iBan);
