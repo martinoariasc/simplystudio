@@ -601,7 +601,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
       const iCierra = salida.indexOf('</a></div>', iMov);
       salida = salida.slice(0, iMov) +
         '<div class="mobile-buy" id="mobileBuy"><div><span>El precio puede subir</span>' +
-        '<b>USD 67 · pago único</b></div>' +
+        '<b>Asegúralo hoy</b></div>' +
         '<a href="#precio" class="btn">Conseguir Prompt Ads</a></div>' +
         salida.slice(iCierra + 10);
     }
