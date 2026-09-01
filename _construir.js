@@ -549,31 +549,63 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
  *  despues reconstruir y correr cambiar-precio.js 67.
  */
 {
-  const REGALO = 'Prompts de Estilos';
+  /* ---------- SIN RELOJ: precio firme ---------- */
+  /*  Decision del 31/08/2026: se descarta la estrategia del bonus semanal.
+   *  El peldano 67 no anuncia ninguna suba ni regala nada: el precio es firme.
+   *  Se quitan el banner de arriba, el contador bajo el precio y los textos de
+   *  cuenta regresiva de la barra movil. Lo que sostiene la conversion pasa a
+   *  ser el ancla de valor (USD 500 tachado), el pago unico y la garantia.
+   *  Para volver al reloj: git checkout de este archivo y reconstruir.
+   */
+  {
+    /* ---------- BARRA DE URGENCIA ---------- */
+    /*  El banner original se cambia entero por uno sin cuenta regresiva.
+     *  Va SIN data-cuenta: ese atributo es el que engancha el contador y el
+     *  texto automatico del peldano. Sin el, es texto fijo y no hay reloj
+     *  que mantener ni fecha que se venza sola. */
+    const BARRA =
+      '<div class="announcement">' +
+      '<div class="shell announcement-inner">' +
+      '<span><b>El precio sube sin aviso.</b> Ya pasó de USD 27 a USD 67 este año. ' +
+      'Asegúralo hoy, antes de la próxima subida.</span>' +
+      '<a href="#precio">Conseguirlo hoy</a>' +
+      '</div></div>';
+    const iBan = salida.indexOf('<div class="announcement">');
+    const iHdr = salida.indexOf('<header>', iBan);
+    if (iBan === -1 || iHdr === -1) avisos.push('urgencia: no encontre el banner de arriba');
+    else salida = salida.slice(0, iBan) + BARRA + salida.slice(iHdr);
 
-  /* los textos vivos del reloj: de anunciar la suba a anunciar el bonus */
-  const RELOJ = [
-    ["lejos:   p => '<b>' + MAY(p) + ':</b> sube a <b>USD ' + SUBE_A + '</b> en'",
-     "lejos:   p => '<b>Bonus de la semana:</b> el pack <b>" + REGALO + "</b> de regalo con tu compra. Termina en'"],
-    ["cerca:   p => '<b>Últimos días</b> de ' + p + '. Sube a <b>USD ' + SUBE_A + '</b> en'",
-     "cerca:   p => '<b>Últimos días del bonus:</b> <b>" + REGALO + "</b> de regalo con tu compra. Termina en'"],
-    ["ultimo:  () => '<b>Último día con el precio más bajo que va a tener.</b> Mañana sube a <b>USD ' + SUBE_A + '</b>.'",
-     "ultimo:  () => '<b>Último día del bonus:</b> hoy tu compra incluye <b>" + REGALO + "</b> de regalo.'"],
-    ["fecha:   f => 'El <b>' + f + '</b> pasa a <b>USD ' + SUBE_A + '</b>'",
-     "fecha:   f => 'Esta semana tu compra incluye <b>" + REGALO + "</b> de regalo'"],
-    ["manana:  () => '<b>Mañana sube a USD ' + SUBE_A + '</b>'",
-     "manana:  () => '<b>Último día: " + REGALO + " de regalo</b>'"],
-    ["arribaLejos: p => MAY(p)", "arribaLejos: p => 'Bonus de la semana'"],
-    ["arribaCerca: 'Últimos días'", "arribaCerca: 'Bonus termina pronto'"],
-    ["arribaUltimo: 'Último día'", "arribaUltimo: 'Último día del bonus'"],
-    ["pie: 'Después sube a USD ' + SUBE_A", "pie: '" + REGALO + " de regalo'"],
-    ["pieManana: 'Mañana sube a USD ' + SUBE_A", "pieManana: 'Último día del bonus'"],
-  ];
-  for (const [a, b] of RELOJ) {
-    if (!salida.includes(a)) { avisos.push('reloj-bonus: no encontre ' + a.slice(0, 38)); continue; }
-    salida = salida.replace(a, b);   /* primera aparicion = bloque es; pt/en quedan como estan */
+    /* el contador de la tarjeta de precio */
+    const iCta = salida.indexOf('<div class="v2-cuenta" aria-label');
+    if (iCta === -1) avisos.push('sin reloj: no encontre el contador');
+    else {
+      const iCierra = salida.indexOf('</div></div>', iCta);
+      if (iCierra === -1) avisos.push('sin reloj: no encontre el cierre del contador');
+      else salida = salida.slice(0, iCta) + salida.slice(iCierra + 12);
+    }
+
+    /* la linea bajo el precio deja de anunciar una suba */
+    const iDes = salida.indexOf('<p class="price-after" data-cuenta="despues">');
+    if (iDes === -1) avisos.push('sin reloj: no encontre la linea de despues');
+    else {
+      const iCierra = salida.indexOf('</p>', iDes);
+      salida = salida.slice(0, iDes) +
+        '<p class="price-after">Pago único. Todo el método, tuyo para siempre.</p>' +
+        salida.slice(iCierra + 4);
+    }
+
+    /* la barra de compra del movil: texto fijo, sin cuenta regresiva */
+    const iMov = salida.indexOf('<div class="mobile-buy" id="mobileBuy">');
+    if (iMov === -1) avisos.push('sin reloj: no encontre la barra movil');
+    else {
+      const iCierra = salida.indexOf('</a></div>', iMov);
+      salida = salida.slice(0, iMov) +
+        '<div class="mobile-buy" id="mobileBuy"><div><span>El precio puede subir</span>' +
+        '<b>USD 67 · pago único</b></div>' +
+        '<a href="#precio" class="btn">Conseguir Prompt Ads</a></div>' +
+        salida.slice(iCierra + 10);
+    }
   }
-
   /* ---------- los dos caminos: el cierre antes de la oferta ---------- */
   /*  El argumento hazlo-solo-o-compra-el-atajo, corto y sin seccion pesada:
    *  el que llega hasta aca ya quiere el resultado; esto le pone precio al
@@ -599,8 +631,8 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
    *  porque el original solo agarra la primera .v2-gal de la pagina.
    */
   {
-    const PIEZAS2 = [["g2-01-byredo","Anuncio editorial de perfume creado con el Método Prompt Ads"],["g2-02-muuto","Anuncio de diseño de una silla creado con el Método Prompt Ads"],["g2-03-burguer","Anuncio gastronómico creado con el Método Prompt Ads"],["g2-04-stanley","Anuncio comparativo de un termo creado con el Método Prompt Ads"],["g2-05-ordinary","Anuncio de skincare creado con el Método Prompt Ads"],["g2-06-byredo","Anuncio de perfume con dirección de arte, hecho con el método"],["g2-07-muuto","Anuncio minimalista de mobiliario, hecho con el método"],["g2-08-burguer","Anuncio de hamburguesa bajo el agua, hecho con el método"],["g2-09-stanley","Anuncio deportivo de un termo, hecho con el método"],["g2-10-ordinary","Anuncio editorial de sérum, hecho con el método"],["g2-11-byredo","Anuncio de lujo de perfume, hecho con el método"],["g2-12-muuto","Anuncio de una silla sobre el agua, hecho con el método"],["g2-13-burguer","Anuncio de hamburguesa con auto clásico, hecho con el método"],["g2-14-stanley","Anuncio de termo en cielo abierto, hecho con el método"],["g2-15-ordinary","Anuncio de textura de sérum, hecho con el método"],["g2-16-byredo","Anuncio de perfume en atardecer, hecho con el método"],["g2-17-muuto","Anuncio de silla con modelo, hecho con el método"],["g2-18-burguer","Anuncio creativo de hamburguesa, hecho con el método"],["g2-19-stanley","Anuncio urbano de termo, hecho con el método"],["g2-20-ordinary","Anuncio científico de skincare, hecho con el método"],["g2-21-byredo","Anuncio de perfume con cielo abierto, hecho con el método"],["g2-22-muuto","Anuncio de dos sillas en el campo, hecho con el método"],["g2-23-burguer","Anuncio de la anatomía de una hamburguesa, hecho con el método"],["g2-24-stanley","Anuncio de termo en movimiento, hecho con el método"],["g2-25-ordinary","Anuncio editorial de sérum puro, hecho con el método"],["g2-26-byredo","Anuncio floral de perfume, hecho con el método"],["g2-27-muuto","Anuncio de silla flotante, hecho con el método"],["g2-28-burguer","Anuncio de capas de hamburguesa, hecho con el método"],["g2-29-stanley","Anuncio deportivo de pausa e hidratación, hecho con el método"],["g2-30-ordinary","Anuncio de equilibrio de skincare, hecho con el método"],["g2-31-byredo","Anuncio de perfume en el desierto, hecho con el método"],["g2-32-muuto","Anuncio de dos formas de habitar, hecho con el método"],["g2-33-burguer","Anuncio de pausa con hamburguesa, hecho con el método"],["g2-34-stanley","Anuncio urbano de termo en uso, hecho con el método"],["g2-35-ordinary","Anuncio clínico de skincare, hecho con el método"]];
-    const MARCA2 = { byredo: 'Byredo', muuto: 'Muuto', burguer: 'Simply Burguer', stanley: 'Stanley', ordinary: 'The Ordinary' };
+    const PIEZAS2 = [["g2-01-byredo","Anuncio editorial de perfume creado con el Método Prompt Ads"],["g2-02-muuto","Anuncio de diseño de una silla creado con el Método Prompt Ads"],["g2-03-burguer","Anuncio gastronómico creado con el Método Prompt Ads"],["g2-04-stanley","Anuncio comparativo de un termo creado con el Método Prompt Ads"],["g2-05-ordinary","Anuncio de skincare creado con el Método Prompt Ads"],["g2-06-byredo","Anuncio de perfume con dirección de arte, hecho con el método"],["g2-07-muuto","Anuncio minimalista de mobiliario, hecho con el método"],["g2-08-burguer","Anuncio de hamburguesa bajo el agua, hecho con el método"],["g2-09-stanley","Anuncio deportivo de un termo, hecho con el método"],["g2-10-ordinary","Anuncio editorial de sérum, hecho con el método"],["g2-11-byredo","Anuncio de lujo de perfume, hecho con el método"],["g2-12-muuto","Anuncio de una silla sobre el agua, hecho con el método"],["g2-13-burguer","Anuncio de hamburguesa con auto clásico, hecho con el método"],["g2-14-stanley","Anuncio de termo en cielo abierto, hecho con el método"],["g2-15-ordinary","Anuncio de textura de sérum, hecho con el método"],["g2-16-byredo","Anuncio de perfume en atardecer, hecho con el método"],["g2-17-muuto","Anuncio de silla con modelo, hecho con el método"],["g2-18-burguer","Anuncio creativo de hamburguesa, hecho con el método"],["g2-19-stanley","Anuncio urbano de termo, hecho con el método"],["g2-20-ordinary","Anuncio científico de skincare, hecho con el método"],["g2-22-muuto","Anuncio de dos sillas en el campo, hecho con el método"],["g2-23-burguer","Anuncio de la anatomía de una hamburguesa, hecho con el método"],["g2-24-stanley","Anuncio de termo en movimiento, hecho con el método"],["g2-25-ordinary","Anuncio editorial de sérum puro, hecho con el método"],["g2-26-byredo","Anuncio floral de perfume, hecho con el método"],["g2-27-muuto","Anuncio de silla flotante, hecho con el método"],["g2-28-burguer","Anuncio de capas de hamburguesa, hecho con el método"],["g2-29-stanley","Anuncio deportivo de pausa e hidratación, hecho con el método"],["g2-30-ordinary","Anuncio de equilibrio de skincare, hecho con el método"],["g2-31-byredo","Anuncio de perfume en el desierto, hecho con el método"],["g2-32-muuto","Anuncio de dos formas de habitar, hecho con el método"],["g2-33-burguer","Anuncio de pausa con hamburguesa, hecho con el método"],["g2-34-stanley","Anuncio urbano de termo en uso, hecho con el método"],["g2-35-ordinary","Anuncio clínico de skincare, hecho con el método"],["g2-36-redbull","Anuncio de verano de Red Bull, hecho con el método"]];
+    const MARCA2 = { byredo: 'Byredo', muuto: 'Muuto', burguer: 'Simply Burguer', stanley: 'Stanley', ordinary: 'The Ordinary', redbull: 'Red Bull' };
     const piezas2 = PIEZAS2.map(([f, alt], i) => {
       const marca = MARCA2[f.split('-')[2]] || 'simply studio';
       const num = String(i + 1).padStart(2, '0') + ' / ' + PIEZAS2.length;
@@ -627,15 +659,14 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   }
 
 
-  /* dos preguntas nuevas en la FAQ, antes de la de diseno */
+  /* una pregunta nueva en la FAQ, antes de la de diseno */
   const FAQ1 = '<details><summary>¿Puedo elegir yo el estilo o lo decide la IA?</summary><p>Tú mandas, siempre. Ves un estilo que te gusta —de cualquier marca, de cualquier rubro— y el método te enseña a ponerlo al servicio de TU producto, sin que la IA lo cambie ni invente nada. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas. Y si un resultado se desvía, el archivo de correcciones trae la línea para enderezarlo.</p></details>';
-  const FAQ2 = '<details><summary>¿Es un curso en video?</summary><p>No: es una guía visual paso a paso, con capturas reales de cada pantalla — qué arrastrar, qué escribir y qué tiene que aparecer. Se termina en una tarde y después la consultas en segundos, sin buscar el minuto exacto de ningún video. Y si algo no te sale, nos escribes a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a> y te ayudamos directo.</p></details>';
   /* el boton del banner: ya no hay suba de precio que asegurar */
-  salida = salida.split('Asegurar mi precio').join('Quiero el bonus');
+  /* el boton 'Asegurar mi precio' vivia en el banner, que ya no existe */
 
   const anclaFaq = '<details><summary>¿Necesito saber diseño?';
   if (!salida.includes(anclaFaq)) avisos.push('no encontre la FAQ para las preguntas nuevas');
-  else salida = salida.replace(anclaFaq, FAQ1 + FAQ2 + anclaFaq);
+  else salida = salida.replace(anclaFaq, FAQ1 + anclaFaq);
 }
 
 fs.writeFileSync('_nueva.html', salida, 'utf8');
