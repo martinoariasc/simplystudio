@@ -430,9 +430,21 @@ salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si 
     salida = salida.slice(0, c0) + card + salida.slice(c1);
   }
 }
+/* ---------- el checkout apunta al curso, no al ebook ---------- */
+/*  El ebook (8104687) no admite video. El curso (8476880) si, y ya esta
+ *  aprobado y vendiendo. El script de mas abajo le sigue agregando sck y
+ *  xcod a cualquier enlace de pay.hotmart.com, asi que la atribucion por
+ *  anuncio no se toca. Para volver atras: cambiar esta linea y reconstruir.
+ */
+{
+  const VIEJO = 'https://pay.hotmart.com/Y106693224R?checkoutMode=10';
+  const NUEVO = 'https://pay.hotmart.com/G107515293E?off=1tbcugw1&checkoutMode=10';
+  if (!salida.includes(VIEJO)) avisos.push('checkout: no encontre el enlace viejo');
+  else salida = salida.split(VIEJO).join(NUEVO);
+}
 salida = salida.replace('<h2>Uno se ignora. El otro se siente como <em>marca.</em></h2>', '<h2>Uno se ignora. El otro se siente <em>premium.</em></h2>');
 parrafo('No son prompts sueltos',
-  'No son prompts sueltos para que pruebes suerte. Es un método de seis archivos: empiezas por la guía, que te enseña a dirigir la IA, y las otras cinco son las que ella ejecuta. El motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora. Y el estilo lo eliges tú: el método te enseña a trasladar la estética que quieras a tu producto, sin que la IA la cambie. Y nada de documentos de puro texto: cada archivo está diseñado, con ejemplos visuales en cada paso, para que el método se entienda a la primera.');
+  'No son prompts sueltos para que pruebes suerte. Es un método de seis archivos y un video: empiezas por la guía, que te enseña a dirigir la IA, y las otras cinco son las que ella ejecuta. El motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora. Y el estilo lo eliges tú: el método te enseña a trasladar la estética que quieras a tu producto, sin que la IA la cambie. Y nada de documentos de puro texto: cada archivo está diseñado, con ejemplos visuales en cada paso. Y si prefieres verlo antes que leerlo, <b>el video muestra el método entero funcionando</b>, de principio a fin.');
 parrafo('Mientras algunos siguen publicando',
   'Sabemos cómo se siente publicar lo mismo de siempre y ver que no pasa nada. Mientras tanto, otros ya están sacando anuncios que parecen de marca grande con una foto y un chat. Lo que antes costaba una agencia, un equipo y semanas, <b>hoy lo haces tú solo, esta misma tarde</b>. Y el que empieza ahora le saca meses de ventaja al que espera.');
 parrafo('Entra con el sistema listo',
@@ -549,63 +561,35 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
  *  despues reconstruir y correr cambiar-precio.js 67.
  */
 {
-  /* ---------- SIN RELOJ: precio firme ---------- */
-  /*  Decision del 31/08/2026: se descarta la estrategia del bonus semanal.
-   *  El peldano 67 no anuncia ninguna suba ni regala nada: el precio es firme.
-   *  Se quitan el banner de arriba, el contador bajo el precio y los textos de
-   *  cuenta regresiva de la barra movil. Lo que sostiene la conversion pasa a
-   *  ser el ancla de valor (USD 500 tachado), el pago unico y la garantia.
-   *  Para volver al reloj: git checkout de este archivo y reconstruir.
-   */
-  {
-    /* ---------- BARRA DE URGENCIA ---------- */
-    /*  El banner original se cambia entero por uno sin cuenta regresiva.
-     *  Va SIN data-cuenta: ese atributo es el que engancha el contador y el
-     *  texto automatico del peldano. Sin el, es texto fijo y no hay reloj
-     *  que mantener ni fecha que se venza sola. */
-    const BARRA =
-      '<div class="announcement">' +
-      '<div class="shell announcement-inner">' +
-      '<span><b>El precio sube sin aviso.</b> Ya pasó de USD 27 a USD 67 este año. ' +
-      'Asegúralo hoy, antes de la próxima subida.</span>' +
-      '<a href="#precio">Consíguelo hoy</a>' +
-      '</div></div>';
-    const iBan = salida.indexOf('<div class="announcement">');
-    const iHdr = salida.indexOf('<header>', iBan);
-    if (iBan === -1 || iHdr === -1) avisos.push('urgencia: no encontre el banner de arriba');
-    else salida = salida.slice(0, iBan) + BARRA + salida.slice(iHdr);
+  const REGALO = 'Lo que la IA no te va a enseñar';
 
-    /* el contador de la tarjeta de precio */
-    const iCta = salida.indexOf('<div class="v2-cuenta" aria-label');
-    if (iCta === -1) avisos.push('sin reloj: no encontre el contador');
-    else {
-      const iCierra = salida.indexOf('</div></div>', iCta);
-      if (iCierra === -1) avisos.push('sin reloj: no encontre el cierre del contador');
-      else salida = salida.slice(0, iCta) + salida.slice(iCierra + 12);
-    }
-
-    /* la linea bajo el precio deja de anunciar una suba */
-    const iDes = salida.indexOf('<p class="price-after" data-cuenta="despues">');
-    if (iDes === -1) avisos.push('sin reloj: no encontre la linea de despues');
-    else {
-      const iCierra = salida.indexOf('</p>', iDes);
-      salida = salida.slice(0, iDes) +
-        '<p class="price-after">Pago único. Todo el método, tuyo para siempre.</p>' +
-        salida.slice(iCierra + 4);
-    }
-
-    /* la barra de compra del movil: texto fijo, sin cuenta regresiva */
-    const iMov = salida.indexOf('<div class="mobile-buy" id="mobileBuy">');
-    if (iMov === -1) avisos.push('sin reloj: no encontre la barra movil');
-    else {
-      const iCierra = salida.indexOf('</a></div>', iMov);
-      salida = salida.slice(0, iMov) +
-        '<div class="mobile-buy" id="mobileBuy"><div><span>El precio puede subir</span>' +
-        '<b>Asegúralo hoy</b></div>' +
-        '<a href="#precio" class="btn">Conseguir Prompt Ads</a></div>' +
-        salida.slice(iCierra + 10);
-    }
+  /* los textos vivos del reloj: de anunciar la suba a anunciar el bonus */
+  const RELOJ = [
+    ["lejos:   p => '<b>' + MAY(p) + ':</b> sube a <b>USD ' + SUBE_A + '</b> en'",
+     "lejos:   p => '<b>Bonus de la semana:</b> <b>" + REGALO + "</b> de regalo con tu compra. Termina en'"],
+    ["cerca:   p => '<b>Últimos días</b> de ' + p + '. Sube a <b>USD ' + SUBE_A + '</b> en'",
+     "cerca:   p => '<b>Últimos días del bonus:</b> <b>" + REGALO + "</b> de regalo con tu compra. Termina en'"],
+    ["ultimo:  () => '<b>Último día con el precio más bajo que va a tener.</b> Mañana sube a <b>USD ' + SUBE_A + '</b>.'",
+     "ultimo:  () => '<b>Último día del bonus:</b> hoy tu compra incluye <b>" + REGALO + "</b> de regalo.'"],
+    ["fecha:   f => 'El <b>' + f + '</b> pasa a <b>USD ' + SUBE_A + '</b>'",
+     "fecha:   f => 'Esta semana tu compra incluye <b>" + REGALO + "</b> de regalo'"],
+    ["manana:  () => '<b>Mañana sube a USD ' + SUBE_A + '</b>'",
+     "manana:  () => '<b>Último día: " + REGALO + " de regalo</b>'"],
+    ["arribaLejos: p => MAY(p)", "arribaLejos: p => 'Bonus de la semana'"],
+    ["arribaCerca: 'Últimos días'", "arribaCerca: 'Bonus termina pronto'"],
+    ["arribaUltimo: 'Último día'", "arribaUltimo: 'Último día del bonus'"],
+    ["pie: 'Después sube a USD ' + SUBE_A", "pie: '" + REGALO + " de regalo'"],
+    ["pieManana: 'Mañana sube a USD ' + SUBE_A", "pieManana: 'Último día del bonus'"],
+  ];
+  for (const [a, b] of RELOJ) {
+    if (!salida.includes(a)) { avisos.push('reloj-bonus: no encontre ' + a.slice(0, 38)); continue; }
+    salida = salida.replace(a, b);   /* primera aparicion = bloque es; pt/en quedan como estan */
   }
+
+  /* el boton del banner deja de hablar de precio y habla del regalo */
+  salida = salida.split("Asegurar mi precio").join("Quiero el bonus");
+  salida = salida.split("Cuenta regresiva hasta que suba el precio").join("Cuenta regresiva hasta que termina el bonus");
+
   /* ---------- los dos caminos: el cierre antes de la oferta ---------- */
   /*  El argumento hazlo-solo-o-compra-el-atajo, corto y sin seccion pesada:
    *  el que llega hasta aca ya quiere el resultado; esto le pone precio al
@@ -622,6 +606,104 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     const iOferta = salida.indexOf('<section data-esc="La oferta"');
     if (iOferta === -1) avisos.push('dos caminos: no encontre la oferta');
     else salida = salida.slice(0, iOferta) + CAMINOS + salida.slice(iOferta);
+  }
+
+
+
+  /* ---------- el video, dentro de "El metodo", antes del boton ---------- */
+  /*  Tres compradores lo pidieron por escrito. Va pegado al listado de los
+   *  seis archivos: primero se ve lo que incluye, despues el video, y recien
+   *  ahi el boton. Sin seccion aparte, para que se lea como una sola idea.
+   *  En celular la portada rompe el contenedor y va de borde a borde.
+   */
+  {
+    const ancla = 'Fuerza ángulos, escenas y copy nuevos';
+    const iA = salida.indexOf(ancla);
+    if (iA === -1) avisos.push('video: no encontre Variedad Total');
+    else {
+      const iCta = salida.indexOf('<div class="shell v2-cta reveal">', iA);
+      if (iCta === -1) avisos.push('video: no encontre el boton de El metodo');
+      else {
+        const BLOQUE =
+          '<style>' +
+          '.v2-vid{max-width:940px;margin:34px auto 0}' +
+          '.v2-vid h3{font-family:var(--serif,Georgia,serif);font-size:clamp(1.5rem,3.4vw,2.1rem);' +
+          'line-height:1.15;margin:0 0 10px;text-align:center}' +
+          '.v2-vid-txt{max-width:720px;margin:0 auto 22px;text-align:center;' +
+          'font-size:1.02rem;line-height:1.6;opacity:.82}' +
+          '.v2-vid-cover{display:block;width:100%;background:#0b0f0c;' +
+          'border-radius:16px;overflow:hidden;position:relative;aspect-ratio:16/9;line-height:0}' +
+          '.v2-vid-cover img{width:100%;height:100%;object-fit:cover;display:block}' +
+          '.v2-vid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);' +
+          'width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.94);' +
+          'box-shadow:0 10px 40px rgba(0,0,0,.28);display:grid;place-items:center}' +
+          '.v2-vid-play:before{content:"";border-left:22px solid #14170f;border-top:13px solid transparent;' +
+          'border-bottom:13px solid transparent;margin-left:6px}' +
+          '@media(max-width:760px){' +
+          '.v2-vid{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);width:100vw;max-width:none}' +
+          '.v2-vid h3,.v2-vid-txt{padding:0 22px}' +
+          '.v2-vid-cover{border-radius:0}' +
+          '.v2-vid-play{width:62px;height:62px}' +
+          '.v2-vid-play:before{border-left-width:16px;border-top-width:10px;border-bottom-width:10px}}' +
+          '</style>' +
+          '<div class="v2-vid reveal">' +
+          '<h3>Vídeo explicativo del método Prompt Ads</h3>' +
+          '<p class="v2-vid-txt">Una grabación completa donde se crea un anuncio de principio a fin, sin cortes. Los archivos te dan el método; el video te lo muestra funcionando.</p>' +
+          '<div class="v2-vid-cover" aria-hidden="true">' +
+          '<img src="assets/producto/video-portada.webp" width="1280" height="720" loading="lazy" decoding="async" ' +
+          'alt="A la izquierda, la foto de producto tal como sale del celular. A la derecha, el mismo producto convertido en anuncio.">' +
+          '<span class="v2-vid-play"></span></div>' +
+          '</div>';
+        const AVISO =
+          '<p class="v2-mas-video" style="max-width:760px;margin:34px auto 0;text-align:center;' +
+          'font-size:1.06rem;line-height:1.6">Y además de los seis archivos, ' +
+          '<b>el video completo del método</b>, donde se crea un anuncio ' +
+          'de principio a fin, sin cortes.</p>';
+        salida = salida.slice(0, iCta) + AVISO + BLOQUE + salida.slice(iCta);
+      }
+    }
+  }
+
+
+  /* ---------- el stack de valor: video en la guia + el bonus ---------- */
+  {
+    const A = '<li><span><b>La guía del método</b></span><b>USD 279</b></li>';
+    const B = '<li><span><b>La guía del método + vídeo explicativo</b></span><b>USD 279</b></li>';
+    if (salida.includes(A)) salida = salida.replace(A, B);
+    else avisos.push('stack: no encontre la linea de la guia');
+
+    const C = '<li><span>Actualizaciones de esta edición</span><b class="v2-si">Incluido</b></li>';
+    const D = C +
+      '<li><span><b>Lo que la IA no te va a enseñar</b><br>' +
+      '<small style="opacity:.7;font-size:.86em;line-height:1.45;display:block;margin-top:3px">' +
+      'Bonus de esta semana. Qué decir, a quién y a qué precio: lo que se aprende quemando miles de dólares en anuncios que no venden.' +
+      '</small></span><b class="v2-si">Incluido</b></li>';
+    if (salida.includes(C)) salida = salida.replace(C, D);
+    else avisos.push('stack: no encontre la linea de actualizaciones');
+  }
+
+  /* ---------- lo que cuesta esperar: el miedo a perder, al final ---------- */
+  /*  Va DESPUES de la galeria y de las opiniones, justo antes de las preguntas.
+   *  El que llego hasta aca ya vio 35 anuncios que podria estar haciendo y ya
+   *  leyo las opiniones: es el punto de maximo deseo y de maxima duda.
+   *  El angulo es distinto al de "No te quedes atras" de la oferta, que habla
+   *  de la ventaja de llegar primero. Este habla del costo de quedarse igual,
+   *  y se apoya en la garantia real de 7 dias, no en escasez inventada.
+   */
+  {
+    const ESPERAR =
+      '<section data-esc="Lo que cuesta esperar" class="difference">\n' +
+      '<div class="shell"><div class="section-intro reveal">' +
+      '<span class="eyebrow muted">Lo que cuesta esperar</span>' +
+      '<div><h2>Dentro de un mes vas a estar <em>exactamente donde estás hoy.</em></h2>' +
+      '<p>Piensa en el último mes. Cuántas publicaciones hiciste, cuántas horas te llevaron y cuántas ventas trajeron. <b>Ese número no cambia solo:</b> el mes que viene va a ser igual, y el siguiente también, hasta que cambies algo.</p>' +
+      '<p>Cada semana que sigue igual tiene un costo que no aparece en ninguna cuenta: las horas que se te van armando anuncios que no frenan a nadie, y lo que pagas por cada persona que ve tu anuncio y sigue de largo. No se siente como una pérdida porque nunca la ves junta. Pero está, y se acumula.</p>' +
+      '<p><b>Probarlo te cuesta una tarde, y tienes siete días para arrepentirte y recuperar tu dinero. No probarlo te cuesta otro mes igual al anterior.</b> De los dos caminos, solo uno tiene devolución.</p>' +
+      '<p><a href="#precio" class="btn">Quiero empezar hoy</a></p>' +
+      '</div></div></div>\n</section>\n\n';
+    const iFaq = salida.indexOf('<section data-esc="Preguntas"');
+    if (iFaq === -1) avisos.push('lo que cuesta esperar: no encontre las preguntas');
+    else salida = salida.slice(0, iFaq) + ESPERAR + salida.slice(iFaq);
   }
 
   /* ---------- marquesina 2: "Hazlo", tras la garantia ---------- */
@@ -667,6 +749,40 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   const anclaFaq = '<details><summary>¿Necesito saber diseño?';
   if (!salida.includes(anclaFaq)) avisos.push('no encontre la FAQ para las preguntas nuevas');
   else salida = salida.replace(anclaFaq, FAQ1 + anclaFaq);
+}
+
+/* ---------- el titular de "para quien es" ---------- */
+{
+  const V = 'más rápido y con calidad de marca grande, esto es para ti.';
+  const N = 'más rápido y con calidad como de las grandes marcas del mundo, esto es para ti.';
+  if (salida.includes(V)) salida = salida.split(V).join(N);
+  else avisos.push('para quien es: no encontre el titular');
+}
+
+/* ---------- el bonus en verde, y el video sin promesa de clic ---------- */
+/*  El regalo se lee mejor si tiene color propio: en el banner oscuro va un
+ *  verde claro, en la barra de celular el verde de marca sobre crema.
+ *  Y debajo de la portada del video, una linea que aclara donde esta el
+ *  video, para que el triangulo no prometa una reproduccion que no existe.
+ */
+{
+  const CSS = '<style>' +
+    '.announcement-inner [data-cuenta="banner"] b{color:var(--white,#fffdf8)}' +
+    '.announcement-inner [data-cuenta="banner"] b:first-child{color:#8CCBA3}' +
+    '.announcement .v2-cuenta-mini b{color:#FF7A6B}' +
+    '.mobile-buy .v2-cuenta-mini b{color:#B3261E}' +
+    '.mobile-buy [data-cuenta="movil-arriba"]{color:var(--verde-si,#1E5A3A)}' +
+    '.mobile-buy [data-cuenta="movil"]{color:var(--ink,#171713)}' +
+    '.v2-vid-cover{cursor:default}' +
+    '.v2-vid-pie{max-width:720px;margin:12px auto 0;text-align:center;' +
+    'font-size:.92rem;line-height:1.5;opacity:.62}' +
+    '@media(max-width:760px){.v2-vid-pie{padding:0 22px}}' +
+    '</style>';
+  const PIE = '<p class="v2-vid-pie">El video completo está dentro del producto, junto a los seis archivos.</p>';
+  const cierre = '<span class="v2-vid-play"></span></div>';
+  if (!salida.includes(cierre)) avisos.push('video: no encontre el cierre de la portada');
+  else salida = salida.replace(cierre, cierre + PIE);
+  salida = salida.replace('</head>', CSS + '</head>');
 }
 
 fs.writeFileSync('_nueva.html', salida, 'utf8');
