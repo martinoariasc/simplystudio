@@ -751,6 +751,108 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   else salida = salida.replace(anclaFaq, FAQ1 + anclaFaq);
 }
 
+/* ---------- un producto, todos sus anuncios ---------- */
+/*  Extiende el caso de la zapatilla a varios productos: el visitante elige
+ *  uno y se revelan los anuncios que salieron de esa misma foto. Va justo
+ *  despues del caso, porque ahi ya entendio la idea con un ejemplo y aca
+ *  la ve repetida en rubros distintos: perfume, silla, termo, serum, comida.
+ *  Sin librerias: unos botones, un grid y una entrada escalonada.
+ */
+{
+  const g2 = (n, marca) => 'assets/galeria2/g2-' + String(n).padStart(2, '0') + '-' + marca + '.webp';
+  const PRODUCTOS = [
+    { id: 'zapatilla', chip: 'Zapatilla', foto: 'assets/caso-nike/real.webp',
+      anuncios: [1, 2, 3, 4, 5].map(n => 'assets/caso-nike/n' + n + '.webp') },
+    { id: 'perfume', chip: 'Perfume', anuncios: [1, 6, 11, 16, 26, 31].map(n => g2(n, 'byredo')) },
+    { id: 'silla', chip: 'Silla', anuncios: [2, 7, 12, 17, 22, 27, 32].map(n => g2(n, 'muuto')) },
+    { id: 'termo', chip: 'Termo', anuncios: [4, 9, 14, 19, 24, 29, 34].map(n => g2(n, 'stanley')) },
+    { id: 'serum', chip: 'Sérum', anuncios: [5, 10, 15, 20, 25, 30, 35].map(n => g2(n, 'ordinary')) },
+    { id: 'comida', chip: 'Hamburguesa', anuncios: [3, 8, 13, 18, 23, 28, 33].map(n => g2(n, 'burguer')) },
+  ];
+
+  const chips = PRODUCTOS.map((p, i) =>
+    '<button class="v2-uno-chip' + (i === 0 ? ' on' : '') + '" type="button" data-uno="' + p.id +
+    '" aria-pressed="' + (i === 0) + '">' + p.chip + '</button>').join('');
+
+  const paneles = PRODUCTOS.map((p, i) => {
+    const foto = p.foto
+      ? '<figure class="v2-uno-foto"><button class="zoomable" type="button" data-full="' + p.foto +
+        '" aria-label="Ampliar la foto original del producto"><img src="' + p.foto +
+        '" loading="lazy" decoding="async" width="900" height="1200" alt="La foto original del producto, sacada con un celular"></button>' +
+        '<figcaption>La foto de partida</figcaption></figure>'
+      : '';
+    const piezas = p.anuncios.map((src, k) =>
+      '<figure class="v2-uno-pieza" style="--d:' + (k * 55) + 'ms">' +
+      '<button class="zoomable" type="button" data-full="' + src + '" aria-label="Ampliar anuncio">' +
+      '<img src="' + src + '" loading="lazy" decoding="async" width="600" height="750" ' +
+      'alt="Anuncio creado con el Método Prompt Ads a partir de una sola foto del producto"></button></figure>').join('');
+    return '<div class="v2-uno-panel' + (p.foto ? ' con-foto' : '') + '" data-panel="' + p.id + '"' +
+      (i === 0 ? '' : ' hidden') + '>' + foto + '<div class="v2-uno-grid">' + piezas + '</div>' +
+      '<p class="v2-uno-pie"><b>' + p.anuncios.length + ' anuncios</b> del mismo producto. ' +
+      'Ninguno se parece al anterior, y todos se ven de la misma marca.</p></div>';
+  }).join('');
+
+  const CSS = '<style>' +
+    '.v2-uno{margin:clamp(48px,7vw,86px) auto 0}' +
+    '.v2-uno-cab{text-align:center;max-width:720px;margin:0 auto clamp(18px,3vw,28px)}' +
+    '.v2-uno-cab h3{font-family:var(--serif,Georgia,serif);font-size:clamp(1.6rem,3.6vw,2.3rem);line-height:1.14;margin:8px 0 10px}' +
+    '.v2-uno-cab p{margin:0;opacity:.78;line-height:1.6}' +
+    '.v2-uno-chips{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:0 0 26px}' +
+    '.v2-uno-chip{appearance:none;cursor:pointer;border:1px solid rgba(23,23,19,.18);background:transparent;' +
+    'color:var(--ink);border-radius:999px;padding:9px 17px;font:inherit;font-size:.94rem;line-height:1;' +
+    'transition:background .18s,color .18s,border-color .18s}' +
+    '.v2-uno-chip:hover{border-color:rgba(23,23,19,.45)}' +
+    '.v2-uno-chip.on{background:var(--forest,#26362c);border-color:var(--forest,#26362c);color:var(--paper,#f2eee5)}' +
+    '.v2-uno-panel{display:grid;grid-template-columns:1fr;gap:clamp(16px,2.4vw,30px);align-items:start}' +
+    '.v2-uno-panel.con-foto{grid-template-columns:minmax(0,.6fr) minmax(0,2fr)}' +
+    '.v2-uno-panel[hidden]{display:none!important}' +
+    '.v2-uno-foto{margin:0;position:sticky;top:24px}' +
+    '.v2-uno-foto button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}' +
+    '.v2-uno-foto img{width:100%;height:auto;border-radius:14px;display:block}' +
+    '.v2-uno-foto figcaption{margin-top:9px;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;opacity:.6;text-align:center}' +
+    '.v2-uno-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}' +
+    '.v2-uno-pieza{margin:0;opacity:0;transform:translateY(14px);animation:unoEntra .5s cubic-bezier(.2,.7,.3,1) var(--d,0ms) forwards}' +
+    '.v2-uno-pieza button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}' +
+    '.v2-uno-pieza img{width:100%;height:auto;border-radius:12px;display:block}' +
+    '@keyframes unoEntra{to{opacity:1;transform:none}}' +
+    '.v2-uno-pie{grid-column:1/-1;margin:16px 0 0;text-align:center;font-size:.96rem;opacity:.72}' +
+    '@media(prefers-reduced-motion:reduce){.v2-uno-pieza{animation:none;opacity:1;transform:none}}' +
+    '@media(max-width:760px){.v2-uno-panel.con-foto{grid-template-columns:1fr}' +
+    '.v2-uno-foto{position:static;max-width:220px;margin:0 auto}' +
+    '.v2-uno-grid{grid-template-columns:repeat(2,1fr);gap:9px}}' +
+    '</style>';
+
+  const JS = '<' + 'script>(function(){' +
+    'var raiz=document.querySelector(".v2-uno");if(!raiz)return;' +
+    'raiz.addEventListener("click",function(e){' +
+    'var b=e.target.closest(".v2-uno-chip");if(!b)return;' +
+    'var id=b.getAttribute("data-uno");' +
+    'raiz.querySelectorAll(".v2-uno-chip").forEach(function(c){' +
+    'var on=(c===b);c.classList.toggle("on",on);c.setAttribute("aria-pressed",on);});' +
+    'raiz.querySelectorAll(".v2-uno-panel").forEach(function(p){' +
+    'p.hidden=(p.getAttribute("data-panel")!==id);});' +
+    'var vivo=raiz.querySelector(".v2-uno-panel:not([hidden])");if(!vivo)return;' +
+    'vivo.querySelectorAll(".v2-uno-pieza").forEach(function(f){' +
+    'f.style.animation="none";void f.offsetWidth;f.style.animation="";});' +
+    '});})();</' + 'script>';
+
+  const BLOQUE = CSS +
+    '<section class="shell v2-uno reveal" id="un-producto">' +
+    '<div class="v2-uno-cab">' +
+    '<span class="eyebrow">Un producto, todos sus anuncios</span>' +
+    '<h3>Elige un producto y mira todo lo que salió de una sola foto.</h3>' +
+    '<p>No son seis productos con seis fotos. Es un producto por vez, una foto por vez, ' +
+    'y todos los anuncios que salieron de ahí.</p>' +
+    '</div>' +
+    '<div class="v2-uno-chips" role="group" aria-label="Elegir producto">' + chips + '</div>' +
+    paneles +
+    '</section>' + JS;
+
+  const anclaUno = '<div class="v2-como reveal"><span class="eyebrow">Cómo se hace</span>';
+  if (!salida.includes(anclaUno)) avisos.push('un producto: no encontre el ancla de Como se hace');
+  else salida = salida.replace(anclaUno, BLOQUE + anclaUno);
+}
+
 /* ---------- el titular de "para quien es" ---------- */
 {
   const V = 'más rápido y con calidad de marca grande, esto es para ti.';
