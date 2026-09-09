@@ -788,8 +788,8 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
       'alt="Anuncio creado con el Método Prompt Ads a partir de una sola foto del producto"></button></figure>').join('');
     return '<div class="v2-uno-panel' + (p.foto ? ' con-foto' : '') + '" data-panel="' + p.id + '"' +
       (i === 0 ? '' : ' hidden') + '>' + foto + '<div class="v2-uno-grid">' + piezas + '</div>' +
-      '<p class="v2-uno-pie"><b>' + p.anuncios.length + ' anuncios</b> del mismo producto. ' +
-      'Ninguno se parece al anterior, y todos se ven de la misma marca.</p></div>';
+      '<p class="v2-uno-pie"><b>' + p.anuncios.length + ' anuncios</b> del mismo producto, hechos con la misma foto. ' +
+      'Cambia el ángulo, no la marca.</p></div>';
   }).join('');
 
   const CSS = '<style>' +
