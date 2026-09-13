@@ -760,9 +760,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
  */
 {
   const g2 = (n, marca) => 'assets/galeria2/g2-' + String(n).padStart(2, '0') + '-' + marca + '.webp';
-  const PRODUCTOS = [
-    { id: 'zapatilla', chip: 'Zapatilla', foto: 'assets/caso-nike/real.webp',
-      anuncios: [1, 2, 3, 4, 5].map(n => 'assets/caso-nike/n' + n + '.webp') },
+  const PRODUCTOS = [
     { id: 'perfume', chip: 'Perfume', anuncios: [1, 6, 11, 16, 26, 31].map(n => g2(n, 'byredo')) },
     { id: 'silla', chip: 'Silla', anuncios: [2, 7, 12, 17, 22, 27, 32].map(n => g2(n, 'muuto')) },
     { id: 'termo', chip: 'Termo', anuncios: [4, 9, 14, 19, 24, 29, 34].map(n => g2(n, 'stanley')) },
@@ -841,8 +839,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     '<div class="v2-uno-cab">' +
     '<span class="eyebrow">Un producto, todos sus anuncios</span>' +
     '<h3>Elige un producto y mira todo lo que salió de una sola foto.</h3>' +
-    '<p>No son seis productos con seis fotos. Es un producto por vez, una foto por vez, ' +
-    'y todos los anuncios que salieron de ahí.</p>' +
+    '<p>Lo mismo que con la zapatilla, en rubros distintos: cada tanda sale de un solo producto y de una sola foto.</p>' +
     '</div>' +
     '<div class="v2-uno-chips" role="group" aria-label="Elegir producto">' + chips + '</div>' +
     paneles +
