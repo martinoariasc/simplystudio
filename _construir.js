@@ -887,6 +887,29 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   salida = salida.replace('</head>', CSS + '</head>');
 }
 
+/* ---------- opiniones: un solo motor para el carrusel ---------- */
+/*  Las dos filas de opiniones tenian dos motores a la vez: la animacion CSS
+ *  v2marq, que movia la fila sola, y el script que responde al dedo. La
+ *  animacion pisa el transform del script, y como su keyframe solo define el
+ *  final, cuanto mas avanza el ciclo menos mueve el dedo: al principio desliza
+ *  y hacia el final queda duro. Se apaga la animacion (el script ya mueve la
+ *  fila solo) y el arrastre pasa a tomar el control recien cuando el gesto es
+ *  horizontal, igual que la galeria de anuncios.
+ *  De paso, el aviso "Desliza para ver mas historias" vuelve a estar centrado.
+ */
+{
+  const INI = "      // Frenar mientras se mira, para poder leer";
+  const FIN = "      // La rueda del ratón también lo mueve en horizontal";
+  const NUEVO = "      // Frenar mientras se mira, para poder leer (solo con mouse: en el celular\n      // el dedo ya lo frena al tocar, y pointerleave llega recién al soltar)\n      row.addEventListener('pointerenter', e=>{ if(e.pointerType === 'mouse'){ clearTimeout(volver); quieto = true; } });\n      row.addEventListener('pointerleave', e=>{ if(e.pointerType === 'mouse') quieto = false; });\n\n      // Arrastre. Solo toma el control cuando el gesto es claramente horizontal:\n      // si el dedo va hacia arriba o abajo, lo deja pasar y la página hace scroll\n      // normal. La velocidad al soltar se mide en el tiempo y no por evento, así\n      // la inercia se siente igual en cualquier celular.\n      let conDedo = false, gesto = null;\n      row.addEventListener('pointerdown', e=>{\n        if(e.pointerType === 'mouse' && e.button !== 0) return;\n        conDedo = e.pointerType === 'touch';\n        gesto = { x0: e.clientX, y0: e.clientY, ult: e.clientX, t: performance.now(), id: e.pointerId, horizontal: false };\n        inercia = 0;\n        quieto = true; clearTimeout(volver);\n        arrancar();\n      });\n      row.addEventListener('pointermove', e=>{\n        if(!gesto || e.pointerId !== gesto.id) return;\n        const dx = e.clientX - gesto.x0, dy = e.clientY - gesto.y0;\n        if(!gesto.horizontal){\n          if(Math.abs(dx) < 6 && Math.abs(dy) < 6) return;\n          if(Math.abs(dy) > Math.abs(dx)){ gesto = null; quieto = false; return; }\n          gesto.horizontal = true; arrastrando = true;\n          row.classList.add('agarrando');\n          track.style.willChange = 'transform';\n          try{ row.setPointerCapture(e.pointerId); }catch(err){}\n        }\n        const ahora = performance.now();\n        const d = e.clientX - gesto.ult;\n        x += d;\n        inercia = Math.max(-40, Math.min(40, d / Math.max(1, ahora - gesto.t) * 16));\n        gesto.ult = e.clientX; gesto.t = ahora;\n        pintar();\n      });\n      const soltar = ()=>{\n        const habia = arrastrando;\n        gesto = null;\n        if(!habia){ quieto = false; return; }\n        arrastrando = false;\n        row.classList.remove('agarrando');\n        track.style.willChange = 'auto';\n        clearTimeout(volver);\n        // Con el dedo retoma al rato, cuando la inercia ya se apagó.\n        volver = setTimeout(()=>{ quieto = false; }, conDedo ? 900 : 1200);\n      };\n      ['pointerup','pointercancel'].forEach(ev=>row.addEventListener(ev, soltar));\n      row.addEventListener('pointerleave', e=>{ if(e.pointerType !== 'touch') soltar(); });\n\n";
+  const CSS = "<style>.m-track,.proof-2 .m-track{animation:none!important}.proof .marquee-hint{display:flex;align-items:center;justify-content:center;gap:10px;text-align:center;width:100%;box-sizing:border-box;padding:0 20px}</style>";
+  const i0 = salida.indexOf(INI), i1 = salida.indexOf(FIN);
+  if (i0 === -1 || i1 === -1 || i1 < i0) avisos.push('opiniones: no encontre el bloque de arrastre');
+  else salida = salida.slice(0, i0) + NUEVO + salida.slice(i1);
+  if (salida.indexOf(INI) !== salida.lastIndexOf(INI)) avisos.push('opiniones: el bloque de arrastre aparece dos veces');
+  if (!salida.includes('</head>')) avisos.push('opiniones: no encontre </head>');
+  else salida = salida.replace('</head>', CSS + '</head>');
+}
+
 fs.writeFileSync('_nueva.html', salida, 'utf8');
 console.log('  _nueva.html: ' + Math.round(salida.length / 1024) + ' KB');
 

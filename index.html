@@ -1603,7 +1603,7 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
   })();
   </script>
   <!-- End eventos personalizados -->
-<style>.announcement-inner [data-cuenta="banner"] b{color:var(--white,#fffdf8)}.announcement-inner [data-cuenta="banner"] b:first-child{color:#8CCBA3}.announcement .v2-cuenta-mini b{color:#FF7A6B}.mobile-buy .v2-cuenta-mini b{color:#B3261E}.mobile-buy [data-cuenta="movil-arriba"]{color:var(--verde-si,#1E5A3A)}.mobile-buy [data-cuenta="movil"]{color:var(--ink,#171713)}.v2-vid-cover{cursor:default}.v2-vid-pie{max-width:720px;margin:12px auto 0;text-align:center;font-size:.92rem;line-height:1.5;opacity:.62}@media(max-width:760px){.v2-vid-pie{padding:0 22px}}</style></head>
+<style>.announcement-inner [data-cuenta="banner"] b{color:var(--white,#fffdf8)}.announcement-inner [data-cuenta="banner"] b:first-child{color:#8CCBA3}.announcement .v2-cuenta-mini b{color:#FF7A6B}.mobile-buy .v2-cuenta-mini b{color:#B3261E}.mobile-buy [data-cuenta="movil-arriba"]{color:var(--verde-si,#1E5A3A)}.mobile-buy [data-cuenta="movil"]{color:var(--ink,#171713)}.v2-vid-cover{cursor:default}.v2-vid-pie{max-width:720px;margin:12px auto 0;text-align:center;font-size:.92rem;line-height:1.5;opacity:.62}@media(max-width:760px){.v2-vid-pie{padding:0 22px}}</style><style>.m-track,.proof-2 .m-track{animation:none!important}.proof .marquee-hint{display:flex;align-items:center;justify-content:center;gap:10px;text-align:center;width:100%;box-sizing:border-box;padding:0 20px}</style></head>
 <body>
 
   <div class="announcement">
@@ -2195,41 +2195,54 @@ html.precio-visible .mobile-buy.show{transform:translateY(110%)}
       }catch(e){ aLaVista = true; arrancar(); }
       addEventListener('visibilitychange', ()=>{ if(!document.hidden) arrancar(); });
 
-      // Frenar mientras se mira, para poder leer
-      row.addEventListener('pointerenter', ()=>{ clearTimeout(volver); quieto = true; });
-      row.addEventListener('pointerleave', ()=>{ quieto = false; });
+      // Frenar mientras se mira, para poder leer (solo con mouse: en el celular
+      // el dedo ya lo frena al tocar, y pointerleave llega recién al soltar)
+      row.addEventListener('pointerenter', e=>{ if(e.pointerType === 'mouse'){ clearTimeout(volver); quieto = true; } });
+      row.addEventListener('pointerleave', e=>{ if(e.pointerType === 'mouse') quieto = false; });
 
-      // Arrastre. Sobre la misma posición que el movimiento automático, así que
-      // no hay dos sistemas peleando ni forma de salirse del contenido.
-      let conDedo = false;
+      // Arrastre. Solo toma el control cuando el gesto es claramente horizontal:
+      // si el dedo va hacia arriba o abajo, lo deja pasar y la página hace scroll
+      // normal. La velocidad al soltar se mide en el tiempo y no por evento, así
+      // la inercia se siente igual en cualquier celular.
+      let conDedo = false, gesto = null;
       row.addEventListener('pointerdown', e=>{
-        arrastrando = true; ultimo = e.clientX; inercia = 0;
+        if(e.pointerType === 'mouse' && e.button !== 0) return;
         conDedo = e.pointerType === 'touch';
+        gesto = { x0: e.clientX, y0: e.clientY, ult: e.clientX, t: performance.now(), id: e.pointerId, horizontal: false };
+        inercia = 0;
         quieto = true; clearTimeout(volver);
-        row.classList.add('agarrando');
-        // solo mientras dura el arrastre: fuera de eso cuesta memoria de video
-        track.style.willChange = 'transform';
-        try{ row.setPointerCapture(e.pointerId); }catch(err){}
         arrancar();
       });
       row.addEventListener('pointermove', e=>{
-        if(!arrastrando) return;
-        const d = e.clientX - ultimo; ultimo = e.clientX;
-        x += d; inercia = d;
+        if(!gesto || e.pointerId !== gesto.id) return;
+        const dx = e.clientX - gesto.x0, dy = e.clientY - gesto.y0;
+        if(!gesto.horizontal){
+          if(Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+          if(Math.abs(dy) > Math.abs(dx)){ gesto = null; quieto = false; return; }
+          gesto.horizontal = true; arrastrando = true;
+          row.classList.add('agarrando');
+          track.style.willChange = 'transform';
+          try{ row.setPointerCapture(e.pointerId); }catch(err){}
+        }
+        const ahora = performance.now();
+        const d = e.clientX - gesto.ult;
+        x += d;
+        inercia = Math.max(-40, Math.min(40, d / Math.max(1, ahora - gesto.t) * 16));
+        gesto.ult = e.clientX; gesto.t = ahora;
         pintar();
       });
       const soltar = ()=>{
-        if(!arrastrando) return;
+        const habia = arrastrando;
+        gesto = null;
+        if(!habia){ quieto = false; return; }
         arrastrando = false;
         row.classList.remove('agarrando');
         track.style.willChange = 'auto';
         clearTimeout(volver);
-        // Con el dedo retoma enseguida: se levanta el pulgar y se espera que siga.
-        // Con el raton conserva la pausa, que ahi sirve para leer.
-        volver = setTimeout(()=>{ quieto = false; }, conDedo ? 120 : 1200);
+        // Con el dedo retoma al rato, cuando la inercia ya se apagó.
+        volver = setTimeout(()=>{ quieto = false; }, conDedo ? 900 : 1200);
       };
       ['pointerup','pointercancel'].forEach(ev=>row.addEventListener(ev, soltar));
-      // Con el dedo el puntero esta capturado: salirse del borde no es soltar.
       row.addEventListener('pointerleave', e=>{ if(e.pointerType !== 'touch') soltar(); });
 
       // La rueda del ratón también lo mueve en horizontal
