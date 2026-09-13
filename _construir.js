@@ -444,7 +444,7 @@ salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si 
 }
 salida = salida.replace('<h2>Uno se ignora. El otro se siente como <em>marca.</em></h2>', '<h2>Uno se ignora. El otro se siente <em>premium.</em></h2>');
 parrafo('No son prompts sueltos',
-  'No son prompts sueltos para que pruebes suerte. Es un método de seis archivos y un video: empiezas por la guía, que te enseña a dirigir la IA, y las otras cinco son las que ella ejecuta. El motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora. Y el estilo lo eliges tú: el método te enseña a trasladar la estética que quieras a tu producto, sin que la IA la cambie. Y nada de documentos de puro texto: cada archivo está diseñado, con ejemplos visuales en cada paso. Y si prefieres verlo antes que leerlo, <b>el video muestra el método entero funcionando</b>, de principio a fin.');
+  'No son prompts sueltos para que pruebes suerte. Es un método con un video y seis archivos. <b>En el video lo ves funcionando</b>, de principio a fin; en los archivos tienes todo para repetirlo: empiezas por la guía, que te enseña a dirigir la IA, y las otras cinco son las que ella ejecuta. El motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora. Y el estilo lo eliges tú: el método te enseña a trasladar la estética que quieras a tu producto, sin que la IA la cambie. Y nada de documentos de puro texto: cada archivo está diseñado, con ejemplos visuales en cada paso.');
 parrafo('Mientras algunos siguen publicando',
   'Sabemos cómo se siente publicar lo mismo de siempre y ver que no pasa nada. Mientras tanto, otros ya están sacando anuncios que parecen de marca grande con una foto y un chat. Lo que antes costaba una agencia, un equipo y semanas, <b>hoy lo haces tú solo, esta misma tarde</b>. Y el que empieza ahora le saca meses de ventaja al que espera.');
 parrafo('Entra con el sistema listo',
@@ -610,19 +610,18 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
 
 
 
-  /* ---------- el video, dentro de "El metodo", antes del boton ---------- */
+  /* ---------- el video, primero en "El metodo", antes de los seis archivos ---------- */
   /*  Tres compradores lo pidieron por escrito. Va pegado al listado de los
    *  seis archivos: primero se ve lo que incluye, despues el video, y recien
    *  ahi el boton. Sin seccion aparte, para que se lea como una sola idea.
    *  En celular la portada rompe el contenedor y va de borde a borde.
    */
   {
-    const ancla = 'Fuerza ángulos, escenas y copy nuevos';
-    const iA = salida.indexOf(ancla);
-    if (iA === -1) avisos.push('video: no encontre Variedad Total');
+    const iA = salida.indexOf('<section data-esc="El método"');
+    if (iA === -1) avisos.push('video: no encontre la seccion El metodo');
     else {
-      const iCta = salida.indexOf('<div class="shell v2-cta reveal">', iA);
-      if (iCta === -1) avisos.push('video: no encontre el boton de El metodo');
+      const iCta = salida.indexOf('<div class="inside-grid">', iA);
+      if (iCta === -1) avisos.push('video: no encontre la grilla de archivos');
       else {
         const BLOQUE =
           '<style>' +
@@ -648,18 +647,16 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
           '</style>' +
           '<div class="v2-vid reveal">' +
           '<h3>Vídeo explicativo del método Prompt Ads</h3>' +
-          '<p class="v2-vid-txt">Una grabación completa donde se crea un anuncio de principio a fin, sin cortes. Los archivos te dan el método; el video te lo muestra funcionando.</p>' +
+          '<p class="v2-vid-txt">Una grabación completa donde se crea un anuncio de principio a fin, sin cortes. Primero lo ves funcionando; después, los archivos te dan todo para repetirlo.</p>' +
           '<div class="v2-vid-cover" aria-hidden="true">' +
           '<img src="assets/producto/video-portada.webp" width="1280" height="720" loading="lazy" decoding="async" ' +
           'alt="A la izquierda, la foto de producto tal como sale del celular. A la derecha, el mismo producto convertido en anuncio.">' +
           '<span class="v2-vid-play"></span></div>' +
           '</div>';
         const AVISO =
-          '<p class="v2-mas-video" style="max-width:760px;margin:34px auto 0;text-align:center;' +
-          'font-size:1.06rem;line-height:1.6">Y además de los seis archivos, ' +
-          '<b>el video completo del método</b>, donde se crea un anuncio ' +
-          'de principio a fin, sin cortes.</p>';
-        salida = salida.slice(0, iCta) + AVISO + BLOQUE + salida.slice(iCta);
+          '<p class="v2-mas-video" style="max-width:760px;margin:40px auto 26px;text-align:center;' +
+          'font-size:1.06rem;line-height:1.6">Y estos son <b>los seis archivos</b> que vas a usar cada vez.</p>';
+        salida = salida.slice(0, iCta) + BLOQUE + AVISO + salida.slice(iCta);
       }
     }
   }
@@ -668,7 +665,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   /* ---------- el stack de valor: video en la guia + el bonus ---------- */
   {
     const A = '<li><span><b>La guía del método</b></span><b>USD 279</b></li>';
-    const B = '<li><span><b>La guía del método + vídeo explicativo</b></span><b>USD 279</b></li>';
+    const B = '<li><span><b>Vídeo explicativo + la guía del método</b></span><b>USD 279</b></li>';
     if (salida.includes(A)) salida = salida.replace(A, B);
     else avisos.push('stack: no encontre la linea de la guia');
 
@@ -877,7 +874,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     'font-size:.92rem;line-height:1.5;opacity:.62}' +
     '@media(max-width:760px){.v2-vid-pie{padding:0 22px}}' +
     '</style>';
-  const PIE = '<p class="v2-vid-pie">El video completo está dentro del producto, junto a los seis archivos.</p>';
+  const PIE = '<p class="v2-vid-pie">El video completo está dentro del producto.</p>';
   const cierre = '<span class="v2-vid-play"></span></div>';
   if (!salida.includes(cierre)) avisos.push('video: no encontre el cierre de la portada');
   else salida = salida.replace(cierre, cierre + PIE);
@@ -904,6 +901,23 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   else salida = salida.slice(0, i0) + NUEVO + salida.slice(i1);
   if (salida.indexOf(INI) !== salida.lastIndexOf(INI)) avisos.push('opiniones: el bloque de arrastre aparece dos veces');
   if (!salida.includes('</head>')) avisos.push('opiniones: no encontre </head>');
+  else salida = salida.replace('</head>', CSS + '</head>');
+}
+
+/* ---------- revision en todos los tamanos de pantalla ---------- */
+/*  a. Bajo el pie quedaba una franja crema de 70 px en celular: era el hueco
+ *     reservado para la barra fija de compra, que se ve vacio cuando la barra
+ *     se oculta. Ahora ese espacio lo tiene el pie, que es oscuro. Y como la
+ *     barra aparece en todos los tamanos, en tablet ya no tapa el copyright.
+ *  b. En tablet y computadora con barra de desplazamiento visible, las
+ *     secciones a sangre (width:100vw) median 15 px de mas y la pagina se
+ *     corria de costado. overflow-x:clip lo corta sin romper el header fijo.
+ *  c. A 320 px el boton "Conseguir Prompt Ads" se salia 3 px de la pantalla.
+ *  d. "Quiero el bonus" media 15 px de alto: dificil de tocar con el dedo.
+ */
+{
+  const CSS = "<style>body{padding-bottom:0!important}footer{padding-bottom:calc(72px + env(safe-area-inset-bottom))}html{overflow-x:clip}@media(max-width:360px){.nav{gap:10px}.brand{font-size:17px}.nav-links .btn{padding:0 10px;font-size:10px;letter-spacing:.04em}}@media(max-width:720px){.announcement a{display:inline-block;padding:8px 6px;margin:-8px -6px}.btn.ghost{min-height:40px;display:inline-flex;align-items:center}}</style>";
+  if (!salida.includes('</head>')) avisos.push('dispositivos: no encontre </head>');
   else salida = salida.replace('</head>', CSS + '</head>');
 }
 
