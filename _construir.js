@@ -913,6 +913,14 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   else salida = salida.replace('</head>', CSS + '</head>');
 }
 
+/* ---------- titulo de la guia: es la guia de uso del metodo, no un archivo mas ---------- */
+{
+  const V = '<h3>La guía · empieza por aquí</h3>';
+  const N = '<h3>La guía de uso del método</h3>';
+  if (!salida.includes(V)) avisos.push('guia: no encontre el titulo');
+  else salida = salida.replace(V, N);
+}
+
 fs.writeFileSync('_nueva.html', salida, 'utf8');
 console.log('  _nueva.html: ' + Math.round(salida.length / 1024) + ' KB');
 
