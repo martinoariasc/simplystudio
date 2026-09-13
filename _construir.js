@@ -610,7 +610,11 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
 
 
 
-  /* ---------- el video, primero en "El metodo", antes de los seis archivos ---------- */
+  /* ---------- el video, primera tarjeta de "El metodo", antes de los seis archivos ---------- */
+  /*  Va como una tarjeta mas de la lista, igual que los archivos, para que se
+   *  lea como parte de lo que incluye y no como un agregado aparte. No suma
+   *  al contador grande de la esquina: los archivos siguen siendo 01 a 06.
+   */
   /*  Tres compradores lo pidieron por escrito. Va pegado al listado de los
    *  seis archivos: primero se ve lo que incluye, despues el video, y recien
    *  ahi el boton. Sin seccion aparte, para que se lea como una sola idea.
@@ -623,40 +627,32 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
       const iCta = salida.indexOf('<div class="inside-grid">', iA);
       if (iCta === -1) avisos.push('video: no encontre la grilla de archivos');
       else {
-        const BLOQUE =
+        const CSS_TARJETA =
           '<style>' +
-          '.v2-vid{max-width:940px;margin:34px auto 0}' +
-          '.v2-vid h3{font-family:var(--serif,Georgia,serif);font-size:clamp(1.5rem,3.4vw,2.1rem);' +
-          'line-height:1.15;margin:0 0 10px;text-align:center}' +
-          '.v2-vid-txt{max-width:720px;margin:0 auto 22px;text-align:center;' +
-          'font-size:1.02rem;line-height:1.6;opacity:.82}' +
-          '.v2-vid-cover{display:block;width:100%;background:#0b0f0c;' +
-          'border-radius:16px;overflow:hidden;position:relative;aspect-ratio:16/9;line-height:0}' +
-          '.v2-vid-cover img{width:100%;height:100%;object-fit:cover;display:block}' +
-          '.v2-vid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);' +
-          'width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.94);' +
-          'box-shadow:0 10px 40px rgba(0,0,0,.28);display:grid;place-items:center}' +
-          '.v2-vid-play:before{content:"";border-left:22px solid #14170f;border-top:13px solid transparent;' +
-          'border-bottom:13px solid transparent;margin-left:6px}' +
-          '@media(max-width:760px){' +
-          '.v2-vid{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);width:100vw;max-width:none}' +
-          '.v2-vid h3,.v2-vid-txt{padding:0 22px}' +
-          '.v2-vid-cover{border-radius:0}' +
-          '.v2-vid-play{width:62px;height:62px}' +
-          '.v2-vid-play:before{border-left-width:16px;border-top-width:10px;border-bottom-width:10px}}' +
-          '</style>' +
-          '<div class="v2-vid reveal">' +
-          '<h3>Vídeo explicativo del método Prompt Ads</h3>' +
-          '<p class="v2-vid-txt">Una grabación completa donde se crea un anuncio de principio a fin, sin cortes. Primero lo ves funcionando; después, los archivos te dan todo para repetirlo.</p>' +
-          '<div class="v2-vid-cover" aria-hidden="true">' +
+          '.v2-card-video::before{counter-increment:none;content:""}' +
+          '.v2-card-video .card-cover{aspect-ratio:16/9;background:#0b0f0c}' +
+          '.v2-card-video .card-cover img{object-fit:cover}' +
+          '.v2-card-video .v2-vid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;' +
+          'width:74px;height:74px;border-radius:50%;background:rgba(255,255,255,.94);' +
+          'box-shadow:0 10px 40px rgba(0,0,0,.28);display:grid;place-items:center;pointer-events:none}' +
+          '.v2-card-video .v2-vid-play:before{content:"";border-left:20px solid #14170f;' +
+          'border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:6px}' +
+          '@media(max-width:720px){.v2-card-video .v2-vid-play{width:58px;height:58px}' +
+          '.v2-card-video .v2-vid-play:before{border-left-width:15px;border-top-width:9px;border-bottom-width:9px}}' +
+          '</style>';
+        const TARJETA =
+          '\n          <article class="inside-card v2-card-video reveal">' +
+          '<div class="card-cover"><span class="card-tag">Video explicativo</span>' +
           '<img src="assets/producto/video-portada.webp" width="1280" height="720" loading="lazy" decoding="async" ' +
           'alt="A la izquierda, la foto de producto tal como sale del celular. A la derecha, el mismo producto convertido en anuncio.">' +
-          '<span class="v2-vid-play"></span></div>' +
-          '</div>';
-        const AVISO =
-          '<p class="v2-mas-video" style="max-width:760px;margin:40px auto 26px;text-align:center;' +
-          'font-size:1.06rem;line-height:1.6">Y estos son <b>los seis archivos</b> que vas a usar cada vez.</p>';
-        salida = salida.slice(0, iCta) + BLOQUE + AVISO + salida.slice(iCta);
+          '<span class="v2-vid-play" aria-hidden="true"></span></div>' +
+          '<div class="card-body"><h3>El video del método</h3>' +
+          '<p>Una grabación completa donde se crea un anuncio de principio a fin, sin cortes. ' +
+          'Primero lo ves funcionando; después, los seis archivos te dan todo para repetirlo cada vez que quieras.</p></div>' +
+          '</article>';
+        const iIn = iCta + '<div class="inside-grid">'.length;
+        salida = salida.slice(0, iIn) + TARJETA + salida.slice(iIn);
+        salida = salida.replace('</head>', CSS_TARJETA + '</head>');
       }
     }
   }
@@ -874,10 +870,6 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     'font-size:.92rem;line-height:1.5;opacity:.62}' +
     '@media(max-width:760px){.v2-vid-pie{padding:0 22px}}' +
     '</style>';
-  const PIE = '<p class="v2-vid-pie">El video completo está dentro del producto.</p>';
-  const cierre = '<span class="v2-vid-play"></span></div>';
-  if (!salida.includes(cierre)) avisos.push('video: no encontre el cierre de la portada');
-  else salida = salida.replace(cierre, cierre + PIE);
   salida = salida.replace('</head>', CSS + '</head>');
 }
 
