@@ -568,19 +568,19 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   /* los textos vivos del reloj: de anunciar la suba a anunciar el bonus */
   const RELOJ = [
     ["lejos:   p => '<b>' + MAY(p) + ':</b> sube a <b>USD ' + SUBE_A + '</b> en'",
-     "lejos:   p => '<b>Edición Septiembre:</b> incluye <b>" + REGALO + "</b>, que se retira al cerrar la edición. Cierra en'"],
+     "lejos:   p => '<b>Edición Septiembre</b> Incluye un material exclusivo que no vuelve. Cierra en'"],
     ["cerca:   p => '<b>Últimos días</b> de ' + p + '. Sube a <b>USD ' + SUBE_A + '</b> en'",
-     "cerca:   p => '<b>Últimos días de la Edición Septiembre:</b> <b>" + REGALO + "</b> se retira al cerrar. Cierra en'"],
+     "cerca:   p => '<b>Edición Septiembre</b> Últimos días con el material exclusivo. Cierra en'"],
     ["ultimo:  () => '<b>Último día con el precio más bajo que va a tener.</b> Mañana sube a <b>USD ' + SUBE_A + '</b>.'",
-     "ultimo:  () => '<b>Último día de la Edición Septiembre:</b> hoy es el último día con <b>" + REGALO + "</b> incluido.'"],
+     "ultimo:  () => '<b>Edición Septiembre</b> Último día con el material exclusivo.'"],
     ["fecha:   f => 'El <b>' + f + '</b> pasa a <b>USD ' + SUBE_A + '</b>'",
-     "fecha:   f => 'La Edición Septiembre incluye <b>" + REGALO + "</b>'"],
+     "fecha:   f => 'Edición Septiembre: incluye <b>" + REGALO + "</b>, exclusivo de esta edición'"],
     ["manana:  () => '<b>Mañana sube a USD ' + SUBE_A + '</b>'",
      "manana:  () => '<b>Último día de la Edición Septiembre</b>'"],
     ["arribaLejos: p => MAY(p)", "arribaLejos: p => 'Edición Septiembre'"],
-    ["arribaCerca: 'Últimos días'", "arribaCerca: 'La edición cierra pronto'"],
+    ["arribaCerca: 'Últimos días'", "arribaCerca: 'Últimos días de la edición'"],
     ["arribaUltimo: 'Último día'", "arribaUltimo: 'Último día de la edición'"],
-    ["pie: 'Después sube a USD ' + SUBE_A", "pie: '" + REGALO + ", incluido'"],
+    ["pie: 'Después sube a USD ' + SUBE_A", "pie: 'Material exclusivo incluido'"],
     ["pieManana: 'Mañana sube a USD ' + SUBE_A", "pieManana: 'Último día de la edición'"],
   ];
   for (const [a, b] of RELOJ) {
@@ -589,7 +589,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   }
 
   /* el boton del banner deja de hablar de precio y habla del regalo */
-  salida = salida.split("Asegurar mi precio").join("Quiero esta edición");
+  salida = salida.split("Asegurar mi precio").join("Ver la edición");
   salida = salida.split("Cuenta regresiva hasta que suba el precio").join("Cuenta regresiva hasta que cierra la edición");
 
   /* ---------- los dos caminos: el cierre antes de la oferta ---------- */
@@ -826,6 +826,14 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   const N = '<h3>La guía de uso del método</h3>';
   if (!salida.includes(V)) avisos.push('guia: no encontre el titulo');
   else salida = salida.replace(V, N);
+}
+
+/* ---------- edicion: barra con registro de lujo ---------- */
+/*  Negro, marfil y dorado en vez del rojo de oferta. "Edicion Septiembre" como
+ *  rotulo en versalitas doradas y una sola frase corta al lado. */
+{
+  const CSS = "<style>.announcement{background:#0e0e0b;border-bottom:1px solid rgba(201,179,126,.28)}.announcement-inner{color:#CFC8B6;letter-spacing:.03em}.announcement-inner [data-cuenta=\"banner\"] b{color:#EDE5CF;font-weight:500}.announcement-inner [data-cuenta=\"banner\"] b:first-child{color:#C9B37E;text-transform:uppercase;letter-spacing:.2em;font-size:.9em;margin-right:10px}.announcement .v2-cuenta-mini{background:transparent;border:1px solid rgba(201,179,126,.38)}.announcement .v2-cuenta-mini b{color:#EDE5CF}.announcement .v2-cuenta-mini i{color:#8F8671}.announcement a{color:#C9B37E;text-decoration:none;border-bottom:1px solid rgba(201,179,126,.55);text-transform:uppercase;letter-spacing:.16em;font-size:.88em;padding-bottom:1px}.announcement a:hover{color:#EDE5CF;border-bottom-color:#EDE5CF}.mobile-buy [data-cuenta=\"movil-arriba\"]{color:#7A6440;letter-spacing:.18em;text-transform:uppercase}.mobile-buy [data-cuenta=\"movil\"]{color:var(--ink,#171713)}.mobile-buy .v2-cuenta-mini b{color:#7A6440}</style>";
+  salida = salida.replace('</head>', CSS + '</head>');
 }
 
 fs.writeFileSync('_nueva.html', salida, 'utf8');
