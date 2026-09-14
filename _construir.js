@@ -556,7 +556,9 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
  *  30/08: "puedo elegir yo el estilo?" y "hay paso a paso?") se responden EN EL
  *  CUERPO de la pagina, con capturas reales del interior de la guia, y ademas
  *  en la FAQ. Y desde el peldano 67 (ultimo precio) el reloj ya no anuncia una
- *  suba: cuenta el fin del BONUS semanal. Para rotar el regalo cada lunes:
+ *  suba: cuenta el cierre de la EDICION del mes (antes, el bonus semanal).
+ *  Cada edicion trae un material exclusivo que se retira al cerrar.
+ *  Para pasar a la edicion siguiente:
  *  cambiar REGALO aca y cierra_iso en herramientas/escalera-de-precios.json,
  *  despues reconstruir y correr cambiar-precio.js 67.
  */
@@ -566,20 +568,20 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   /* los textos vivos del reloj: de anunciar la suba a anunciar el bonus */
   const RELOJ = [
     ["lejos:   p => '<b>' + MAY(p) + ':</b> sube a <b>USD ' + SUBE_A + '</b> en'",
-     "lejos:   p => '<b>Bonus de la semana:</b> <b>" + REGALO + "</b> de regalo con tu compra. Termina en'"],
+     "lejos:   p => '<b>Edición Septiembre:</b> incluye <b>" + REGALO + "</b>, que se retira al cerrar la edición. Cierra en'"],
     ["cerca:   p => '<b>Últimos días</b> de ' + p + '. Sube a <b>USD ' + SUBE_A + '</b> en'",
-     "cerca:   p => '<b>Últimos días del bonus:</b> <b>" + REGALO + "</b> de regalo con tu compra. Termina en'"],
+     "cerca:   p => '<b>Últimos días de la Edición Septiembre:</b> <b>" + REGALO + "</b> se retira al cerrar. Cierra en'"],
     ["ultimo:  () => '<b>Último día con el precio más bajo que va a tener.</b> Mañana sube a <b>USD ' + SUBE_A + '</b>.'",
-     "ultimo:  () => '<b>Último día del bonus:</b> hoy tu compra incluye <b>" + REGALO + "</b> de regalo.'"],
+     "ultimo:  () => '<b>Último día de la Edición Septiembre:</b> hoy es el último día con <b>" + REGALO + "</b> incluido.'"],
     ["fecha:   f => 'El <b>' + f + '</b> pasa a <b>USD ' + SUBE_A + '</b>'",
-     "fecha:   f => 'Esta semana tu compra incluye <b>" + REGALO + "</b> de regalo'"],
+     "fecha:   f => 'La Edición Septiembre incluye <b>" + REGALO + "</b>'"],
     ["manana:  () => '<b>Mañana sube a USD ' + SUBE_A + '</b>'",
-     "manana:  () => '<b>Último día: " + REGALO + " de regalo</b>'"],
-    ["arribaLejos: p => MAY(p)", "arribaLejos: p => 'Bonus de la semana'"],
-    ["arribaCerca: 'Últimos días'", "arribaCerca: 'Bonus termina pronto'"],
-    ["arribaUltimo: 'Último día'", "arribaUltimo: 'Último día del bonus'"],
-    ["pie: 'Después sube a USD ' + SUBE_A", "pie: '" + REGALO + " de regalo'"],
-    ["pieManana: 'Mañana sube a USD ' + SUBE_A", "pieManana: 'Último día del bonus'"],
+     "manana:  () => '<b>Último día de la Edición Septiembre</b>'"],
+    ["arribaLejos: p => MAY(p)", "arribaLejos: p => 'Edición Septiembre'"],
+    ["arribaCerca: 'Últimos días'", "arribaCerca: 'La edición cierra pronto'"],
+    ["arribaUltimo: 'Último día'", "arribaUltimo: 'Último día de la edición'"],
+    ["pie: 'Después sube a USD ' + SUBE_A", "pie: '" + REGALO + ", incluido'"],
+    ["pieManana: 'Mañana sube a USD ' + SUBE_A", "pieManana: 'Último día de la edición'"],
   ];
   for (const [a, b] of RELOJ) {
     if (!salida.includes(a)) { avisos.push('reloj-bonus: no encontre ' + a.slice(0, 38)); continue; }
@@ -587,8 +589,8 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   }
 
   /* el boton del banner deja de hablar de precio y habla del regalo */
-  salida = salida.split("Asegurar mi precio").join("Quiero el bonus");
-  salida = salida.split("Cuenta regresiva hasta que suba el precio").join("Cuenta regresiva hasta que termina el bonus");
+  salida = salida.split("Asegurar mi precio").join("Quiero esta edición");
+  salida = salida.split("Cuenta regresiva hasta que suba el precio").join("Cuenta regresiva hasta que cierra la edición");
 
   /* ---------- los dos caminos: el cierre antes de la oferta ---------- */
   /*  El argumento hazlo-solo-o-compra-el-atajo, corto y sin seccion pesada:
@@ -673,7 +675,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     const D = C +
       '<li><span><b>Lo que la IA no te va a enseñar</b><br>' +
       '<small style="opacity:.7;font-size:.86em;line-height:1.45;display:block;margin-top:3px">' +
-      'Bonus de esta semana. Qué decir, a quién y a qué precio: lo que se aprende quemando miles de dólares en anuncios que no venden.' +
+      'Exclusivo de la Edición Septiembre. Qué decir, a quién y a qué precio: lo que se aprende quemando miles de dólares en anuncios que no venden.' +
       '</small></span><b class="v2-si">Incluido</b></li>';
     if (salida.includes(C)) salida = salida.replace(C, D);
     else avisos.push('stack: no encontre la linea de actualizaciones');
