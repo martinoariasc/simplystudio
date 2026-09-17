@@ -9,15 +9,17 @@ const todos = JSON.parse(fs.readFileSync('_colabs.json', 'utf8')).filter(x => !x
 
 const NOMBRE = { 'aesop': 'Aesop', 'airpods': 'Apple', 'coca cola': 'Coca-Cola', 'dyson airwrap': 'Dyson', 'fenty beauty': 'Fenty Beauty',
   'Glossier': 'Glossier', 'leica': 'Leica', 'Nespresso': 'Nespresso', 'New Balance': 'New Balance', 'nike': 'Nike', 'oatly': 'Oatly',
-  'Red Bull': 'Red Bull', 'rhode': 'Rhode', 'Rimowa Maleta': 'Rimowa', 'rolex': 'Rolex', 'zara home': 'Zara Home', 'Byredo perfume': 'Byredo' };
+  'Red Bull': 'Red Bull', 'rhode': 'Rhode', 'Rimowa Maleta': 'Rimowa', 'rolex': 'Rolex', 'zara home': 'Zara Home', 'Byredo perfume': 'Byredo', 'Bose': 'Bose', 'COS bolso': 'COS' };
 const SLUG = { 'aesop': 'aesop', 'airpods': 'apple', 'coca cola': 'coca', 'dyson airwrap': 'dyson', 'fenty beauty': 'fenty', 'Glossier': 'glossier',
   'leica': 'leica', 'Nespresso': 'nespresso', 'New Balance': 'newbalance', 'nike': 'nike', 'oatly': 'oatly', 'Red Bull': 'redbull',
-  'rhode': 'rhode', 'Rimowa Maleta': 'rimowa', 'rolex': 'rolex', 'zara home': 'zarahome', 'Byredo perfume': 'byredo' };
+  'rhode': 'rhode', 'Rimowa Maleta': 'rimowa', 'rolex': 'rolex', 'zara home': 'zarahome', 'Byredo perfume': 'byredo',
+  'Bose': 'bose', 'COS bolso': 'cos' };
 
 /* las elegidas a mano van primero, en este orden */
 const MANO = [['Red Bull', '3.png'], ['New Balance', '19.png'], ['Rimowa Maleta', '5.png'], ['nike', '4.png'], ['aesop', '3.png'],
   ['coca cola', '5.png'], ['Glossier', '3.png'], ['zara home', '2.png'], ['leica', '2.png'], ['fenty beauty', '3.png'], ['zara home', '3.png'], ['airpods', '2.png'],
-  ['Red Bull', '2.png'], ['coca cola', '2.png'], ['New Balance', '10.png'], ['Red Bull', '4.png'], ['rolex', '7.png'], ['zara home', '7.png'], ['rolex', '5.png'], ['oatly', '9.png'], ['oatly', '24.png'], ['dyson airwrap', '6.png'], ['Rimowa Maleta', '7.png'], ['Rimowa Maleta', '12.png'], ['Rimowa Maleta', '13.png'], ['Byredo perfume', '14.png'], ['Byredo perfume', '12.png']];
+  ['Red Bull', '2.png'], ['coca cola', '2.png'], ['New Balance', '10.png'], ['Red Bull', '4.png'], ['rolex', '7.png'], ['zara home', '7.png'], ['rolex', '5.png'], ['oatly', '9.png'], ['oatly', '24.png'], ['dyson airwrap', '6.png'], ['Rimowa Maleta', '7.png'], ['Rimowa Maleta', '12.png'], ['Rimowa Maleta', '13.png'], ['Byredo perfume', '14.png'], ['Byredo perfume', '12.png'],
+  ['COS bolso', '4.png'], ['Bose', '9.png'], ['COS bolso', '11.png'], ['Bose', '5.png'], ['COS bolso', '2.png'], ['Bose', '7.png'], ['COS bolso', '3.png'], ['Bose', '4.png']];
 
 const usado = new Set();
 const lista = [];
@@ -28,9 +30,9 @@ MANO.forEach(([m, f]) => { const x = todos.find(z => z.marca === m && path.basen
 const porMarca = {};
 todos.forEach(x => { (porMarca[x.marca] = porMarca[x.marca] || []).push(x); });
 Object.values(porMarca).forEach(arr => arr.sort((a, b) => parseInt(path.basename(a.archivo)) - parseInt(path.basename(b.archivo))));
-const OBJETIVO = 50, POR_MARCA = 3;
-const TOPE = { oatly: 2, rolex: 2, 'New Balance': 2, 'zara home': 4, 'Rimowa Maleta': 5, 'Byredo perfume': 2 };   /* Oatly: solo las dos elegidas a mano; Rolex: macro y seda */
-const EXCLUIR = new Set(['Rimowa Maleta/2.png', 'Rimowa Maleta/3.png']);   /* voseo en la pieza */
+const OBJETIVO = 58, POR_MARCA = 3;
+const TOPE = { oatly: 2, rolex: 2, 'New Balance': 2, 'zara home': 4, 'Rimowa Maleta': 5, 'Byredo perfume': 2, 'Bose': 4, 'COS bolso': 4 };   /* Oatly: solo las dos elegidas a mano; Rolex: macro y seda */
+const EXCLUIR = new Set(['Rimowa Maleta/2.png', 'Rimowa Maleta/3.png', 'Bose/10.png', 'COS bolso/12.png']);   /* voseo en la pieza */
 const cuenta = {};
 lista.forEach(x => { cuenta[x.marca] = (cuenta[x.marca] || 0) + 1; });
 let agrego = true;

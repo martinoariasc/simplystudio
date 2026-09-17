@@ -589,7 +589,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   }
 
   /* el boton del banner deja de hablar de precio y habla del regalo */
-  salida = salida.split("Asegurar mi precio").join("Ver la edición");
+  salida = salida.split("Asegurar mi precio").join("Reclamar la edición");
   salida = salida.split("Cuenta regresiva hasta que suba el precio").join("Cuenta regresiva hasta que cierra la edición");
 
   /* ---------- los dos caminos: el cierre antes de la oferta ---------- */
