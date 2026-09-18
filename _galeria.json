@@ -1,5 +1,81 @@
 [
  {
+  "archivo": "bose-9",
+  "marca": "Bose"
+ },
+ {
+  "archivo": "bose-4",
+  "marca": "Bose"
+ },
+ {
+  "archivo": "bose-5",
+  "marca": "Bose"
+ },
+ {
+  "archivo": "bose-7",
+  "marca": "Bose"
+ },
+ {
+  "archivo": "cos-6",
+  "marca": "COS"
+ },
+ {
+  "archivo": "cos-11",
+  "marca": "COS"
+ },
+ {
+  "archivo": "cos-2",
+  "marca": "COS"
+ },
+ {
+  "archivo": "cos-3",
+  "marca": "COS"
+ },
+ {
+  "archivo": "cos-4",
+  "marca": "COS"
+ },
+ {
+  "archivo": "peine-9",
+  "marca": "Belleza"
+ },
+ {
+  "archivo": "peine-2",
+  "marca": "Belleza"
+ },
+ {
+  "archivo": "rolex-11",
+  "marca": "Rolex"
+ },
+ {
+  "archivo": "rolex-5",
+  "marca": "Rolex"
+ },
+ {
+  "archivo": "rolex-7",
+  "marca": "Rolex"
+ },
+ {
+  "archivo": "rolex-10",
+  "marca": "Rolex"
+ },
+ {
+  "archivo": "burguer-5",
+  "marca": "Simply Burguer"
+ },
+ {
+  "archivo": "burguer-7",
+  "marca": "Simply Burguer"
+ },
+ {
+  "archivo": "burguer-2",
+  "marca": "Simply Burguer"
+ },
+ {
+  "archivo": "forno-6",
+  "marca": "Simply Forno"
+ },
+ {
   "archivo": "redbull-3",
   "marca": "Red Bull"
  },
@@ -64,16 +140,8 @@
   "marca": "Red Bull"
  },
  {
-  "archivo": "rolex-7",
-  "marca": "Rolex"
- },
- {
   "archivo": "zarahome-7",
   "marca": "Zara Home"
- },
- {
-  "archivo": "rolex-5",
-  "marca": "Rolex"
  },
  {
   "archivo": "oatly-9",
@@ -106,38 +174,6 @@
  {
   "archivo": "byredo-12",
   "marca": "Byredo"
- },
- {
-  "archivo": "cos-4",
-  "marca": "COS"
- },
- {
-  "archivo": "bose-9",
-  "marca": "Bose"
- },
- {
-  "archivo": "cos-11",
-  "marca": "COS"
- },
- {
-  "archivo": "bose-5",
-  "marca": "Bose"
- },
- {
-  "archivo": "cos-2",
-  "marca": "COS"
- },
- {
-  "archivo": "bose-7",
-  "marca": "Bose"
- },
- {
-  "archivo": "cos-3",
-  "marca": "COS"
- },
- {
-  "archivo": "bose-4",
-  "marca": "Bose"
  },
  {
   "archivo": "aesop-2",
@@ -194,41 +230,5 @@
  {
   "archivo": "apple-4",
   "marca": "Apple"
- },
- {
-  "archivo": "dyson-3",
-  "marca": "Dyson"
- },
- {
-  "archivo": "fenty-4",
-  "marca": "Fenty Beauty"
- },
- {
-  "archivo": "glossier-4",
-  "marca": "Glossier"
- },
- {
-  "archivo": "leica-4",
-  "marca": "Leica"
- },
- {
-  "archivo": "nespresso-3",
-  "marca": "Nespresso"
- },
- {
-  "archivo": "nike-3",
-  "marca": "Nike"
- },
- {
-  "archivo": "rhode-3",
-  "marca": "Rhode"
- },
- {
-  "archivo": "nespresso-4",
-  "marca": "Nespresso"
- },
- {
-  "archivo": "rhode-4",
-  "marca": "Rhode"
  }
 ]

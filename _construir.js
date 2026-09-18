@@ -89,11 +89,11 @@ function rearmarHero(sec) {
 
   const sub = 'Sabemos lo que es perder una tarde entera creando unos pocos anuncios y que al final, después de mucho esfuerzo, no traigan los resultados esperados o ningún resultado. Por eso existe Prompt Ads: <b>el método que hace que tu marca se vea como las que facturan millones</b>. Subes una foto de lo que vendes y en minutos tienes una tanda de anuncios premium, de los que una agencia te cobraría <b>+USD 1.000</b>. Sin sesión de fotos, sin saber diseño y de la manera más fácil y rápida posible.';
   /* titular pedido para la nueva: arranca con la accion y el numero */
-  h1.texto = '<h1>Aprende a crear <em>+50 anuncios premium</em> en minutos y <em>aumenta tus ventas.</em></h1>';
+  h1.texto = '<h2 class="v2-hero-h">Aprende a crear <em>+50 anuncios premium</em> en minutos y <em>aumenta tus ventas.</em></h2>';
   if (pill) pill.texto = pill.texto.replace(/Prompts \+ gu[ií]as \+ sistema de correcci[oó]n/, 'El método para crear +50 anuncios premium en minutos');
 
   /* orden que manda: titulo, animacion, texto chico, boton */
-  return '<section class="hero v2-hero" data-esc="Inicio">\n<div class="shell">\n' +
+  return '<section class="hero v2-hero v2-metodo" data-esc="El método">\n<div class="shell">\n' +
     '<div class="v2-hero-grid">\n' +
     (pill ? '<div class="v2-sube d1">' + pill.texto + '</div>\n' : '') +
     '<div class="v2-sube d2">' + h1.texto + '</div>\n' +
@@ -138,7 +138,7 @@ function figuras(clon) {
     '<figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/colabs/' + f + '.jpg"' +
     (clon ? ' tabindex="-1"' : '') + ' aria-label="Ampliar anuncio de ' + marca + '">' +
     '<img src="assets/colabs/' + f + '.jpg" srcset="assets/colabs/' + f + '-m.webp 600w, assets/colabs/' + f + '.webp 900w" sizes="(max-width:720px) 72vw, 440px" loading="lazy" decoding="async" width="1100" height="1375" alt="Anuncio de ' + marca + ' hecho con Prompt Ads">' +
-    '</button><figcaption><b>' + marca + '</b><span>' + String(i + 1).padStart(2, '0') + ' / ' + String(PIEZAS.length).padStart(2, '0') + '</span></figcaption></figure>'
+    '</button></figure>'
   ).join('\n');
 }
 function rearmarShowcase(sec) {
@@ -156,6 +156,30 @@ function rearmarShowcase(sec) {
     '</div></div>' +
     '<div class="v2-gal-nota"><span>Rubros distintos · el mismo sistema · cada anuncio listo para publicar</span><span class="v2-gal-desliza"><svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>desliza<svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span></div>' +
     '\n</div>\n</section>';
+}
+
+/* en el inicio las primeras piezas se ven sin scrollear: no esperan al lazy */
+function primerasSinEspera(html) {
+  let n = 0;
+  return html.replace(/loading="lazy"/g, m => { n++; return n === 1 ? 'loading="eager" fetchpriority="high"' : n <= 5 ? 'loading="eager"' : m; });
+}
+
+/* INICIO: la galeria es lo primero que se ve. El anuncio es la prueba. */
+function heroGaleria() {
+  return '<section class="showcase v2-hero-gal" id="resultado" data-esc="Inicio">\n<div class="shell">\n' +
+    '<div class="showcase-head v2-hero-gal-head">' +
+    '<span class="eyebrow muted v2-sube d1">Método Prompt Ads para ChatGPT</span>' +
+    '<h1 class="v2-sube d2">Imagina poder crear <em class="v2-nw">publicidad así.</em></h1>' +
+    '</div>\n' +
+    '<div class="v2-gal v2-sube d3"><div class="v2-gal-track">' +
+    '<div class="v2-gal-set">\n' + primerasSinEspera(figuras(false)) + '\n</div>' +
+    '<div class="v2-gal-set" aria-hidden="true">\n' + figuras(true) + '\n</div>' +
+    '</div></div>' +
+    '<div class="v2-gal-nota v2-sube d3"><span>Rubros distintos · el mismo método · cada anuncio listo para publicar</span><span class="v2-gal-desliza"><svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>desliza<svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span></div>' +
+    '<div class="v2-hero-gal-pie v2-sube d4">' +
+    '<p class="v2-hero-gal-tit">Todos estos anuncios salieron con el <em>Método Prompt Ads.</em></p>' +
+    '<p class="v2-hero-gal-txt">Seis archivos y un <b>video explicativo</b> que te enseñan, paso a paso, a crear publicidad así con ChatGPT a partir de una foto común de tu producto. Sin agencia, sin sesión de fotos y en minutos. <b>Es exactamente lo que puedes hacer hoy con lo que tú vendes.</b></p>' +
+    '</div>\n</div>\n' + cierreCTA() + '</section>';
 }
 
 /* escenas que cierran con boton: titulo, visual, texto, boton */
@@ -276,8 +300,8 @@ const nuevas = [];
 secciones.forEach(sec => {
   const esc = nombreEscena(sec);
   /* la marquesina de marcas va justo debajo del boton del hero */
-  if (/^<section class="hero/.test(sec.trim())) { nuevas.push(rearmarHero(sec)); nuevas.push(MARCAS); return; }
-  if (/class="showcase/.test(sec.slice(0, 90))) { nuevas.push(conCierre(rearmarShowcase(sec))); return; }
+  if (/^<section class="hero/.test(sec.trim())) { nuevas.push(heroGaleria()); nuevas.push(rearmarHero(sec)); nuevas.push(MARCAS); return; }
+  if (/class="showcase/.test(sec.slice(0, 90))) return;   /* su galeria ahora abre la landing */
   if (/class="pain/.test(sec.slice(0, 90))) sec = plegarLeccion(sec);
   if (/class="case/.test(sec.slice(0, 90))) sec = origen(sec);
   if (/class="audience/.test(sec.slice(0, 90))) sec = nichos(sec);
@@ -719,7 +743,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
       const num = String(i + 1).padStart(2, '0') + ' / ' + PIEZAS2.length;
       return '<figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/' + f + '.webp" aria-label="Ampliar anuncio de ' + marca + '">' +
         '<img src="assets/galeria2/' + f + '.webp" alt="' + alt + '" loading="lazy" decoding="async" width="600" height="750">' +
-        '</button><figcaption><b>' + marca + '</b><span>' + num + '</span></figcaption></figure>';
+        '</button></figure>';
     }).join('');
     const GAL2 =
       '<section data-esc="Hazlo" class="difference v2-hazlo">\n' +
@@ -833,6 +857,12 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
  *  rotulo en versalitas doradas y una sola frase corta al lado. */
 {
   const CSS = "<style>.announcement{background:#0e0e0b;border-bottom:1px solid rgba(201,179,126,.28)}.announcement-inner{color:#CFC8B6;letter-spacing:.03em}.announcement-inner [data-cuenta=\"banner\"] b{color:#EDE5CF;font-weight:500}.announcement-inner [data-cuenta=\"banner\"] b:first-child{color:#C9B37E;text-transform:uppercase;letter-spacing:.2em;font-size:.9em;margin-right:10px}.announcement .v2-cuenta-mini{background:transparent;border:1px solid rgba(201,179,126,.38)}.announcement .v2-cuenta-mini b{color:#EDE5CF}.announcement .v2-cuenta-mini i{color:#8F8671}.announcement a{color:#C9B37E;text-decoration:none;border-bottom:1px solid rgba(201,179,126,.55);text-transform:uppercase;letter-spacing:.16em;font-size:.88em;padding-bottom:1px}.announcement a:hover{color:#EDE5CF;border-bottom-color:#EDE5CF}.mobile-buy [data-cuenta=\"movil-arriba\"]{color:#7A6440;letter-spacing:.18em;text-transform:uppercase}.mobile-buy [data-cuenta=\"movil\"]{color:var(--ink,#171713)}.mobile-buy .v2-cuenta-mini b{color:#7A6440}</style>";
+  salida = salida.replace('</head>', CSS + '</head>');
+}
+
+/* ---------- inicio con la galeria: estilos ---------- */
+{
+  const CSS = "<style>.v2-hero-gal{padding-top:clamp(20px,3vw,44px)}.v2-hero-gal-head{text-align:center;margin:0 auto clamp(22px,3vw,40px)}.v2-hero-gal-head h1{font:400 clamp(44px,6vw,88px)/.95 \"Instrument Serif\",Georgia,serif;letter-spacing:-.045em;margin:10px auto 0;max-width:18ch}.v2-nw{white-space:nowrap}.v2-hero-gal-head h1 em{font-style:italic}.v2-hero-gal-pie{text-align:center;max-width:720px;margin:clamp(26px,3.4vw,44px) auto 0}.v2-hero-gal-tit{font:400 clamp(28px,3.4vw,44px)/1.05 \"Instrument Serif\",Georgia,serif;letter-spacing:-.03em;margin:0 0 12px}.v2-hero-gal-txt{margin:0 auto;max-width:600px;color:var(--muted,#6b6a63);font-size:clamp(15px,1.25vw,17px);line-height:1.55}.v2-hero-gal-txt b{color:var(--ink,#171713);font-weight:600}.v2-hero .v2-hero-h{font:400 clamp(40px,5.6vw,84px)/1.02 \"Instrument Serif\",Georgia,serif;letter-spacing:-.035em;margin:18px 0 18px;max-width:min(19ch,100%)}.v2-hero .v2-hero-h em{font-style:italic}@media(max-width:720px){.v2-hero-gal-head h1{font-size:clamp(32px,9.6vw,46px);max-width:none}.v2-hero .v2-hero-h{font-size:clamp(34px,9.5vw,48px);max-width:none}.v2-hero-gal-pie{padding:0 4px}}.v2-hero-gal-head .eyebrow{justify-content:center}.v2-hero-gal .v2-gal-nota{flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}.btn:not(.light):not(.ghost){background:linear-gradient(120deg,var(--forest-deep) 0%,var(--ink) 48%,#0b0b09 72%,var(--forest) 100%);background-size:220% 100%;background-position:0% 50%;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 0 0 1px rgba(201,185,138,.24),0 12px 30px -14px rgba(21,34,24,.6);transition:background-position .7s var(--ease),box-shadow .45s var(--ease),transform .45s var(--ease)}.btn:not(.light):not(.ghost):hover{background-position:100% 50%;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(201,185,138,.5),0 18px 38px -14px rgba(21,34,24,.7)}@media(prefers-reduced-motion:reduce){.btn:not(.light):not(.ghost){transition:none}}</style>";
   salida = salida.replace('</head>', CSS + '</head>');
 }
 
