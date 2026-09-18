@@ -592,7 +592,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   /* los textos vivos del reloj: de anunciar la suba a anunciar el bonus */
   const RELOJ = [
     ["lejos:   p => '<b>' + MAY(p) + ':</b> sube a <b>USD ' + SUBE_A + '</b> en'",
-     "lejos:   p => '<b>Edición Septiembre</b> Incluye un material exclusivo que no vuelve. Cierra en'"],
+     "lejos:   p => '<b>Edición Septiembre</b> Incluye actualizaciones y un material exclusivo que no vuelve, para ayudarte a vender más. Cierra en'"],
     ["cerca:   p => '<b>Últimos días</b> de ' + p + '. Sube a <b>USD ' + SUBE_A + '</b> en'",
      "cerca:   p => '<b>Edición Septiembre</b> Últimos días con el material exclusivo. Cierra en'"],
     ["ultimo:  () => '<b>Último día con el precio más bajo que va a tener.</b> Mañana sube a <b>USD ' + SUBE_A + '</b>.'",
@@ -864,6 +864,27 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
 {
   const CSS = "<style>.v2-hero-gal{padding-top:clamp(20px,3vw,44px)}.v2-hero-gal-head{text-align:center;margin:0 auto clamp(22px,3vw,40px)}.v2-hero-gal-head h1{font:400 clamp(44px,6vw,88px)/.95 \"Instrument Serif\",Georgia,serif;letter-spacing:-.045em;margin:10px auto 0;max-width:18ch}.v2-nw{white-space:nowrap}.v2-hero-gal-head h1 em{font-style:italic}.v2-hero-gal-pie{text-align:center;max-width:720px;margin:clamp(26px,3.4vw,44px) auto 0}.v2-hero-gal-tit{font:400 clamp(28px,3.4vw,44px)/1.05 \"Instrument Serif\",Georgia,serif;letter-spacing:-.03em;margin:0 0 12px}.v2-hero-gal-txt{margin:0 auto;max-width:600px;color:var(--muted,#6b6a63);font-size:clamp(15px,1.25vw,17px);line-height:1.55}.v2-hero-gal-txt b{color:var(--ink,#171713);font-weight:600}.v2-hero .v2-hero-h{font:400 clamp(40px,5.6vw,84px)/1.02 \"Instrument Serif\",Georgia,serif;letter-spacing:-.035em;margin:18px 0 18px;max-width:min(19ch,100%)}.v2-hero .v2-hero-h em{font-style:italic}@media(max-width:720px){.v2-hero-gal-head h1{font-size:clamp(32px,9.6vw,46px);max-width:none}.v2-hero .v2-hero-h{font-size:clamp(34px,9.5vw,48px);max-width:none}.v2-hero-gal-pie{padding:0 4px}}.v2-hero-gal-head .eyebrow{justify-content:center}.v2-hero-gal .v2-gal-nota{flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}.btn:not(.light):not(.ghost){background:linear-gradient(120deg,var(--forest-deep) 0%,var(--ink) 48%,#0b0b09 72%,var(--forest) 100%);background-size:220% 100%;background-position:0% 50%;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 0 0 1px rgba(201,185,138,.24),0 12px 30px -14px rgba(21,34,24,.6);transition:background-position .7s var(--ease),box-shadow .45s var(--ease),transform .45s var(--ease)}.btn:not(.light):not(.ghost):hover{background-position:100% 50%;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(201,185,138,.5),0 18px 38px -14px rgba(21,34,24,.7)}@media(prefers-reduced-motion:reduce){.btn:not(.light):not(.ghost){transition:none}}</style>";
   salida = salida.replace('</head>', CSS + '</head>');
+}
+
+/* ---------- giro del ebook relativo a la pantalla ---------- */
+/*  El script original media el avance desde scrollY = 0, pensado para un
+ *  ebook arriba de todo. Ahora vive en la segunda seccion: gira desde que
+ *  asoma por abajo (85% del alto de pantalla) hasta que su mitad llega al
+ *  tercio de arriba. Asi da la vuelta entera mientras se ve, este donde este.
+ */
+{
+  const GIRO = [
+    ['var actual = -1, vivo = false, pedido = false, recorrido = 1;',
+     'var actual = -1, vivo = false, pedido = false, recorrido = 1, inicio = 0;'],
+    ['recorrido = Math.max((r.top + scrollActual() + r.height) * 0.62, 1);',
+     'inicio = r.top + scrollActual() - innerHeight * 0.85;\n          recorrido = Math.max(r.height * 0.5 + innerHeight * 0.6, 1);'],
+    ['var p = Math.min(Math.max(scrollActual() / recorrido, 0), 1);',
+     'var p = Math.min(Math.max((scrollActual() - inicio) / recorrido, 0), 1);'],
+  ];
+  GIRO.forEach(([a, b]) => {
+    if (!salida.includes(a)) avisos.push('OJO giro: no encontre ' + a.slice(0, 48));
+    else salida = salida.split(a).join(b);
+  });
 }
 
 fs.writeFileSync('_nueva.html', salida, 'utf8');
