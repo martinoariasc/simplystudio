@@ -604,7 +604,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     ["arribaLejos: p => MAY(p)", "arribaLejos: p => 'Edición Septiembre'"],
     ["arribaCerca: 'Últimos días'", "arribaCerca: 'Últimos días de la edición'"],
     ["arribaUltimo: 'Último día'", "arribaUltimo: 'Último día de la edición'"],
-    ["pie: 'Después sube a USD ' + SUBE_A", "pie: 'Material exclusivo incluido'"],
+    ["pie: 'Después sube a USD ' + SUBE_A", "pie: 'Actualizaciones y material exclusivo incluidos'"],
     ["pieManana: 'Mañana sube a USD ' + SUBE_A", "pieManana: 'Último día de la edición'"],
   ];
   for (const [a, b] of RELOJ) {
@@ -839,7 +839,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
  *  d. "Quiero el bonus" media 15 px de alto: dificil de tocar con el dedo.
  */
 {
-  const CSS = "<style>body{padding-bottom:0!important}footer{padding-bottom:calc(72px + env(safe-area-inset-bottom))}html{overflow-x:clip}@media(max-width:360px){.nav{gap:10px}.brand{font-size:17px}.nav-links .btn{padding:0 10px;font-size:10px;letter-spacing:.04em}}@media(max-width:720px){.announcement a{display:inline-block;padding:8px 6px;margin:-8px -6px}.btn.ghost{min-height:40px;display:inline-flex;align-items:center}}</style>";
+  const CSS = "<style>body{padding-bottom:0!important}footer{padding-bottom:env(safe-area-inset-bottom,0px)}html{overflow-x:clip}@media(max-width:360px){.nav{gap:10px}.brand{font-size:17px}.nav-links .btn{padding:0 10px;font-size:10px;letter-spacing:.04em}}@media(max-width:720px){.announcement a{display:inline-block;padding:8px 6px;margin:-8px -6px}.btn.ghost{min-height:40px;display:inline-flex;align-items:center}}</style>";
   if (!salida.includes('</head>')) avisos.push('dispositivos: no encontre </head>');
   else salida = salida.replace('</head>', CSS + '</head>');
 }
@@ -885,6 +885,19 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     if (!salida.includes(a)) avisos.push('OJO giro: no encontre ' + a.slice(0, 48));
     else salida = salida.split(a).join(b);
   });
+}
+
+/* ---------- la barra fija se va cuando aparece el pie ---------- */
+/*  El pie tiene su propio boton. Si la barra se queda, tapa el copyright y
+ *  obliga a dejar un margen vacio abajo. Asi el copyright queda al fondo.
+ */
+{
+  const CSS = '<style>html.pie-visible .mobile-buy.show{transform:translateY(110%)}</style>';
+  const JS = '<script>(function(){var p=document.querySelector("footer");if(!p)return;' +
+    'if(!("IntersectionObserver" in window))return;' +
+    'new IntersectionObserver(function(e){document.documentElement.classList.toggle("pie-visible",e[0].isIntersecting)},{rootMargin:"0px 0px -8px 0px"}).observe(p);' +
+    '})();</script>';
+  salida = salida.replace('</head>', CSS + '</head>').replace('</body>', JS + '</body>');
 }
 
 fs.writeFileSync('_nueva.html', salida, 'utf8');
