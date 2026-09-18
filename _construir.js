@@ -592,7 +592,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   /* los textos vivos del reloj: de anunciar la suba a anunciar el bonus */
   const RELOJ = [
     ["lejos:   p => '<b>' + MAY(p) + ':</b> sube a <b>USD ' + SUBE_A + '</b> en'",
-     "lejos:   p => '<b>Edición Septiembre</b> Incluye actualizaciones y un material exclusivo que no vuelve, para ayudarte a vender más. Cierra en'"],
+     "lejos:   p => '<b>Edición Septiembre</b> Incluye actualizaciones y un material exclusivo que no vuelve. Cierra en'"],
     ["cerca:   p => '<b>Últimos días</b> de ' + p + '. Sube a <b>USD ' + SUBE_A + '</b> en'",
      "cerca:   p => '<b>Edición Septiembre</b> Últimos días con el material exclusivo. Cierra en'"],
     ["ultimo:  () => '<b>Último día con el precio más bajo que va a tener.</b> Mañana sube a <b>USD ' + SUBE_A + '</b>.'",
