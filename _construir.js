@@ -89,7 +89,7 @@ function rearmarHero(sec) {
 
   const sub = 'Sabemos lo que es perder una tarde entera creando unos pocos anuncios y que al final, después de mucho esfuerzo, no traigan los resultados esperados o ningún resultado. Por eso existe Prompt Ads: <b>el método que hace que tu marca se vea como las que facturan millones</b>. Subes una foto de lo que vendes y en minutos tienes una tanda de anuncios premium, de los que una agencia te cobraría <b>+USD 1.000</b>. Sin sesión de fotos, sin saber diseño y de la manera más fácil y rápida posible.';
   /* titular pedido para la nueva: arranca con la accion y el numero */
-  h1.texto = '<h2 class="v2-hero-h">Aprende a crear <em>+50 anuncios premium</em> en minutos y <em>aumenta tus ventas.</em></h2>';
+  h1.texto = '<h2 class="v2-hero-h">Aprende a crear <em>+50 anuncios de la más alta calidad</em> en minutos y <em>aumenta tus ventas.</em></h2>';
   if (pill) pill.texto = pill.texto.replace(/Prompts \+ gu[ií]as \+ sistema de correcci[oó]n/, 'El método para crear +50 anuncios premium en minutos');
 
   /* orden que manda: titulo, animacion, texto chico, boton */
@@ -178,7 +178,7 @@ function heroGaleria() {
     '<div class="v2-gal-nota v2-sube d3"><span>Rubros distintos · el mismo método · cada anuncio listo para publicar</span><span class="v2-gal-desliza"><svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>desliza<svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span></div>' +
     '<div class="v2-hero-gal-pie v2-sube d4">' +
     '<p class="v2-hero-gal-tit">Todos estos anuncios salieron con el <em>Método Prompt Ads.</em></p>' +
-    '<p class="v2-hero-gal-txt">Seis archivos y un <b>video explicativo</b> que te enseñan, paso a paso, a crear publicidad así con ChatGPT a partir de una foto común de tu producto. Sin agencia, sin sesión de fotos y en minutos. <b>Es exactamente lo que puedes hacer hoy con lo que tú vendes.</b></p>' +
+    '<p class="v2-hero-gal-txt">Un <b>video explicativo</b> que te muestra cómo crear los anuncios, y seis archivos que cargas en ChatGPT para que genere publicidad con la calidad de las grandes marcas del mundo, a partir de una foto común de tu producto. Sin agencia, sin sesión de fotos y en minutos. <b>Es exactamente lo que puedes hacer hoy con lo que tú vendes.</b></p>' +
     '</div>\n</div>\n' + cierreCTA() + '</section>';
 }
 

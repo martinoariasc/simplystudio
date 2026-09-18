@@ -22,7 +22,7 @@ const MANO = [['Red Bull', '3.png'], ['New Balance', '19.png'], ['Rimowa Maleta'
   ['COS bolso', '4.png'], ['Bose', '9.png'], ['COS bolso', '11.png'], ['Bose', '5.png'], ['COS bolso', '2.png'], ['Bose', '7.png'], ['COS bolso', '3.png'], ['Bose', '4.png']];
 
 /* 18/09: las que eligio Martino para abrir la landing, en su orden */
-MANO.unshift(['Bose', '9.png'], ['Bose', '4.png'], ['Bose', '5.png'], ['Bose', '7.png'],
+MANO.unshift(['Bose', '5.png'], ['Bose', '9.png'], ['Bose', '4.png'], ['Bose', '7.png'],
   ['COS bolso', '6.png'], ['COS bolso', '11.png'], ['COS bolso', '2.png'], ['COS bolso', '3.png'], ['COS bolso', '4.png'],
   ['peine', '9.png'], ['peine', '2.png'],
   ['rolex', '11.png'], ['rolex', '5.png'], ['rolex', '7.png'], ['rolex', '10.png'],
