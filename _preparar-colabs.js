@@ -9,11 +9,11 @@ const todos = JSON.parse(fs.readFileSync('_colabs.json', 'utf8')).filter(x => !x
 
 const NOMBRE = { 'aesop': 'Aesop', 'airpods': 'Apple', 'coca cola': 'Coca-Cola', 'dyson airwrap': 'Dyson', 'fenty beauty': 'Fenty Beauty',
   'Glossier': 'Glossier', 'leica': 'Leica', 'Nespresso': 'Nespresso', 'New Balance': 'New Balance', 'nike': 'Nike', 'oatly': 'Oatly',
-  'Red Bull': 'Red Bull', 'rhode': 'Rhode', 'Rimowa Maleta': 'Rimowa', 'rolex': 'Rolex', 'zara home': 'Zara Home', 'Byredo perfume': 'Byredo', 'Bose': 'Bose', 'COS bolso': 'COS', 'peine': 'Belleza', 'simply burguer': 'Simply Burguer', 'pizza': 'Simply Forno' };
+  'Red Bull': 'Red Bull', 'rhode': 'Rhode', 'Rimowa Maleta': 'Rimowa', 'rolex': 'Rolex', 'zara home': 'Zara Home', 'Byredo perfume': 'Byredo', 'Bose': 'Bose', 'COS bolso': 'COS' };
 const SLUG = { 'aesop': 'aesop', 'airpods': 'apple', 'coca cola': 'coca', 'dyson airwrap': 'dyson', 'fenty beauty': 'fenty', 'Glossier': 'glossier',
   'leica': 'leica', 'Nespresso': 'nespresso', 'New Balance': 'newbalance', 'nike': 'nike', 'oatly': 'oatly', 'Red Bull': 'redbull',
   'rhode': 'rhode', 'Rimowa Maleta': 'rimowa', 'rolex': 'rolex', 'zara home': 'zarahome', 'Byredo perfume': 'byredo',
-  'Bose': 'bose', 'COS bolso': 'cos', 'peine': 'peine', 'simply burguer': 'burguer', 'pizza': 'forno' };
+  'Bose': 'bose', 'COS bolso': 'cos' };
 
 /* las elegidas a mano van primero, en este orden */
 const MANO = [['Red Bull', '3.png'], ['New Balance', '19.png'], ['Rimowa Maleta', '5.png'], ['nike', '4.png'], ['aesop', '3.png'],
@@ -21,15 +21,6 @@ const MANO = [['Red Bull', '3.png'], ['New Balance', '19.png'], ['Rimowa Maleta'
   ['Red Bull', '2.png'], ['coca cola', '2.png'], ['New Balance', '10.png'], ['Red Bull', '4.png'], ['rolex', '7.png'], ['zara home', '7.png'], ['rolex', '5.png'], ['oatly', '9.png'], ['oatly', '24.png'], ['dyson airwrap', '6.png'], ['Rimowa Maleta', '7.png'], ['Rimowa Maleta', '12.png'], ['Rimowa Maleta', '13.png'], ['Byredo perfume', '14.png'], ['Byredo perfume', '12.png'],
   ['COS bolso', '4.png'], ['Bose', '9.png'], ['COS bolso', '11.png'], ['Bose', '5.png'], ['COS bolso', '2.png'], ['Bose', '7.png'], ['COS bolso', '3.png'], ['Bose', '4.png']];
 
-/* 18/09: las que eligio Martino para abrir la landing, en su orden */
-MANO.unshift(['Bose', '5.png'], ['Bose', '9.png'], ['Bose', '4.png'], ['Bose', '7.png'],
-  ['COS bolso', '6.png'], ['COS bolso', '11.png'], ['COS bolso', '2.png'], ['COS bolso', '3.png'], ['COS bolso', '4.png'],
-  ['peine', '9.png'], ['peine', '2.png'],
-  ['rolex', '11.png'], ['rolex', '5.png'], ['rolex', '7.png'], ['rolex', '10.png'],
-  ['simply burguer', '5.png'], ['simply burguer', '7.png'], ['simply burguer', '2.png'],
-  ['pizza', '6.png']);
-/* 18/09 (2): las cuatro que abren, en este orden; las repetidas mas abajo se saltean solas */
-MANO.unshift(['Bose', '5.png'], ['COS bolso', '11.png'], ['peine', '2.png'], ['rolex', '5.png']);
 const usado = new Set();
 const lista = [];
 const agregar = x => { if (usado.has(x.archivo)) return; usado.add(x.archivo); lista.push(x); };
@@ -40,8 +31,8 @@ const porMarca = {};
 todos.forEach(x => { (porMarca[x.marca] = porMarca[x.marca] || []).push(x); });
 Object.values(porMarca).forEach(arr => arr.sort((a, b) => parseInt(path.basename(a.archivo)) - parseInt(path.basename(b.archivo))));
 const OBJETIVO = 58, POR_MARCA = 3;
-const TOPE = { oatly: 2, rolex: 2, 'New Balance': 2, 'zara home': 4, 'Rimowa Maleta': 5, 'Byredo perfume': 2, 'Bose': 4, 'COS bolso': 5, 'peine': 2, 'pizza': 1 };   /* Oatly: solo las dos elegidas a mano; Rolex: macro y seda */
-const EXCLUIR = new Set(['Rimowa Maleta/2.png', 'Rimowa Maleta/3.png', 'Bose/10.png', 'COS bolso/12.png', 'peine/12.png', 'simply burguer/11.png', 'simply burguer/12.png', 'pizza/10.png']);   /* voseo en la pieza */
+const TOPE = { oatly: 2, rolex: 2, 'New Balance': 2, 'zara home': 4, 'Rimowa Maleta': 5, 'Byredo perfume': 2, 'Bose': 4, 'COS bolso': 4 };   /* Oatly: solo las dos elegidas a mano; Rolex: macro y seda */
+const EXCLUIR = new Set(['Rimowa Maleta/2.png', 'Rimowa Maleta/3.png', 'Bose/10.png', 'COS bolso/12.png']);   /* voseo en la pieza */
 const cuenta = {};
 lista.forEach(x => { cuenta[x.marca] = (cuenta[x.marca] || 0) + 1; });
 let agrego = true;
@@ -54,27 +45,6 @@ while (lista.length < OBJETIVO && agrego) {
     agregar(x); cuenta[m] = (cuenta[m] || 0) + 1; agrego = true;
     if (lista.length >= OBJETIVO) break;
   }
-}
-
-/* 18/09: orden final alternado. Las cuatro primeras quedan fijas; despues cada
- * lugar lo toma la primera de la lista que no repita ninguna de las tres marcas
- * anteriores (si no hay, dos; si no, una). La galeria es un bucle: las ultimas
- * tampoco pueden repetir la marca de las primeras. */
-{
-  const FIJAS = 4;
-  const orden = lista.slice(0, FIJAS), resto = lista.slice(FIJAS);
-  while (resto.length) {
-    let k = -1;
-    for (let v = 3; v >= 1 && k === -1; v--) {
-      const cerca = orden.slice(-v).map(x => x.marca);
-      if (resto.length <= v) cerca.push(...orden.slice(0, v - resto.length + 1).map(x => x.marca));
-      k = resto.findIndex(x => !cerca.includes(x.marca));
-    }
-    orden.push(resto.splice(k === -1 ? 0 : k, 1)[0]);
-  }
-  const n = orden.length, malas = orden.filter((x, i) => x.marca === orden[(i + 1) % n].marca).length;
-  if (malas) console.log('  OJO: ' + malas + ' pares de la misma marca seguidos');
-  lista.splice(0, n, ...orden);
 }
 
 /* conversion */

@@ -6,8 +6,8 @@
 const { execFileSync } = require('child_process');
 const fs = require('fs'), path = require('path');
 const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
-const CARPETAS = ['assets/colabs', 'assets/deco', 'assets/fondos', 'assets/caso-nike', 'assets/caso-cos'];
-const CALIDAD = { 'assets/colabs': 0.8, 'assets/deco': 0.72, 'assets/fondos': 0.82, 'assets/caso-nike': 0.8, 'assets/caso-cos': 0.86 };
+const CARPETAS = ['assets/colabs', 'assets/deco', 'assets/fondos', 'assets/caso-nike'];
+const CALIDAD = { 'assets/colabs': 0.8, 'assets/deco': 0.72, 'assets/fondos': 0.82, 'assets/caso-nike': 0.8 };
 
 const trabajos = [];
 CARPETAS.forEach(c => {
@@ -18,10 +18,6 @@ CARPETAS.forEach(c => {
     if (c === 'assets/colabs') {
       const dstM = dst.replace(/.webp$/, '-m.webp');
       if (!fs.existsSync(dstM) || fs.statSync(dstM).mtimeMs < fs.statSync(src).mtimeMs) trabajos.push({ src, dst: dstM, q: 0.78, w: 600 });
-    }
-    if (c === 'assets/caso-cos') {
-      const dst640 = dst.replace(/.webp$/, '-640.webp');
-      if (!fs.existsSync(dst640) || fs.statSync(dst640).mtimeMs < fs.statSync(src).mtimeMs) trabajos.push({ src, dst: dst640, q: 0.82, w: 640 });
     }
   });
 });
