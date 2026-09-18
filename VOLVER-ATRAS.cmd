@@ -16,8 +16,17 @@ REM
 REM  Cuando publiquemos algo nuevo y se compruebe que anda, se mueve la
 REM  etiqueta a ese punto. La version del 29/08 quedo guardada como
 REM  "version-29-agosto" por si alguna vez hace falta.
+REM
+REM  Detalle tecnico: Windows lee este archivo mientras lo ejecuta, y git
+REM  cambia archivos de esta carpeta. Por eso primero se copia a TEMP y
+REM  corre desde ahi: asi git nunca le cambia el piso.
 
-cd /d "%~dp0"
+if /i not "%~1"=="--corriendo" (
+  copy /y "%~f0" "%TEMP%\simplystudio-volver-atras.cmd" >nul
+  "%TEMP%\simplystudio-volver-atras.cmd" --corriendo "%~dp0."
+)
+
+cd /d "%~2" || goto error
 echo.
 echo   Esto vuelve simplystudioai.com a la version anterior
 echo   (la marcada como buena: version-que-funciona).
@@ -35,9 +44,7 @@ git checkout -q -f main || goto error
 git reset -q --hard origin/main || goto error
 
 echo   Volviendo los archivos a la version buena...
-git checkout version-que-funciona -- . || goto error
-REM  este mismo archivo no se toca, para que siga funcionando
-git checkout HEAD -- VOLVER-ATRAS.cmd >nul 2>&1
+git checkout version-que-funciona -- . ":(exclude)VOLVER-ATRAS.cmd" || goto error
 
 git commit -q -m "Vuelta a la version anterior (version-que-funciona)" || goto nada
 echo   Publicando...
