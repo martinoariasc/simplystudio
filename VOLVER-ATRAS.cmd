@@ -1,28 +1,68 @@
 @echo off
-REM  Vuelve la web a la ultima version que funcionaba.
+REM  ============================================================
+REM   VOLVER ATRAS  -  doble clic y la web vuelve a la version buena
+REM  ============================================================
 REM
-REM  Doble clic y listo. Tarda lo que tarde Vercel en desplegar, uno o dos
-REM  minutos. No toca los anuncios de Meta: la direccion del sitio, el pixel
-REM  y los enlaces de Hotmart son los mismos, asi que las campanas siguen
-REM  corriendo sin enterarse.
+REM  Vuelve simplystudioai.com a la version marcada con la etiqueta
+REM  "version-que-funciona". Hoy es la del 17/09 (antes del inicio nuevo
+REM  con la galeria arriba): Edicion Septiembre, precio 67, Bose y COS.
 REM
-REM  La version buena esta marcada con la etiqueta "version-que-funciona".
-REM  Cuando publiquemos algo nuevo y quede demostrado que anda, se mueve la
-REM  etiqueta a ese punto y este archivo pasa a devolver ahi.
+REM  No borra nada: crea un cambio nuevo que devuelve los archivos a esa
+REM  version y lo publica. Si despues queres volver a lo nuevo, se puede.
+REM
+REM  No toca Meta ni Hotmart: misma direccion, mismo pixel, mismo checkout.
+REM  Las campanas siguen corriendo sin enterarse.
+REM
+REM  Cuando publiquemos algo nuevo y se compruebe que anda, se mueve la
+REM  etiqueta a ese punto. La version del 29/08 quedo guardada como
+REM  "version-29-agosto" por si alguna vez hace falta.
 
 cd /d "%~dp0"
+echo.
+echo   Esto vuelve simplystudioai.com a la version anterior
+echo   (la marcada como buena: version-que-funciona).
+echo.
+choice /c SN /m "  Seguro que queres volver atras"
+if errorlevel 2 goto cancelado
 
 echo.
-echo   Volviendo a la version marcada como buena...
-echo.
+echo   Guardando cualquier cambio sin terminar...
+git stash push -u -m "respaldo automatico antes de volver atras" >nul 2>&1
 
-git fetch origin --tags
-git checkout main
-git reset --hard version-que-funciona
-git push --force origin main
+echo   Trayendo la ultima version del servidor...
+git fetch -q origin --tags || goto error
+git checkout -q -f main || goto error
+git reset -q --hard origin/main || goto error
+
+echo   Volviendo los archivos a la version buena...
+git checkout version-que-funciona -- . || goto error
+REM  este mismo archivo no se toca, para que siga funcionando
+git checkout HEAD -- VOLVER-ATRAS.cmd >nul 2>&1
+
+git commit -q -m "Vuelta a la version anterior (version-que-funciona)" || goto nada
+echo   Publicando...
+git push -q origin main || goto error
 
 echo.
-echo   Listo. Vercel esta desplegando la version anterior.
-echo   Dale uno o dos minutos y recarga simplystudioai.com
+echo   LISTO. Vercel esta publicando la version anterior.
+echo   En uno o dos minutos recarga simplystudioai.com
+goto fin
+
+:nada
+echo.
+echo   La web ya estaba en esa version. No hubo nada que cambiar.
+goto fin
+
+:cancelado
+echo.
+echo   Cancelado. No se toco nada.
+goto fin
+
+:error
+echo.
+echo   ALGO FALLO y no se publico nada. La web sigue como estaba.
+echo   Avisale a Claude y mandale una captura de esta ventana.
+
+:fin
 echo.
 pause
