@@ -44,7 +44,7 @@ git checkout -q -f main || goto error
 git reset -q --hard origin/main || goto error
 
 echo   Volviendo los archivos a la version buena...
-git checkout version-que-funciona -- . ":(exclude)VOLVER-ATRAS.cmd" || goto error
+git checkout version-que-funciona -- . ":(exclude)VOLVER-ATRAS.cmd" ":(exclude).vercelignore" || goto error
 
 git commit -q -m "Vuelta a la version anterior (version-que-funciona)" || goto nada
 echo   Publicando...
