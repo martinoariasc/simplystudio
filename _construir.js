@@ -426,8 +426,33 @@ const miniScript = '\n<script>\n' +
 /* galeria: avanza sola por GPU, se arrastra con dedo o mouse, y un toque abre */
 '<script>\n' +
 '(function(){\n' +
+'  /* tactil: scroll nativo que avanza solo. Tocar lo detiene; a los 3,5 s de soltar sigue desde ahi. */\n' +
+'  function autoNativo(gal){\n' +
+'    gal.classList.add("v2-gal-nativa");\n' +
+'    if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;\n' +
+'    var PXS=26, x=gal.scrollLeft, puesto=x, pausaHasta=performance.now()+1500, visible=false, tocando=false, volviendo=false, antes=0;\n' +
+'    function pausa(ms){ pausaHasta=Math.max(pausaHasta, performance.now()+ms); }\n' +
+'    gal.addEventListener("touchstart",function(){ tocando=true; pausa(4000); },{passive:true});\n' +
+'    gal.addEventListener("touchend",function(){ tocando=false; pausa(3500); },{passive:true});\n' +
+'    gal.addEventListener("touchcancel",function(){ tocando=false; pausa(3500); },{passive:true});\n' +
+'    gal.addEventListener("pointerdown",function(){ pausa(4000); },{passive:true});\n' +
+'    gal.addEventListener("scroll",function(){ if(Math.abs(gal.scrollLeft-puesto)>2){ x=gal.scrollLeft; puesto=x; if(!volviendo) pausa(3500); } },{passive:true});\n' +
+'    if("IntersectionObserver" in window){ new IntersectionObserver(function(es){ visible=es[0].isIntersecting; },{threshold:0.2}).observe(gal); } else visible=true;\n' +
+'    function paso(t){\n' +
+'      var dt=antes?Math.min(t-antes,50):16; antes=t;\n' +
+'      if(visible && !document.hidden && !tocando && !volviendo && t>pausaHasta && !document.querySelector("dialog[open]")){\n' +
+'        var fin=gal.scrollWidth-gal.clientWidth;\n' +
+'        if(fin>0){\n' +
+'          if(x>=fin-1){ volviendo=true; gal.scrollTo({left:0,behavior:"smooth"}); setTimeout(function(){ x=gal.scrollLeft; puesto=x; volviendo=false; pausa(2500); },1600); }\n' +
+'          else { x=Math.min(x+PXS*dt/1000,fin); gal.scrollLeft=x; puesto=gal.scrollLeft; }\n' +
+'        }\n' +
+'      }\n' +
+'      requestAnimationFrame(paso);\n' +
+'    }\n' +
+'    requestAnimationFrame(paso);\n' +
+'  }\n' +
 '  document.querySelectorAll(".v2-gal").forEach(function(gal){\n' +
-'  if(matchMedia("(hover: none) and (pointer: coarse)").matches){ gal.classList.add("v2-gal-nativa"); return; }  /* tactil: deslizar nativo */\n' +
+'  if(matchMedia("(hover: none) and (pointer: coarse)").matches){ autoNativo(gal); return; }  /* tactil: scroll nativo que avanza solo */\n' +
 '  var track=gal.querySelector(".v2-gal-track"), set=gal.querySelector(".v2-gal-set"); if(!track||!set) return;\n' +
 '  var quieto=matchMedia("(prefers-reduced-motion: reduce)").matches;\n' +
 '  var x=0, vel=0, VEL=0.45, pausaHasta=0, encima=false, arr=null, movio=false, visible=true, w=0;\n' +
@@ -1124,12 +1149,17 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
 {
   const CSS = '<style>@media (hover:none) and (pointer:coarse){' +
     '.v2-gal{overflow-x:auto!important;overflow-y:hidden!important;touch-action:auto!important;cursor:auto!important;' +
-    'scroll-snap-type:x mandatory;scroll-padding-inline:var(--gut,20px);overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}' +
+    'scroll-snap-type:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}' +
     '.v2-gal::-webkit-scrollbar{display:none}' +
     '.v2-gal-track{transform:none!important;will-change:auto!important;animation:none!important;' +
     'padding-left:var(--gut,20px)!important;padding-right:calc(var(--gut,20px) - 18px)!important}' +
     '.v2-gal-set[aria-hidden="true"]{display:none!important}' +
-    '.v2-gal .v2-piece{scroll-snap-align:start}' +
+    '.v2-gal .v2-piece{scroll-snap-align:none}' +
+    '.v2-gal-desliza .ar{animation:v2EmpujaDer 1.8s cubic-bezier(.45,0,.2,1) infinite}' +
+    '.v2-gal-desliza .ar:first-child{animation-name:v2EmpujaIzq}' +
+    '@keyframes v2EmpujaDer{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}' +
+    '@keyframes v2EmpujaIzq{0%,100%{transform:translateX(0)}50%{transform:translateX(-5px)}}' +
+    '@media (prefers-reduced-motion:reduce){.v2-gal-desliza .ar{animation:none}}' +
     '.v2-hero-gal .v2-gal{animation:none!important;opacity:1!important;transform:none!important}' +
     '}</style>';
   salida = salida.replace('</head>', CSS + '</head>');
