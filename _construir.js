@@ -89,11 +89,11 @@ function rearmarHero(sec) {
 
   const sub = 'Sabemos lo que es perder una tarde entera creando unos pocos anuncios y que al final, después de mucho esfuerzo, no traigan los resultados esperados o ningún resultado. Por eso existe Prompt Ads: <b>el método que hace que tu marca se vea como las que facturan millones</b>. Subes una foto de lo que vendes y en minutos tienes una tanda de anuncios premium, de los que una agencia te cobraría <b>+USD 1.000</b>. Sin sesión de fotos, sin saber diseño y de la manera más fácil y rápida posible.';
   /* titular pedido para la nueva: arranca con la accion y el numero */
-  h1.texto = '<h1>Aprende a crear <em>+50 anuncios premium</em> en minutos y <em>aumenta tus ventas.</em></h1>';
+  h1.texto = '<h2 class="v2-hero-h">Aprende a crear <em>+50 anuncios de la más alta calidad</em> en minutos y <em>aumenta tus ventas.</em></h2>';
   if (pill) pill.texto = pill.texto.replace(/Prompts \+ gu[ií]as \+ sistema de correcci[oó]n/, 'El método para crear +50 anuncios premium en minutos');
 
   /* orden que manda: titulo, animacion, texto chico, boton */
-  return '<section class="hero v2-hero" data-esc="Inicio">\n<div class="shell">\n' +
+  return '<section class="hero v2-hero v2-metodo" data-esc="El método">\n<div class="shell">\n' +
     '<div class="v2-hero-grid">\n' +
     (pill ? '<div class="v2-sube d1">' + pill.texto + '</div>\n' : '') +
     '<div class="v2-sube d2">' + h1.texto + '</div>\n' +
@@ -138,7 +138,7 @@ function figuras(clon) {
     '<figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/colabs/' + f + '.jpg"' +
     (clon ? ' tabindex="-1"' : '') + ' aria-label="Ampliar anuncio de ' + marca + '">' +
     '<img src="assets/colabs/' + f + '.jpg" srcset="assets/colabs/' + f + '-m.webp 600w, assets/colabs/' + f + '.webp 900w" sizes="(max-width:720px) 72vw, 440px" loading="lazy" decoding="async" width="1100" height="1375" alt="Anuncio de ' + marca + ' hecho con Prompt Ads">' +
-    '</button><figcaption><b>' + marca + '</b><span>' + String(i + 1).padStart(2, '0') + ' / ' + String(PIEZAS.length).padStart(2, '0') + '</span></figcaption></figure>'
+    '</button></figure>'
   ).join('\n');
 }
 function rearmarShowcase(sec) {
@@ -156,6 +156,30 @@ function rearmarShowcase(sec) {
     '</div></div>' +
     '<div class="v2-gal-nota"><span>Rubros distintos · el mismo sistema · cada anuncio listo para publicar</span><span class="v2-gal-desliza"><svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>desliza<svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span></div>' +
     '\n</div>\n</section>';
+}
+
+/* en el inicio las primeras piezas se ven sin scrollear: no esperan al lazy */
+function primerasSinEspera(html) {
+  let n = 0;
+  return html.replace(/loading="lazy"/g, m => { n++; return n === 1 ? 'loading="eager" fetchpriority="high"' : n <= 5 ? 'loading="eager"' : m; });
+}
+
+/* INICIO: la galeria es lo primero que se ve. El anuncio es la prueba. */
+function heroGaleria() {
+  return '<section class="showcase v2-hero-gal" id="resultado" data-esc="Inicio">\n<div class="shell">\n' +
+    '<div class="showcase-head v2-hero-gal-head">' +
+    '<span class="eyebrow muted v2-sube d1">Método Prompt Ads para ChatGPT</span>' +
+    '<h1 class="v2-sube d2">Imagina poder crear <em class="v2-nw">publicidad así.</em></h1>' +
+    '</div>\n' +
+    '<div class="v2-gal v2-sube d3"><div class="v2-gal-track">' +
+    '<div class="v2-gal-set">\n' + primerasSinEspera(figuras(false)) + '\n</div>' +
+    '<div class="v2-gal-set" aria-hidden="true">\n' + figuras(true) + '\n</div>' +
+    '</div></div>' +
+    '<div class="v2-gal-nota v2-sube d3"><span>Rubros distintos · el mismo método · cada anuncio listo para publicar</span><span class="v2-gal-desliza"><svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>desliza<svg class="ar" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span></div>' +
+    '<div class="v2-hero-gal-pie v2-sube d4">' +
+    '<p class="v2-hero-gal-tit">Todos estos anuncios salieron con el <em>Método Prompt Ads.</em></p>' +
+    '<p class="v2-hero-gal-txt">Un <b>video explicativo</b> que te muestra cómo crear los anuncios, y seis archivos que cargas en ChatGPT para que genere publicidad con la calidad de las grandes marcas del mundo, a partir de una foto común de tu producto. Sin agencia, sin sesión de fotos y en minutos. <b>Es exactamente lo que puedes hacer hoy con lo que tú vendes.</b></p>' +
+    '</div>\n</div>\n' + cierreCTA() + '</section>';
 }
 
 /* escenas que cierran con boton: titulo, visual, texto, boton */
@@ -239,6 +263,70 @@ const ORIGEN = '<div class="v2-origen reveal">\n' +
   'El sistema la convirtió en una campaña entera en minutos. <strong>Con la tuya pasa exactamente lo mismo.</strong></p></div>\n' +
   '</div>\n';
 /* orden nuevo: la foto de partida, los anuncios, y recien ahi "como se hace" */
+/* CASO (18/09): selector Zapatillas | Bolso y una tira horizontal por producto,
+ * dentro de un panel de vidrio como las demas tarjetas. Primero la foto de
+ * partida, despues todo lo que salio de ella. Cada pieza con su proporcion real
+ * (nada se recorta) y srcset para que se vea nitida en cualquier pantalla.
+ * Reemplaza la foto grande + la grilla; si algo no aparece, queda lo anterior. */
+const CASOS = [
+  { id: 'bolso', nombre: 'Bolso', mini: 'assets/caso-cos/real-640.webp',
+    origen: { full: 'assets/caso-cos/real.webp', w: 1128, h: 1692, sizes: '(max-width:720px) 58vw, 287px',
+      set: [['assets/caso-cos/real-640.webp', 640], ['assets/caso-cos/real.webp', 1128]],
+      alt: 'Foto original del bolso, sobre fondo blanco' },
+    piezas: [1, 2, 3, 4, 5, 6, 7, 8].map(n => ({ full: 'assets/caso-cos/c' + n + '.webp', w: 1122, h: 1402, sizes: '(max-width:720px) 69vw, 344px',
+      set: [['assets/caso-cos/c' + n + '-640.webp', 640], ['assets/caso-cos/c' + n + '.webp', 1122]],
+      alt: 'Anuncio del bolso creado con el Método Prompt Ads' })) },
+  { id: 'zapatillas', nombre: 'Zapatillas', mini: 'assets/caso-nike/real-600.webp',
+    origen: { full: 'assets/caso-nike/real.webp', w: 900, h: 1200, sizes: '(max-width:720px) 65vw, 323px',
+      set: [['assets/caso-nike/real-600.webp', 600], ['assets/caso-nike/real.webp', 900]],
+      alt: 'Foto original de las zapatillas, sacada con un celular sobre una cama' },
+    piezas: [1, 2, 3, 4, 5].map(n => ({ full: 'assets/caso-nike/n' + n + '.webp', w: 1000, h: 1000, sizes: '(max-width:720px) 86vw, 430px',
+      set: [['assets/caso-nike/n' + n + '-640.webp', 640], ['assets/caso-nike/n' + n + '.webp', 1000]],
+      alt: 'Anuncio de las zapatillas creado con el Método Prompt Ads' })) },
+];
+const CASO_DER = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>';
+const CASO_IZQ = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>';
+function piezaCaso(p, esOrigen) {
+  return '<figure class="v2-caso-fig' + (esOrigen ? ' v2-caso-origen' : '') + '" style="aspect-ratio:' + p.w + '/' + p.h + '">' +
+    '<button class="zoomable" type="button" data-full="' + p.full + '" aria-label="Ampliar: ' + p.alt + '">' +
+    '<img src="' + p.set[0][0] + '" srcset="' + p.set.map(([u, w]) => u + ' ' + w + 'w').join(', ') + '" sizes="' + p.sizes + '"' +
+    ' loading="lazy" decoding="async" width="' + p.w + '" height="' + p.h + '" alt="' + p.alt + '">' +
+    (esOrigen ? '<span class="v2-caso-chip">Foto original</span>' : '') +
+    '</button></figure>';
+}
+const TIRAS = '<div class="v2-caso reveal">' +
+  '<div class="v2-caso-tabs" role="tablist" aria-label="Elige un producto">' +
+  CASOS.map((c, i) => '<button type="button" class="v2-caso-tab' + (i ? '' : ' on') + '" role="tab" id="caso-tab-' + c.id + '" aria-controls="caso-' + c.id + '"' +
+    ' aria-selected="' + (i ? 'false' : 'true') + '"' + (i ? ' tabindex="-1"' : '') + '>' +
+    '<img src="' + c.mini + '" alt="" width="32" height="32" loading="lazy" decoding="async">' + c.nombre + '</button>').join('') +
+  '</div>' +
+  '<div class="v2-caso-vitrina">' +
+  CASOS.map(c => '<div class="v2-caso-tira" id="caso-' + c.id + '" role="tabpanel" aria-labelledby="caso-tab-' + c.id + '" tabindex="0">' +
+    piezaCaso(c.origen, true) +
+    '<span class="v2-caso-puente" aria-hidden="true">' + CASO_DER + '</span>' +
+    c.piezas.map(p => piezaCaso(p, false)).join('') +
+    '</div>').join('') +
+  '</div>' +
+  '<div class="v2-caso-nota">' +
+  '<button type="button" class="v2-caso-mover" data-mover="-1" aria-label="Ver los anteriores">' + CASO_IZQ + '</button>' +
+  '<span>Desliza para ver todo lo que salió de esta simple imagen</span>' +
+  '<button type="button" class="v2-caso-mover" data-mover="1" aria-label="Ver los siguientes">' + CASO_DER + '</button>' +
+  '</div>' +
+  '</div>\n';
+function casoTiras(sec) {
+  const conOrigen = origen(sec);                 /* los pasos "Como se hace" se arman ahi; se reusan tal cual */
+  const i = sec.indexOf('<div class="case-steps">');
+  const g0 = sec.indexOf('<div class="case-grid">');
+  const g1 = sec.indexOf('<div class="marquee-hint"', g0);
+  const p0 = conOrigen.indexOf('<div class="v2-como reveal">');
+  const p1 = conOrigen.indexOf('</div>', conOrigen.indexOf('</article>', conOrigen.lastIndexOf('<article class="case-step'))) + 6;
+  if (i === -1 || g0 === -1 || g1 === -1 || p0 === -1 || p1 < p0) { avisos.push('OJO caso: no encontre sus partes, queda la version anterior'); return conOrigen; }
+  const pasos = conOrigen.slice(p0, p1);
+  const finPasos = sec.indexOf('</div>', sec.indexOf('</article>', sec.lastIndexOf('<article class="case-step'))) + 6;
+  const cola = sec.slice(finPasos).replace(sec.slice(g0, g1), '').replace(/<div class="marquee-hint">[\s\S]*?<\/div>\s*/, '');
+  return sec.slice(0, i) + TIRAS + pasos + cola;
+}
+
 function origen(sec) {
   const i = sec.indexOf('<div class="case-steps">');
   const g0 = sec.indexOf('<div class="case-grid">');
@@ -276,10 +364,10 @@ const nuevas = [];
 secciones.forEach(sec => {
   const esc = nombreEscena(sec);
   /* la marquesina de marcas va justo debajo del boton del hero */
-  if (/^<section class="hero/.test(sec.trim())) { nuevas.push(rearmarHero(sec)); nuevas.push(MARCAS); return; }
-  if (/class="showcase/.test(sec.slice(0, 90))) { nuevas.push(conCierre(rearmarShowcase(sec))); return; }
+  if (/^<section class="hero/.test(sec.trim())) { nuevas.push(heroGaleria()); nuevas.push(rearmarHero(sec)); nuevas.push(MARCAS); return; }
+  if (/class="showcase/.test(sec.slice(0, 90))) return;   /* su galeria ahora abre la landing */
   if (/class="pain/.test(sec.slice(0, 90))) sec = plegarLeccion(sec);
-  if (/class="case/.test(sec.slice(0, 90))) sec = origen(sec);
+  if (/class="case/.test(sec.slice(0, 90))) sec = casoTiras(sec);
   if (/class="audience/.test(sec.slice(0, 90))) sec = nichos(sec);
   sec = decorar(sec);
   nuevas.push(conCierre(sec.replace('<section', '<section data-esc="' + esc + '"')));
@@ -483,7 +571,7 @@ const TESTIMONIOS = {
   else salida = salida.replace(re, '');
 }
 parrafo('Tomamos la foto de un producto cualquiera',
-  'Tomamos la foto de un producto cualquiera, unas zapatillas, y en menos de 5 minutos salieron todos estos anuncios. Dentro del sistema ves <b>el proceso completo con capturas reales</b>, paso a paso, para que lo repitas con tu producto sin adivinar nada.');
+  'Tomamos la foto simple de dos productos, un bolso y unas zapatillas, y en minutos salieron todos estos anuncios. Dentro del sistema ves <b>el proceso completo con capturas reales</b>, paso a paso, para que lo repitas con tu producto sin adivinar nada.');
 parrafo('El mismo sistema de seis PDFs',
   'Ninguna la hizo una agencia. Cada una salió de una foto común y de los seis PDFs del sistema, en minutos. <b>Es exactamente lo que puedes hacer hoy con lo que tú vendes.</b>');
 
@@ -568,19 +656,19 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   /* los textos vivos del reloj: de anunciar la suba a anunciar el bonus */
   const RELOJ = [
     ["lejos:   p => '<b>' + MAY(p) + ':</b> sube a <b>USD ' + SUBE_A + '</b> en'",
-     "lejos:   p => '<b>Edición Septiembre</b> Incluye un material exclusivo que no vuelve. Cierra en'"],
+     "lejos:   p => '<b>Edición Septiembre</b> Incluye actualizaciones y un material exclusivo que no vuelve. Cierra en'"],
     ["cerca:   p => '<b>Últimos días</b> de ' + p + '. Sube a <b>USD ' + SUBE_A + '</b> en'",
      "cerca:   p => '<b>Edición Septiembre</b> Últimos días con el material exclusivo. Cierra en'"],
     ["ultimo:  () => '<b>Último día con el precio más bajo que va a tener.</b> Mañana sube a <b>USD ' + SUBE_A + '</b>.'",
      "ultimo:  () => '<b>Edición Septiembre</b> Último día con el material exclusivo.'"],
     ["fecha:   f => 'El <b>' + f + '</b> pasa a <b>USD ' + SUBE_A + '</b>'",
-     "fecha:   f => 'Edición Septiembre: incluye <b>" + REGALO + "</b>, exclusivo de esta edición'"],
+     "fecha:   f => 'Edición Septiembre: incluye actualizaciones y <b>" + REGALO + "</b>, el material exclusivo de esta edición'"],
     ["manana:  () => '<b>Mañana sube a USD ' + SUBE_A + '</b>'",
      "manana:  () => '<b>Último día de la Edición Septiembre</b>'"],
     ["arribaLejos: p => MAY(p)", "arribaLejos: p => 'Edición Septiembre'"],
     ["arribaCerca: 'Últimos días'", "arribaCerca: 'Últimos días de la edición'"],
     ["arribaUltimo: 'Último día'", "arribaUltimo: 'Último día de la edición'"],
-    ["pie: 'Después sube a USD ' + SUBE_A", "pie: 'Material exclusivo incluido'"],
+    ["pie: 'Después sube a USD ' + SUBE_A", "pie: 'Actualizaciones y material exclusivo incluidos'"],
     ["pieManana: 'Mañana sube a USD ' + SUBE_A", "pieManana: 'Último día de la edición'"],
   ];
   for (const [a, b] of RELOJ) {
@@ -650,7 +738,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
           '<span class="v2-vid-play" aria-hidden="true"></span></div>' +
           '<div class="card-body"><h3>Y además, el video del método</h3>' +
           '<p>Además de los seis archivos, una grabación completa donde se crea un anuncio de principio a fin, sin cortes. ' +
-          'Los archivos te dan el método; el video te lo muestra funcionando.</p></div>' +
+          'Lo ves funcionando y lo aplicas igual a lo tuyo: no importa si vendes un producto o un servicio, el método es el mismo para cualquier rubro.</p></div>' +
           '</article>';
         const iUltima = salida.indexOf('</article>', salida.indexOf('Fuerza ángulos, escenas y copy nuevos', iCta));
         if (iUltima === -1) avisos.push('video: no encontre la ultima tarjeta de archivos');
@@ -719,7 +807,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
       const num = String(i + 1).padStart(2, '0') + ' / ' + PIEZAS2.length;
       return '<figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/' + f + '.webp" aria-label="Ampliar anuncio de ' + marca + '">' +
         '<img src="assets/galeria2/' + f + '.webp" alt="' + alt + '" loading="lazy" decoding="async" width="600" height="750">' +
-        '</button><figcaption><b>' + marca + '</b><span>' + num + '</span></figcaption></figure>';
+        '</button></figure>';
     }).join('');
     const GAL2 =
       '<section data-esc="Hazlo" class="difference v2-hazlo">\n' +
@@ -815,7 +903,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
  *  d. "Quiero el bonus" media 15 px de alto: dificil de tocar con el dedo.
  */
 {
-  const CSS = "<style>body{padding-bottom:0!important}footer{padding-bottom:calc(72px + env(safe-area-inset-bottom))}html{overflow-x:clip}@media(max-width:360px){.nav{gap:10px}.brand{font-size:17px}.nav-links .btn{padding:0 10px;font-size:10px;letter-spacing:.04em}}@media(max-width:720px){.announcement a{display:inline-block;padding:8px 6px;margin:-8px -6px}.btn.ghost{min-height:40px;display:inline-flex;align-items:center}}</style>";
+  const CSS = "<style>body{padding-bottom:0!important}footer{padding-bottom:env(safe-area-inset-bottom,0px)}html{overflow-x:clip}@media(max-width:360px){.nav{gap:10px}.brand{font-size:17px}.nav-links .btn{padding:0 10px;font-size:10px;letter-spacing:.04em}}@media(max-width:720px){.announcement a{display:inline-block;padding:8px 6px;margin:-8px -6px}.btn.ghost{min-height:40px;display:inline-flex;align-items:center}}</style>";
   if (!salida.includes('</head>')) avisos.push('dispositivos: no encontre </head>');
   else salida = salida.replace('</head>', CSS + '</head>');
 }
@@ -834,6 +922,196 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
 {
   const CSS = "<style>.announcement{background:#0e0e0b;border-bottom:1px solid rgba(201,179,126,.28)}.announcement-inner{color:#CFC8B6;letter-spacing:.03em}.announcement-inner [data-cuenta=\"banner\"] b{color:#EDE5CF;font-weight:500}.announcement-inner [data-cuenta=\"banner\"] b:first-child{color:#C9B37E;text-transform:uppercase;letter-spacing:.2em;font-size:.9em;margin-right:10px}.announcement .v2-cuenta-mini{background:transparent;border:1px solid rgba(201,179,126,.38)}.announcement .v2-cuenta-mini b{color:#EDE5CF}.announcement .v2-cuenta-mini i{color:#8F8671}.announcement a{color:#C9B37E;text-decoration:none;border-bottom:1px solid rgba(201,179,126,.55);text-transform:uppercase;letter-spacing:.16em;font-size:.88em;padding-bottom:1px}.announcement a:hover{color:#EDE5CF;border-bottom-color:#EDE5CF}.mobile-buy [data-cuenta=\"movil-arriba\"]{color:#7A6440;letter-spacing:.18em;text-transform:uppercase}.mobile-buy [data-cuenta=\"movil\"]{color:var(--ink,#171713)}.mobile-buy .v2-cuenta-mini b{color:#7A6440}</style>";
   salida = salida.replace('</head>', CSS + '</head>');
+}
+
+/* ---------- inicio con la galeria: estilos ---------- */
+{
+  const CSS = "<style>.v2-hero-gal{padding-top:clamp(20px,3vw,44px)}.v2-hero-gal-head{text-align:center;margin:0 auto clamp(22px,3vw,40px)}.v2-hero-gal-head h1{font:400 clamp(44px,6vw,88px)/.95 \"Instrument Serif\",Georgia,serif;letter-spacing:-.045em;margin:10px auto 0;max-width:18ch}.v2-nw{white-space:nowrap}.v2-hero-gal-head h1 em{font-style:italic}.v2-hero-gal-pie{text-align:center;max-width:720px;margin:clamp(26px,3.4vw,44px) auto 0}.v2-hero-gal-tit{font:400 clamp(28px,3.4vw,44px)/1.05 \"Instrument Serif\",Georgia,serif;letter-spacing:-.03em;margin:0 0 12px}.v2-hero-gal-txt{margin:0 auto;max-width:600px;color:var(--muted,#6b6a63);font-size:clamp(15px,1.25vw,17px);line-height:1.55}.v2-hero-gal-txt b{color:var(--ink,#171713);font-weight:600}.v2-hero .v2-hero-h{font:400 clamp(40px,5.6vw,84px)/1.02 \"Instrument Serif\",Georgia,serif;letter-spacing:-.035em;margin:18px 0 18px;max-width:min(19ch,100%)}.v2-hero .v2-hero-h em{font-style:italic}@media(max-width:720px){.v2-hero-gal-head h1{font-size:clamp(32px,9.6vw,46px);max-width:none}.v2-hero .v2-hero-h{font-size:clamp(34px,9.5vw,48px);max-width:none}.v2-hero-gal-pie{padding:0 4px}}.faq-wrap{padding-top:clamp(28px,3.6vw,44px)}.v2-hero-gal-head .eyebrow{justify-content:center}.v2-hero-gal-head .eyebrow::after{content:\"\";width:26px;height:1px;background:currentColor;opacity:.5;flex:none}.v2-hero-gal .v2-gal-nota{flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}.btn:not(.light):not(.ghost){background:linear-gradient(120deg,var(--forest-deep) 0%,var(--ink) 48%,#0b0b09 72%,var(--forest) 100%);background-size:220% 100%;background-position:0% 50%;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 0 0 1px rgba(201,185,138,.24),0 12px 30px -14px rgba(21,34,24,.6);transition:background-position .7s var(--ease),box-shadow .45s var(--ease),transform .45s var(--ease)}.btn:not(.light):not(.ghost):hover{background-position:100% 50%;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(201,185,138,.5),0 18px 38px -14px rgba(21,34,24,.7)}@media(prefers-reduced-motion:reduce){.btn:not(.light):not(.ghost){transition:none}}</style>";
+  salida = salida.replace('</head>', CSS + '</head>');
+}
+
+/* ---------- giro del ebook relativo a la pantalla ---------- */
+/*  El script original media el avance desde scrollY = 0, pensado para un
+ *  ebook arriba de todo. Ahora vive en la segunda seccion: gira desde que
+ *  asoma por abajo (85% del alto de pantalla) hasta que su mitad llega al
+ *  tercio de arriba. Asi da la vuelta entera mientras se ve, este donde este.
+ */
+{
+  const GIRO = [
+    ['var actual = -1, vivo = false, pedido = false, recorrido = 1;',
+     'var actual = -1, vivo = false, pedido = false, recorrido = 1, inicio = 0;'],
+    ['recorrido = Math.max((r.top + scrollActual() + r.height) * 0.62, 1);',
+     'inicio = r.top + scrollActual() - innerHeight * 0.85;\n          recorrido = Math.max(r.height * 0.5 + innerHeight * 0.6, 1);'],
+    ['var p = Math.min(Math.max(scrollActual() / recorrido, 0), 1);',
+     'var p = Math.min(Math.max((scrollActual() - inicio) / recorrido, 0), 1);'],
+  ];
+  GIRO.forEach(([a, b]) => {
+    if (!salida.includes(a)) avisos.push('OJO giro: no encontre ' + a.slice(0, 48));
+    else salida = salida.split(a).join(b);
+  });
+}
+
+/* ---------- la barra fija se va cuando aparece el pie ---------- */
+/*  El pie tiene su propio boton. Si la barra se queda, tapa el copyright y
+ *  obliga a dejar un margen vacio abajo. Asi el copyright queda al fondo.
+ */
+{
+  const CSS = '<style>html.pie-visible .mobile-buy.show{transform:translateY(110%)}</style>';
+  const JS = '<script>(function(){var p=document.querySelector("footer");if(!p)return;' +
+    'if(!("IntersectionObserver" in window))return;' +
+    'new IntersectionObserver(function(e){document.documentElement.classList.toggle("pie-visible",e[0].isIntersecting)},{rootMargin:"0px 0px -8px 0px"}).observe(p);' +
+    '})();</script>';
+  salida = salida.replace('</head>', CSS + '</head>').replace('</body>', JS + '</body>');
+}
+
+/* ---------- caso con tiras: estilos y comportamiento ---------- */
+/*  Vidrio con la misma receta que las tarjetas (tcard, precio, garantia).
+ *  Alto fijo por tira y ancho segun la proporcion de cada imagen: nada se
+ *  recorta. En celular el panel se abre casi de borde a borde. */
+{
+  const CSS = `<style>
+.v2-caso{margin:clamp(26px,3.4vw,44px) 0 clamp(52px,7vw,96px)}
+.v2-caso-tabs{display:flex;gap:4px;width:max-content;max-width:100%;margin:0 auto clamp(16px,2vw,24px);padding:5px;border-radius:999px;
+  background:linear-gradient(135deg,rgba(255,255,255,.66) 0%,rgba(255,255,255,.3) 100%);border:1px solid rgba(255,255,255,.75);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 18px 40px -24px rgba(20,20,16,.38);
+  -webkit-backdrop-filter:blur(18px) saturate(1.45);backdrop-filter:blur(18px) saturate(1.45)}
+.v2-caso-tab{display:flex;align-items:center;gap:10px;padding:5px 20px 5px 5px;border:0;border-radius:999px;background:transparent;cursor:pointer;
+  font:500 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);
+  transition:background .5s var(--ease),color .5s var(--ease),box-shadow .5s var(--ease)}
+.v2-caso-tab img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex:none;background:var(--paper-2);box-shadow:0 0 0 1px rgba(20,20,16,.1)}
+@media(hover:hover){.v2-caso-tab:not(.on):hover{background:rgba(255,255,255,.6)}}
+.v2-caso-tab.on{color:var(--paper);background:linear-gradient(120deg,var(--forest-deep) 0%,var(--ink) 55%,#0b0b09 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 0 1px rgba(201,185,138,.24),0 10px 24px -12px rgba(21,34,24,.6)}
+.v2-caso-tab.on img{box-shadow:0 0 0 1.5px rgba(201,185,138,.75)}
+.v2-caso-vitrina{position:relative;overflow:hidden;border-radius:24px;padding:14px 0;
+  background:linear-gradient(135deg,rgba(255,255,255,.58) 0%,rgba(255,255,255,.24) 42%,rgba(255,255,255,.16) 100%);
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -22px 44px -34px rgba(255,255,255,.9),0 34px 80px -34px rgba(20,20,16,.32);
+  -webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5)}
+.v2-caso-tira{--h:clamp(320px,30vw,430px);position:relative;display:flex;align-items:center;gap:12px;padding:0 14px;
+  overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-padding-inline:14px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;outline:0}
+.v2-caso-tira::-webkit-scrollbar{display:none}
+.v2-caso-tira[hidden]{display:none!important}
+.v2-caso-tira:focus-visible{outline:2px solid var(--forest);outline-offset:-2px}
+.v2-caso-tira.entra{animation:v2CasoEntra .8s var(--ease) both}
+.v2-caso-tira img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
+@media(hover:hover) and (pointer:fine){.v2-caso-tira{cursor:grab}}
+.v2-caso-tira.arrastrando{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto}
+.v2-caso-tira.arrastrando .zoomable{pointer-events:none}
+@keyframes v2CasoEntra{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.v2-caso-fig{flex:none;height:var(--h);margin:0;scroll-snap-align:start;border-radius:14px;overflow:hidden;background:var(--paper-2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 16px 34px -22px rgba(20,20,16,.42)}
+.v2-caso-fig .zoomable{display:block;position:relative;width:100%;height:100%;padding:0;border:0;background:none;border-radius:inherit;overflow:hidden;cursor:zoom-in}
+.v2-caso-fig img{display:block;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+@media(hover:hover){.v2-caso-fig:hover img{transform:scale(1.035)}}
+.v2-caso-chip{position:absolute;left:10px;top:10px;padding:8px 11px;border-radius:999px;
+  font:500 9.5px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ink);
+  background:linear-gradient(135deg,rgba(255,255,255,.8),rgba(255,255,255,.48));border:1px solid rgba(255,255,255,.85);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 8px 20px -10px rgba(20,20,16,.4);
+  -webkit-backdrop-filter:blur(10px) saturate(1.4);backdrop-filter:blur(10px) saturate(1.4)}
+.v2-caso-puente{flex:none;position:relative;z-index:2;display:grid;place-items:center;width:46px;height:46px;margin:0 -29px;border-radius:50%;color:var(--ink);
+  background:linear-gradient(135deg,rgba(255,255,255,.82),rgba(255,255,255,.44));border:1px solid rgba(255,255,255,.9);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 12px 26px -12px rgba(20,20,16,.45);
+  -webkit-backdrop-filter:blur(12px) saturate(1.4);backdrop-filter:blur(12px) saturate(1.4)}
+.v2-caso-nota{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:clamp(14px,1.8vw,20px);
+  font:400 10px/1.55 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:center}
+.v2-caso-mover{flex:none;display:grid;place-items:center;width:42px;height:42px;padding:0;border-radius:50%;cursor:pointer;color:var(--ink);
+  background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(255,255,255,.36));border:1px solid rgba(255,255,255,.82);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 10px 24px -14px rgba(20,20,16,.4);
+  -webkit-backdrop-filter:blur(12px) saturate(1.4);backdrop-filter:blur(12px) saturate(1.4);
+  transition:background .4s var(--ease),color .4s var(--ease),opacity .4s var(--ease)}
+@media(hover:hover){.v2-caso-mover:hover:not(:disabled){background:var(--ink);color:var(--paper)}}
+.v2-caso-mover:disabled{opacity:.35;cursor:default}
+.v2-caso-tab:focus-visible,.v2-caso-mover:focus-visible{outline:2px solid var(--forest);outline-offset:3px}
+@media(max-width:720px){
+  .v2-caso-vitrina{margin-inline:calc(10px - var(--gut));border-radius:20px;padding:10px 0;
+    background:linear-gradient(135deg,rgba(255,255,255,.7) 0%,rgba(255,255,255,.4) 45%,rgba(255,255,255,.3) 100%);
+    -webkit-backdrop-filter:none;backdrop-filter:none}
+  .v2-caso-tira{--h:min(86vw,400px);gap:10px;padding:0 10px;scroll-padding-inline:10px}
+  .v2-caso-fig{border-radius:12px}
+  .v2-caso-puente{width:40px;height:40px;margin:0 -25px}
+  .v2-caso-tab{gap:8px;padding:4px 16px 4px 4px;font-size:10.5px}
+  .v2-caso-tab img{width:30px;height:30px}
+  .v2-caso-nota{gap:12px}
+  .v2-caso-nota span{max-width:250px}
+  .v2-caso-mover{width:38px;height:38px}
+}
+@media(prefers-reduced-motion:reduce){.v2-caso-tira.entra{animation:none}.v2-caso-fig img{transition:none}}
+</style>`;
+  const JS = `<script>(function(){
+  var quieto = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  [].forEach.call(document.querySelectorAll(".v2-caso"), function(c){
+    var tabs = [].slice.call(c.querySelectorAll(".v2-caso-tab")),
+        tiras = [].slice.call(c.querySelectorAll(".v2-caso-tira")),
+        movs = [].slice.call(c.querySelectorAll(".v2-caso-mover")),
+        actual = 0;
+    if (!tabs.length || tabs.length !== tiras.length) return;
+    function estado(){
+      var t = tiras[actual];
+      if (!t.clientWidth) { movs.forEach(function(b){ b.disabled = false; }); return; }
+      var fin = t.scrollWidth - t.clientWidth - 2;
+      movs.forEach(function(b){ b.disabled = (+b.getAttribute("data-mover") < 0) ? t.scrollLeft <= 2 : t.scrollLeft >= fin; });
+    }
+    function ir(n, animar, foco){
+      actual = n;
+      tabs.forEach(function(t, i){ var si = i === n; t.classList.toggle("on", si); t.setAttribute("aria-selected", si ? "true" : "false"); t.tabIndex = si ? 0 : -1; });
+      tiras.forEach(function(t, i){ t.hidden = i !== n; });
+      var t = tiras[n]; t.scrollLeft = 0;
+      if (animar && !quieto) { t.classList.remove("entra"); void t.offsetWidth; t.classList.add("entra"); }
+      if (foco) tabs[n].focus();
+      estado();
+    }
+    tabs.forEach(function(t, i){
+      t.addEventListener("click", function(){ if (i !== actual) ir(i, true); });
+      t.addEventListener("keydown", function(e){
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+        e.preventDefault(); ir((i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length, true, true);
+      });
+    });
+    tiras.forEach(function(t){
+      t.addEventListener("scroll", estado, { passive: true });
+      t.addEventListener("animationend", function(){ t.classList.remove("entra"); });
+      if ("ResizeObserver" in window) new ResizeObserver(estado).observe(t);
+      /* mouse: se arrastra como con el dedo; al soltar se acomoda en la pieza mas cercana */
+      var arr = null, movio = false;
+      t.addEventListener("pointerdown", function(e){ if (e.pointerType !== "mouse" || e.button !== 0) return; arr = { x: e.clientX, s: t.scrollLeft, id: e.pointerId, v: 0, u: e.clientX }; movio = false; });
+      t.addEventListener("pointermove", function(e){
+        if (!arr || e.pointerId !== arr.id) return;
+        var d = e.clientX - arr.x;
+        if (!movio && Math.abs(d) > 6) { movio = true; t.classList.add("arrastrando"); try { t.setPointerCapture(e.pointerId); } catch (_) {} }
+        if (movio) { arr.v = e.clientX - arr.u; arr.u = e.clientX; t.scrollLeft = arr.s - d; }
+      });
+      var soltar = function(){
+        if (!arr) return; var v = arr.v; arr = null; if (!movio) return;
+        var pad = parseFloat(getComputedStyle(t).paddingLeft) || 0, meta = t.scrollLeft - v * 8, mejor = 0, dist = 1e9;
+        [].forEach.call(t.querySelectorAll(".v2-caso-fig"), function(f){ var p = f.offsetLeft - pad, dd = Math.abs(p - meta); if (dd < dist) { dist = dd; mejor = p; } });
+        /* el iman vuelve recien cuando termina de acomodarse: si no, salta hacia atras un instante */
+        var fin = function(){ clearTimeout(tm); t.removeEventListener("scrollend", fin); t.classList.remove("arrastrando"); };
+        var tm = setTimeout(fin, 750); t.addEventListener("scrollend", fin);
+        t.scrollTo({ left: Math.min(mejor, t.scrollWidth - t.clientWidth), behavior: quieto ? "auto" : "smooth" });
+        setTimeout(function(){ movio = false; }, 0);
+      };
+      t.addEventListener("pointerup", soltar); t.addEventListener("pointercancel", soltar);
+      t.addEventListener("click", function(e){ if (movio) { e.preventDefault(); e.stopPropagation(); } }, true);
+    });
+    movs.forEach(function(b){ b.addEventListener("click", function(){
+      var t = tiras[actual];
+      t.scrollBy({ left: (+b.getAttribute("data-mover")) * Math.max(t.clientWidth * 0.8, 220), behavior: quieto ? "auto" : "smooth" });
+    }); });
+    addEventListener("resize", estado, { passive: true });
+    /* al acercarse la seccion, las primeras del otro producto se bajan antes: el cambio es instantaneo */
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function(es){
+        if (!es[0].isIntersecting) return; io.disconnect(); estado();
+        tiras.forEach(function(t){ [].slice.call(t.querySelectorAll("img"), 0, 3).forEach(function(im){ im.loading = "eager"; }); });
+      }, { rootMargin: "600px 0px" });
+      io.observe(c);
+    }
+    ir(0, false);
+  });
+})();</script>`;
+  salida = salida.replace('</head>', CSS + '</head>').replace('</body>', JS + '</body>');
 }
 
 fs.writeFileSync('_nueva.html', salida, 'utf8');
