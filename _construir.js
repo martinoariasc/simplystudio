@@ -137,7 +137,7 @@ function figuras(clon) {
   return PIEZAS.map(([f, marca], i) =>
     '<figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/colabs/' + f + '.jpg"' +
     (clon ? ' tabindex="-1"' : '') + ' aria-label="Ampliar anuncio de ' + marca + '">' +
-    '<img src="assets/colabs/' + f + '.jpg" srcset="assets/colabs/' + f + '-m.webp 600w, assets/colabs/' + f + '.webp 900w" sizes="(max-width:720px) 72vw, 440px" loading="lazy" decoding="async" width="1100" height="1375" alt="Anuncio de ' + marca + ' hecho con Prompt Ads">' +
+    '<img src="assets/colabs/' + f + '.jpg" srcset="assets/colabs/' + f + '-m.webp 600w, assets/colabs/' + f + '.webp 900w" sizes="(max-width:720px) 200px, 440px" loading="lazy" decoding="async" width="1100" height="1375" alt="Anuncio de ' + marca + ' hecho con Prompt Ads">' +
     '</button></figure>'
   ).join('\n');
 }
@@ -270,17 +270,17 @@ const ORIGEN = '<div class="v2-origen reveal">\n' +
  * Reemplaza la foto grande + la grilla; si algo no aparece, queda lo anterior. */
 const CASOS = [
   { id: 'bolso', nombre: 'Bolso', mini: 'assets/caso-cos/real-640.webp',
-    origen: { full: 'assets/caso-cos/real.webp', w: 1128, h: 1692, sizes: '(max-width:720px) 58vw, 287px',
+    origen: { full: 'assets/caso-cos/real.webp', w: 1128, h: 1692, sizes: '(max-width:720px) 213px, 287px',
       set: [['assets/caso-cos/real-640.webp', 640], ['assets/caso-cos/real.webp', 1128]],
       alt: 'Foto original del bolso, sobre fondo blanco' },
-    piezas: [1, 2, 3, 4, 5, 6, 7, 8].map(n => ({ full: 'assets/caso-cos/c' + n + '.webp', w: 1122, h: 1402, sizes: '(max-width:720px) 69vw, 344px',
+    piezas: [1, 2, 3, 4, 5, 6, 7, 8].map(n => ({ full: 'assets/caso-cos/c' + n + '.webp', w: 1122, h: 1402, sizes: '(max-width:720px) 213px, 344px',
       set: [['assets/caso-cos/c' + n + '-640.webp', 640], ['assets/caso-cos/c' + n + '.webp', 1122]],
       alt: 'Anuncio del bolso creado con el Método Prompt Ads' })) },
   { id: 'zapatillas', nombre: 'Zapatillas', mini: 'assets/caso-nike/real-600.webp',
-    origen: { full: 'assets/caso-nike/real.webp', w: 900, h: 1200, sizes: '(max-width:720px) 65vw, 323px',
+    origen: { full: 'assets/caso-nike/real.webp', w: 900, h: 1200, sizes: '(max-width:720px) 200px, 323px',
       set: [['assets/caso-nike/real-600.webp', 600], ['assets/caso-nike/real.webp', 900]],
       alt: 'Foto original de las zapatillas, sacada con un celular sobre una cama' },
-    piezas: [1, 2, 3, 4, 5].map(n => ({ full: 'assets/caso-nike/n' + n + '.webp', w: 1000, h: 1000, sizes: '(max-width:720px) 86vw, 430px',
+    piezas: [1, 2, 3, 4, 5].map(n => ({ full: 'assets/caso-nike/n' + n + '.webp', w: 1000, h: 1000, sizes: '(max-width:720px) 213px, 430px',
       set: [['assets/caso-nike/n' + n + '-640.webp', 640], ['assets/caso-nike/n' + n + '.webp', 1000]],
       alt: 'Anuncio de las zapatillas creado con el Método Prompt Ads' })) },
 ];
@@ -427,6 +427,7 @@ const miniScript = '\n<script>\n' +
 '<script>\n' +
 '(function(){\n' +
 '  document.querySelectorAll(".v2-gal").forEach(function(gal){\n' +
+'  if(matchMedia("(hover: none) and (pointer: coarse)").matches){ gal.classList.add("v2-gal-nativa"); return; }  /* tactil: deslizar nativo */\n' +
 '  var track=gal.querySelector(".v2-gal-track"), set=gal.querySelector(".v2-gal-set"); if(!track||!set) return;\n' +
 '  var quieto=matchMedia("(prefers-reduced-motion: reduce)").matches;\n' +
 '  var x=0, vel=0, VEL=0.45, pausaHasta=0, encima=false, arr=null, movio=false, visible=true, w=0;\n' +
@@ -1112,6 +1113,32 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   });
 })();</script>`;
   salida = salida.replace('</head>', CSS + '</head>').replace('</body>', JS + '</body>');
+}
+
+/* ---------- galerias en pantallas tactiles: deslizar nativo (18/09) ---------- */
+/*  En iPhone la marquesina movida por JS (una tira de 36.000 px con 116 piezas
+ *  que avanza sola y va cargando fotos grandes) agotaba la memoria y Safari
+ *  cerraba la pagina. En pantallas tactiles la galeria pasa a scroll nativo:
+ *  sin motor, sin la copia duplicada, con iman por pieza. En escritorio sigue
+ *  la marquesina de siempre. */
+{
+  const CSS = '<style>@media (hover:none) and (pointer:coarse){' +
+    '.v2-gal{overflow-x:auto!important;overflow-y:hidden!important;touch-action:auto!important;cursor:auto!important;' +
+    'scroll-snap-type:x mandatory;scroll-padding-inline:var(--gut,20px);overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}' +
+    '.v2-gal::-webkit-scrollbar{display:none}' +
+    '.v2-gal-track{transform:none!important;will-change:auto!important;animation:none!important;' +
+    'padding-left:var(--gut,20px)!important;padding-right:calc(var(--gut,20px) - 18px)!important}' +
+    '.v2-gal-set[aria-hidden="true"]{display:none!important}' +
+    '.v2-gal .v2-piece{scroll-snap-align:start}' +
+    '.v2-hero-gal .v2-gal{animation:none!important;opacity:1!important;transform:none!important}' +
+    '}</style>';
+  salida = salida.replace('</head>', CSS + '</head>');
+}
+/* el boton "Ver que puedes crear" llevaba a la galeria, que ahora es lo primero: sobra */
+{
+  const re = /\s*<a class="btn ghost" href="#resultado">Ver qué puedes crear<\/a>/;
+  if (!re.test(salida)) avisos.push('no encontre el boton Ver que puedes crear');
+  else salida = salida.replace(re, '');
 }
 
 fs.writeFileSync('_nueva.html', salida, 'utf8');
