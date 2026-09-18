@@ -28,6 +28,8 @@ MANO.unshift(['Bose', '5.png'], ['Bose', '9.png'], ['Bose', '4.png'], ['Bose', '
   ['rolex', '11.png'], ['rolex', '5.png'], ['rolex', '7.png'], ['rolex', '10.png'],
   ['simply burguer', '5.png'], ['simply burguer', '7.png'], ['simply burguer', '2.png'],
   ['pizza', '6.png']);
+/* 18/09 (2): las cuatro que abren, en este orden; las repetidas mas abajo se saltean solas */
+MANO.unshift(['Bose', '5.png'], ['COS bolso', '11.png'], ['peine', '2.png'], ['rolex', '5.png']);
 const usado = new Set();
 const lista = [];
 const agregar = x => { if (usado.has(x.archivo)) return; usado.add(x.archivo); lista.push(x); };
@@ -52,6 +54,27 @@ while (lista.length < OBJETIVO && agrego) {
     agregar(x); cuenta[m] = (cuenta[m] || 0) + 1; agrego = true;
     if (lista.length >= OBJETIVO) break;
   }
+}
+
+/* 18/09: orden final alternado. Las cuatro primeras quedan fijas; despues cada
+ * lugar lo toma la primera de la lista que no repita ninguna de las tres marcas
+ * anteriores (si no hay, dos; si no, una). La galeria es un bucle: las ultimas
+ * tampoco pueden repetir la marca de las primeras. */
+{
+  const FIJAS = 4;
+  const orden = lista.slice(0, FIJAS), resto = lista.slice(FIJAS);
+  while (resto.length) {
+    let k = -1;
+    for (let v = 3; v >= 1 && k === -1; v--) {
+      const cerca = orden.slice(-v).map(x => x.marca);
+      if (resto.length <= v) cerca.push(...orden.slice(0, v - resto.length + 1).map(x => x.marca));
+      k = resto.findIndex(x => !cerca.includes(x.marca));
+    }
+    orden.push(resto.splice(k === -1 ? 0 : k, 1)[0]);
+  }
+  const n = orden.length, malas = orden.filter((x, i) => x.marca === orden[(i + 1) % n].marca).length;
+  if (malas) console.log('  OJO: ' + malas + ' pares de la misma marca seguidos');
+  lista.splice(0, n, ...orden);
 }
 
 /* conversion */

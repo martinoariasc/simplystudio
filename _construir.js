@@ -263,6 +263,70 @@ const ORIGEN = '<div class="v2-origen reveal">\n' +
   'El sistema la convirtió en una campaña entera en minutos. <strong>Con la tuya pasa exactamente lo mismo.</strong></p></div>\n' +
   '</div>\n';
 /* orden nuevo: la foto de partida, los anuncios, y recien ahi "como se hace" */
+/* CASO (18/09): selector Zapatillas | Bolso y una tira horizontal por producto,
+ * dentro de un panel de vidrio como las demas tarjetas. Primero la foto de
+ * partida, despues todo lo que salio de ella. Cada pieza con su proporcion real
+ * (nada se recorta) y srcset para que se vea nitida en cualquier pantalla.
+ * Reemplaza la foto grande + la grilla; si algo no aparece, queda lo anterior. */
+const CASOS = [
+  { id: 'bolso', nombre: 'Bolso', mini: 'assets/caso-cos/real-640.webp',
+    origen: { full: 'assets/caso-cos/real.webp', w: 1128, h: 1692, sizes: '(max-width:720px) 58vw, 287px',
+      set: [['assets/caso-cos/real-640.webp', 640], ['assets/caso-cos/real.webp', 1128]],
+      alt: 'Foto original del bolso, sobre fondo blanco' },
+    piezas: [1, 2, 3, 4, 5, 6, 7, 8].map(n => ({ full: 'assets/caso-cos/c' + n + '.webp', w: 1122, h: 1402, sizes: '(max-width:720px) 69vw, 344px',
+      set: [['assets/caso-cos/c' + n + '-640.webp', 640], ['assets/caso-cos/c' + n + '.webp', 1122]],
+      alt: 'Anuncio del bolso creado con el Método Prompt Ads' })) },
+  { id: 'zapatillas', nombre: 'Zapatillas', mini: 'assets/caso-nike/real-600.webp',
+    origen: { full: 'assets/caso-nike/real.webp', w: 900, h: 1200, sizes: '(max-width:720px) 65vw, 323px',
+      set: [['assets/caso-nike/real-600.webp', 600], ['assets/caso-nike/real.webp', 900]],
+      alt: 'Foto original de las zapatillas, sacada con un celular sobre una cama' },
+    piezas: [1, 2, 3, 4, 5].map(n => ({ full: 'assets/caso-nike/n' + n + '.webp', w: 1000, h: 1000, sizes: '(max-width:720px) 86vw, 430px',
+      set: [['assets/caso-nike/n' + n + '-640.webp', 640], ['assets/caso-nike/n' + n + '.webp', 1000]],
+      alt: 'Anuncio de las zapatillas creado con el Método Prompt Ads' })) },
+];
+const CASO_DER = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>';
+const CASO_IZQ = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>';
+function piezaCaso(p, esOrigen) {
+  return '<figure class="v2-caso-fig' + (esOrigen ? ' v2-caso-origen' : '') + '" style="aspect-ratio:' + p.w + '/' + p.h + '">' +
+    '<button class="zoomable" type="button" data-full="' + p.full + '" aria-label="Ampliar: ' + p.alt + '">' +
+    '<img src="' + p.set[0][0] + '" srcset="' + p.set.map(([u, w]) => u + ' ' + w + 'w').join(', ') + '" sizes="' + p.sizes + '"' +
+    ' loading="lazy" decoding="async" width="' + p.w + '" height="' + p.h + '" alt="' + p.alt + '">' +
+    (esOrigen ? '<span class="v2-caso-chip">Foto original</span>' : '') +
+    '</button></figure>';
+}
+const TIRAS = '<div class="v2-caso reveal">' +
+  '<div class="v2-caso-tabs" role="tablist" aria-label="Elige un producto">' +
+  CASOS.map((c, i) => '<button type="button" class="v2-caso-tab' + (i ? '' : ' on') + '" role="tab" id="caso-tab-' + c.id + '" aria-controls="caso-' + c.id + '"' +
+    ' aria-selected="' + (i ? 'false' : 'true') + '"' + (i ? ' tabindex="-1"' : '') + '>' +
+    '<img src="' + c.mini + '" alt="" width="32" height="32" loading="lazy" decoding="async">' + c.nombre + '</button>').join('') +
+  '</div>' +
+  '<div class="v2-caso-vitrina">' +
+  CASOS.map(c => '<div class="v2-caso-tira" id="caso-' + c.id + '" role="tabpanel" aria-labelledby="caso-tab-' + c.id + '" tabindex="0">' +
+    piezaCaso(c.origen, true) +
+    '<span class="v2-caso-puente" aria-hidden="true">' + CASO_DER + '</span>' +
+    c.piezas.map(p => piezaCaso(p, false)).join('') +
+    '</div>').join('') +
+  '</div>' +
+  '<div class="v2-caso-nota">' +
+  '<button type="button" class="v2-caso-mover" data-mover="-1" aria-label="Ver los anteriores">' + CASO_IZQ + '</button>' +
+  '<span>Desliza para ver todo lo que salió de esta simple imagen</span>' +
+  '<button type="button" class="v2-caso-mover" data-mover="1" aria-label="Ver los siguientes">' + CASO_DER + '</button>' +
+  '</div>' +
+  '</div>\n';
+function casoTiras(sec) {
+  const conOrigen = origen(sec);                 /* los pasos "Como se hace" se arman ahi; se reusan tal cual */
+  const i = sec.indexOf('<div class="case-steps">');
+  const g0 = sec.indexOf('<div class="case-grid">');
+  const g1 = sec.indexOf('<div class="marquee-hint"', g0);
+  const p0 = conOrigen.indexOf('<div class="v2-como reveal">');
+  const p1 = conOrigen.indexOf('</div>', conOrigen.indexOf('</article>', conOrigen.lastIndexOf('<article class="case-step'))) + 6;
+  if (i === -1 || g0 === -1 || g1 === -1 || p0 === -1 || p1 < p0) { avisos.push('OJO caso: no encontre sus partes, queda la version anterior'); return conOrigen; }
+  const pasos = conOrigen.slice(p0, p1);
+  const finPasos = sec.indexOf('</div>', sec.indexOf('</article>', sec.lastIndexOf('<article class="case-step'))) + 6;
+  const cola = sec.slice(finPasos).replace(sec.slice(g0, g1), '').replace(/<div class="marquee-hint">[\s\S]*?<\/div>\s*/, '');
+  return sec.slice(0, i) + TIRAS + pasos + cola;
+}
+
 function origen(sec) {
   const i = sec.indexOf('<div class="case-steps">');
   const g0 = sec.indexOf('<div class="case-grid">');
@@ -303,7 +367,7 @@ secciones.forEach(sec => {
   if (/^<section class="hero/.test(sec.trim())) { nuevas.push(heroGaleria()); nuevas.push(rearmarHero(sec)); nuevas.push(MARCAS); return; }
   if (/class="showcase/.test(sec.slice(0, 90))) return;   /* su galeria ahora abre la landing */
   if (/class="pain/.test(sec.slice(0, 90))) sec = plegarLeccion(sec);
-  if (/class="case/.test(sec.slice(0, 90))) sec = origen(sec);
+  if (/class="case/.test(sec.slice(0, 90))) sec = casoTiras(sec);
   if (/class="audience/.test(sec.slice(0, 90))) sec = nichos(sec);
   sec = decorar(sec);
   nuevas.push(conCierre(sec.replace('<section', '<section data-esc="' + esc + '"')));
@@ -507,7 +571,7 @@ const TESTIMONIOS = {
   else salida = salida.replace(re, '');
 }
 parrafo('Tomamos la foto de un producto cualquiera',
-  'Tomamos la foto de un producto cualquiera, unas zapatillas, y en menos de 5 minutos salieron todos estos anuncios. Dentro del sistema ves <b>el proceso completo con capturas reales</b>, paso a paso, para que lo repitas con tu producto sin adivinar nada.');
+  'Tomamos la foto simple de dos productos, un bolso y unas zapatillas, y en minutos salieron todos estos anuncios. Dentro del sistema ves <b>el proceso completo con capturas reales</b>, paso a paso, para que lo repitas con tu producto sin adivinar nada.');
 parrafo('El mismo sistema de seis PDFs',
   'Ninguna la hizo una agencia. Cada una salió de una foto común y de los seis PDFs del sistema, en minutos. <b>Es exactamente lo que puedes hacer hoy con lo que tú vendes.</b>');
 
@@ -897,6 +961,156 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
     'if(!("IntersectionObserver" in window))return;' +
     'new IntersectionObserver(function(e){document.documentElement.classList.toggle("pie-visible",e[0].isIntersecting)},{rootMargin:"0px 0px -8px 0px"}).observe(p);' +
     '})();</script>';
+  salida = salida.replace('</head>', CSS + '</head>').replace('</body>', JS + '</body>');
+}
+
+/* ---------- caso con tiras: estilos y comportamiento ---------- */
+/*  Vidrio con la misma receta que las tarjetas (tcard, precio, garantia).
+ *  Alto fijo por tira y ancho segun la proporcion de cada imagen: nada se
+ *  recorta. En celular el panel se abre casi de borde a borde. */
+{
+  const CSS = `<style>
+.v2-caso{margin:clamp(26px,3.4vw,44px) 0 clamp(52px,7vw,96px)}
+.v2-caso-tabs{display:flex;gap:4px;width:max-content;max-width:100%;margin:0 auto clamp(16px,2vw,24px);padding:5px;border-radius:999px;
+  background:linear-gradient(135deg,rgba(255,255,255,.66) 0%,rgba(255,255,255,.3) 100%);border:1px solid rgba(255,255,255,.75);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 18px 40px -24px rgba(20,20,16,.38);
+  -webkit-backdrop-filter:blur(18px) saturate(1.45);backdrop-filter:blur(18px) saturate(1.45)}
+.v2-caso-tab{display:flex;align-items:center;gap:10px;padding:5px 20px 5px 5px;border:0;border-radius:999px;background:transparent;cursor:pointer;
+  font:500 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);
+  transition:background .5s var(--ease),color .5s var(--ease),box-shadow .5s var(--ease)}
+.v2-caso-tab img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex:none;background:var(--paper-2);box-shadow:0 0 0 1px rgba(20,20,16,.1)}
+@media(hover:hover){.v2-caso-tab:not(.on):hover{background:rgba(255,255,255,.6)}}
+.v2-caso-tab.on{color:var(--paper);background:linear-gradient(120deg,var(--forest-deep) 0%,var(--ink) 55%,#0b0b09 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 0 1px rgba(201,185,138,.24),0 10px 24px -12px rgba(21,34,24,.6)}
+.v2-caso-tab.on img{box-shadow:0 0 0 1.5px rgba(201,185,138,.75)}
+.v2-caso-vitrina{position:relative;overflow:hidden;border-radius:24px;padding:14px 0;
+  background:linear-gradient(135deg,rgba(255,255,255,.58) 0%,rgba(255,255,255,.24) 42%,rgba(255,255,255,.16) 100%);
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -22px 44px -34px rgba(255,255,255,.9),0 34px 80px -34px rgba(20,20,16,.32);
+  -webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5)}
+.v2-caso-tira{--h:clamp(320px,30vw,430px);position:relative;display:flex;align-items:center;gap:12px;padding:0 14px;
+  overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-padding-inline:14px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;outline:0}
+.v2-caso-tira::-webkit-scrollbar{display:none}
+.v2-caso-tira[hidden]{display:none!important}
+.v2-caso-tira:focus-visible{outline:2px solid var(--forest);outline-offset:-2px}
+.v2-caso-tira.entra{animation:v2CasoEntra .8s var(--ease) both}
+.v2-caso-tira img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
+@media(hover:hover) and (pointer:fine){.v2-caso-tira{cursor:grab}}
+.v2-caso-tira.arrastrando{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto}
+.v2-caso-tira.arrastrando .zoomable{pointer-events:none}
+@keyframes v2CasoEntra{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.v2-caso-fig{flex:none;height:var(--h);margin:0;scroll-snap-align:start;border-radius:14px;overflow:hidden;background:var(--paper-2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 16px 34px -22px rgba(20,20,16,.42)}
+.v2-caso-fig .zoomable{display:block;position:relative;width:100%;height:100%;padding:0;border:0;background:none;border-radius:inherit;overflow:hidden;cursor:zoom-in}
+.v2-caso-fig img{display:block;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+@media(hover:hover){.v2-caso-fig:hover img{transform:scale(1.035)}}
+.v2-caso-chip{position:absolute;left:10px;top:10px;padding:8px 11px;border-radius:999px;
+  font:500 9.5px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ink);
+  background:linear-gradient(135deg,rgba(255,255,255,.8),rgba(255,255,255,.48));border:1px solid rgba(255,255,255,.85);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 8px 20px -10px rgba(20,20,16,.4);
+  -webkit-backdrop-filter:blur(10px) saturate(1.4);backdrop-filter:blur(10px) saturate(1.4)}
+.v2-caso-puente{flex:none;position:relative;z-index:2;display:grid;place-items:center;width:46px;height:46px;margin:0 -29px;border-radius:50%;color:var(--ink);
+  background:linear-gradient(135deg,rgba(255,255,255,.82),rgba(255,255,255,.44));border:1px solid rgba(255,255,255,.9);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 12px 26px -12px rgba(20,20,16,.45);
+  -webkit-backdrop-filter:blur(12px) saturate(1.4);backdrop-filter:blur(12px) saturate(1.4)}
+.v2-caso-nota{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:clamp(14px,1.8vw,20px);
+  font:400 10px/1.55 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:center}
+.v2-caso-mover{flex:none;display:grid;place-items:center;width:42px;height:42px;padding:0;border-radius:50%;cursor:pointer;color:var(--ink);
+  background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(255,255,255,.36));border:1px solid rgba(255,255,255,.82);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 10px 24px -14px rgba(20,20,16,.4);
+  -webkit-backdrop-filter:blur(12px) saturate(1.4);backdrop-filter:blur(12px) saturate(1.4);
+  transition:background .4s var(--ease),color .4s var(--ease),opacity .4s var(--ease)}
+@media(hover:hover){.v2-caso-mover:hover:not(:disabled){background:var(--ink);color:var(--paper)}}
+.v2-caso-mover:disabled{opacity:.35;cursor:default}
+.v2-caso-tab:focus-visible,.v2-caso-mover:focus-visible{outline:2px solid var(--forest);outline-offset:3px}
+@media(max-width:720px){
+  .v2-caso-vitrina{margin-inline:calc(10px - var(--gut));border-radius:20px;padding:10px 0;
+    background:linear-gradient(135deg,rgba(255,255,255,.7) 0%,rgba(255,255,255,.4) 45%,rgba(255,255,255,.3) 100%);
+    -webkit-backdrop-filter:none;backdrop-filter:none}
+  .v2-caso-tira{--h:min(86vw,400px);gap:10px;padding:0 10px;scroll-padding-inline:10px}
+  .v2-caso-fig{border-radius:12px}
+  .v2-caso-puente{width:40px;height:40px;margin:0 -25px}
+  .v2-caso-tab{gap:8px;padding:4px 16px 4px 4px;font-size:10.5px}
+  .v2-caso-tab img{width:30px;height:30px}
+  .v2-caso-nota{gap:12px}
+  .v2-caso-nota span{max-width:250px}
+  .v2-caso-mover{width:38px;height:38px}
+}
+@media(prefers-reduced-motion:reduce){.v2-caso-tira.entra{animation:none}.v2-caso-fig img{transition:none}}
+</style>`;
+  const JS = `<script>(function(){
+  var quieto = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  [].forEach.call(document.querySelectorAll(".v2-caso"), function(c){
+    var tabs = [].slice.call(c.querySelectorAll(".v2-caso-tab")),
+        tiras = [].slice.call(c.querySelectorAll(".v2-caso-tira")),
+        movs = [].slice.call(c.querySelectorAll(".v2-caso-mover")),
+        actual = 0;
+    if (!tabs.length || tabs.length !== tiras.length) return;
+    function estado(){
+      var t = tiras[actual];
+      if (!t.clientWidth) { movs.forEach(function(b){ b.disabled = false; }); return; }
+      var fin = t.scrollWidth - t.clientWidth - 2;
+      movs.forEach(function(b){ b.disabled = (+b.getAttribute("data-mover") < 0) ? t.scrollLeft <= 2 : t.scrollLeft >= fin; });
+    }
+    function ir(n, animar, foco){
+      actual = n;
+      tabs.forEach(function(t, i){ var si = i === n; t.classList.toggle("on", si); t.setAttribute("aria-selected", si ? "true" : "false"); t.tabIndex = si ? 0 : -1; });
+      tiras.forEach(function(t, i){ t.hidden = i !== n; });
+      var t = tiras[n]; t.scrollLeft = 0;
+      if (animar && !quieto) { t.classList.remove("entra"); void t.offsetWidth; t.classList.add("entra"); }
+      if (foco) tabs[n].focus();
+      estado();
+    }
+    tabs.forEach(function(t, i){
+      t.addEventListener("click", function(){ if (i !== actual) ir(i, true); });
+      t.addEventListener("keydown", function(e){
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+        e.preventDefault(); ir((i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length, true, true);
+      });
+    });
+    tiras.forEach(function(t){
+      t.addEventListener("scroll", estado, { passive: true });
+      t.addEventListener("animationend", function(){ t.classList.remove("entra"); });
+      if ("ResizeObserver" in window) new ResizeObserver(estado).observe(t);
+      /* mouse: se arrastra como con el dedo; al soltar se acomoda en la pieza mas cercana */
+      var arr = null, movio = false;
+      t.addEventListener("pointerdown", function(e){ if (e.pointerType !== "mouse" || e.button !== 0) return; arr = { x: e.clientX, s: t.scrollLeft, id: e.pointerId, v: 0, u: e.clientX }; movio = false; });
+      t.addEventListener("pointermove", function(e){
+        if (!arr || e.pointerId !== arr.id) return;
+        var d = e.clientX - arr.x;
+        if (!movio && Math.abs(d) > 6) { movio = true; t.classList.add("arrastrando"); try { t.setPointerCapture(e.pointerId); } catch (_) {} }
+        if (movio) { arr.v = e.clientX - arr.u; arr.u = e.clientX; t.scrollLeft = arr.s - d; }
+      });
+      var soltar = function(){
+        if (!arr) return; var v = arr.v; arr = null; if (!movio) return;
+        var pad = parseFloat(getComputedStyle(t).paddingLeft) || 0, meta = t.scrollLeft - v * 8, mejor = 0, dist = 1e9;
+        [].forEach.call(t.querySelectorAll(".v2-caso-fig"), function(f){ var p = f.offsetLeft - pad, dd = Math.abs(p - meta); if (dd < dist) { dist = dd; mejor = p; } });
+        /* el iman vuelve recien cuando termina de acomodarse: si no, salta hacia atras un instante */
+        var fin = function(){ clearTimeout(tm); t.removeEventListener("scrollend", fin); t.classList.remove("arrastrando"); };
+        var tm = setTimeout(fin, 750); t.addEventListener("scrollend", fin);
+        t.scrollTo({ left: Math.min(mejor, t.scrollWidth - t.clientWidth), behavior: quieto ? "auto" : "smooth" });
+        setTimeout(function(){ movio = false; }, 0);
+      };
+      t.addEventListener("pointerup", soltar); t.addEventListener("pointercancel", soltar);
+      t.addEventListener("click", function(e){ if (movio) { e.preventDefault(); e.stopPropagation(); } }, true);
+    });
+    movs.forEach(function(b){ b.addEventListener("click", function(){
+      var t = tiras[actual];
+      t.scrollBy({ left: (+b.getAttribute("data-mover")) * Math.max(t.clientWidth * 0.8, 220), behavior: quieto ? "auto" : "smooth" });
+    }); });
+    addEventListener("resize", estado, { passive: true });
+    /* al acercarse la seccion, las primeras del otro producto se bajan antes: el cambio es instantaneo */
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function(es){
+        if (!es[0].isIntersecting) return; io.disconnect(); estado();
+        tiras.forEach(function(t){ [].slice.call(t.querySelectorAll("img"), 0, 3).forEach(function(im){ im.loading = "eager"; }); });
+      }, { rootMargin: "600px 0px" });
+      io.observe(c);
+    }
+    ir(0, false);
+  });
+})();</script>`;
   salida = salida.replace('</head>', CSS + '</head>').replace('</body>', JS + '</body>');
 }
 
