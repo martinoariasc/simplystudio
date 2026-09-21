@@ -556,6 +556,41 @@ salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si 
   if (!salida.includes(VIEJO)) avisos.push('checkout: no encontre el enlace viejo');
   else salida = salida.split(VIEJO).join(NUEVO);
 }
+/* ---------- google ads (21/09) ---------- */
+/*  Etiqueta de Google (AW-18441137893) y el codigo del clic del anuncio hasta
+ *  Hotmart. La compra la marca Hotmart con su pixel de Google Ads (etiqueta
+ *  SKmRCOStxv8cEOXdtdlE, solo pagos inmediatos); aca solo se asegura que el
+ *  clic (gclid, gbraid, wbraid) llegue al pago, tambien si la persona vuelve
+ *  otro dia sin el codigo en la direccion. La etiqueta se carga cuando la
+ *  pagina termina de cargar (o a los 4 s), para no frenar el celular.
+ *  No toca el pixel de Meta, ssTrack, sck ni xcod. Para sacarla: borrar este
+ *  bloque y reconstruir. */
+{
+  const ID = 'AW-18441137893';
+  const CABEZA = `<!-- Google Ads: etiqueta de Google -->
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','${ID}',{linker:{domains:['pay.hotmart.com']}});
+(function(){var hecho=0;function carga(){if(hecho)return;hecho=1;var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=${ID}';document.head.appendChild(s);}
+if(document.readyState==='complete')setTimeout(carga,0);else addEventListener('load',function(){setTimeout(carga,0);});setTimeout(carga,4000);})();
+</script>`;
+  const PIE = `<script>
+/* Google Ads: guarda el codigo del clic del anuncio y se lo pasa a Hotmart en el enlace de pago */
+(function(){var K='ss_gads_v1',C=['gclid','gbraid','wbraid'],g={};
+try{g=JSON.parse(localStorage.getItem(K)||'{}')||{};}catch(e){g={};}
+try{var q=new URLSearchParams(location.search),n=null;C.forEach(function(k){var v=q.get(k);if(v&&v.length<600){n=n||{t:Date.now()};n[k]=v;}});if(n)g=n;}catch(e){}
+if(!g.t||Date.now()-g.t>90*864e5)g={};
+try{if(g.t)localStorage.setItem(K,JSON.stringify(g));else localStorage.removeItem(K);}catch(e){}
+if(!g.t)return;
+function pasa(a){try{var u=new URL(a.href);C.forEach(function(k){if(g[k])u.searchParams.set(k,g[k]);});a.href=u.toString();}catch(e){}}
+document.querySelectorAll('a[href*="pay.hotmart.com"]').forEach(pasa);
+document.addEventListener('click',function(ev){var a=ev.target&&ev.target.closest&&ev.target.closest('a[href*="pay.hotmart.com"]');if(a)pasa(a);},true);})();
+</script>`;
+  if (salida.split('</head>').length !== 2) avisos.push('google ads: no encontre un solo </head>');
+  else salida = salida.replace('</head>', () => CABEZA + '\n</head>');
+  if (salida.split('</body>').length !== 2) avisos.push('google ads: no encontre un solo </body>');
+  else salida = salida.replace('</body>', () => PIE + '\n</body>');
+}
 salida = salida.replace('<h2>Uno se ignora. El otro se siente como <em>marca.</em></h2>', '<h2>Uno se ignora. El otro se siente <em>premium.</em></h2>');
 parrafo('No son prompts sueltos',
   'No son prompts sueltos para que pruebes suerte. Es un método de seis archivos y un video: empiezas por la guía, que te enseña a dirigir la IA, y las otras cinco son las que ella ejecuta. El motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora. Y el estilo lo eliges tú: el método te enseña a trasladar la estética que quieras a tu producto, sin que la IA la cambie. Y nada de documentos de puro texto: cada archivo está diseñado, con ejemplos visuales en cada paso. Y además de los archivos, <b>el video explicativo muestra el método entero funcionando</b>, de principio a fin.');
