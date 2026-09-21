@@ -6,6 +6,9 @@ REM
 REM  Vuelve simplystudioai.com a la version marcada con la etiqueta
 REM  "version-que-funciona". Hoy es la del 17/09 (antes del inicio nuevo
 REM  con la galeria arriba): Edicion Septiembre, precio 67, Bose y COS.
+REM  Desde el 21/09 esa version incluye la etiqueta de Google Ads
+REM  (AW-18441137893 y el gclid hasta Hotmart). Cualquier version a la que
+REM  se mueva esta etiqueta tiene que tenerla, o Google deja de medir.
 REM
 REM  No borra nada: crea un cambio nuevo que devuelve los archivos a esa
 REM  version y lo publica. Si despues queres volver a lo nuevo, se puede.
