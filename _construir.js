@@ -1206,6 +1206,89 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   else salida = salida.replace(re, '');
 }
 
+/* ---------- 5f · mas visual (21/09): contador que acompaña, demo del chat, circulo de aprender solo, popup y comparacion con New Balance ---------- */
+/*  Las piezas viven en _mas-visual.html / .css / .js (empiezan con _ : Vercel no las sube; quedan dentro del index). */
+{
+  const MV_HTML = fs.readFileSync('_mas-visual.html', 'utf8');
+  const parte = n => { const m = MV_HTML.split('<!--@@' + n + '-->')[1]; return m ? m.split('<!--@@')[0].trim() : ''; };
+  const RELOJ = '<b data-c=d>00</b><i>d</i><b data-c=h>00</b><i>h</i><b data-c=m>00</b><i>m</i><b data-c=s>00</b><i>s</i>';
+  const cambia = (viejo, nuevo, nombre) => { if (!salida.includes(viejo)) avisos.push('mas visual: no encontre ' + nombre); else salida = salida.split(viejo).join(nuevo); };
+  /* 1 · la barra fija de abajo lleva el reloj */
+  /* el texto de abajo lo sigue escribiendo cambiar-precio.js; queda oculto y el reloj va al lado */
+  const reMovil = /(<b data-cuenta="movil">[\s\S]*?<\/b>)/;
+  /* (la barra de abajo se sacó el 22/09: su reloj ya no se inserta) */
+  /* 2 · (el reloj del header se sacó el 22/09: la franja de arriba queda fija con su reloj) */
+  /* 3 · los tres pasos pasan a ser la demo del chat */
+  const rePasos = /<div class="case-steps">(?:\s*<article class="case-step reveal">[\s\S]*?<\/article>){3}\s*<\/div>/;
+  if (!rePasos.test(salida)) avisos.push('mas visual: no encontre los tres pasos'); else salida = salida.replace(rePasos, parte('demo'));
+  /* 4 · los dos caminos: el circulo de aprender solo contra la linea recta del metodo */
+  const reCaminos = /<section data-esc="Dos caminos" class="difference">[\s\S]*?<\/section>/;
+  if (!reCaminos.test(salida)) avisos.push('mas visual: no encontre los dos caminos'); else salida = salida.replace(reCaminos, parte('caminos'));
+  /* 4b · el ahorro en barras, en lugar de la lista de lo que costaria */
+  const reCosto = /<p class="cost-intro">[\s\S]*?<p class="cost-bridge">[\s\S]*?<\/p>/;
+  if (!reCosto.test(salida)) avisos.push('mas visual: no encontre lo que costaria'); else salida = salida.replace(reCosto, parte('ahorro'));
+  /* 5 · comparacion: el mismo New Balance, feo y con direccion (el 990 editorial) */
+  cambia('assets/prompt-ads/05-comparacion-anuncio-generico-640.webp 640w, assets/prompt-ads/05-comparacion-anuncio-generico.webp 1000w', 'assets/versus-nb/generico-640.webp 640w, assets/versus-nb/generico.webp 1122w', 'srcset generico');
+  cambia('assets/prompt-ads/06-comparacion-anuncio-premium-640.webp 640w, assets/prompt-ads/06-comparacion-anuncio-premium.webp 1000w', 'assets/versus-nb/premium-990-640.webp 640w, assets/versus-nb/premium-990.webp 1122w', 'srcset premium');
+  cambia('assets/prompt-ads/05-comparacion-anuncio-generico-640.webp', 'assets/versus-nb/generico-640.webp', 'generico 640');
+  cambia('assets/prompt-ads/05-comparacion-anuncio-generico.webp', 'assets/versus-nb/generico.webp', 'generico');
+  cambia('assets/prompt-ads/06-comparacion-anuncio-premium-640.webp', 'assets/versus-nb/premium-990-640.webp', 'premium 640');
+  cambia('assets/prompt-ads/06-comparacion-anuncio-premium.webp', 'assets/versus-nb/premium-990.webp', 'premium');
+  salida = salida.replace(/(src="assets\/versus-nb\/(?:generico|premium-990)\.webp" )width="1254" height="1254"/g, '$1width="1122" height="1402"');
+  /* la X roja sobre el generico y el visto azul sobre el premium */
+  const X = '<span class="mv-x" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42"/><path d="M36 36 64 64"/><path d="M64 36 36 64"/></svg></span>';
+  const OK = '<span class="mv-ok" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42"/><path d="M31 52 45 66 71 37"/></svg></span>';
+  const reGen = /(<button class="zoomable" data-full="assets\/versus-nb\/generico\.webp"[\s\S]*?<\/button>)/;
+  const rePre = /(<button class="zoomable" data-full="assets\/versus-nb\/premium-990\.webp"[\s\S]*?<\/button>)/;
+  if (!reGen.test(salida) || !rePre.test(salida)) avisos.push('mas visual: no encontre las imagenes de la comparacion');
+  else salida = salida.replace(reGen, '$1' + X).replace(rePre, '$1' + OK);
+  /* 6 · popup + estilos + comportamiento */
+  /* comprimido: sin comentarios ni sangrías (pesa menos en el celular) */
+  const miniCSS = t => t.replace(/\/\*[\s\S]*?\*\//g, '').split(/\r?\n/).map(l => l.trim()).filter(Boolean).join('\n');
+  const miniJS = t => t.replace(/^[ \t]*\/\*[\s\S]*?\*\/[ \t]*\r?\n/gm, '').split(/\r?\n/).map(l => l.trim()).filter(Boolean).join('\n');
+  const CSS = '<style>' + miniCSS(fs.readFileSync('_mas-visual.css', 'utf8')) + '</style>';
+  /* el popup va antes del lightbox: asi existe cuando corre el script que hace andar los relojes */
+  cambia('<dialog class="lightbox"', parte('popup') + ' <dialog class="lightbox"', 'el lightbox (popup)');
+  /* 7 · garantía: el sello nuevo, la confianza en la tarjeta de precio y "hecho por nosotros" */
+  cambia('<div class="seal"><div><b>7 días</b><span>Aprendes o te devolvemos</span></div></div>', parte('sello'), 'el sello de garantia');
+  const reConf = /<div class="trust-row">[\s\S]*?<\/div>\s*<p class="secure">[\s\S]*?<\/p>/;
+  if (!reConf.test(salida)) avisos.push('mas visual: no encontre la fila de confianza'); else salida = salida.replace(reConf, parte('confianza'));
+  const iG = salida.indexOf('<section data-esc="Garantía" class="guarantee">');
+  const fG = iG < 0 ? -1 : salida.indexOf('</section>', iG);
+  if (fG < 0) avisos.push('mas visual: no encontre la seccion de garantia'); else salida = salida.slice(0, fG) + parte('nuestro') + '\n' + salida.slice(fG);
+  /* 8 · la marca: "Método Prompt Ads" con brillo en la portada; en el título de la galería, grande y subrayada */
+  cambia('<span class="eyebrow muted v2-sube d1">Método Prompt Ads para ChatGPT</span>', '<span class="eyebrow muted v2-sube d1"><span class="mv-marca">Método Prompt Ads</span> para ChatGPT</span>', 'la marca de la portada');
+  cambia('Todos estos anuncios salieron con el <em>Método Prompt Ads.</em>', 'Todos estos anuncios salieron con el <em class="mv-marca mv-marca-grande">Método Prompt Ads.</em>', 'la marca del titulo de la galeria');
+  /* 9 · qué pasa cuando compras: el paso 3 nombra el video y la guía, en el mismo orden que la línea del método */
+  cambia('<li>Entras, sigues la guía y creas tus primeros anuncios <b>en minutos</b>.</li>', '<li>Entras, miras el video explicativo, sigues la guía y creas tus primeros anuncios <b>en minutos</b>.</li>', 'el paso 3 de que pasa cuando compras');
+  /* 10 · la letra chic de la marca, el título de "qué incluye" y la marca arriba del precio */
+  /* las fuentes, servidas desde la propia web (las mismas de Google Fonts): sin pedido externo que frene la primera pintura.
+     Se precargan las tres que se ven apenas abre la página. */
+  const reFuentes = /<link rel="preconnect" href="https:\/\/fonts\.googleapis\.com">\s*<link rel="preconnect" href="https:\/\/fonts\.gstatic\.com" crossorigin>\s*<link href="https:\/\/fonts\.googleapis\.com\/css2\?[^"]*" rel="stylesheet">/;
+  const PRECARGA = ['instrument-serif-normal-400-latin', 'instrument-serif-italic-400-latin', 'inter-normal-latin'].map(n => '<link rel="preload" href="assets/fonts/' + n + '.woff2" as="font" type="font/woff2" crossorigin>').join('');
+  if (!reFuentes.test(salida)) avisos.push('mas visual: no encontre las fuentes de Google'); else salida = salida.replace(reFuentes, PRECARGA + '<style>' + fs.readFileSync('_fuentes.css', 'utf8').trim() + '</style>');
+  /* el reloj de la franja viene en el HTML (antes lo agregaba el script al final y la página saltaba) */
+  const reBanner = /(<span data-cuenta="banner">[\s\S]*?<\/span>)/;
+  if (!reBanner.test(salida)) avisos.push('mas visual: no encontre la franja'); else salida = salida.replace(reBanner, '$1<span class="v2-cuenta-mini">' + RELOJ + '</span>');
+  const reGuardia = /if\(ban\)\{(\s*var mini=document\.createElement\("span"\);)/;
+  if (!reGuardia.test(salida)) avisos.push('mas visual: no encontre el script del reloj de la franja'); else salida = salida.replace(reGuardia, 'if(ban&&!ban.parentNode.querySelector(".v2-cuenta-mini")){$1');
+  cambia('<h2>¿Qué incluye el método Prompt Ads?</h2>', '<h2>¿Qué incluye el <em class="mv-marca mv-marca-grande mv-marca-izq mv-marca-h2">Método Prompt Ads?</em></h2>', 'el titulo de que incluye');
+  const reRotulo = /(<span class="launch-tag">[^<]*<\/span>)/;
+  if (!reRotulo.test(salida)) avisos.push('mas visual: no encontre el rotulo del precio'); else salida = salida.replace(reRotulo, '$1<span class="mv-marca mv-marca-precio">Método Prompt Ads</span>');
+  /* 11 · la franja compacta que queda fija arriba al bajar (antes del script de los relojes, para que el suyo ande) */
+  /* (la franja compacta se sacó el 22/09: la franja real, completa, queda fija) */
+  /* 12 · textos: "esto es para ti" en verde, el método v13 (una guía y cinco archivos) y sin rayas largas */
+  cambia('esto es para ti.</h2>', '<em>esto es para ti.</em></h2>', 'el titulo de para quien es');
+  const reRaya = /empiezan a parecerse\s*(?:—|&mdash;)\s*sin perder coherencia/;
+  if (!reRaya.test(salida)) avisos.push('mas visual: no encontre la raya de variedad total'); else salida = salida.replace(reRaya, 'empiezan a parecerse, sin perder coherencia');
+  const reFaqQue = /Son <b>6 archivos en PDF<\/b> que trabajan juntas:[\s\S]*?producto físico, servicio, local, inmobiliaria o producto digital\./;
+  if (!reFaqQue.test(salida)) avisos.push('mas visual: no encontre la pregunta de que es'); else salida = salida.replace(reFaqQue, 'Son <b>6 archivos en PDF</b> que trabajan juntos: <b>2 son guías que lees tú, y empiezas por ahí</b> (la guía de uso paso a paso, que te enseña todo el proceso con capturas, y la de dirección visual), y <b>4 son archivos de prompts e instrucciones</b> que arrastras directo al chat de ChatGPT (el Protocolo Maestro, el de realismo, el de correcciones y el de variedad). No es un software ni una app: <b>lees la guía, subes la foto de lo que vendes, pegas los archivos en ChatGPT y te genera los anuncios</b>. Funciona para cualquier negocio: producto físico, servicio, local, inmobiliaria o producto digital.');
+  const reFaqEstilo = /Ves un estilo que te gusta\s*(?:—|&mdash;)de cualquier marca, de cualquier rubro(?:—|&mdash;)\s*y el método[\s\S]*?instrucciones exactas\./;
+  if (!reFaqEstilo.test(salida)) avisos.push('mas visual: no encontre la pregunta del estilo'); else salida = salida.replace(reFaqEstilo, 'Ves un estilo que te gusta, de cualquier marca o rubro, y el método te enseña a ponerlo al servicio de TU producto, sin que la IA lo cambie ni invente nada. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas.');
+  const JS = '<script>' + miniJS(fs.readFileSync('_mas-visual.js', 'utf8')) + '</script>';
+  salida = salida.replace('</head>', CSS + '</head>').replace('</body>', JS + '</body>');
+}
+
 fs.writeFileSync('_nueva.html', salida, 'utf8');
 console.log('  _nueva.html: ' + Math.round(salida.length / 1024) + ' KB');
 

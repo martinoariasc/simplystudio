@@ -1,0 +1,621 @@
+/* ================================================================
+   MÁS VISUAL (21/09) · verde esmeralda, contador que acompaña, demo del
+   chat, comparación animada, los dos caminos, el ahorro y el popup.
+   Todo con prefijo mv- para no pisar nada de lo que ya existe.
+   ================================================================ */
+/* ---------- verde esmeralda: el color del beneficio (acentos, etiquetas, precios, detalles) ---------- */
+:root{--forest:#147A3C;--forest-deep:#06130C;--mv-acento:#147A3C;--mv-acento-2:#1FAE5B;--mv-acento-suave:#E4F5E9;--mv-verde-luz:#5BE38F;--mv-rojo:#D93A2F;--verde-si:#147A3C;
+  /* las auras de fondo: la mancha salvia pasa a un verde menta; en la oferta, brillos esmeralda sobre el verde noche */
+  --aura-clara:
+    radial-gradient(46% 34% at 22% 24%, rgba(214,190,130,.66) 0%, rgba(214,190,130,0) 70%),
+    radial-gradient(42% 32% at 84% 30%, rgba(128,204,152,.34) 0%, rgba(128,204,152,0) 70%),
+    radial-gradient(44% 34% at 66% 74%, rgba(236,168,140,.46) 0%, rgba(236,168,140,0) 70%),
+    radial-gradient(38% 30% at 14% 78%, rgba(168,186,212,.44) 0%, rgba(168,186,212,0) 70%),
+    radial-gradient(30% 22% at 50% 50%, rgba(255,253,248,.85) 0%, rgba(255,253,248,0) 70%);
+  --aura-oscura:
+    radial-gradient(46% 34% at 22% 26%, rgba(201,185,138,.30) 0%, rgba(201,185,138,0) 70%),
+    radial-gradient(42% 34% at 82% 34%, rgba(31,174,91,.36) 0%, rgba(31,174,91,0) 70%),
+    radial-gradient(44% 32% at 60% 78%, rgba(20,122,60,.52) 0%, rgba(20,122,60,0) 70%),
+    radial-gradient(34% 26% at 12% 80%, rgba(168,186,212,.14) 0%, rgba(168,186,212,0) 70%)}
+/* los verdes que quedaban sueltos */
+.inside-card:nth-child(3){background:radial-gradient(80% 70% at 88% 8%,rgba(31,174,91,.34),transparent 62%),radial-gradient(70% 60% at 8% 100%,rgba(20,122,60,.42),transparent 66%),linear-gradient(135deg,#0B2215,#050D08);border-color:rgba(255,255,255,.12)}
+.inside-card:nth-child(3) p{color:#B3C9BC}
+.v2-cuenta{border-color:rgba(6,24,14,.16)}
+.v2-cuenta i{background:rgba(6,24,14,.16)}
+/* ---------- contador en fondo claro (barra de abajo, header, popup) ---------- */
+.mv-cuenta-clara.v2-cuenta-mini{margin:0;padding:3px 9px 2px;border-color:rgba(179,69,59,.35);background:rgba(179,69,59,.06)}
+.mv-cuenta-clara.v2-cuenta-mini b{color:#B3453B}
+.mv-cuenta-clara.v2-cuenta-mini i{color:#9A8F80}
+/* la barra de abajo vende lo mismo que la franja de arriba: la edición, el material que no vuelve y el reloj */
+/* si el reloj termina, vuelven los textos de siempre */
+/* en celulares angostos queda solo el reloj, para que no lo tape el botón */
+/* ================================================================
+   DEMO: así se usa, dentro del chat
+   ================================================================ */
+.mv-demo{display:grid;gap:26px;margin-top:8px;align-items:start;scroll-margin-top:90px}
+@media (min-width:900px){
+  .mv-demo{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:56px;align-items:center}
+}
+/* el paso que se está viendo, arriba de la ventana: grande y legible */
+.mv-cap{margin-bottom:14px}
+.mv-cap-barras{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.mv-cap-barras i{height:4px;border-radius:4px;background:rgba(20,20,16,.12);overflow:hidden;position:relative}
+.mv-cap-barras i::after{content:"";position:absolute;inset:0;background:var(--mv-acento);transform:scaleX(0);transform-origin:left;transition:transform .5s ease}
+.mv-cap-barras i.lleno::after{transform:scaleX(1)}
+.mv-cap-txt{margin:0;display:flex;flex-direction:column;align-items:flex-start;gap:7px}
+.mv-cap-txt b{font:500 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--mv-acento)}
+.mv-cap-txt span{font:400 clamp(22px,2.6vw,28px)/1.15 var(--serif);letter-spacing:-.01em;color:var(--ink)}
+/* la ventana del chat */
+.mv-win{position:relative;height:560px;border-radius:26px;background:#fff;overflow:hidden;
+  border:1px solid rgba(20,20,16,.10);box-shadow:0 40px 80px -40px rgba(6,24,14,.35),0 2px 0 rgba(255,255,255,.8) inset;
+  font-family:var(--sans);color:#0d0d0d;isolation:isolate}
+@media (min-width:900px){
+  .mv-win{height:620px}
+}
+.mv-top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px;background:#fff}
+.mv-top-name{font:600 15px/1 var(--sans);letter-spacing:-.01em;color:#0d0d0d;display:inline-flex;align-items:center;gap:6px}
+.mv-top-name svg{width:12px;height:12px;opacity:.55}
+.mv-top-dots{display:inline-flex;gap:4px}
+.mv-top-dots b{width:4px;height:4px;border-radius:50%;background:#b4b4b4}
+.mv-hola{position:absolute;left:0;right:0;top:38%;text-align:center;margin:0;font:500 clamp(20px,2.2vw,24px)/1.2 var(--sans);letter-spacing:-.02em;color:#0d0d0d;transition:opacity .4s ease}
+.mv-win.con-hilo .mv-hola,.mv-win.soltando .mv-hola{opacity:0}
+/* la conversación: crece desde abajo, como el chat real */
+.mv-chat{position:absolute;left:0;right:0;top:46px;bottom:88px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18px);mask-image:linear-gradient(180deg,transparent 0,#000 18px)}
+.mv-hilo{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:14px;padding:0 16px 12px}
+.mv-hilo>*{animation:mvEntra .45s cubic-bezier(.2,.7,.2,1) both}
+@keyframes mvEntra{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* lo que mandas: solo los adjuntos, sin texto (la instrucción del método no se muestra) */
+.mv-yo{align-self:flex-end;max-width:88%;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.mv-yo-adj{display:flex;gap:6px}
+.mv-yo p{margin:0;background:#f4f4f4;border-radius:18px;padding:10px 14px;font:400 14px/1.4 var(--sans);color:#0d0d0d}
+.mv-yo-adj>span{flex:none;height:38px;box-sizing:border-box;border:1px solid #ececec;border-radius:12px;background:#fff;display:flex;align-items:center;overflow:hidden}
+.mv-yo-pdf{gap:7px;padding:0 11px 0 6px;font:500 11.5px/1 var(--sans);color:#0d0d0d;white-space:nowrap}
+.mv-yo-pdf b{width:26px;height:26px;border-radius:8px;background:#fa423e;color:#fff;font:700 8px/26px var(--sans);text-align:center;letter-spacing:.04em}
+.mv-yo-foto{width:38px}
+.mv-yo-foto img{width:100%;height:100%;object-fit:cover}
+.mv-yo .mv-yo-logo{width:38px;justify-content:center;font:italic 400 12px/1 var(--serif);color:var(--ink);background:var(--paper)}
+/* mientras el cuadro lleva adjuntos es más alto: la conversación termina arriba de él */
+.mv-win:has(.mv-adj:not(:empty)) .mv-chat{bottom:140px}
+@keyframes mvBrillo{from{background-position:120% 0}to{background-position:-80% 0}}
+/* lo que devuelve: una imagen grande y, a la derecha, la columna de miniaturas, como en ChatGPT */
+.mv-galeria{align-self:flex-start;display:grid;grid-template-columns:minmax(0,1fr) 50px;gap:10px;width:min(100%,300px)}
+@media (min-width:900px){
+  .mv-galeria{grid-template-columns:minmax(0,1fr) 60px;gap:12px;width:min(100%,350px)}
+}
+.mv-gal-grande{position:relative;aspect-ratio:4/5;border-radius:18px;overflow:hidden;background:linear-gradient(110deg,#efefef 30%,#f8f8f8 50%,#efefef 70%);background-size:200% 100%}
+.mv-gal-grande.creando{animation:mvBrillo 1.6s linear infinite}
+.mv-gal-grande img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;filter:blur(16px);transform:scale(1.04);transition:opacity .6s ease,filter .8s ease,transform .8s ease}
+.mv-gal-grande img.lista{opacity:1;filter:none;transform:none}
+@media (hover:none){
+  .mv-gal-grande img{filter:none!important}
+}
+.mv-gal-grande img.sale{opacity:0;filter:none;transform:none;transition:opacity .25s ease}
+.mv-gal-est{position:absolute;left:13px;top:13px;z-index:2;font:500 12.5px/1 var(--sans);opacity:0;transition:opacity .25s ease;
+  background:linear-gradient(90deg,#8e8e8e 30%,#d6d6d6 50%,#8e8e8e 70%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:mvBrillo 1.3s linear infinite}
+.mv-gal-grande.creando .mv-gal-est{opacity:1}
+.mv-gal-editar{position:absolute;left:14px;bottom:14px;z-index:2;font:600 12.5px/1 var(--sans);color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.5);transition:opacity .3s ease}
+.mv-gal-bajar{position:absolute;right:10px;bottom:10px;z-index:2;width:30px;height:30px;border-radius:50%;background:rgba(110,110,110,.55);color:#fff;display:flex;align-items:center;justify-content:center;transition:opacity .3s ease}
+.mv-gal-bajar svg{width:15px;height:15px}
+.mv-gal-grande.creando .mv-gal-editar,.mv-gal-grande.creando .mv-gal-bajar{opacity:0}
+.mv-gal-riel{position:relative;overflow:hidden}
+.mv-gal-riel.movida{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%);mask-image:linear-gradient(180deg,transparent 0,#000 16%)}
+.mv-gal-col{position:absolute;left:0;right:0;top:0;display:flex;flex-direction:column;gap:8px;padding:3px;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.mv-gal-mini{flex:none;display:block;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#efefef;animation:mvEntra .35s cubic-bezier(.2,.7,.2,1) both;transition:box-shadow .25s ease}
+.mv-gal-mini img{width:100%;height:100%;object-fit:cover;display:block}
+.mv-gal-mini.pend{background:linear-gradient(110deg,#efefef 30%,#f8f8f8 50%,#efefef 70%);background-size:200% 100%;animation:mvEntra .35s cubic-bezier(.2,.7,.2,1) both,mvBrillo 1.6s linear infinite}
+.mv-gal-mini.sel{box-shadow:0 0 0 2px #fff,0 0 0 3.5px #0d0d0d}
+/* capa de "soltar archivos" y el cursor que los arrastra */
+.mv-drop{position:absolute;inset:54px 12px 146px;z-index:3;border:1.5px dashed rgba(20,122,60,.5);border-radius:18px;background:rgba(228,245,233,.94);
+  display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s ease;pointer-events:none}
+.mv-drop span{font:500 11px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--mv-acento)}
+.mv-win.soltando .mv-drop{opacity:1}
+.mv-cursor{position:absolute;left:92%;top:96%;z-index:5;opacity:0;pointer-events:none}
+.mv-cursor svg{width:22px;height:22px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+.mv-cursor span{position:absolute;left:18px;top:16px;white-space:nowrap;font:600 11px/1 var(--sans);color:#fff;background:#0d0d0d;border-radius:8px;padding:7px 9px;box-shadow:0 10px 20px -8px rgba(0,0,0,.4)}
+.mv-win.arrastrando .mv-cursor{animation:mvArrastra 2.1s cubic-bezier(.45,0,.2,1) both}
+@keyframes mvArrastra{0%{opacity:0;left:92%;top:96%}15%{opacity:1;left:86%;top:86%}70%{opacity:1;left:42%;top:44%}88%{opacity:1;left:42%;top:44%}100%{opacity:0;left:44%;top:47%}}
+/* el cuadro para escribir */
+.mv-composer{position:absolute;left:12px;right:12px;bottom:12px;z-index:4;border:1px solid #e3e3e3;border-radius:26px;background:#fff;
+  box-shadow:0 8px 24px -12px rgba(0,0,0,.18);padding:10px 12px}
+.mv-adj{display:flex;gap:6px;overflow:hidden;margin-bottom:8px}
+.mv-adj:empty{display:none}
+.mv-adj>*{flex:none;height:50px;border:1px solid #ececec;border-radius:12px;background:#fff;animation:mvEntra .35s cubic-bezier(.2,.7,.2,1) both}
+.mv-file,.mv-grupo{display:flex;align-items:center;gap:7px;padding:0 10px 0 7px}
+.mv-file{width:124px}
+.mv-file b,.mv-grupo b{flex:none;width:30px;height:30px;border-radius:8px;background:#fa423e;color:#fff;font:700 8px/30px var(--sans);text-align:center;letter-spacing:.04em}
+.mv-file em,.mv-grupo em{font:500 11px/1.2 var(--sans);font-style:normal;color:#0d0d0d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv-grupo{background:#fff5f4;border-color:#ffd9d6}
+.mv-img{width:50px;overflow:hidden;padding:0}
+.mv-img img{width:100%;height:100%;object-fit:cover}
+.mv-logo{width:50px;display:flex;align-items:center;justify-content:center;font:italic 400 12px/1 var(--serif);color:var(--ink);background:var(--paper)}
+.mv-input{display:flex;align-items:center;gap:10px;min-height:34px}
+.mv-plus{flex:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#5d5d5d}
+.mv-plus svg,.mv-send svg{width:18px;height:18px}
+.mv-texto{flex:1;min-width:0;font:400 14px/1.3 var(--sans);color:#0d0d0d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv-ph{color:#8e8e8e}
+.mv-texto.escribiendo .mv-ph{display:none}
+.mv-caret{display:none}
+.mv-texto.escribiendo .mv-caret{display:inline-block;width:1.5px;height:15px;background:#0d0d0d;vertical-align:-2px;margin-left:1px;animation:mvCaret 1s steps(1) infinite}
+@keyframes mvCaret{50%{opacity:0}}
+.mv-send{flex:none;width:34px;height:34px;border-radius:50%;background:#0d0d0d;color:#fff;display:flex;align-items:center;justify-content:center;opacity:.22;transition:opacity .3s ease,transform .18s ease}
+.mv-demo[data-paso="2"] .mv-send{opacity:1}
+.mv-send.aprieta{transform:scale(.84);opacity:1}
+/* los tres pasos: siempre legibles; el que se está viendo, marcado en verde */
+.mv-pasos{--p:0;position:relative;list-style:none;margin:0;padding:0;display:grid;gap:0}
+/* la línea verde avanza con el scroll: un riel claro y el relleno encima, con transform (liviano) */
+.mv-pasos::before,.mv-pasos::after{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;border-radius:2px;pointer-events:none}
+.mv-pasos::before{background:rgba(20,122,60,.14)}
+.mv-pasos::after{background:var(--mv-acento);transform-origin:top;transform:scaleY(var(--p))}
+.mv-pasos li{position:relative;padding:18px 0 16px 18px;border-top:1px solid var(--line-strong)}
+.mv-pasos li>span{display:block;font:500 10px/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;transition:color .4s ease}
+.mv-pasos li.on>span{color:var(--mv-acento)}
+.mv-pasos b{display:block;font:400 clamp(20px,2.2vw,27px)/1.18 var(--serif);letter-spacing:-.01em;color:var(--ink);margin-bottom:6px}
+.mv-pasos p{margin:0;color:var(--ink-2);font-size:15px;line-height:1.5}
+.mv-demo-nota{margin:16px 0 0;font:400 10px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+@media (max-width:899px){
+  .mv-pasos li{padding:14px 0 12px 16px}
+  .mv-pasos b{font-size:20px}
+  .mv-pasos p{font-size:14.5px}
+  .mv-demo-nota{text-align:center}
+}
+/* ================================================================
+   COMPARACIÓN: la X roja cae sobre el genérico, el premium se enciende
+   ================================================================ */
+.versus-image{position:relative}
+.versus-image img{aspect-ratio:4/5;transition:filter .7s ease}
+.mv-x,.mv-ok{position:absolute;inset:0;z-index:2;pointer-events:none;display:flex}
+.mv-x{align-items:flex-start;justify-content:flex-end;padding:14px}
+.mv-x svg{width:clamp(50px,13vw,60px);height:clamp(50px,13vw,60px);overflow:visible;filter:drop-shadow(0 10px 18px rgba(120,20,12,.38))}
+.mv-x circle{fill:var(--mv-rojo);transform:scale(0);transform-origin:50% 50%;transition:transform .5s cubic-bezier(.3,1.6,.5,1) .3s}
+.mv-x path{fill:none;stroke:#fff;stroke-width:8;stroke-linecap:round;stroke-dasharray:40;stroke-dashoffset:40;transition:stroke-dashoffset .26s ease .62s}
+.mv-x path+path{transition-delay:.8s}
+.versus-card.mv-visto .mv-x circle{transform:scale(1)}
+.versus-card.mv-visto .mv-x path{stroke-dashoffset:0}
+.versus-card.mv-visto:has(.mv-x) .versus-image img{filter:grayscale(.75) brightness(.78) contrast(.95)}
+.versus-card.mv-visto:has(.mv-x) .versus-image{animation:mvSacude .45s ease .62s both}
+@keyframes mvSacude{0%,100%{transform:none}25%{transform:translateX(-5px) rotate(-.6deg)}55%{transform:translateX(4px) rotate(.4deg)}80%{transform:translateX(-2px)}}
+.mv-ok{align-items:flex-start;justify-content:flex-end;padding:14px}
+.mv-ok svg{width:clamp(50px,13vw,60px);height:clamp(50px,13vw,60px);overflow:visible;filter:drop-shadow(0 10px 18px rgba(20,122,60,.38))}
+.mv-ok circle{fill:var(--mv-acento-2);transform:scale(0);transform-origin:50% 50%;transition:transform .5s cubic-bezier(.3,1.6,.5,1) .3s}
+.mv-ok path{fill:none;stroke:#fff;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60;transition:stroke-dashoffset .4s ease .65s}
+.versus-card.mv-visto .mv-ok circle{transform:scale(1)}
+.versus-card.mv-visto .mv-ok path{stroke-dashoffset:0}
+.versus-card:has(.mv-ok){transition:box-shadow .8s ease}
+.versus-card.mv-visto:has(.mv-ok){box-shadow:0 0 0 2px rgba(20,122,60,.55),0 30px 60px -30px rgba(20,122,60,.45)}
+@media (prefers-reduced-motion:reduce){
+  .mv-x path,.mv-ok path{stroke-dashoffset:0;transition:none}
+  .mv-ok circle,.mv-x circle{transform:scale(1);transition:none}
+  .versus-card .versus-image{animation:none!important}
+}
+/* ================================================================
+   LOS DOS CAMINOS: el círculo de aprender solo contra la línea recta
+   Vidrio como el resto del sitio (reflejo, arista de luz, sombra lejana)
+   con una luz de color adentro: roja en el círculo, verde en el método.
+   En la compu el vidrio desenfoca lo de atrás; en el celular el sitio
+   apaga el desenfoque por rendimiento y el vidrio se arma con capas.
+   ================================================================ */
+.mv-caminos-grid{display:grid;gap:18px;margin-top:clamp(28px,4vw,48px)}
+@media (min-width:900px){
+  .mv-caminos-grid{grid-template-columns:1fr 1fr;gap:24px}
+}
+.mv-camino{position:relative;isolation:isolate;overflow:hidden;border-radius:30px;padding:clamp(24px,3vw,38px);
+  background:linear-gradient(135deg,rgba(255,255,255,.74) 0%,rgba(255,255,255,.4) 45%,rgba(255,255,255,.28) 100%);
+  border:1px solid rgba(255,255,255,.6);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -22px 44px -34px rgba(255,255,255,.9),0 40px 90px -40px rgba(20,20,16,.34),0 10px 24px -16px rgba(20,20,16,.12)}
+@media (hover:hover) and (min-width:901px){
+  .mv-camino{-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5)}
+}
+.mv-camino::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none}
+.mv-camino-solo::before{background:radial-gradient(55% 40% at 92% 4%,rgba(217,58,47,.16),transparent 70%),radial-gradient(60% 45% at 4% 100%,rgba(236,168,140,.3),transparent 72%)}
+.mv-camino-metodo::before{background:radial-gradient(55% 40% at 92% 4%,rgba(31,174,91,.18),transparent 70%),radial-gradient(60% 45% at 4% 100%,rgba(128,204,152,.28),transparent 72%)}
+/* la arista de luz, igual que las otras tarjetas de vidrio del sitio */
+.mv-camino::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.35) 38%,rgba(255,255,255,.08) 62%,rgba(255,255,255,.7) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude}
+.mv-chip{display:inline-flex;align-items:center;gap:9px;font:500 10.5px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;border-radius:999px;padding:8px 13px 8px 11px}
+.mv-chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 0 3px color-mix(in srgb,currentColor 16%,transparent)}
+.mv-chip-rojo{color:var(--mv-rojo);background:rgba(255,255,255,.66);box-shadow:inset 0 0 0 1px rgba(217,58,47,.18)}
+.mv-chip-verde{color:var(--mv-acento);background:rgba(255,255,255,.66);box-shadow:inset 0 0 0 1px rgba(20,122,60,.2)}
+.mv-camino-t{margin:16px 0 0;font:400 clamp(26px,2.7vw,34px)/1.1 var(--serif);letter-spacing:-.015em;color:var(--ink)}
+.mv-camino-t em{font-style:italic}
+/* la rueda: estaciones de vidrio, la activa con anillo rojo; el centro, un disco de vidrio */
+.mv-rueda{position:relative;width:min(100%,440px);aspect-ratio:1;margin:22px auto 4px}
+.mv-rueda-aro{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.mv-rueda-aro circle{fill:none;stroke:rgba(20,20,16,.2);stroke-width:.35;stroke-dasharray:.8 1.6;stroke-linecap:round}
+.mv-rueda-aro .mv-rueda-hecho{stroke:var(--mv-rojo);stroke-width:.8;stroke-dasharray:none;filter:drop-shadow(0 0 1.5px rgba(217,58,47,.6));transition:stroke-dashoffset 1.1s cubic-bezier(.45,0,.2,1)}
+.mv-estaciones{list-style:none;margin:0;padding:0}
+.mv-estaciones li{position:absolute;width:0;height:0;z-index:1}
+.mv-estaciones li.activo{z-index:2}
+.mv-est-vis{position:absolute;left:0;top:0;width:clamp(42px,11vw,56px);height:clamp(42px,11vw,56px);transform:translate(-50%,-50%);border-radius:50%;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 120% at 30% 18%,#fff 0%,rgba(255,255,255,.8) 46%,rgba(255,255,255,.55) 100%);
+  border:1px solid rgba(255,255,255,.95);
+  box-shadow:0 0 0 1px rgba(20,20,16,.07),0 14px 26px -16px rgba(20,20,16,.5),inset 0 -6px 12px rgba(20,20,16,.05),inset 0 1px 1px #fff;
+  transition:transform .5s cubic-bezier(.3,1.5,.5,1),box-shadow .45s ease}
+.mv-est-vis img{width:100%;height:100%;object-fit:cover}
+.mv-est-vis svg{width:44%;height:44%;fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:stroke .4s ease}
+.mv-estaciones li.activo .mv-est-vis{transform:translate(-50%,-50%) scale(1.24);box-shadow:0 0 0 2px var(--mv-rojo),0 0 0 8px rgba(217,58,47,.12),0 18px 34px -14px rgba(217,58,47,.6),inset 0 1px 1px #fff}
+.mv-estaciones li.activo .mv-est-vis svg{stroke:var(--mv-rojo)}
+.mv-est-txt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.mv-rueda-centro{position:absolute;inset:23%;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 4%;
+  background:radial-gradient(120% 120% at 32% 16%,rgba(255,255,255,.95),rgba(255,255,255,.6) 55%,rgba(255,255,255,.36));
+  border:1px solid rgba(255,255,255,.95);
+  box-shadow:inset 0 1px 1px #fff,inset 0 -14px 28px rgba(217,58,47,.06),0 26px 50px -30px rgba(20,20,16,.4),0 0 0 1px rgba(20,20,16,.05)}
+.mv-rueda-num{font:500 10px/1 var(--mono);letter-spacing:.22em;color:var(--mv-rojo);margin-bottom:10px}
+.mv-rueda-txt{margin:0;font:italic 400 clamp(17px,2.8vw,24px)/1.12 var(--serif);letter-spacing:-.01em;color:var(--ink);max-width:12ch;transition:opacity .3s ease,transform .3s ease}
+.mv-rueda-txt.cambia{opacity:0;transform:translateY(6px)}
+.mv-rueda-centro small{margin-top:10px;font:400 8.5px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);max-width:100%}
+@media (max-width:520px){
+  .mv-rueda-centro small{display:none}
+}
+/* la línea recta: se prende a medida que bajas, y cada paso se enciende cuando la línea llega */
+.mv-linea{--p:0;--largo:calc(100% - 36px);list-style:none;margin:26px 0 0;padding:0;position:relative;background:linear-gradient(rgba(20,122,60,.14),rgba(20,122,60,.14)) 17px 18px/2px var(--largo) no-repeat}
+.mv-linea::before{content:"";position:absolute;left:17px;top:18px;height:var(--largo);width:2px;border-radius:2px;background:linear-gradient(180deg,var(--mv-acento-2),var(--mv-acento));transform-origin:top;transform:scaleY(var(--p));pointer-events:none}
+.mv-linea::after{content:"";position:absolute;left:13px;top:13px;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2.5px var(--mv-acento-2),0 0 14px 4px rgba(31,174,91,.45);transform:translateY(calc(var(--largo) * var(--p)));opacity:calc(var(--p) * 30);pointer-events:none}
+.mv-linea li{position:relative;z-index:1;padding:6px 0 30px 62px}
+.mv-linea li:last-child{padding-bottom:4px}
+.mv-linea-n{position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 120% at 30% 18%,#fff,rgba(255,255,255,.72));border:1px solid rgba(20,20,16,.1);
+  box-shadow:0 10px 20px -14px rgba(20,20,16,.45),inset 0 1px 1px #fff;
+  transition:background .45s ease,border-color .45s ease,box-shadow .45s ease,transform .45s cubic-bezier(.3,1.5,.5,1)}
+.mv-linea-n i{font:500 10px/1 var(--mono);font-style:normal;letter-spacing:.04em;color:var(--muted);transition:opacity .2s ease}
+.mv-linea-n svg{position:absolute;inset:0;margin:auto;width:17px;height:17px;fill:none;stroke:#fff;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .35s ease .12s}
+.mv-linea li.on .mv-linea-n{background:linear-gradient(150deg,#1B8A4A,#0F5E31);border-color:rgba(255,255,255,.3);transform:scale(1.03);
+  box-shadow:0 0 0 4px rgba(20,122,60,.09),0 10px 20px -12px rgba(15,94,49,.6),inset 0 1px 0 rgba(255,255,255,.25)}
+.mv-linea li.on .mv-linea-n i{opacity:0}
+.mv-linea li.on .mv-linea-n svg{stroke-dashoffset:0}
+.mv-linea b{display:block;font:500 17px/1.3 var(--sans);color:var(--ink);letter-spacing:-.01em}
+.mv-linea span:not(.mv-linea-n){display:block;margin-top:4px;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.mv-linea li:last-child b{font:400 27px/1.1 var(--serif);letter-spacing:-.01em}
+/* tres pasos: en la compu la lista ocupa el alto de la tarjeta, a la par del círculo */
+@media (min-width:900px){
+  .mv-camino-metodo{display:flex;flex-direction:column}
+  .mv-linea{flex:1;display:flex;flex-direction:column;justify-content:space-evenly;margin-top:24px}
+  .mv-linea li{padding-bottom:0}
+  .mv-linea b{font-size:19px}
+  .mv-linea li:last-child b{font-size:30px}
+}
+.mv-camino-pie{margin:24px 0 0;font:500 10.5px/1.4 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--mv-acento)}
+@media (prefers-reduced-motion:reduce){
+  .mv-linea-n,.mv-linea-n svg,.mv-linea-n i{transition:none}
+}
+/* ================================================================
+   EL AHORRO: 50 anuncios hechos por fuera, en barras
+   ================================================================ */
+.mv-ahorro{position:relative;margin:26px 0 8px;padding:22px;border-radius:22px;
+  background:linear-gradient(135deg,rgba(255,255,255,.86) 0%,rgba(255,255,255,.66) 50%,rgba(255,255,255,.58) 100%);border:1px solid rgba(255,255,255,.55);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -22px 44px -34px rgba(255,255,255,.9),0 34px 80px -34px rgba(0,0,0,.45)}
+@media (hover:hover) and (min-width:901px){
+  .mv-ahorro{-webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4)}
+}
+@media (max-width:900px){
+  .mv-ahorro{background:linear-gradient(135deg,rgba(255,254,251,.97) 0%,rgba(250,247,240,.95) 100%)}
+}
+.mv-ahorro::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.35) 38%,rgba(255,255,255,.08) 62%,rgba(255,255,255,.7) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.mv-ahorro-t{margin:0 0 18px;font:400 clamp(20px,2.2vw,24px)/1.25 var(--serif);color:var(--ink)}
+.mv-ahorro-t b{font-weight:400;font-style:italic}
+.mv-barras{display:grid;gap:14px}
+.mv-barra{display:grid;grid-template-columns:1fr auto;align-items:end;gap:4px 12px}
+.mv-barra-txt span{display:block;font:500 14.5px/1.25 var(--sans);color:var(--ink)}
+.mv-barra-txt em{display:block;font:400 12.5px/1.3 var(--sans);font-style:normal;color:var(--muted)}
+.mv-barra b{font:500 15px/1 var(--mono);color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;min-width:10ch;text-align:right}
+.mv-barra i{grid-column:1/-1;height:10px;border-radius:10px;background:rgba(20,20,16,.07);position:relative;overflow:hidden}
+.mv-barra i::after{content:"";position:absolute;left:0;top:0;bottom:0;width:calc(max(var(--v),.035) * 100%);border-radius:10px;background:linear-gradient(90deg,#C9A89E,#B3453B);
+  transform-origin:left;transition:transform 1.3s cubic-bezier(.3,.8,.2,1)}
+.mv-barra:nth-child(2) i::after{transition-delay:.15s}
+.mv-barra:nth-child(3) i::after{transition-delay:.3s}
+.mv-barra-tu i::after{background:linear-gradient(90deg,var(--mv-acento-2),var(--mv-acento));transition-delay:.6s}
+.mv-barra-tu .mv-barra-txt span,.mv-barra-tu b{color:var(--mv-acento)}
+.mv-js .mv-ahorro:not(.mv-visto) .mv-barra i::after{transform:scaleX(0)}
+/* el valor total se tacha solo, cuando la tarjeta de precio aparece */
+.stack-total s{position:relative;text-decoration:none}
+.stack-total s::after{content:"";position:absolute;left:-4%;right:-4%;top:54%;height:1.5px;border-radius:2px;background:var(--rojo-tachado,#B3453B);transform-origin:left;transition:transform .7s cubic-bezier(.6,0,.2,1) .3s}
+.mv-js .price-card:not(.mv-visto) .stack-total s::after{transform:scaleX(0)}
+@media (prefers-reduced-motion:reduce){
+  .stack-total s::after{transition:none}
+}
+.mv-ahorro-cierre{margin:18px 0 0;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.mv-ahorro-cierre b{color:var(--ink)}
+.mv-ahorro-nota{display:block;margin-top:10px;font:400 10px/1.5 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){
+  .mv-barra i::after{transform:scaleX(1);transition:none}
+}
+/* sin desenfoque (el sitio lo apaga en el celular), el header va lleno: no se ve el texto de atrás */
+@media (max-width:900px){
+  header.con-linea{background:var(--paper)}
+}
+/* ================================================================
+   SELLO DE GARANTÍA, vectorial y minimalista: un contorno fino de sello
+   y un aro interior en verde, "GARANTÍA" en la letra de las etiquetas y
+   "7 días" como los títulos del sitio. Se dibuja una sola vez al aparecer.
+   ================================================================ */
+/* la garantía en una sola columna centrada: sello arriba, título y texto debajo */
+.guarantee-box{grid-template-columns:minmax(0,1fr)!important;justify-items:center!important;row-gap:clamp(22px,3vw,34px)}
+.guarantee-box .mv-sello{justify-self:center}
+.guarantee-box h2{text-align:center;margin-left:auto;margin-right:auto;max-width:24ch}
+.guarantee-box>div:not(.mv-sello){width:100%;max-width:64ch;margin-inline:auto}
+@media (min-width:721px){
+  .guarantee-box>div:not(.mv-sello){text-align:center}
+}
+.mv-sello{width:clamp(176px,15vw,208px);aspect-ratio:1;margin:0 auto}
+.mv-sello svg{display:block;width:100%;height:100%;overflow:visible}
+.mv-sello-borde{fill:rgba(255,255,255,.5);stroke:var(--mv-acento);stroke-width:1.2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0;transition:stroke-dashoffset 1.6s cubic-bezier(.6,0,.2,1)}
+.mv-sello-aro{fill:none;stroke:var(--mv-acento);stroke-width:.8;opacity:.45;stroke-dasharray:1;stroke-dashoffset:0;transition:stroke-dashoffset 1.2s cubic-bezier(.6,0,.2,1) .35s}
+.mv-sello-eye{font:500 9.6px var(--mono);letter-spacing:3.2px;fill:var(--mv-acento);transition:opacity .6s ease .8s}
+.mv-sello-num{font:400 58px var(--mv-fuente-marca);letter-spacing:-1px;fill:var(--ink);transition:opacity .6s ease .95s}
+.mv-sello-dias{font-style:italic;font-size:29px;letter-spacing:0;fill:var(--mv-acento)}
+.mv-sello-visto{fill:none;stroke:var(--mv-acento);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:0;transition:stroke-dashoffset .5s ease 1.3s}
+.mv-js .mv-sello:not(.mv-visto) .mv-sello-borde,.mv-js .mv-sello:not(.mv-visto) .mv-sello-aro,.mv-js .mv-sello:not(.mv-visto) .mv-sello-visto{stroke-dashoffset:1}
+.mv-js .mv-sello:not(.mv-visto) text{opacity:0}
+/* terminado el trazo, la línea queda continua (sin la unión del dibujo) */
+.mv-sello.mv-listo .mv-sello-borde,.mv-sello.mv-listo .mv-sello-aro{stroke-dasharray:none}
+@media (prefers-reduced-motion:reduce){
+  .mv-sello *{transition:none!important}
+}
+/* ================================================================
+   CONFIANZA en la tarjeta de precio: garantía, pago seguro, método original
+   ================================================================ */
+.mv-confianza{list-style:none;margin:20px 0 0;padding:20px 0 0;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.mv-confianza li{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:0 6px}
+.mv-confianza li+li::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;background:linear-gradient(180deg,transparent,var(--line-strong),transparent)}
+/* cada ícono es un disco de vidrio claro con la línea en verde oscuro */
+.mv-conf-ico{position:relative;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 120% at 30% 15%,rgba(255,255,255,.98),rgba(255,255,255,.62) 60%,rgba(232,242,235,.66));
+  border:1px solid rgba(255,255,255,.95);
+  box-shadow:0 0 0 1px rgba(20,122,60,.14),0 14px 26px -18px rgba(6,24,14,.5),inset 0 1px 1px #fff,inset 0 -8px 14px rgba(20,122,60,.05);
+  transition:transform .55s cubic-bezier(.3,1.5,.5,1),opacity .4s ease}
+.mv-conf-ico::after{display:none}
+.mv-conf-ico svg{position:relative;z-index:1;width:24px;height:24px;overflow:visible}
+.mv-conf-ico .o{fill:none;stroke:#147A3C;stroke-width:1.2}
+.mv-conf-ico .v{fill:none;stroke:#147A3C;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mv-conf-ico .l{fill:none;stroke:#147A3C;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round}
+.mv-conf-ico .f{fill:#147A3C}
+/* aparecen de a una cuando la tarjeta de precio entra en pantalla */
+.mv-js .price-card:not(.mv-visto) .mv-conf-ico{transform:scale(.55);opacity:0}
+.mv-confianza li:nth-child(1) .mv-conf-ico{transition-delay:.55s}
+.mv-confianza li:nth-child(2) .mv-conf-ico{transition-delay:.7s}
+.mv-confianza li:nth-child(3) .mv-conf-ico{transition-delay:.85s}
+.mv-confianza b{font:400 18px/1.1 var(--serif);letter-spacing:-.005em;color:var(--ink)}
+.mv-confianza small{display:block;margin-top:-5px;font:400 9px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){
+  .mv-conf-ico{transition:none}
+}
+.mv-conf-nota{margin:14px 0 0;text-align:center;font:400 9.5px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+/* ================================================================
+   HECHO POR NOSOTROS: el método es nuestro y lo usamos todos los días
+   Verde noche con luz esmeralda y grano, como una pieza de marca.
+   ================================================================ */
+.mv-nuestro{position:relative;isolation:isolate;overflow:hidden;margin-top:clamp(22px,3vw,34px);border-radius:30px;padding:clamp(28px,4.4vw,60px);
+  display:grid;gap:clamp(24px,3.4vw,44px);color:#EAF3EC;
+  background:radial-gradient(70% 90% at 0% 0%,rgba(31,174,91,.42),transparent 60%),radial-gradient(60% 80% at 100% 100%,rgba(20,122,60,.55),transparent 62%),linear-gradient(135deg,#0B2215 0%,#050D08 100%);
+  box-shadow:0 50px 100px -50px rgba(6,24,14,.7),inset 0 1px 0 rgba(255,255,255,.08)}
+@media (min-width:900px){
+  .mv-nuestro{grid-template-columns:1.05fr .95fr;align-items:center}
+}
+.mv-nuestro::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.32;background:url("assets/mv/grano.webp") 0 0/64px 64px repeat}
+.mv-nuestro-eye{display:inline-flex;align-items:center;gap:10px;font:500 10px/1.4 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--mv-verde-luz)}
+.mv-nuestro-eye::before{content:"";flex:none;width:22px;height:1px;background:currentColor}
+.mv-nuestro h3{margin:16px 0 0;font:400 clamp(30px,3.6vw,46px)/1.04 var(--serif);letter-spacing:-.02em;color:#F4F8F4}
+.mv-nuestro h3 em{font-style:italic;color:var(--mv-verde-luz)}
+.mv-nuestro p{margin:16px 0 0;max-width:46ch;font-size:15.5px;line-height:1.6;color:#B7C8BC}
+.mv-nuestro p b{color:#F4F8F4;font-weight:500}
+.mv-nuestro-sellos{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.mv-nuestro-sellos li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 16px;align-items:center;padding:16px 18px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.mv-nuestro-ico{grid-row:span 2;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 120% at 30% 20%,rgba(91,227,143,.28),rgba(91,227,143,.08));box-shadow:inset 0 0 0 1px rgba(91,227,143,.35),0 0 24px -6px rgba(91,227,143,.45)}
+.mv-nuestro-ico svg{width:22px;height:22px;fill:none;stroke:var(--mv-verde-luz);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.mv-nuestro-ico .f{fill:var(--mv-verde-luz);stroke:none}
+.mv-nuestro-sellos b{align-self:end;font:500 15px/1.25 var(--sans);color:#F4F8F4;letter-spacing:-.01em}
+.mv-nuestro-sellos small{align-self:start;font-size:13.5px;line-height:1.45;color:#A9BBAE}
+/* ================================================================
+   LA MARCA: "Método Prompt Ads" en una itálica gruesa y chic (DM Serif Display),
+   verde con un reflejo champán que la recorre. En los títulos grandes
+   aparece con un barrido suave, se cierra el espaciado y se dibuja el
+   subrayado. Para volver a la letra anterior: --mv-fuente-marca: var(--serif)
+   ================================================================ */
+:root{--mv-fuente-marca:"DM Serif Display",var(--serif)}
+.mv-marca{display:inline-block;padding-right:.1em;margin-right:-.1em;color:var(--mv-acento);
+  background:linear-gradient(100deg,var(--mv-acento) 0%,var(--mv-acento) 40%,#E6D29A 50%,var(--mv-acento) 60%,var(--mv-acento) 100%);
+  background-size:260% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:none}
+@keyframes mvMarca{0%,30%{background-position:100% 0}85%,100%{background-position:0 0}}
+/* el brillo cruza una vez cada vez que la marca aparece en pantalla (antes corría sin parar) */
+.mv-marca.mv-visto{animation:mvMarca 2.6s cubic-bezier(.45,0,.2,1) .2s 1 both}
+@media (prefers-reduced-motion:reduce){.mv-marca.mv-visto{animation:none}}
+/* los títulos grandes ya tienen su entrada y su subrayado: sin brillo extra */
+.mv-marca-grande.mv-visto{animation:none}
+
+.mv-marca-serif{font-family:var(--mv-fuente-marca);font-style:italic;font-weight:400;font-size:1.08em;letter-spacing:-.005em;line-height:1}
+.mv-marca-grande{position:relative;display:block;width:max-content;max-width:100%;margin:.06em auto 0;padding-bottom:.2em;
+  font-family:var(--mv-fuente-marca);font-style:italic;font-weight:400;font-size:1.44em;line-height:1.02;letter-spacing:-.01em;
+  -webkit-mask-image:linear-gradient(90deg,#000 45%,transparent 55%);mask-image:linear-gradient(90deg,#000 45%,transparent 55%);
+  -webkit-mask-size:250% 100%;mask-size:250% 100%;-webkit-mask-position:0 0;mask-position:0 0;
+  transition:-webkit-mask-position 1.5s cubic-bezier(.6,0,.2,1),mask-position 1.5s cubic-bezier(.6,0,.2,1),filter 1.1s ease}
+.mv-js .mv-marca-grande:not(.mv-visto){-webkit-mask-position:100% 0;mask-position:100% 0;filter:blur(3px)}
+@media (max-width:720px){
+  .mv-marca-grande{font-size:1.24em}
+}
+/* en el celular entra en una sola línea */
+/* en el título de "qué incluye": centrado como su sección en la compu, a la izquierda en el celular */
+.mv-marca-h2{font-size:.8em}
+@media (max-width:720px){
+  .mv-marca-izq{margin-left:0}
+  .mv-marca-h2{font-size:.78em}
+}
+.mv-marca-grande::after{content:"";position:absolute;left:3%;right:6%;bottom:0;height:.18em;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 12' preserveAspectRatio='none'%3E%3Cpath d='M2 9C70 3 170 1 298 6' fill='none' stroke='%231FAE5B' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+  clip-path:inset(0 100% 0 0);transition:clip-path 1.2s cubic-bezier(.6,0,.2,1) 1.1s}
+.mv-marca-grande.mv-visto::after{clip-path:inset(0 0 0 0)}
+/* en la tarjeta de precio, arriba del número */
+.mv-marca-precio{display:block;width:max-content;margin:4px auto 2px;font-family:var(--mv-fuente-marca);font-style:italic;font-weight:400;font-size:clamp(28px,3.4vw,34px);line-height:1.05;letter-spacing:-.01em}
+.launch-tag[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){
+  .mv-marca{animation:none}
+  .mv-marca-grande{-webkit-mask-image:none;mask-image:none;filter:none;transition:none}
+  .mv-marca-grande::after{clip-path:none;transition:none}
+}
+/* ================================================================
+   BOTONES DE COMPRA, estilo Apple: una píldora lisa en verde noche
+   satinado, con un filo de luz arriba (se lee como botón a primera
+   vista). Un brillo metálico la cruza una sola vez al aparecer y al
+   pasar el mouse; el de la tarjeta de precio lo repite cada tanto,
+   solo mientras está en pantalla. Todo con transform: liviano.
+   ================================================================ */
+.btn:not(.light):not(.ghost){position:relative;isolation:isolate;overflow:hidden;color:#fff;animation:none;
+  background:linear-gradient(180deg,#1C4D30 0%,#10331F 50%,#0A2415 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(0,0,0,.28),0 1px 2px rgba(3,16,9,.22),0 12px 24px -12px rgba(3,16,9,.55);
+  transition:transform .2s ease,box-shadow .2s ease,filter .2s ease}
+.btn:not(.light):not(.ghost)::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(105deg,transparent 36%,rgba(255,255,255,.3) 50%,transparent 64%);transform:translateX(-120%)}
+.btn:not(.light):not(.ghost)::after{content:none}
+.btn.mv-brillo::before{animation:mvBrilloUna 1.1s cubic-bezier(.4,0,.2,1) .15s both}
+.btn.checkout.mv-anim::before{animation:mvBrilloCada 7s cubic-bezier(.4,0,.2,1) 1s infinite}
+@keyframes mvBrilloUna{from{transform:translateX(-120%)}to{transform:translateX(120%)}}
+@keyframes mvBrilloCada{0%{transform:translateX(-120%)}16%,100%{transform:translateX(120%)}}
+@media (hover:hover){
+  .btn:not(.light):not(.ghost):hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.28),0 2px 4px rgba(3,16,9,.2),0 16px 30px -14px rgba(3,16,9,.6)}
+  .btn:not(.light):not(.ghost):hover::before{animation:mvBrilloUna .9s cubic-bezier(.4,0,.2,1) both}
+  .btn:not(.light):not(.ghost) .arrow{transition:transform .25s ease}
+  .btn:not(.light):not(.ghost):hover .arrow{transform:translate(2px,-2px)}
+}
+.btn:not(.light):not(.ghost):active{transform:scale(.98);filter:brightness(.96)}
+@media (prefers-reduced-motion:reduce){
+  .btn:not(.light):not(.ghost)::before{animation:none!important}
+}
+/* ================================================================
+   LA FRANJA DE LA EDICIÓN, arriba de todo: verde noche con grano, la
+   etiqueta en champán con un punto rojo que late y el reloj en rojo.
+   Al bajar, una versión compacta queda fija arriba (en el celular, solo
+   "Cierra en", el reloj y el botón). El header ya no queda pegado.
+   ================================================================ */
+header{position:relative!important;top:auto!important}
+.announcement{position:sticky!important;top:0;z-index:80;will-change:transform;contain:layout paint}
+/* la franja fija va en su propia capa y sin grano ni brillos: así bajar por la página no la repinta */
+.announcement::after{content:none!important}
+.announcement .v2-cuenta-mini b{text-shadow:none!important}
+/* los saltos a secciones caen debajo de la franja fija (su alto lo mide el script) */
+#precio,#incluye,#resultado,#preguntas,#oferta{scroll-margin-top:calc(var(--mv-franja,56px) + 18px)!important}
+.mobile-buy{display:none!important}
+.announcement{color:#E7ECE8;
+  background:radial-gradient(50% 220% at 6% 0%,rgba(31,174,91,.2),transparent 62%),radial-gradient(44% 220% at 94% 100%,rgba(20,122,60,.24),transparent 64%),#050907}
+.announcement{border-bottom:1px solid rgba(255,255,255,.06)}
+.announcement::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.3;background:url("assets/mv/grano.webp") 0 0/64px 64px repeat}
+.announcement-inner{position:relative;z-index:1}
+.announcement-inner [data-cuenta="banner"]{color:#C4CBC5}
+/* la etiqueta, en champán, con el punto rojo que late */
+.announcement-inner [data-cuenta="banner"] b:first-child{display:inline-flex;align-items:center;gap:8px;color:#E6D29A!important;font-weight:500;letter-spacing:.2em;text-transform:uppercase;font-size:10.5px}
+.announcement-inner [data-cuenta="banner"] b:first-child::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:#FF4D3D;box-shadow:0 0 0 3px rgba(255,77,61,.18),0 0 12px rgba(255,77,61,.7);animation:mvLatido 1.6s ease-in-out 4}
+@keyframes mvLatido{0%,100%{opacity:1}50%{opacity:.35}}
+/* el reloj, en rojo con un halo suave */
+.announcement .v2-cuenta-mini{background:rgba(255,77,61,.07)!important;border:1px solid rgba(255,77,61,.5)!important;border-radius:999px;padding:4px 11px 3px;box-shadow:0 0 22px -8px rgba(255,77,61,.7),inset 0 1px 0 rgba(255,255,255,.06)}
+.announcement .v2-cuenta-mini b{color:#FF5B4B!important;text-shadow:0 0 14px rgba(255,91,75,.5)}
+.announcement .v2-cuenta-mini i{color:#8E8A80!important}
+/* el botón de la franja: una píldora de vidrio champán con flecha */
+.announcement a{display:inline-flex!important;align-items:center;gap:8px;padding:6px 14px!important;border-radius:999px!important;border:1px solid rgba(230,210,154,.42)!important;background:rgba(255,255,255,.05)!important;color:#E6D29A!important;text-decoration:none!important;letter-spacing:.16em!important;text-transform:uppercase;font:500 10px/1.2 var(--mono)!important;transition:background .3s ease,color .3s ease,border-color .3s ease}
+.announcement a::after{content:"";flex:none;width:12px;height:12px;background:currentColor;transition:transform .3s ease;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m13 6 6 6-6 6'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m13 6 6 6-6 6'/%3E%3C/svg%3E") center/contain no-repeat}
+@media (hover:hover){
+  .announcement a:hover{background:#E6D29A!important;color:#0A0C0A!important;border-color:#E6D29A!important}
+  .announcement a:hover::after{transform:translateX(3px)}
+}
+/* la versión fija y compacta, que baja al hacer scroll */
+@media (prefers-reduced-motion:reduce){
+  .announcement-inner [data-cuenta="banner"] b:first-child::before{animation:none}
+}
+/* ================================================================
+   TODO LO QUE TE LLEVAS: un visto de vidrio por pieza (círculo claro,
+   filo fino y un trazo verde que se dibuja), de a uno; después se tacha
+   el valor total y el precio respira una vez.
+   ================================================================ */
+.price-card .stack li>span:first-child{position:relative;padding-left:32px;min-width:0}
+/* el nombre largo puede partirse en dos líneas: así la tarjeta nunca se sale de la pantalla */
+.price-card .stack li>span:first-child b{white-space:normal}
+@media (max-width:1080px){
+  .offer-box{grid-template-columns:minmax(0,1fr)}
+}
+.price-card .stack li>span:first-child::before{content:"";position:absolute;left:0;top:.05em;width:20px;height:20px;box-sizing:border-box;border-radius:50%;
+  background:radial-gradient(120% 120% at 30% 15%,rgba(255,255,255,.98),rgba(255,255,255,.62) 62%,rgba(232,242,235,.72));
+  border:1px solid rgba(20,122,60,.22);box-shadow:inset 0 1px 0 #fff,0 5px 12px -7px rgba(6,24,14,.4);
+  transition:transform .6s cubic-bezier(.2,.7,.2,1),opacity .4s ease}
+.price-card .stack li>span:first-child::after{content:"";position:absolute;left:5px;top:calc(.05em + 5px);width:10px;height:10px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.8l5 5L20 6.6' fill='none' stroke='%23147A3C' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  clip-path:inset(0 0 0 0);transition:clip-path .45s cubic-bezier(.6,0,.2,1)}
+.mv-js .price-card:not(.mv-visto) .stack li>span:first-child::before{transform:scale(.7);opacity:0}
+.mv-js .price-card:not(.mv-visto) .stack li>span:first-child::after{clip-path:inset(0 100% 0 0)}
+.price-card .stack li:nth-child(1)>span:first-child::before{transition-delay:.1s}
+.price-card .stack li:nth-child(1)>span:first-child::after{transition-delay:.3s}
+.price-card .stack li:nth-child(2)>span:first-child::before{transition-delay:.25s}
+.price-card .stack li:nth-child(2)>span:first-child::after{transition-delay:.45s}
+.price-card .stack li:nth-child(3)>span:first-child::before{transition-delay:.4s}
+.price-card .stack li:nth-child(3)>span:first-child::after{transition-delay:.6s}
+.price-card .stack li:nth-child(4)>span:first-child::before{transition-delay:.55s}
+.price-card .stack li:nth-child(4)>span:first-child::after{transition-delay:.75s}
+.price-card .stack li:nth-child(5)>span:first-child::before{transition-delay:.7s}
+.price-card .stack li:nth-child(5)>span:first-child::after{transition-delay:.9s}
+.price-card .stack li:nth-child(6)>span:first-child::before{transition-delay:.85s}
+.price-card .stack li:nth-child(6)>span:first-child::after{transition-delay:1.05s}
+.price-card .stack li:nth-child(7)>span:first-child::before{transition-delay:1s}
+.price-card .stack li:nth-child(7)>span:first-child::after{transition-delay:1.2s}
+.price-card .stack li:nth-child(8)>span:first-child::before{transition-delay:1.15s}
+.price-card .stack li:nth-child(8)>span:first-child::after{transition-delay:1.35s}
+.stack-total s::after{transition-delay:1.5s}
+.price-card.mv-visto .price{animation:mvPrecioPop 1.1s cubic-bezier(.2,.7,.2,1) 1.9s both}
+@keyframes mvPrecioPop{0%,100%{transform:none}45%{transform:scale(1.045)}}
+@media (prefers-reduced-motion:reduce){
+  .price-card .stack li>span:first-child::before,.price-card .stack li>span:first-child::after{transition:none}
+  .price-card.mv-visto .price{animation:none}
+}
+/* ================================================================
+   POPUP de bienvenida, vidrio
+   ================================================================ */
+.mv-pop{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:18px}
+.mv-pop[hidden]{display:none}
+.mv-pop-fondo{position:absolute;inset:0;background:rgba(6,24,14,.34);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .45s ease}
+.mv-pop.abierto .mv-pop-fondo{opacity:1}
+.mv-pop-card{position:relative;width:min(100%,760px);display:grid;grid-template-columns:1fr;border-radius:28px;overflow:hidden;
+  background:rgba(253,252,248,.76);-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5);
+  border:1px solid rgba(255,255,255,.65);box-shadow:0 50px 100px -30px rgba(6,24,14,.55);
+  opacity:0;transform:translateY(18px) scale(.98);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+.mv-pop.abierto .mv-pop-card{opacity:1;transform:none}
+@media (min-width:760px){
+  .mv-pop-card{grid-template-columns:.9fr 1.1fr}
+}
+.mv-pop-img{position:relative;min-height:240px}
+.mv-pop-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mv-pop-txt{padding:clamp(22px,3.4vw,38px);display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.mv-pop-eye{font:500 10px/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--mv-acento)}
+.mv-pop-txt h3{margin:0;font:400 clamp(28px,3.4vw,40px)/1.05 var(--serif);letter-spacing:-.02em;color:var(--ink)}
+.mv-pop-txt h3 em{font-style:italic}
+.mv-pop-txt p{margin:0;color:var(--ink-2);font-size:15px;line-height:1.5}
+.mv-pop-cuenta{display:flex;align-items:center;gap:10px;font:400 10px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.mv-pop-cuenta .v2-cuenta-mini{text-transform:none}
+.mv-pop-txt .btn{margin-top:6px;width:100%}
+.mv-pop-txt small{font:400 10px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);align-self:center}
+.mv-pop-x{position:absolute;right:12px;top:12px;z-index:2;width:38px;height:38px;border-radius:50%;border:0;cursor:pointer;
+  background:rgba(253,252,248,.9);color:var(--ink);font:300 24px/38px var(--sans);text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+@media (max-width:759px){
+  .mv-pop{align-items:flex-end;padding:0}
+  .mv-pop-card{border-radius:26px 26px 0 0;background:rgba(253,252,248,.97);-webkit-backdrop-filter:none;backdrop-filter:none;padding-bottom:env(safe-area-inset-bottom)}
+  /* en el celular el anuncio se ve entero, como una pieza impresa, en lugar de recortado */
+  .mv-pop-img{min-height:0;height:250px;background:radial-gradient(120% 100% at 50% 0,#F5F0E6 0,#E4DCCB 100%)}
+  .mv-pop-img img{inset:auto;left:50%;top:20px;width:auto;height:calc(100% - 40px);transform:translateX(-50%) rotate(-2deg);border-radius:6px;box-shadow:0 20px 32px -16px rgba(6,24,14,.5),0 2px 6px rgba(6,24,14,.12)}
+  .mv-pop-txt h3{font-size:28px}
+}
+@media (prefers-reduced-motion:reduce){
+  .mv-cursor,.mv-drop{display:none}
+  .mv-rueda-txt,.mv-pop-card,.mv-pop-fondo{transition:none}
+}
+
+/* los dos caminos: la frase clave, en negrita de verdad */
+.mv-caminos .section-intro p b{color:var(--ink);font-weight:700}
+
+/* aislamiento: lo que cambia adentro (animaciones, relojes) no recalcula el resto de la página */
+.mv-win{contain:layout paint}
+.mv-rueda,.mv-pasos,.mv-linea,.mv-barras,.price-card{contain:layout}
+.mv-marca-grande.mv-listo{-webkit-mask-image:none;mask-image:none;filter:none}
