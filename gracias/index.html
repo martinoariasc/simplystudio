@@ -60,9 +60,14 @@ gtag('config', 'AW-18441137893');
   if (estado && !/approved|aprobad|complete|completo|paid/.test(estado)) return;
   var pedido = p.get('transaction') || p.get('trans') || p.get('transaction_id') || p.get('tid') || p.get('hottok') || '';
   var precio = parseFloat(p.get('price') || p.get('value') || p.get('total') || '');
-  try { if (sessionStorage.getItem('ss_compra_' + pedido)) return; sessionStorage.setItem('ss_compra_' + pedido, '1'); } catch (e) {}
+  /* si alguien recarga o vuelve a esta página, no se cuenta de nuevo (30 días) */
+  try {
+    var llave = 'ss_compra_' + (pedido || 'sin-id'), antes = parseInt(localStorage.getItem(llave) || '0', 10);
+    if (antes && Date.now() - antes < 2592e6) return;
+    localStorage.setItem(llave, String(Date.now()));
+  } catch (e) {}
   gtag('event', 'conversion', {
-    send_to: 'AW-18441137893/SKmRCOStxv8cEOXdtdlE',
+    send_to: 'AW-18441137893/2-VeCJf6-oEdEOXdtdlE',
     value: (precio > 0 ? precio : 58),
     currency: 'USD',
     transaction_id: pedido
