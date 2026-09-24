@@ -619,12 +619,3 @@ header{position:relative!important;top:auto!important}
 .mv-win{contain:layout paint}
 .mv-rueda,.mv-pasos,.mv-linea,.mv-barras,.price-card{contain:layout}
 .mv-marca-grande.mv-listo{-webkit-mask-image:none;mask-image:none;filter:none}
-
-/* ---- copias disponibles de la edición, debajo del botón de compra ---- */
-.mv-cupo{display:flex;flex-direction:column;align-items:center;gap:11px;margin:18px 0 0;text-align:center}
-.mv-cupo-txt{display:inline-flex;align-items:center;justify-content:center;gap:10px;font:400 16px/1.45 var(--serif);color:var(--ink)}
-.mv-cupo-txt em{font-style:italic;color:#C0504A}
-.mv-cupo-pun{width:7px;height:7px;border-radius:50%;background:#C0504A;box-shadow:0 0 0 4px rgba(192,80,74,.12);flex:none}
-.mv-cupo-barra{display:block;width:min(300px,88%);height:5px;border-radius:99px;background:rgba(23,23,19,.07);overflow:hidden}
-.mv-cupo-barra i{display:block;height:100%;border-radius:99px;background:#C0504A;opacity:.85}
-@media (max-width:520px){.mv-cupo-txt{font-size:14.5px;gap:8px}}
