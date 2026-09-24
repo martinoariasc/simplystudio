@@ -74,18 +74,18 @@
       var g = galeria(); hilo.appendChild(g);
       var grande = g.querySelector('.mv-gal-grande'), riel = g.querySelector('.mv-gal-riel'), col = g.querySelector('.mv-gal-col');
       for (var k = 0; k < IMGS.length; k++) {
-        var rapido = k >= 3;
+        var rapido = k >= 1;   /* solo la primera se toma un respiro, para que se lea "Creando imagen" */
         var mini = el('i', 'mv-gal-mini pend'); col.appendChild(mini); acomodar(riel, col);
         todos(grande, 'img').forEach(function(x){ x.classList.add('sale'); });
         grande.classList.add('creando');
-        await dormir(rapido ? 450 : 1100, v);
+        await dormir(rapido ? 450 : 700, v);
         todos(grande, 'img').forEach(function(x){ x.remove(); });
         var im = el('img'); im.alt = ''; im.src = IMGS[k]; grande.appendChild(im);
         void im.offsetWidth; im.classList.add('lista');
         grande.classList.remove('creando');
         mini.classList.remove('pend'); mini.innerHTML = '<img src="' + MINI(IMGS[k]) + '" alt="">';
         todos(col, '.sel').forEach(function(x){ x.classList.remove('sel'); }); mini.classList.add('sel');
-        await dormir(rapido ? 700 : 1400, v);
+        await dormir(rapido ? 700 : 850, v);
       }
       await dormir(2800, v);
     };
@@ -99,6 +99,10 @@
       var im0 = el('img', 'lista'); im0.alt = ''; im0.src = IMGS[0]; gr0.appendChild(im0);
       IMGS.slice(0, 6).forEach(function(src, i){ col0.appendChild(el('i', 'mv-gal-mini' + (i ? '' : ' sel'), '<img src="' + MINI(src) + '" alt="">')); });
     } else if (IO) {
+      /* empieza a bajar las imágenes bastante antes de que la demo entre en pantalla:
+         así la primera ya está en memoria cuando toca mostrarla */
+      var oPre = new IntersectionObserver(function(es){ if (es[0].isIntersecting) { precargar(); oPre.disconnect(); } }, { rootMargin: '1400px 0px' });
+      oPre.observe(win);
       new IntersectionObserver(function(es){
         var v = es[0].isIntersecting;
         if (v && !activo) { activo = true; precargar(); correr(); }

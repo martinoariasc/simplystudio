@@ -2682,7 +2682,7 @@ background:rgba(253,252,248,.9);color:var(--ink);font:300 24px/38px var(--sans);
 </div>
         <div>
           <h2>Si no aprendes a crear estos anuncios, te devolvemos el 100%.</h2>
-          <p>Pruébalo <b>7 días</b>. Lee la guía, crea tu primera tanda, y si al terminar no sabes hacerlo con tu producto, pides el reembolso y recibes el <b>100% de tu dinero</b>. Sin vueltas y sin preguntas incómodas: lo procesa Hotmart, así que tu compra está protegida de punta a punta. <b>Todo el riesgo lo ponemos nosotros.</b></p>
+          <p>Pruébalo <b>7 días</b>. Lee la guía y mira el video explicativo, crea tu primera tanda, y si al terminar no sabes hacerlo con tu producto, pides el reembolso y recibes el <b>100% de tu dinero</b>. Sin vueltas y sin preguntas incómodas: lo procesa Hotmart, así que tu compra está protegida de punta a punta. <b>Todo el riesgo lo ponemos nosotros.</b></p>
           <p>Y no te dejamos solo. Si te trabas en algún punto, escríbenos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a> y te damos una mano directa. Queremos que de verdad te pueda ser útil, no que compres y no lo uses.</p>
         </div>
       </div>
@@ -3380,13 +3380,15 @@ background:rgba(253,252,248,.9);color:var(--ink);font:300 24px/38px var(--sans);
   function autoNativo(gal){
     gal.classList.add("v2-gal-nativa");
     if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    var PXS=26, x=gal.scrollLeft, puesto=x, pausaHasta=performance.now()+1500, visible=false, tocando=false, volviendo=false, antes=0;
+    /* 60 px/s = 1 pixel por cuadro a 60 Hz: el navegador dibuja pixeles enteros, asi que a menos
+       velocidad avanza a saltos de 1 px cada dos o tres cuadros y se ve a tirones. */
+    var PXS=60, x=gal.scrollLeft, puesto=x, pausaHasta=performance.now()+700, visible=false, tocando=false, volviendo=false, antes=0;
     function pausa(ms){ pausaHasta=Math.max(pausaHasta, performance.now()+ms); }
-    gal.addEventListener("touchstart",function(){ tocando=true; pausa(4000); },{passive:true});
-    gal.addEventListener("touchend",function(){ tocando=false; pausa(3500); },{passive:true});
-    gal.addEventListener("touchcancel",function(){ tocando=false; pausa(3500); },{passive:true});
-    gal.addEventListener("pointerdown",function(){ pausa(4000); },{passive:true});
-    gal.addEventListener("scroll",function(){ if(Math.abs(gal.scrollLeft-puesto)>2){ x=gal.scrollLeft; puesto=x; if(!volviendo) pausa(3500); } },{passive:true});
+    gal.addEventListener("touchstart",function(){ tocando=true; pausa(2500); },{passive:true});
+    gal.addEventListener("touchend",function(){ tocando=false; pausa(2000); },{passive:true});
+    gal.addEventListener("touchcancel",function(){ tocando=false; pausa(2000); },{passive:true});
+    gal.addEventListener("pointerdown",function(){ pausa(2500); },{passive:true});
+    gal.addEventListener("scroll",function(){ if(Math.abs(gal.scrollLeft-puesto)>2){ x=gal.scrollLeft; puesto=x; if(!volviendo) pausa(2000); } },{passive:true});
     if("IntersectionObserver" in window){ new IntersectionObserver(function(es){ visible=es[0].isIntersecting; },{threshold:0.2}).observe(gal); } else visible=true;
     function paso(t){
       var dt=antes?Math.min(t-antes,50):16; antes=t;
@@ -3405,14 +3407,17 @@ background:rgba(253,252,248,.9);color:var(--ink);font:300 24px/38px var(--sans);
   if(matchMedia("(hover: none) and (pointer: coarse)").matches){ autoNativo(gal); return; }  /* tactil: scroll nativo que avanza solo */
   var track=gal.querySelector(".v2-gal-track"), set=gal.querySelector(".v2-gal-set"); if(!track||!set) return;
   var quieto=matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var x=0, vel=0, VEL=0.45, pausaHasta=0, encima=false, arr=null, movio=false, visible=true, w=0;
+  /* VEL va en pixeles por segundo y se multiplica por el tiempo real entre cuadros: asi la velocidad
+     es la misma en pantallas de 60 y de 120 Hz, y si el navegador pierde un cuadro no se ve un tiron. */
+  var x=0, vel=0, VEL=58, ultimo=0, pausaHasta=0, encima=false, arr=null, movio=false, visible=true, w=0;
   function medir(){ w=set.getBoundingClientRect().width; }
   function pintar(){ if(w){ if(x>=w) x-=w; if(x<0) x+=w; } track.style.transform="translate3d("+(-x)+"px,0,0)"; }
   function paso(t){
+    var dt=ultimo?Math.min((t-ultimo)/1000,0.05):0.016; ultimo=t;
     if(visible && !document.hidden){
       if(!arr){
         if(Math.abs(vel)>0.05){ x+=vel; vel*=0.94; }
-        else if(!quieto && !encima && t>pausaHasta){ x+=VEL; }
+        else if(!quieto && !encima && t>pausaHasta){ x+=VEL*dt; }
       }
       pintar();
     }
@@ -3590,18 +3595,18 @@ await dormir(700, v);
 var g = galeria(); hilo.appendChild(g);
 var grande = g.querySelector('.mv-gal-grande'), riel = g.querySelector('.mv-gal-riel'), col = g.querySelector('.mv-gal-col');
 for (var k = 0; k < IMGS.length; k++) {
-var rapido = k >= 3;
+var rapido = k >= 1;   /* solo la primera se toma un respiro, para que se lea "Creando imagen" */
 var mini = el('i', 'mv-gal-mini pend'); col.appendChild(mini); acomodar(riel, col);
 todos(grande, 'img').forEach(function(x){ x.classList.add('sale'); });
 grande.classList.add('creando');
-await dormir(rapido ? 450 : 1100, v);
+await dormir(rapido ? 450 : 700, v);
 todos(grande, 'img').forEach(function(x){ x.remove(); });
 var im = el('img'); im.alt = ''; im.src = IMGS[k]; grande.appendChild(im);
 void im.offsetWidth; im.classList.add('lista');
 grande.classList.remove('creando');
 mini.classList.remove('pend'); mini.innerHTML = '<img src="' + MINI(IMGS[k]) + '" alt="">';
 todos(col, '.sel').forEach(function(x){ x.classList.remove('sel'); }); mini.classList.add('sel');
-await dormir(rapido ? 700 : 1400, v);
+await dormir(rapido ? 700 : 850, v);
 }
 await dormir(2800, v);
 };
@@ -3615,6 +3620,8 @@ gr0.classList.remove('creando');
 var im0 = el('img', 'lista'); im0.alt = ''; im0.src = IMGS[0]; gr0.appendChild(im0);
 IMGS.slice(0, 6).forEach(function(src, i){ col0.appendChild(el('i', 'mv-gal-mini' + (i ? '' : ' sel'), '<img src="' + MINI(src) + '" alt="">')); });
 } else if (IO) {
+var oPre = new IntersectionObserver(function(es){ if (es[0].isIntersecting) { precargar(); oPre.disconnect(); } }, { rootMargin: '1400px 0px' });
+oPre.observe(win);
 new IntersectionObserver(function(es){
 var v = es[0].isIntersecting;
 if (v && !activo) { activo = true; precargar(); correr(); }

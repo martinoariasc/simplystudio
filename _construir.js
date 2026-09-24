@@ -430,13 +430,15 @@ const miniScript = '\n<script>\n' +
 '  function autoNativo(gal){\n' +
 '    gal.classList.add("v2-gal-nativa");\n' +
 '    if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;\n' +
-'    var PXS=26, x=gal.scrollLeft, puesto=x, pausaHasta=performance.now()+1500, visible=false, tocando=false, volviendo=false, antes=0;\n' +
+'    /* 60 px/s = 1 pixel por cuadro a 60 Hz: el navegador dibuja pixeles enteros, asi que a menos\n' +
+'       velocidad avanza a saltos de 1 px cada dos o tres cuadros y se ve a tirones. */\n' +
+'    var PXS=60, x=gal.scrollLeft, puesto=x, pausaHasta=performance.now()+700, visible=false, tocando=false, volviendo=false, antes=0;\n' +
 '    function pausa(ms){ pausaHasta=Math.max(pausaHasta, performance.now()+ms); }\n' +
-'    gal.addEventListener("touchstart",function(){ tocando=true; pausa(4000); },{passive:true});\n' +
-'    gal.addEventListener("touchend",function(){ tocando=false; pausa(3500); },{passive:true});\n' +
-'    gal.addEventListener("touchcancel",function(){ tocando=false; pausa(3500); },{passive:true});\n' +
-'    gal.addEventListener("pointerdown",function(){ pausa(4000); },{passive:true});\n' +
-'    gal.addEventListener("scroll",function(){ if(Math.abs(gal.scrollLeft-puesto)>2){ x=gal.scrollLeft; puesto=x; if(!volviendo) pausa(3500); } },{passive:true});\n' +
+'    gal.addEventListener("touchstart",function(){ tocando=true; pausa(2500); },{passive:true});\n' +
+'    gal.addEventListener("touchend",function(){ tocando=false; pausa(2000); },{passive:true});\n' +
+'    gal.addEventListener("touchcancel",function(){ tocando=false; pausa(2000); },{passive:true});\n' +
+'    gal.addEventListener("pointerdown",function(){ pausa(2500); },{passive:true});\n' +
+'    gal.addEventListener("scroll",function(){ if(Math.abs(gal.scrollLeft-puesto)>2){ x=gal.scrollLeft; puesto=x; if(!volviendo) pausa(2000); } },{passive:true});\n' +
 '    if("IntersectionObserver" in window){ new IntersectionObserver(function(es){ visible=es[0].isIntersecting; },{threshold:0.2}).observe(gal); } else visible=true;\n' +
 '    function paso(t){\n' +
 '      var dt=antes?Math.min(t-antes,50):16; antes=t;\n' +
@@ -455,14 +457,17 @@ const miniScript = '\n<script>\n' +
 '  if(matchMedia("(hover: none) and (pointer: coarse)").matches){ autoNativo(gal); return; }  /* tactil: scroll nativo que avanza solo */\n' +
 '  var track=gal.querySelector(".v2-gal-track"), set=gal.querySelector(".v2-gal-set"); if(!track||!set) return;\n' +
 '  var quieto=matchMedia("(prefers-reduced-motion: reduce)").matches;\n' +
-'  var x=0, vel=0, VEL=0.45, pausaHasta=0, encima=false, arr=null, movio=false, visible=true, w=0;\n' +
+'  /* VEL va en pixeles por segundo y se multiplica por el tiempo real entre cuadros: asi la velocidad\n' +
+'     es la misma en pantallas de 60 y de 120 Hz, y si el navegador pierde un cuadro no se ve un tiron. */\n' +
+'  var x=0, vel=0, VEL=58, ultimo=0, pausaHasta=0, encima=false, arr=null, movio=false, visible=true, w=0;\n' +
 '  function medir(){ w=set.getBoundingClientRect().width; }\n' +
 '  function pintar(){ if(w){ if(x>=w) x-=w; if(x<0) x+=w; } track.style.transform="translate3d("+(-x)+"px,0,0)"; }\n' +
 '  function paso(t){\n' +
+'    var dt=ultimo?Math.min((t-ultimo)/1000,0.05):0.016; ultimo=t;\n' +
 '    if(visible && !document.hidden){\n' +
 '      if(!arr){\n' +
 '        if(Math.abs(vel)>0.05){ x+=vel; vel*=0.94; }\n' +
-'        else if(!quieto && !encima && t>pausaHasta){ x+=VEL; }\n' +
+'        else if(!quieto && !encima && t>pausaHasta){ x+=VEL*dt; }\n' +
 '      }\n' +
 '      pintar();\n' +
 '    }\n' +
@@ -599,7 +604,7 @@ parrafo('Mientras algunos siguen publicando',
 parrafo('Entra con el sistema listo',
   'Entra con el sistema listo y deja de regalarle horas a un diseño que no vende. Produce anuncios con calidad de estudio, de los que cobrarían miles de dólares, <b>sin diseñador, sin agencia y sin semanas de producción</b>. No tienes que aprender nada nuevo: solo seguir los pasos.');
 parrafo('Pruébalo',
-  'Pruébalo <b>7 días</b>. Lee la guía, crea tu primera tanda, y si al terminar no sabes hacerlo con tu producto, pides el reembolso y recibes el <b>100% de tu dinero</b>. Sin vueltas y sin preguntas incómodas: lo procesa Hotmart, así que tu compra está protegida de punta a punta. <b>Todo el riesgo lo ponemos nosotros.</b>');
+  'Pruébalo <b>7 días</b>. Lee la guía y mira el video explicativo, crea tu primera tanda, y si al terminar no sabes hacerlo con tu producto, pides el reembolso y recibes el <b>100% de tu dinero</b>. Sin vueltas y sin preguntas incómodas: lo procesa Hotmart, así que tu compra está protegida de punta a punta. <b>Todo el riesgo lo ponemos nosotros.</b>');
 parrafo('Y no te dejamos solo',
   'Y no te dejamos solo. Si te trabas en algún punto, escríbenos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a> y te damos una mano directa. Queremos que de verdad te pueda ser útil, no que compres y no lo uses.');
 parrafo('Si vendes algo real y necesitas mostrarlo mejor, funciona.',
