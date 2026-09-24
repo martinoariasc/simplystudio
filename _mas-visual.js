@@ -123,17 +123,24 @@
     var num = rueda.querySelector('.mv-rueda-num'), txt = rueda.querySelector('.mv-rueda-txt'), hecho = rueda.querySelector('.mv-rueda-hecho');
     var L = 2 * Math.PI * 38, k = 0, t2 = null, vis2 = false, N = est.length;
     var dos = function(n){ return (n < 10 ? '0' : '') + n; };
-    if (hecho) { hecho.style.strokeDasharray = L; hecho.style.strokeDashoffset = L * (1 - 1 / N); }
+    if (hecho) { hecho.style.strokeDasharray = L; hecho.style.strokeDashoffset = L * (1 - 0.06 / N); }
     var marcar = function(i){
       k = i;
-      est.forEach(function(li, j){ li.classList.toggle('activo', j === i); });
-      if (txt) {
-        txt.classList.add('cambia');
-        setTimeout(function(){ var t = est[i].querySelector('.mv-est-txt'); txt.textContent = t ? t.textContent : ''; if (num) num.textContent = dos(i + 1) + ' / ' + dos(N); txt.classList.remove('cambia'); }, 300);
-      }
-      if (hecho) hecho.style.strokeDashoffset = L * (1 - (i + 1) / N);
+      /* el icono, el texto y la línea roja cambian todos juntos, cuando termina el fundido.
+         La línea termina JUSTO en el icono encendido (antes iba una estación adelantada). */
+      var aplicar = function(){
+        est.forEach(function(li, j){ li.classList.toggle('activo', j === i); });
+        if (txt) {
+          var t = est[i].querySelector('.mv-est-txt');
+          txt.textContent = t ? t.textContent : '';
+          if (num) num.textContent = dos(i + 1) + ' / ' + dos(N);
+          txt.classList.remove('cambia');
+        }
+        if (hecho) hecho.style.strokeDashoffset = L * (1 - (i + 0.06) / N);
+      };
+      if (txt) { txt.classList.add('cambia'); setTimeout(aplicar, 300); } else aplicar();
       clearTimeout(t2);
-      if (vis2) t2 = setTimeout(function(){ marcar((i + 1) % N); }, i === N - 1 ? 2600 : 1900);
+      if (vis2) t2 = setTimeout(function(){ marcar((i + 1) % N); }, i === N - 1 ? 3400 : 2700);
     };
     if (!reduce && IO) {
       new IntersectionObserver(function(es){

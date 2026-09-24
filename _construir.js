@@ -546,6 +546,20 @@ salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si 
     const btn = card.indexOf('<a class="btn checkout"');
     if (btn === -1) avisos.push('tarjeta: no encontre el boton de compra');
     else card = card.slice(0, btn) + '<p class="v2-empuje">' + EMPUJE + '</p>\n            ' + card.slice(btn);
+    /* ---- copias disponibles de la edicion, debajo del boton ----
+     *  NUMEROS REALES: VENDIDAS sale del export de Hotmart (ventas aprobadas del
+     *  metodo, historicas). Actualizarlo cada vez que se revisa el export.
+     *  Cuando VENDIDAS llegue a CUPO hay que suspender ventas en Hotmart, si no
+     *  la frase deja de ser cierta.                                            */
+    const CUPO = 150, VENDIDAS = 138;
+    const QUEDAN = Math.max(0, CUPO - VENDIDAS), LLENO = Math.min(100, Math.round(VENDIDAS / CUPO * 100));
+    const CUPO_HTML = '<p class="mv-cupo">'
+      + '<span class="mv-cupo-txt"><i class="mv-cupo-pun"></i>Quedan <em>' + QUEDAN + ' de ' + CUPO + ' copias</em> disponibles de esta edición.</span>'
+      + '<span class="mv-cupo-barra"><i style="width:' + LLENO + '%"></i></span></p>';
+    const btn2 = card.indexOf('<a class="btn checkout"');
+    const finBtn = btn2 === -1 ? -1 : card.indexOf('</a>', btn2) + 4;
+    if (finBtn === -1) avisos.push('tarjeta: no pude poner las copias disponibles');
+    else card = card.slice(0, finBtn) + '\n            ' + CUPO_HTML + card.slice(finBtn);
     salida = salida.slice(0, c0) + card + salida.slice(c1);
   }
 }
