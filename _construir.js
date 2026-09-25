@@ -546,6 +546,25 @@ salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si 
     const btn = card.indexOf('<a class="btn checkout"');
     if (btn === -1) avisos.push('tarjeta: no encontre el boton de compra');
     else card = card.slice(0, btn) + '<p class="v2-empuje">' + EMPUJE + '</p>\n            ' + card.slice(btn);
+    /* ---- copias disponibles de la edicion, debajo del boton ----
+     *  NUMEROS REALES: VENDIDAS sale del export de Hotmart (ventas aprobadas del
+     *  metodo, historicas). Actualizarlo cada vez que se revisa el export.
+     *  Cuando VENDIDAS llegue a CUPO hay que suspender ventas en Hotmart, si no
+     *  la frase deja de ser cierta.                                            */
+    const CUPO = 150, VENDIDAS = 141;
+    const QUEDAN = Math.max(0, CUPO - VENDIDAS), LLENO = Math.min(100, Math.round(VENDIDAS / CUPO * 100));
+    /*  La frase de abajo la cambia _mas-visual.js en cada visita y se endurece
+     *  cuando se acerca el cierre. La que va aqui es la de respaldo, por si el
+     *  navegador no corre el script: todas dicen algo cierto.                */
+    const CUPO_HTML = '<p class="mv-cupo">'
+      + '<span class="mv-cupo-tope">' + CUPO + ' copias por edición</span>'
+      + '<span class="mv-cupo-txt"><i class="mv-cupo-pun"></i>Quedan <em>' + QUEDAN + '</em></span>'
+      + '<span class="mv-cupo-barra"><i style="--f:' + LLENO + '%"></i></span>'
+      + '<span class="mv-cupo-pie">Consigue <em>HOY</em> la edición que no vuelve.</span></p>';
+    const btn2 = card.indexOf('<a class="btn checkout"');
+    const finBtn = btn2 === -1 ? -1 : card.indexOf('</a>', btn2) + 4;
+    if (finBtn === -1) avisos.push('tarjeta: no pude poner las copias disponibles');
+    else card = card.slice(0, finBtn) + '\n            ' + CUPO_HTML + card.slice(finBtn);
     salida = salida.slice(0, c0) + card + salida.slice(c1);
   }
 }
@@ -597,8 +616,6 @@ document.addEventListener('click',function(ev){var a=ev.target&&ev.target.closes
   else salida = salida.replace('</body>', () => PIE + '\n</body>');
 }
 salida = salida.replace('<h2>Uno se ignora. El otro se siente como <em>marca.</em></h2>', '<h2>Uno se ignora. El otro se siente <em>premium.</em></h2>');
-parrafo('No son prompts sueltos',
-  'No son prompts sueltos para que pruebes suerte. Es un método de seis archivos y un video: empiezas por la guía, que te enseña a dirigir la IA, y las otras cinco son las que ella ejecuta. El motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora. Y el estilo lo eliges tú: el método te enseña a trasladar la estética que quieras a tu producto, sin que la IA la cambie. Y nada de documentos de puro texto: cada archivo está diseñado, con ejemplos visuales en cada paso. Y además de los archivos, <b>el video explicativo muestra el método entero funcionando</b>, de principio a fin.');
 parrafo('Mientras algunos siguen publicando',
   'Sabemos cómo se siente publicar lo mismo de siempre y ver que no pasa nada. Mientras tanto, otros ya están sacando anuncios que parecen de marca grande con una foto y un chat. Lo que antes costaba una agencia, un equipo y semanas, <b>hoy lo haces tú solo, esta misma tarde</b>. Y el que empieza ahora le saca meses de ventaja al que espera.');
 parrafo('Entra con el sistema listo',
@@ -895,7 +912,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
 
 
   /* una pregunta nueva en la FAQ, antes de la de diseno */
-  const FAQ1 = '<details><summary>¿Puedo elegir yo el estilo o lo decide la IA?</summary><p>Tú mandas, siempre. Ves un estilo que te gusta —de cualquier marca, de cualquier rubro— y el método te enseña a ponerlo al servicio de TU producto, sin que la IA lo cambie ni invente nada. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas. Y si un resultado se desvía, el archivo de correcciones trae la línea para enderezarlo.</p></details>';
+  const FAQ1 = '<details><summary>¿Puedo elegir yo el estilo o lo decide la IA?</summary><p>Tú mandas, siempre. Tú defines la estética que quieres y el método te enseña a pedirla con precisión, para que la IA la aplique a TU producto sin cambiarlo ni inventar nada. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas. Y si un resultado se desvía, el archivo de correcciones trae la línea para enderezarlo.</p></details>';
   /* el boton del banner: ya no hay suba de precio que asegurar */
   /* el boton 'Asegurar mi precio' vivia en el banner, que ya no existe */
 
@@ -1252,8 +1269,10 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   const miniCSS = t => t.replace(/\/\*[\s\S]*?\*\//g, '').split(/\r?\n/).map(l => l.trim()).filter(Boolean).join('\n');
   const miniJS = t => t.replace(/^[ \t]*\/\*[\s\S]*?\*\/[ \t]*\r?\n/gm, '').split(/\r?\n/).map(l => l.trim()).filter(Boolean).join('\n');
   const CSS = '<style>' + miniCSS(fs.readFileSync('_mas-visual.css', 'utf8')) + '</style>';
-  /* el popup va antes del lightbox: asi existe cuando corre el script que hace andar los relojes */
-  cambia('<dialog class="lightbox"', parte('popup') + ' <dialog class="lightbox"', 'el lightbox (popup)');
+  /* POPUP: fuera por pedido de Martino (24/09). El fragmento sigue en
+   *  _mas-visual.html bajo <!--@@popup--> por si alguna vez lo pide. Para
+   *  volver a ponerlo: descomentar esta linea y el bloque de _mas-visual.js. */
+  /* cambia('<dialog class="lightbox"', parte('popup') + ' <dialog class="lightbox"', 'el lightbox (popup)'); */
   /* 7 · garantía: el sello nuevo, la confianza en la tarjeta de precio y "hecho por nosotros" */
   cambia('<div class="seal"><div><b>7 días</b><span>Aprendes o te devolvemos</span></div></div>', parte('sello'), 'el sello de garantia');
   const reConf = /<div class="trust-row">[\s\S]*?<\/div>\s*<p class="secure">[\s\S]*?<\/p>/;

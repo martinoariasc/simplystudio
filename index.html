@@ -2174,46 +2174,40 @@ clip-path:inset(0 0 0 0);transition:clip-path .45s cubic-bezier(.6,0,.2,1)}
 .price-card .stack li>span:first-child::before,.price-card .stack li>span:first-child::after{transition:none}
 .price-card.mv-visto .price{animation:none}
 }
-.mv-pop{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:18px}
-.mv-pop[hidden]{display:none}
-.mv-pop-fondo{position:absolute;inset:0;background:rgba(6,24,14,.34);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .45s ease}
-.mv-pop.abierto .mv-pop-fondo{opacity:1}
-.mv-pop-card{position:relative;width:min(100%,760px);display:grid;grid-template-columns:1fr;border-radius:28px;overflow:hidden;
-background:rgba(253,252,248,.76);-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5);
-border:1px solid rgba(255,255,255,.65);box-shadow:0 50px 100px -30px rgba(6,24,14,.55);
-opacity:0;transform:translateY(18px) scale(.98);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
-.mv-pop.abierto .mv-pop-card{opacity:1;transform:none}
-@media (min-width:760px){
-.mv-pop-card{grid-template-columns:.9fr 1.1fr}
-}
-.mv-pop-img{position:relative;min-height:240px}
-.mv-pop-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.mv-pop-txt{padding:clamp(22px,3.4vw,38px);display:flex;flex-direction:column;align-items:flex-start;gap:12px}
-.mv-pop-eye{font:500 10px/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--mv-acento)}
-.mv-pop-txt h3{margin:0;font:400 clamp(28px,3.4vw,40px)/1.05 var(--serif);letter-spacing:-.02em;color:var(--ink)}
-.mv-pop-txt h3 em{font-style:italic}
-.mv-pop-txt p{margin:0;color:var(--ink-2);font-size:15px;line-height:1.5}
-.mv-pop-cuenta{display:flex;align-items:center;gap:10px;font:400 10px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-.mv-pop-cuenta .v2-cuenta-mini{text-transform:none}
-.mv-pop-txt .btn{margin-top:6px;width:100%}
-.mv-pop-txt small{font:400 10px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);align-self:center}
-.mv-pop-x{position:absolute;right:12px;top:12px;z-index:2;width:38px;height:38px;border-radius:50%;border:0;cursor:pointer;
-background:rgba(253,252,248,.9);color:var(--ink);font:300 24px/38px var(--sans);text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.12)}
-@media (max-width:759px){
-.mv-pop{align-items:flex-end;padding:0}
-.mv-pop-card{border-radius:26px 26px 0 0;background:rgba(253,252,248,.97);-webkit-backdrop-filter:none;backdrop-filter:none;padding-bottom:env(safe-area-inset-bottom)}
-.mv-pop-img{min-height:0;height:250px;background:radial-gradient(120% 100% at 50% 0,#F5F0E6 0,#E4DCCB 100%)}
-.mv-pop-img img{inset:auto;left:50%;top:20px;width:auto;height:calc(100% - 40px);transform:translateX(-50%) rotate(-2deg);border-radius:6px;box-shadow:0 20px 32px -16px rgba(6,24,14,.5),0 2px 6px rgba(6,24,14,.12)}
-.mv-pop-txt h3{font-size:28px}
-}
 @media (prefers-reduced-motion:reduce){
 .mv-cursor,.mv-drop{display:none}
-.mv-rueda-txt,.mv-pop-card,.mv-pop-fondo{transition:none}
+.mv-rueda-txt{transition:none}
 }
 .mv-caminos .section-intro p b{color:var(--ink);font-weight:700}
 .mv-win{contain:layout paint}
 .mv-rueda,.mv-pasos,.mv-linea,.mv-barras,.price-card{contain:layout}
-.mv-marca-grande.mv-listo{-webkit-mask-image:none;mask-image:none;filter:none}</style></head>
+.mv-marca-grande.mv-listo{-webkit-mask-image:none;mask-image:none;filter:none}
+.mv-cupo{display:flex;flex-direction:column;align-items:center;gap:9px;margin:20px 0 0;text-align:center}
+.mv-cupo-tope{font:500 11px/1.7 var(--mono);letter-spacing:.15em;text-transform:uppercase;color:rgba(23,23,19,.78)}
+.mv-cupo-txt{display:inline-flex;align-items:baseline;gap:9px;font:italic 400 21px/1 var(--serif);color:#C0504A}
+.mv-cupo-txt em{font:italic 400 34px/.8 var(--serif);color:#C0504A}
+.mv-cupo-pun{width:7px;height:7px;border-radius:50%;background:#C0504A;box-shadow:0 0 0 4px rgba(192,80,74,.12);
+flex:none;align-self:center;animation:mvLatir 2.6s ease-in-out infinite}
+@keyframes mvLatir{0%,100%{box-shadow:0 0 0 4px rgba(192,80,74,.12)}50%{box-shadow:0 0 0 8px rgba(192,80,74,.035)}}
+.mv-cupo-barra{display:block;margin-top:1px;width:min(268px,84%);height:4px;border-radius:99px;
+background:rgba(23,23,19,.07);overflow:hidden}
+.mv-cupo-pie{margin-top:3px;font:italic 400 15px/1.45 var(--serif);color:rgba(23,23,19,.58)}
+.mv-cupo-pie em{font-style:normal;font-weight:500;letter-spacing:.06em;color:#C0504A}
+.mv-cupo-barra i{display:block;width:0;height:100%;border-radius:99px;opacity:.9;
+background:linear-gradient(90deg,rgba(192,80,74,.55),#C0504A);
+transition:width 1.05s cubic-bezier(.2,.75,.25,1) .12s}
+.mv-cupo.mv-listo .mv-cupo-barra i{width:var(--f)}
+@media (prefers-reduced-motion:reduce){
+.mv-cupo-pun{animation:none}
+.mv-cupo-barra i{transition:none}
+}
+@media (max-width:520px){
+.mv-cupo{gap:8px}
+.mv-cupo-tope{font-size:10px;letter-spacing:.13em}
+.mv-cupo-txt{font-size:19px;gap:8px}
+.mv-cupo-txt em{font-size:31px}
+.mv-cupo-pie{font-size:13.8px}
+}</style></head>
 <body>
 
   <div class="announcement">
@@ -2480,8 +2474,7 @@ background:rgba(253,252,248,.9);color:var(--ink);font:300 24px/38px var(--sans);
 <section data-esc="El método" class="inside" id="incluye">
       <div class="shell">
         <div class="section-intro reveal">
-          <span class="eyebrow muted">Qué incluye</span>
-          <div><h2>¿Qué incluye el <em class="mv-marca mv-marca-grande mv-marca-izq mv-marca-h2">Método Prompt Ads?</em></h2><p>No son prompts sueltos para que pruebes suerte. Es un método de seis archivos y un video: empiezas por la guía, que te enseña a dirigir la IA, y las otras cinco son las que ella ejecuta. El motor que genera los anuncios, el que los vuelve reales, el que les da dirección y el que los corrige cuando algo sale mal. <b>Todo lo que una agencia cobra por separado, resuelto adentro</b>, con la guía paso a paso para que no pierdas ni una hora. Y el estilo lo eliges tú: el método te enseña a trasladar la estética que quieras a tu producto, sin que la IA la cambie. Y nada de documentos de puro texto: cada archivo está diseñado, con ejemplos visuales en cada paso. Y además de los archivos, <b>el video explicativo muestra el método entero funcionando</b>, de principio a fin.</p></div>
+          <div><h2>¿Qué incluye el <em class="mv-marca mv-marca-grande mv-marca-izq mv-marca-h2">Método Prompt Ads?</em></h2></div>
         </div>
         <div class="inside-grid">
           <article class="inside-card reveal">
@@ -2615,7 +2608,7 @@ background:rgba(253,252,248,.9);color:var(--ink);font:300 24px/38px var(--sans);
             <span class="eyebrow">PROMPT ADS · ACCESO COMPLETO</span>
             <h2>Empieza a crear <em>+50 anuncios premium en minutos.</em> Hoy mismo.</h2>
             <p>Entra con el método listo y deja de regalarle horas a un diseño que no vende. Produce anuncios con calidad de estudio, de los que cobrarían miles de dólares, <b>sin diseñador, sin agencia y sin semanas de producción</b>. No tienes que aprender nada nuevo: solo seguir los pasos.</p>
-            <p class="offer-choice">Tu marca puede seguir pasando desapercibida, o volverse imposible de olvidar. <b>Hoy, esa decisión es tuya.</b></p>
+            <p class="offer-choice">Tus anuncios pueden seguir pasando desapercibidos, o volverse imposibles de olvidar. <b>Hoy, esa decisión es tuya.</b></p>
             <div class="mv-ahorro" id="mvAhorro">
   <p class="mv-ahorro-t">Hagamos la cuenta. Hacer <b>50 anuncios de este nivel</b> por fuera te cuesta:</p>
   <div class="mv-barras">
@@ -2656,10 +2649,11 @@ background:rgba(253,252,248,.9);color:var(--ink);font:300 24px/38px var(--sans);
             </div>
             <p class="v2-empuje">El riesgo es nuestro, no tuyo. Tienes <b>7 días de garantía</b> para aprender el método con calma. Si no aprendes a crear estos anuncios, recuperas el 100% de tu dinero. <b>No te vas a arrepentir.</b></p>
             <a class="btn checkout" href="https://pay.hotmart.com/G107515293E?off=1tbcugw1&checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads</a>
+            <p class="mv-cupo"><span class="mv-cupo-tope">150 copias por edición</span><span class="mv-cupo-txt"><i class="mv-cupo-pun"></i>Quedan <em>9</em></span><span class="mv-cupo-barra"><i style="--f:94%"></i></span><span class="mv-cupo-pie">Consigue <em>HOY</em> la edición que no vuelve.</span></p>
             <ul class="mv-confianza" aria-label="Tu compra, protegida">
   <li><span class="mv-conf-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="o" d="M12 0.7C12.53 0.7 13.13 1.48 13.6 1.93C14.06 2.37 14.31 3.18 14.81 3.35C15.32 3.51 15.99 2.99 16.63 2.91C17.27 2.83 18.21 2.55 18.64 2.86C19.07 3.17 19.09 4.16 19.21 4.79C19.33 5.42 19.05 6.22 19.36 6.65C19.67 7.08 20.52 7.06 21.09 7.37C21.65 7.68 22.58 8 22.75 8.51C22.91 9.01 22.35 9.82 22.07 10.4C21.8 10.99 21.1 11.47 21.1 12C21.1 12.53 21.8 13.01 22.07 13.6C22.35 14.18 22.91 14.99 22.75 15.49C22.58 16 21.65 16.32 21.09 16.63C20.52 16.94 19.67 16.92 19.36 17.35C19.05 17.78 19.33 18.58 19.21 19.21C19.09 19.84 19.07 20.83 18.64 21.14C18.21 21.45 17.27 21.17 16.63 21.09C15.99 21.01 15.32 20.49 14.81 20.65C14.31 20.82 14.06 21.63 13.6 22.07C13.13 22.52 12.53 23.3 12 23.3C11.47 23.3 10.87 22.52 10.4 22.07C9.94 21.63 9.69 20.82 9.19 20.65C8.68 20.49 8.01 21.01 7.37 21.09C6.73 21.17 5.79 21.45 5.36 21.14C4.93 20.83 4.91 19.84 4.79 19.21C4.67 18.58 4.95 17.78 4.64 17.35C4.33 16.92 3.48 16.94 2.91 16.63C2.35 16.32 1.42 16 1.25 15.49C1.09 14.99 1.65 14.18 1.93 13.6C2.2 13.01 2.9 12.53 2.9 12C2.9 11.47 2.2 10.99 1.93 10.4C1.65 9.82 1.09 9.01 1.25 8.51C1.42 8 2.35 7.68 2.91 7.37C3.48 7.06 4.33 7.08 4.64 6.65C4.95 6.22 4.67 5.42 4.79 4.79C4.91 4.16 4.93 3.17 5.36 2.86C5.79 2.55 6.73 2.83 7.37 2.91C8.01 2.99 8.68 3.51 9.19 3.35C9.69 3.18 9.94 2.37 10.4 1.93C10.87 1.48 11.47 0.7 12 0.7Z"/><path class="v" d="M7.6 12.2l2.9 2.9 5.9-6"/></svg></span><b>Garantía</b><small>7 días · 100%</small></li>
   <li><span class="mv-conf-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="l" d="M12 2.8L19.97 7.4V16.6L12 21.2L4.03 16.6V7.4Z"/><path class="f" d="M12 7.9A2.3 2.3 0 0 1 13.3 12.1L14 16.2H10L10.7 12.1A2.3 2.3 0 0 1 12 7.9Z"/></svg></span><b>Pago seguro</b><small>Por Hotmart</small></li>
-  <li><span class="mv-conf-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="l" d="M4.6 13.6v-1.9a7.4 7.4 0 0 1 14.8 0v1.9"/><rect class="l" x="3.6" y="12.9" width="3.6" height="5.6" rx="1.4"/><rect class="l" x="16.8" y="12.9" width="3.6" height="5.6" rx="1.4"/><path class="l" d="M18.6 18.5c0 1.5-1.5 2.4-4.2 2.4h-1.8"/></svg></span><b>Soporte</b><small>Cuando lo necesites</small></li>
+  <li><span class="mv-conf-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="l" d="M4.6 13.6v-1.9a7.4 7.4 0 0 1 14.8 0v1.9"/><rect class="l" x="3.6" y="12.9" width="3.6" height="5.6" rx="1.4"/><rect class="l" x="16.8" y="12.9" width="3.6" height="5.6" rx="1.4"/><path class="l" d="M18.6 18.5c0 1.5-1.5 2.4-4.2 2.4h-1.8"/></svg></span><b>Soporte</b><small>Te respondemos siempre</small></li>
 </ul>
 <p class="mv-conf-nota">Acceso inmediato · Sin suscripciones</p>
             <p class="price-note">Pago único. Incluye todas las actualizaciones de esta edición, sin costo adicional y para siempre.</p>
@@ -2743,10 +2737,10 @@ background:rgba(253,252,248,.9);color:var(--ink);font:300 24px/38px var(--sans);
 <div class="v2-deco" aria-hidden="true"><img class="d1" src="assets/deco/rolex.webp" alt="" loading="lazy" decoding="async" width="520" height="650"></div>
 
       <div class="shell faq-wrap">
-        <span class="eyebrow muted">Preguntas claras</span>
-        <h2>Antes de comprar.</h2>
+        <h2>Preguntas frecuentes.</h2>
         <details><summary>¿Qué es exactamente Prompt Ads? ¿Son prompts?</summary><p>Sí, en parte. Son <b>6 archivos en PDF</b> que trabajan juntos: <b>2 son guías que lees tú, y empiezas por ahí</b> (la guía de uso paso a paso, que te enseña todo el proceso con capturas, y la de dirección visual), y <b>4 son archivos de prompts e instrucciones</b> que arrastras directo al chat de ChatGPT (el Protocolo Maestro, el de realismo, el de correcciones y el de variedad). No es un software ni una app: <b>lees la guía, subes la foto de lo que vendes, pegas los archivos en ChatGPT y te genera los anuncios</b>. Funciona para cualquier negocio: producto físico, servicio, local, inmobiliaria o producto digital. Y no es un PDF de puro texto hecho sin ganas: cada archivo está diseñado y acompañado de ejemplos visuales y capturas reales, para que entiendas el método de la forma más clara posible.</p></details>
-        <details><summary>¿Puedo elegir yo el estilo o lo decide la IA?</summary><p>Tú mandas, siempre. Ves un estilo que te gusta, de cualquier marca o rubro, y el método te enseña a ponerlo al servicio de TU producto, sin que la IA lo cambie ni invente nada. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas. Y si un resultado se desvía, el archivo de correcciones trae la línea para enderezarlo.</p></details><details><summary>¿Necesito saber diseño?</summary><p>No. El método te da una estructura concreta. Tú aportas la información verdadera de tu negocio, eliges el estilo que quieres y revisas el resultado final antes de publicarlo.</p></details>
+        <details><summary>¿Cómo lo recibo? ¿Y si después no lo encuentro?</summary><p>Apenas se aprueba el pago, Hotmart te manda un correo con el acceso y los <b>6 archivos quedan guardados en tu cuenta</b>, para descargarlos cuando quieras y las veces que quieras. Si el correo no te llega, si cae en spam o si entras y no encuentras el material, escríbenos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a>: <b>te respondemos siempre</b> y te lo dejamos en la mano. Nadie se queda sin lo que compró.</p></details>
+        <details><summary>¿Puedo elegir yo el estilo o lo decide la IA?</summary><p>Tú mandas, siempre. Tú defines la estética que quieres y el método te enseña a pedirla con precisión, para que la IA la aplique a TU producto sin cambiarlo ni inventar nada. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas. Y si un resultado se desvía, el archivo de correcciones trae la línea para enderezarlo.</p></details><details><summary>¿Necesito saber diseño?</summary><p>No. El método te da una estructura concreta. Tú aportas la información verdadera de tu negocio, tomas las decisiones de estilo y revisas el resultado final antes de publicarlo.</p></details>
         <details><summary>¿Necesito ChatGPT pago (Plus)?</summary><p>Para producir en serio, lo mejor es <b>ChatGPT Plus</b>: te da más capacidad por sesión, mantiene mejor el contexto de tu marca y entrega las tandas de forma más fluida. Con la versión gratuita puedes arrancar y probar el método, pero vas a chocar con los límites: menos generaciones, anuncios que a veces salen de a uno y cortes al llegar al tope diario. Y si ya pagas Plus, Prompt Ads es justamente la forma de exprimir esa suscripción y convertirla en una máquina de producir anuncios.</p></details>
         <details><summary>¿Qué pasa si no sé qué estilo pedir?</summary><p>El método incluye un archivo guiado para definir la apariencia que necesita tu campaña y convertir una idea vaga en instrucciones claras para ChatGPT.</p></details>
         <details><summary>¿Genera siempre la misma cantidad de anuncios?</summary><p>No. La cantidad puede variar según el modelo, el plan y la complejidad. Por eso Prompt Ads trabaja con tandas e incluye instrucciones para pedir los siguientes anuncios sin perder el contexto.</p></details>
@@ -2767,21 +2761,7 @@ background:rgba(253,252,248,.9);color:var(--ink);font:300 24px/38px var(--sans);
   </footer>
 
   <div class="mobile-buy" id="mobileBuy"><div><span data-cuenta="movil-arriba">Edición Septiembre</span><b data-cuenta="movil">Actualizaciones y material exclusivo incluidos</b></div><a href="#precio" class="btn">Aprovechar oferta</a></div>
-  <div class="mv-pop" id="mvPop" hidden role="dialog" aria-modal="true" aria-labelledby="mvPopT">
-  <div class="mv-pop-fondo" data-cerrar></div>
-  <div class="mv-pop-card">
-    <button class="mv-pop-x" type="button" data-cerrar aria-label="Cerrar">×</button>
-    <div class="mv-pop-img"><img src="assets/versus-nb/premium-990-640.webp" alt="" loading="lazy" decoding="async"></div>
-    <div class="mv-pop-txt">
-      <span class="mv-pop-eye">Edición Septiembre</span>
-      <h3 id="mvPopT">Tu próxima campaña puede <em>verse así.</em></h3>
-      <p>Aprende a crear +50 anuncios premium en minutos, con una foto de tu producto. Esta edición incluye un material exclusivo que no vuelve.</p>
-      <div class="mv-pop-cuenta">Cierra en <span class="v2-cuenta-mini mv-cuenta-clara"><b data-c=d>00</b><i>d</i><b data-c=h>00</b><i>h</i><b data-c=m>00</b><i>m</i><b data-c=s>00</b><i>s</i></span></div>
-      <a class="btn" href="#precio" data-cerrar-ir>Ver la edición</a>
-      <small>Pago único · 7 días de garantía</small>
-    </div>
-  </div>
-</div> <dialog class="lightbox" id="lightbox" aria-label="Vista ampliada del anuncio">
+  <dialog class="lightbox" id="lightbox" aria-label="Vista ampliada del anuncio">
     <button class="lightbox-close" aria-label="Cerrar vista ampliada">×</button>
     <img loading="lazy" decoding="async" id="lightboxImage" alt="Anuncio ampliado" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
   </dialog>
@@ -3726,42 +3706,16 @@ requestAnimationFrame(cuadro);
 }, espera);
 });
 });
-var pop = document.getElementById('mvPop');
-if (pop) {
-var variante = 'B', visto = false;
-try {
-variante = localStorage.getItem('ss_pop_var');
-if (variante !== 'A' && variante !== 'B') { variante = Math.random() < 0.5 ? 'A' : 'B'; localStorage.setItem('ss_pop_var', variante); }
-visto = localStorage.getItem('ss_pop_visto') === '1';
-} catch (e) { variante = 'B'; }
-document.addEventListener('click', function(e){
-var a = e.target && e.target.closest ? e.target.closest('a[href*="pay.hotmart.com"]') : null;
-if (!a) return;
-try { var u = new URL(a.href); if (!u.searchParams.get('src')) { u.searchParams.set('src', 'pop' + variante); a.href = u.toString(); } } catch (err) {}
-}, true);
-if (variante === 'A' && !visto) {
-var abierto = false, listo = false, reloj = pop.querySelector('.v2-cuenta-mini');
-var esc = function(e){ if (e.key === 'Escape') cerrar(); };
-var cerrar = function(){ pop.classList.remove('abierto'); document.removeEventListener('keydown', esc); setTimeout(function(){ pop.hidden = true; }, 450); };
-var abrir = function(){
-if (abierto) return;
-if (document.documentElement.classList.contains('precio-visible')) return;
-if (reloj && reloj.hidden) return;
-abierto = true;
-try { localStorage.setItem('ss_pop_visto', '1'); } catch (e) {}
-pop.hidden = false;
-requestAnimationFrame(function(){ requestAnimationFrame(function(){ pop.classList.add('abierto'); }); });
-document.addEventListener('keydown', esc);
-};
-[].slice.call(pop.querySelectorAll('[data-cerrar],[data-cerrar-ir]')).forEach(function(x){ x.addEventListener('click', cerrar); });
-setTimeout(function(){ listo = true; }, 6000);
-setTimeout(abrir, 22000);
-var alBajar = function(){
-if (!listo || abierto) return;
-if ((scrollY + innerHeight) / document.documentElement.scrollHeight > 0.45) { removeEventListener('scroll', alBajar); abrir(); }
-};
-addEventListener('scroll', alBajar, { passive: true });
-}
-}
+(function(){
+var cupo = document.querySelector('.mv-cupo');
+if (!cupo) return;
+var quieto = false;
+try { quieto = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+if (quieto || !('IntersectionObserver' in window)) { cupo.classList.add('mv-listo'); return; }
+var o = new IntersectionObserver(function(es){
+if (es[0].isIntersecting) { cupo.classList.add('mv-listo'); o.disconnect(); }
+}, { threshold: 0.4 });
+o.observe(cupo);
+})();
 })();</script></body>
 </html>

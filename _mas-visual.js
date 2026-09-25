@@ -234,45 +234,20 @@
     });
   });
 
+
   /* ================================================================
-     POPUP de bienvenida, como prueba: la mitad lo ve y la otra mitad no.
-     El enlace de pago lleva src=popA o src=popB para comparar en Hotmart.
+     COPIAS: la barra se llena cuando el bloque aparece en pantalla.
      ================================================================ */
-  var pop = document.getElementById('mvPop');
-  if (pop) {
-    var variante = 'B', visto = false;
-    try {
-      variante = localStorage.getItem('ss_pop_var');
-      if (variante !== 'A' && variante !== 'B') { variante = Math.random() < 0.5 ? 'A' : 'B'; localStorage.setItem('ss_pop_var', variante); }
-      visto = localStorage.getItem('ss_pop_visto') === '1';
-    } catch (e) { variante = 'B'; }
-    document.addEventListener('click', function(e){
-      var a = e.target && e.target.closest ? e.target.closest('a[href*="pay.hotmart.com"]') : null;
-      if (!a) return;
-      try { var u = new URL(a.href); if (!u.searchParams.get('src')) { u.searchParams.set('src', 'pop' + variante); a.href = u.toString(); } } catch (err) {}
-    }, true);
-    if (variante === 'A' && !visto) {
-      var abierto = false, listo = false, reloj = pop.querySelector('.v2-cuenta-mini');
-      var esc = function(e){ if (e.key === 'Escape') cerrar(); };
-      var cerrar = function(){ pop.classList.remove('abierto'); document.removeEventListener('keydown', esc); setTimeout(function(){ pop.hidden = true; }, 450); };
-      var abrir = function(){
-        if (abierto) return;
-        if (document.documentElement.classList.contains('precio-visible')) return;
-        if (reloj && reloj.hidden) return;
-        abierto = true;
-        try { localStorage.setItem('ss_pop_visto', '1'); } catch (e) {}
-        pop.hidden = false;
-        requestAnimationFrame(function(){ requestAnimationFrame(function(){ pop.classList.add('abierto'); }); });
-        document.addEventListener('keydown', esc);
-      };
-      [].slice.call(pop.querySelectorAll('[data-cerrar],[data-cerrar-ir]')).forEach(function(x){ x.addEventListener('click', cerrar); });
-      setTimeout(function(){ listo = true; }, 6000);
-      setTimeout(abrir, 22000);
-      var alBajar = function(){
-        if (!listo || abierto) return;
-        if ((scrollY + innerHeight) / document.documentElement.scrollHeight > 0.45) { removeEventListener('scroll', alBajar); abrir(); }
-      };
-      addEventListener('scroll', alBajar, { passive: true });
-    }
-  }
+  (function(){
+    var cupo = document.querySelector('.mv-cupo');
+    if (!cupo) return;
+
+    var quieto = false;
+    try { quieto = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    if (quieto || !('IntersectionObserver' in window)) { cupo.classList.add('mv-listo'); return; }
+    var o = new IntersectionObserver(function(es){
+      if (es[0].isIntersecting) { cupo.classList.add('mv-listo'); o.disconnect(); }
+    }, { threshold: 0.4 });
+    o.observe(cupo);
+  })();
 })();

@@ -571,45 +571,9 @@ header{position:relative!important;top:auto!important}
   .price-card .stack li>span:first-child::before,.price-card .stack li>span:first-child::after{transition:none}
   .price-card.mv-visto .price{animation:none}
 }
-/* ================================================================
-   POPUP de bienvenida, vidrio
-   ================================================================ */
-.mv-pop{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:18px}
-.mv-pop[hidden]{display:none}
-.mv-pop-fondo{position:absolute;inset:0;background:rgba(6,24,14,.34);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .45s ease}
-.mv-pop.abierto .mv-pop-fondo{opacity:1}
-.mv-pop-card{position:relative;width:min(100%,760px);display:grid;grid-template-columns:1fr;border-radius:28px;overflow:hidden;
-  background:rgba(253,252,248,.76);-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5);
-  border:1px solid rgba(255,255,255,.65);box-shadow:0 50px 100px -30px rgba(6,24,14,.55);
-  opacity:0;transform:translateY(18px) scale(.98);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
-.mv-pop.abierto .mv-pop-card{opacity:1;transform:none}
-@media (min-width:760px){
-  .mv-pop-card{grid-template-columns:.9fr 1.1fr}
-}
-.mv-pop-img{position:relative;min-height:240px}
-.mv-pop-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.mv-pop-txt{padding:clamp(22px,3.4vw,38px);display:flex;flex-direction:column;align-items:flex-start;gap:12px}
-.mv-pop-eye{font:500 10px/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--mv-acento)}
-.mv-pop-txt h3{margin:0;font:400 clamp(28px,3.4vw,40px)/1.05 var(--serif);letter-spacing:-.02em;color:var(--ink)}
-.mv-pop-txt h3 em{font-style:italic}
-.mv-pop-txt p{margin:0;color:var(--ink-2);font-size:15px;line-height:1.5}
-.mv-pop-cuenta{display:flex;align-items:center;gap:10px;font:400 10px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-.mv-pop-cuenta .v2-cuenta-mini{text-transform:none}
-.mv-pop-txt .btn{margin-top:6px;width:100%}
-.mv-pop-txt small{font:400 10px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);align-self:center}
-.mv-pop-x{position:absolute;right:12px;top:12px;z-index:2;width:38px;height:38px;border-radius:50%;border:0;cursor:pointer;
-  background:rgba(253,252,248,.9);color:var(--ink);font:300 24px/38px var(--sans);text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.12)}
-@media (max-width:759px){
-  .mv-pop{align-items:flex-end;padding:0}
-  .mv-pop-card{border-radius:26px 26px 0 0;background:rgba(253,252,248,.97);-webkit-backdrop-filter:none;backdrop-filter:none;padding-bottom:env(safe-area-inset-bottom)}
-  /* en el celular el anuncio se ve entero, como una pieza impresa, en lugar de recortado */
-  .mv-pop-img{min-height:0;height:250px;background:radial-gradient(120% 100% at 50% 0,#F5F0E6 0,#E4DCCB 100%)}
-  .mv-pop-img img{inset:auto;left:50%;top:20px;width:auto;height:calc(100% - 40px);transform:translateX(-50%) rotate(-2deg);border-radius:6px;box-shadow:0 20px 32px -16px rgba(6,24,14,.5),0 2px 6px rgba(6,24,14,.12)}
-  .mv-pop-txt h3{font-size:28px}
-}
 @media (prefers-reduced-motion:reduce){
   .mv-cursor,.mv-drop{display:none}
-  .mv-rueda-txt,.mv-pop-card,.mv-pop-fondo{transition:none}
+  .mv-rueda-txt{transition:none}
 }
 
 /* los dos caminos: la frase clave, en negrita de verdad */
@@ -619,3 +583,34 @@ header{position:relative!important;top:auto!important}
 .mv-win{contain:layout paint}
 .mv-rueda,.mv-pasos,.mv-linea,.mv-barras,.price-card{contain:layout}
 .mv-marca-grande.mv-listo{-webkit-mask-image:none;mask-image:none;filter:none}
+
+/* ---- copias disponibles de la edición, debajo del botón de compra ----
+ *  Tres pisos: el tope de la tirada en letra chica, lo que queda en rojo
+ *  y grande, y debajo la consecuencia. La barra se llena sola al entrar
+ *  en pantalla: es lo que hace sentir que se está acabando.            */
+.mv-cupo{display:flex;flex-direction:column;align-items:center;gap:9px;margin:20px 0 0;text-align:center}
+.mv-cupo-tope{font:500 11px/1.7 var(--mono);letter-spacing:.15em;text-transform:uppercase;color:rgba(23,23,19,.78)}
+.mv-cupo-txt{display:inline-flex;align-items:baseline;gap:9px;font:italic 400 21px/1 var(--serif);color:#C0504A}
+.mv-cupo-txt em{font:italic 400 34px/.8 var(--serif);color:#C0504A}
+.mv-cupo-pun{width:7px;height:7px;border-radius:50%;background:#C0504A;box-shadow:0 0 0 4px rgba(192,80,74,.12);
+  flex:none;align-self:center;animation:mvLatir 2.6s ease-in-out infinite}
+@keyframes mvLatir{0%,100%{box-shadow:0 0 0 4px rgba(192,80,74,.12)}50%{box-shadow:0 0 0 8px rgba(192,80,74,.035)}}
+.mv-cupo-barra{display:block;margin-top:1px;width:min(268px,84%);height:4px;border-radius:99px;
+  background:rgba(23,23,19,.07);overflow:hidden}
+.mv-cupo-pie{margin-top:3px;font:italic 400 15px/1.45 var(--serif);color:rgba(23,23,19,.58)}
+.mv-cupo-pie em{font-style:normal;font-weight:500;letter-spacing:.06em;color:#C0504A}
+.mv-cupo-barra i{display:block;width:0;height:100%;border-radius:99px;opacity:.9;
+  background:linear-gradient(90deg,rgba(192,80,74,.55),#C0504A);
+  transition:width 1.05s cubic-bezier(.2,.75,.25,1) .12s}
+.mv-cupo.mv-listo .mv-cupo-barra i{width:var(--f)}
+@media (prefers-reduced-motion:reduce){
+  .mv-cupo-pun{animation:none}
+  .mv-cupo-barra i{transition:none}
+}
+@media (max-width:520px){
+  .mv-cupo{gap:8px}
+  .mv-cupo-tope{font-size:10px;letter-spacing:.13em}
+  .mv-cupo-txt{font-size:19px;gap:8px}
+  .mv-cupo-txt em{font-size:31px}
+  .mv-cupo-pie{font-size:13.8px}
+  }
