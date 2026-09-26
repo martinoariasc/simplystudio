@@ -236,6 +236,25 @@
 
 
   /* ================================================================
+     COMPARATIVA: las filas entran escalonadas y las bolitas se encienden
+     cuando la seccion aparece en pantalla.
+     ================================================================ */
+  /*@@cmp-inicio  animacion de la comparativa: sale junto con la seccion */
+  (function(){
+    var cmp = document.querySelector('.cmp');
+    if (!cmp) return;
+    [].slice.call(cmp.querySelectorAll('.cmp-fila')).forEach(function(f, i){ f.style.setProperty('--i', i); });
+    var quieto = false;
+    try { quieto = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    if (quieto || !('IntersectionObserver' in window)) { cmp.classList.add('mv-listo'); return; }
+    var o = new IntersectionObserver(function(es){
+      if (es[0].isIntersecting) { cmp.classList.add('mv-listo'); o.disconnect(); }
+    }, { threshold: 0.25 });
+    o.observe(cmp);
+  })();
+  /*@@cmp-fin*/
+
+  /* ================================================================
      COPIAS: la barra se llena cuando el bloque aparece en pantalla.
      ================================================================ */
   (function(){

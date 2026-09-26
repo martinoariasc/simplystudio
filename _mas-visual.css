@@ -590,8 +590,8 @@ header{position:relative!important;top:auto!important}
  *  en pantalla: es lo que hace sentir que se está acabando.            */
 .mv-cupo{display:flex;flex-direction:column;align-items:center;gap:9px;margin:20px 0 0;text-align:center}
 .mv-cupo-tope{font:500 11px/1.7 var(--mono);letter-spacing:.15em;text-transform:uppercase;color:rgba(23,23,19,.78)}
-.mv-cupo-txt{display:inline-flex;align-items:baseline;gap:9px;font:italic 400 21px/1 var(--serif);color:#C0504A}
-.mv-cupo-txt em{font:italic 400 34px/.8 var(--serif);color:#C0504A}
+.mv-cupo-txt{display:inline-flex;align-items:center;gap:11px;font:italic 400 21px/1 var(--serif);color:#C0504A}
+.mv-cupo-txt em{font:italic 400 32px/1.05 var(--serif);color:#C0504A}
 .mv-cupo-pun{width:7px;height:7px;border-radius:50%;background:#C0504A;box-shadow:0 0 0 4px rgba(192,80,74,.12);
   flex:none;align-self:center;animation:mvLatir 2.6s ease-in-out infinite}
 @keyframes mvLatir{0%,100%{box-shadow:0 0 0 4px rgba(192,80,74,.12)}50%{box-shadow:0 0 0 8px rgba(192,80,74,.035)}}
@@ -610,7 +610,57 @@ header{position:relative!important;top:auto!important}
 @media (max-width:520px){
   .mv-cupo{gap:8px}
   .mv-cupo-tope{font-size:10px;letter-spacing:.13em}
-  .mv-cupo-txt{font-size:19px;gap:8px}
-  .mv-cupo-txt em{font-size:31px}
+  .mv-cupo-txt{font-size:19px;gap:9px}
+  .mv-cupo-txt em{font-size:26px}
   .mv-cupo-pie{font-size:13.8px}
   }
+
+/* ---- comparativa: como cobra cada plataforma ----
+ *  Las bolitas de la derecha son los intentos que te quedan. En las que
+ *  cobran por generacion se apagan solas al entrar en pantalla; en la
+ *  nuestra se quedan encendidas. Eso cuenta la historia sin leer nada.  */
+/*@@cmp-inicio  la comparativa de plataformas: se publica solo cuando PUBLICAR_COMPARATIVA esta en true */
+.cmp{padding:110px 0 104px;background:linear-gradient(180deg,#0C120E 0%,#070B08 100%);color:#F2F0EA}
+.cmp-wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+.cmp-eje{display:block;font:500 11px/1.7 var(--mono);letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(242,240,234,.42);margin-bottom:22px}
+.cmp-tit{font:400 clamp(34px,5vw,58px)/1.06 var(--serif);letter-spacing:-.02em;color:#F6F4EE;margin:0}
+.cmp-tit em{font-style:italic;color:#6BE39A}
+.cmp-bajada{margin:22px 0 0;max-width:56ch;font-size:18px;line-height:1.6;color:rgba(242,240,234,.66)}
+.cmp-tabla{margin-top:46px;border-top:1px solid rgba(242,240,234,.12)}
+.cmp-cab,.cmp-fila{display:grid;grid-template-columns:1.15fr 1fr 1.15fr auto;gap:22px;align-items:center;
+  padding:20px 18px;border-bottom:1px solid rgba(242,240,234,.09)}
+.cmp-cab{font:500 11px/1.6 var(--mono);letter-spacing:.17em;text-transform:uppercase;color:rgba(242,240,234,.38);
+  padding-top:16px;padding-bottom:14px}
+.cmp-fila{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.75,.3,1);
+  transition-delay:calc(var(--i,0) * 110ms)}
+.cmp.mv-listo .cmp-fila{opacity:1;transform:none}
+.cmp-n{font:400 21px/1.25 var(--serif);color:#F6F4EE}
+.cmp-n b{display:block;font:500 10.5px/1.6 var(--mono);letter-spacing:.16em;text-transform:uppercase;
+  color:#6BE39A;margin-top:5px}
+.cmp-c,.cmp-r{font-size:16.5px;line-height:1.45;color:rgba(242,240,234,.62)}
+.cmp-pts{display:flex;gap:6px;justify-content:flex-end}
+.cmp-pt{width:9px;height:9px;border-radius:50%;background:rgba(242,240,234,.14);display:block;
+  transition:background .45s ease,box-shadow .45s ease;transition-delay:calc(600ms + var(--d) * 55ms)}
+.cmp.mv-listo .cmp-pt.lleno{background:rgba(242,240,234,.5)}
+.cmp-nuestro{background:linear-gradient(90deg,rgba(107,227,154,.09),rgba(107,227,154,0) 70%);
+  box-shadow:inset 2px 0 0 #6BE39A}
+.cmp.mv-listo .cmp-nuestro .cmp-pt.lleno{background:#6BE39A;box-shadow:0 0 12px rgba(107,227,154,.5)}
+.cmp-nuestro .cmp-c,.cmp-nuestro .cmp-r{color:rgba(242,240,234,.86)}
+.cmp-pie{margin:28px 0 0;font-size:15.5px;line-height:1.6;color:rgba(242,240,234,.45)}
+.cmp-pie b{color:rgba(242,240,234,.8);font-weight:500}
+@media (max-width:820px){
+  .cmp{padding:84px 0 78px}
+  .cmp-cab{display:none}
+  .cmp-fila{grid-template-columns:1fr auto;gap:8px 16px;padding:22px 4px;align-items:start}
+  .cmp-n{grid-column:1;grid-row:1}
+  .cmp-pts{grid-column:2;grid-row:1;align-self:center}
+  .cmp-c{grid-column:1 / -1;grid-row:2;font-size:15.5px}
+  .cmp-r{grid-column:1 / -1;grid-row:3;font-size:15.5px;color:rgba(242,240,234,.45)}
+  .cmp-nuestro{padding-left:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  .cmp-fila{opacity:1;transform:none;transition:none}
+  .cmp-pt{transition:none}
+}
+/*@@cmp-fin*/

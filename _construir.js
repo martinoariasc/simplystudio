@@ -12,6 +12,15 @@ const fs = require('fs');
 const path = require('path');
 
 /* fuente: el index.html ORIGINAL (congelado el 21/08/2026 al migrar). No leer index.html: desde la migracion es la salida, no la entrada. */
+/*  La comparativa de plataformas esta escrita pero todavia no sale al mundo.
+ *  Poner en true publica la seccion y sus estilos; en false no va ni el HTML
+ *  ni el CSS, para no mandar a produccion nada a medio terminar.          */
+const PUBLICAR_COMPARATIVA = false;
+const sinComparativa = t => {
+  if (PUBLICAR_COMPARATIVA) return t;
+  const a = t.indexOf('/*@@cmp-inicio'), b = t.indexOf('@@cmp-fin*/');
+  return (a === -1 || b === -1) ? t : t.slice(0, a) + t.slice(b + 11);
+};
 const src = fs.readFileSync('_base.html', 'utf8');
 const css = fs.readFileSync('_nueva.css', 'utf8')
   /* .who es el rotulo de cada costo en la oferta, no una fila de audiencia */
@@ -551,14 +560,13 @@ salida = salida.replace('<h2>Si no te sirve, te devolvemos todo.</h2>', '<h2>Si 
      *  metodo, historicas). Actualizarlo cada vez que se revisa el export.
      *  Cuando VENDIDAS llegue a CUPO hay que suspender ventas en Hotmart, si no
      *  la frase deja de ser cierta.                                            */
-    const CUPO = 150, VENDIDAS = 141;
+    const CUPO = 150, VENDIDAS = 143;
     const QUEDAN = Math.max(0, CUPO - VENDIDAS), LLENO = Math.min(100, Math.round(VENDIDAS / CUPO * 100));
-    /*  La frase de abajo la cambia _mas-visual.js en cada visita y se endurece
-     *  cuando se acerca el cierre. La que va aqui es la de respaldo, por si el
-     *  navegador no corre el script: todas dicen algo cierto.                */
+    /*  El numero sale de VENDIDAS, aqui arriba: se cambia ahi y se reconstruye.
+     *  El resto de la linea (barra y pie) se arma sola con esos numeros.      */
     const CUPO_HTML = '<p class="mv-cupo">'
       + '<span class="mv-cupo-tope">' + CUPO + ' copias por edición</span>'
-      + '<span class="mv-cupo-txt"><i class="mv-cupo-pun"></i>Quedan <em>' + QUEDAN + '</em></span>'
+      + '<span class="mv-cupo-txt"><i class="mv-cupo-pun"></i><em>Solo quedan ' + QUEDAN + ' copias disponibles</em></span>'
       + '<span class="mv-cupo-barra"><i style="--f:' + LLENO + '%"></i></span>'
       + '<span class="mv-cupo-pie">Consigue <em>HOY</em> la edición que no vuelve.</span></p>';
     const btn2 = card.indexOf('<a class="btn checkout"');
@@ -782,6 +790,46 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   }
 
 
+
+
+  /* ---------- comparativa: como cobra cada plataforma (25/09) ----------
+   *  El argumento no es "las otras son caras": a precio de lista varias
+   *  salen parecido. El argumento es COMO cobran. Todas cobran por
+   *  generacion; el metodo vive de repetir, asi que el que cobra por mes
+   *  es el unico donde equivocarse no cuesta. Numeros de lista a
+   *  septiembre de 2026: hay que revisarlos cada tanto.
+   */
+  {
+    /* el interruptor esta arriba del todo: PUBLICAR_COMPARATIVA */
+    const FILAS = [
+      { n: 'ChatGPT Plus', c: 'USD 20 al mes, fijo', r: 'Repetir no suma', llenos: 12, nuestro: true },
+      { n: 'Higgsfield', c: 'Por créditos', r: 'Cada intento descuenta', llenos: 4 },
+      { n: 'Freepik', c: 'Por créditos', r: 'Cada intento descuenta', llenos: 5 },
+      { n: 'Midjourney', c: 'Por tiempo de GPU', r: 'Cada intento consume', llenos: 3 },
+    ];
+    const punto = llenos => Array.from({ length: 12 }, (_, i) =>
+      '<i class="cmp-pt' + (i < llenos ? ' lleno' : '') + '" style="--d:' + i + '"></i>').join('');
+    const CMP = [
+      '<section data-esc="Comparativa" class="cmp">',
+      '<div class="shell cmp-wrap">',
+      '<span class="cmp-eje">Lo que cuesta cada intento</span>',
+      '<h2 class="cmp-tit">Todas te cobran por intento.<br><em>El método vive de los intentos.</em></h2>',
+      '<p class="cmp-bajada">Pides diez, eliges dos, corriges y vuelves a pedir. Ese ida y vuelta es el método. En las plataformas que cobran por generación, cada vuelta se paga.</p>',
+      '<div class="cmp-tabla">',
+      '<div class="cmp-cab"><span>Plataforma</span><span>Cómo te cobra</span><span>Volver a intentar</span><span class="cmp-cab-pt">Lo que te queda</span></div>',
+      FILAS.map(f => '<div class="cmp-fila' + (f.nuestro ? ' cmp-nuestro' : '') + '">'
+        + '<span class="cmp-n">' + f.n + (f.nuestro ? '<b>el del método</b>' : '') + '</span>'
+        + '<span class="cmp-c">' + f.c + '</span>'
+        + '<span class="cmp-r">' + f.r + '</span>'
+        + '<span class="cmp-pts">' + punto(f.llenos) + '</span></div>').join(''),
+      '</div>',
+      '<p class="cmp-pie">Precios de lista a septiembre de 2026. Lo que cambia no es el precio: es <b>quién te cobra por equivocarte</b>.</p>',
+      '</div></section>'
+    ].join('');
+    const iOf = salida.indexOf('<section data-esc="La oferta"');
+    if (iOf === -1) avisos.push('comparativa: no encontre la oferta');
+    else if (PUBLICAR_COMPARATIVA) salida = salida.slice(0, iOf) + CMP + salida.slice(iOf);
+  }
 
   /* ---------- el video, ultima tarjeta de "El metodo", despues de los seis archivos ---------- */
   /*  Va como una tarjeta mas de la lista, igual que los archivos, para que se
@@ -1268,7 +1316,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   /* comprimido: sin comentarios ni sangrías (pesa menos en el celular) */
   const miniCSS = t => t.replace(/\/\*[\s\S]*?\*\//g, '').split(/\r?\n/).map(l => l.trim()).filter(Boolean).join('\n');
   const miniJS = t => t.replace(/^[ \t]*\/\*[\s\S]*?\*\/[ \t]*\r?\n/gm, '').split(/\r?\n/).map(l => l.trim()).filter(Boolean).join('\n');
-  const CSS = '<style>' + miniCSS(fs.readFileSync('_mas-visual.css', 'utf8')) + '</style>';
+  const CSS = '<style>' + miniCSS(sinComparativa(fs.readFileSync('_mas-visual.css', 'utf8'))) + '</style>';
   /* POPUP: fuera por pedido de Martino (24/09). El fragmento sigue en
    *  _mas-visual.html bajo <!--@@popup--> por si alguna vez lo pide. Para
    *  volver a ponerlo: descomentar esta linea y el bloque de _mas-visual.js. */
@@ -1309,7 +1357,7 @@ salida = salida.replace(/assets\/(colabs|deco|fondos|caso-nike)\/([A-Za-z0-9_-]+
   if (!reFaqQue.test(salida)) avisos.push('mas visual: no encontre la pregunta de que es'); else salida = salida.replace(reFaqQue, 'Son <b>6 archivos en PDF</b> que trabajan juntos: <b>2 son guías que lees tú, y empiezas por ahí</b> (la guía de uso paso a paso, que te enseña todo el proceso con capturas, y la de dirección visual), y <b>4 son archivos de prompts e instrucciones</b> que arrastras directo al chat de ChatGPT (el Protocolo Maestro, el de realismo, el de correcciones y el de variedad). No es un software ni una app: <b>lees la guía, subes la foto de lo que vendes, pegas los archivos en ChatGPT y te genera los anuncios</b>. Funciona para cualquier negocio: producto físico, servicio, local, inmobiliaria o producto digital.');
   const reFaqEstilo = /Ves un estilo que te gusta\s*(?:—|&mdash;)de cualquier marca, de cualquier rubro(?:—|&mdash;)\s*y el método[\s\S]*?instrucciones exactas\./;
   if (!reFaqEstilo.test(salida)) avisos.push('mas visual: no encontre la pregunta del estilo'); else salida = salida.replace(reFaqEstilo, 'Ves un estilo que te gusta, de cualquier marca o rubro, y el método te enseña a ponerlo al servicio de TU producto, sin que la IA lo cambie ni invente nada. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas.');
-  const JS = '<script>' + miniJS(fs.readFileSync('_mas-visual.js', 'utf8')) + '</script>';
+  const JS = '<script>' + miniJS(sinComparativa(fs.readFileSync('_mas-visual.js', 'utf8'))) + '</script>';
   salida = salida.replace('</head>', CSS + '</head>').replace('</body>', JS + '</body>');
 }
 
