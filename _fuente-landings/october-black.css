@@ -1,0 +1,115 @@
+/* ===== OCTOBER BLACK · el tema del evento. Lo inyecta _armar-october-black.js al final del <head>. =====
+   Toda la web en noche y oro. Las secciones que eran claras redefinen sus colores adentro;
+   las que ya eran oscuras (El problema, La oferta, la barra de arriba) quedan con sus colores. */
+:root{--ob-noche:#0B0E0C;--ob-noche-2:#121714;--ob-tarjeta:#151B17;--ob-texto:#F0EBE0;--ob-texto-2:#D3CDBE;--ob-gris:#A39E8E;
+  --ob-oro:#E3CF98;--ob-oro-2:#C9B37E;--ob-linea:rgba(240,235,224,.12)}
+html,body{background:var(--ob-noche)!important}
+/* el fondo de toda la página: noche con luces difuminadas del crema del logo (#F2EEE5), un verde profundo apenas y grano
+   de película. Es la tarjeta "Hecho y usado por nosotros" llevada a toda la web, con el crema en lugar del verde vivo.
+   Un mosaico que se repite hacia abajo, como el aura de la web publicada: cada luz se apaga antes del borde del
+   mosaico, así no se ven costuras entre una vuelta y la siguiente. */
+:root{--ob-crema:242,238,229;--ob-mosaico:clamp(1000px,125vw,1600px);
+  --ob-aura:
+    radial-gradient(60% 30% at 0% 22%,rgba(var(--ob-crema),.26) 0%,rgba(var(--ob-crema),.09) 38%,rgba(var(--ob-crema),0) 70%),
+    radial-gradient(55% 28% at 100% 56%,rgba(var(--ob-crema),.2) 0%,rgba(var(--ob-crema),.07) 38%,rgba(var(--ob-crema),0) 70%),
+    radial-gradient(64% 26% at 28% 80%,rgba(31,122,70,.24) 0%,rgba(31,122,70,0) 70%),
+    radial-gradient(48% 22% at 78% 16%,rgba(31,122,70,.16) 0%,rgba(31,122,70,0) 70%)}
+/* ojo: el grano es 1 capa y --ob-aura son 4. Tamaño y repetición van capa por capa (si se ponen menos valores,
+   el navegador los repite en ronda y algunas luces se dibujan en baldosas de 64 px) */
+main{background-color:#0A0D0B!important;background-image:url("assets/october-black/grano.webp"),var(--ob-aura)!important;
+  background-size:64px 64px,100% var(--ob-mosaico),100% var(--ob-mosaico),100% var(--ob-mosaico),100% var(--ob-mosaico)!important;
+  background-repeat:repeat,repeat-y,repeat-y,repeat-y,repeat-y!important;background-position:0 0!important}
+header, main > section:not(.pain):not(.offer){
+  --paper:var(--ob-noche); --paper-2:var(--ob-noche-2); --white:var(--ob-tarjeta);
+  --ink:var(--ob-texto); --ink-2:var(--ob-texto-2); --muted:var(--ob-gris);
+  --forest:var(--ob-oro); --forest-deep:#0F1A13; --gold:var(--ob-oro);
+  --line:var(--ob-linea); --line-strong:rgba(240,235,224,.24);
+  --mv-acento:var(--ob-oro); --mv-acento-2:var(--ob-oro); --mv-acento-suave:rgba(227,207,152,.12); --mv-verde-luz:var(--ob-oro);
+  --verde-si:var(--ob-oro); --aura-clara:var(--ob-aura);
+}
+main > section:not(.pain):not(.offer){color:var(--ink)}
+header{background:rgba(11,14,12,.74)!important;border-bottom:1px solid var(--ob-linea)!important}
+
+/* el sello del evento, arriba del título del inicio */
+.ob-sello{display:flex;width:max-content;max-width:100%;align-items:center;gap:12px;margin:0 auto 22px;padding:9px 18px 8px;border:1px solid rgba(227,207,152,.42);
+  border-radius:999px;background:rgba(227,207,152,.06);font:500 11px/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--ob-oro)}
+.ob-sello i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--ob-oro);box-shadow:0 0 12px rgba(227,207,152,.8)}
+.ob-sello b{font:italic 400 19px/1 var(--mv-fuente-marca,"DM Serif Display"),serif;letter-spacing:0;text-transform:none;color:var(--ob-texto)}
+
+/* la oferta: de verde profundo a negro con un brillo dorado arriba */
+.offer{background:radial-gradient(70% 45% at 50% 0%,rgba(227,207,152,.12),rgba(0,0,0,0) 70%),#070908!important}
+
+/* la pila de la tarjeta de precio: qué resuelve cada pieza nueva */
+.stack .ob-que{display:block;margin-top:3px;font-size:.84em;line-height:1.4;opacity:.72;font-weight:400}
+.stack .ob-nuevo{letter-spacing:.02em}
+.stack li.ob-regalo{background:rgba(227,207,152,.16);border-radius:10px;padding-left:10px!important;padding-right:10px!important}
+
+/* las tarjetas de "vidrio claro" pasan a vidrio oscuro (la tarjeta de precio queda clara: es el foco de la oferta) */
+main > section:not(.pain):not(.offer) :is(.tcard,.v2-nicho,.v2-origen,.inside-card,.guarantee-box,.versus-card,.case-grid button,.v2-origen-foto button){
+  background:rgba(255,255,255,.045)!important;border-color:rgba(240,235,224,.13)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 30px 60px -34px rgba(0,0,0,.7)!important}
+main > section:not(.pain):not(.offer) .inside-card:nth-child(2n){background:rgba(255,255,255,.03)!important}
+.v2-marcas{background:rgba(255,255,255,.04)!important;border-color:rgba(240,235,224,.1)!important}
+.v2-caso-tab:not(.on):hover{background:rgba(255,255,255,.08)!important}
+/* "Dos caminos": las dos tarjetas de vidrio claro, a vidrio oscuro; el brillo verde del método pasa a oro */
+.mv-camino{background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02))!important;border-color:rgba(240,235,224,.14)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 40px 90px -40px rgba(0,0,0,.7)!important}
+.mv-camino-metodo::before{background:radial-gradient(55% 40% at 92% 4%,rgba(227,207,152,.14),transparent 70%),radial-gradient(60% 45% at 4% 100%,rgba(227,207,152,.08),transparent 72%)!important}
+/* la oferta: el aura verde de fondo pasa a negro con brillo dorado */
+.offer::before{background-color:#070908!important;background-image:radial-gradient(60% 40% at 50% 0%,rgba(227,207,152,.13),rgba(227,207,152,0) 70%),radial-gradient(50% 35% at 85% 78%,rgba(150,112,58,.10),rgba(150,112,58,0) 70%)!important}
+/* las tildes de la pila se dibujan en orden: los renglones nuevos (9 a 12) siguen la misma cadencia */
+.price-card .stack li:nth-child(9)>span:first-child::before{transition-delay:1.3s}.price-card .stack li:nth-child(9)>span:first-child::after{transition-delay:1.5s}
+.price-card .stack li:nth-child(10)>span:first-child::before{transition-delay:1.45s}.price-card .stack li:nth-child(10)>span:first-child::after{transition-delay:1.65s}
+.price-card .stack li:nth-child(11)>span:first-child::before{transition-delay:1.6s}.price-card .stack li:nth-child(11)>span:first-child::after{transition-delay:1.8s}
+.price-card .stack li:nth-child(12)>span:first-child::before{transition-delay:1.75s}.price-card .stack li:nth-child(12)>span:first-child::after{transition-delay:1.95s}
+
+/* contraste: textos con color fijo pensado para fondo claro (el pie queda oscuro, como estaba) */
+header .brand,header .brand i{color:var(--ob-texto)!important}
+/* el subrayado a mano de los títulos: de verde a oro */
+.mv-marca-grande::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 12' preserveAspectRatio='none'%3E%3Cpath d='M2 9C70 3 170 1 298 6' fill='none' stroke='%23E3CF98' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E")!important}
+.inside-card .card-tag{color:var(--ob-texto)!important}
+.inside-card h3{color:var(--ink)!important}
+.v2-caso-tab.on{background:var(--ob-oro)!important;color:#0B0E0C!important}
+.mv-chip{background:rgba(255,255,255,.06)!important}
+.mv-chip-verde{color:var(--ob-oro)!important;border-color:rgba(227,207,152,.5)!important}
+.mv-chip-rojo{color:#F0A196!important;border-color:rgba(240,161,150,.45)!important}
+[data-esc="Hazlo"] a{color:#0B0E0C!important}
+/* "El caso": la barra de pestañas era vidrio claro con letra crema; pasa a vidrio oscuro. La etiqueta sobre la foto
+   ("Foto original") sigue clara, así que su letra va oscura */
+.v2-caso-tabs{background:rgba(255,255,255,.06)!important;border-color:rgba(240,235,224,.16)!important;box-shadow:none!important}
+.v2-caso-chip{color:#141410!important}
+/* "Dos caminos": el número de cada paso va sobre un círculo blanco */
+.mv-linea-n i{color:#55554B!important}
+/* la tarjeta de precio y la de "Hagamos la cuenta" son claras: su gris de apoyo, un punto más oscuro para que se lea */
+.offer :is(.price-card,.mv-ahorro){--muted:#5E5E54}
+.price-card .eyebrow.muted{color:#5E5E54!important}
+/* la banda de marcas: logos claros sobre noche (antes quedaban oscuros sobre oscuro) */
+.v2-marcas{background:transparent!important;border-color:var(--ob-linea)!important}
+.v2-marca{color:var(--ob-texto)!important;opacity:.5}
+.v2-marca:hover{opacity:.9}
+
+/* "Qué incluye": la etiqueta de cada pieza quedaba debajo de la foto; va arriba */
+.inside-card .card-tag{z-index:2}
+/* las piezas nuevas llevan la etiqueta en oro; el regalo, con borde y brillo dorados */
+.inside-card.ob-card .card-tag{color:var(--ob-oro)!important;background:rgba(11,14,12,.62)!important;box-shadow:inset 0 0 0 1px rgba(227,207,152,.38)}
+main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:rgba(227,207,152,.5)!important;
+  background:linear-gradient(160deg,rgba(227,207,152,.1),rgba(255,255,255,.03) 55%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 40px 90px -40px rgba(227,207,152,.28)!important}
+.inside-card.ob-card-regalo .card-tag{color:#0B0E0C!important;background:var(--ob-oro)!important;box-shadow:none}
+
+/* el sello de garantía, en oro con el texto negro */
+.mv-sello svg{filter:drop-shadow(0 14px 34px rgba(227,207,152,.26))}
+.mv-sello-borde{fill:url(#ob-oro-sello)!important;stroke:#8C7440!important}
+.mv-sello-aro{stroke:#2A2412!important;opacity:.32!important}
+.mv-sello-eye,.mv-sello-num,.mv-sello-dias{fill:#141410!important}
+.mv-sello-visto{stroke:#141410!important}
+
+/* "Aprender solo": las burbujas son blancas, así que el texto y los íconos de adentro van oscuros */
+.mv-rueda-centro,.mv-rueda-txt{color:#26362C!important}
+.mv-rueda-num{color:#C0392B!important}
+.mv-estaciones li{color:#3A3A31!important}
+/* los íconos de los círculos de afuera se dibujaban con el color del texto (crema): oscuros sobre el blanco; el activo sigue en rojo */
+.mv-est-vis svg{stroke:#3A3A31!important}
+.mv-estaciones li.activo .mv-est-vis svg{stroke:var(--mv-rojo)!important}
+/* la órbita punteada era oscura sobre fondo oscuro: pasa a crema suave */
+.mv-rueda-aro circle:not(.mv-rueda-hecho){stroke:rgba(240,235,224,.3)!important}

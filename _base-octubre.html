@@ -1,5 +1,4 @@
 ﻿<!doctype html>
-<!-- OCTOBER BLACK · la arma _armar-october-black.js a partir de _base-octubre.html. No editar a mano. -->
 <html lang="es">
 <head>
   <meta charset="utf-8">
@@ -2208,131 +2207,13 @@ transition:width 1.05s cubic-bezier(.2,.75,.25,1) .12s}
 .mv-cupo-txt{font-size:19px;gap:9px}
 .mv-cupo-txt em{font-size:26px}
 .mv-cupo-pie{font-size:13.8px}
-}</style><style id="october-black">
-/* ===== OCTOBER BLACK · el tema del evento. Lo inyecta _armar-october-black.js al final del <head>. =====
-   Toda la web en noche y oro. Las secciones que eran claras redefinen sus colores adentro;
-   las que ya eran oscuras (El problema, La oferta, la barra de arriba) quedan con sus colores. */
-:root{--ob-noche:#0B0E0C;--ob-noche-2:#121714;--ob-tarjeta:#151B17;--ob-texto:#F0EBE0;--ob-texto-2:#D3CDBE;--ob-gris:#A39E8E;
-  --ob-oro:#E3CF98;--ob-oro-2:#C9B37E;--ob-linea:rgba(240,235,224,.12)}
-html,body{background:var(--ob-noche)!important}
-/* el fondo de toda la página: noche con luces difuminadas del crema del logo (#F2EEE5), un verde profundo apenas y grano
-   de película. Es la tarjeta "Hecho y usado por nosotros" llevada a toda la web, con el crema en lugar del verde vivo.
-   Un mosaico que se repite hacia abajo, como el aura de la web publicada: cada luz se apaga antes del borde del
-   mosaico, así no se ven costuras entre una vuelta y la siguiente. */
-:root{--ob-crema:242,238,229;--ob-mosaico:clamp(1000px,125vw,1600px);
-  --ob-aura:
-    radial-gradient(60% 30% at 0% 22%,rgba(var(--ob-crema),.26) 0%,rgba(var(--ob-crema),.09) 38%,rgba(var(--ob-crema),0) 70%),
-    radial-gradient(55% 28% at 100% 56%,rgba(var(--ob-crema),.2) 0%,rgba(var(--ob-crema),.07) 38%,rgba(var(--ob-crema),0) 70%),
-    radial-gradient(64% 26% at 28% 80%,rgba(31,122,70,.24) 0%,rgba(31,122,70,0) 70%),
-    radial-gradient(48% 22% at 78% 16%,rgba(31,122,70,.16) 0%,rgba(31,122,70,0) 70%)}
-/* ojo: el grano es 1 capa y --ob-aura son 4. Tamaño y repetición van capa por capa (si se ponen menos valores,
-   el navegador los repite en ronda y algunas luces se dibujan en baldosas de 64 px) */
-main{background-color:#0A0D0B!important;background-image:url("assets/october-black/grano.webp"),var(--ob-aura)!important;
-  background-size:64px 64px,100% var(--ob-mosaico),100% var(--ob-mosaico),100% var(--ob-mosaico),100% var(--ob-mosaico)!important;
-  background-repeat:repeat,repeat-y,repeat-y,repeat-y,repeat-y!important;background-position:0 0!important}
-header, main > section:not(.pain):not(.offer){
-  --paper:var(--ob-noche); --paper-2:var(--ob-noche-2); --white:var(--ob-tarjeta);
-  --ink:var(--ob-texto); --ink-2:var(--ob-texto-2); --muted:var(--ob-gris);
-  --forest:var(--ob-oro); --forest-deep:#0F1A13; --gold:var(--ob-oro);
-  --line:var(--ob-linea); --line-strong:rgba(240,235,224,.24);
-  --mv-acento:var(--ob-oro); --mv-acento-2:var(--ob-oro); --mv-acento-suave:rgba(227,207,152,.12); --mv-verde-luz:var(--ob-oro);
-  --verde-si:var(--ob-oro); --aura-clara:var(--ob-aura);
-}
-main > section:not(.pain):not(.offer){color:var(--ink)}
-header{background:rgba(11,14,12,.74)!important;border-bottom:1px solid var(--ob-linea)!important}
-
-/* el sello del evento, arriba del título del inicio */
-.ob-sello{display:flex;width:max-content;max-width:100%;align-items:center;gap:12px;margin:0 auto 22px;padding:9px 18px 8px;border:1px solid rgba(227,207,152,.42);
-  border-radius:999px;background:rgba(227,207,152,.06);font:500 11px/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--ob-oro)}
-.ob-sello i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--ob-oro);box-shadow:0 0 12px rgba(227,207,152,.8)}
-.ob-sello b{font:italic 400 19px/1 var(--mv-fuente-marca,"DM Serif Display"),serif;letter-spacing:0;text-transform:none;color:var(--ob-texto)}
-
-/* la oferta: de verde profundo a negro con un brillo dorado arriba */
-.offer{background:radial-gradient(70% 45% at 50% 0%,rgba(227,207,152,.12),rgba(0,0,0,0) 70%),#070908!important}
-
-/* la pila de la tarjeta de precio: qué resuelve cada pieza nueva */
-.stack .ob-que{display:block;margin-top:3px;font-size:.84em;line-height:1.4;opacity:.72;font-weight:400}
-.stack .ob-nuevo{letter-spacing:.02em}
-.stack li.ob-regalo{background:rgba(227,207,152,.16);border-radius:10px;padding-left:10px!important;padding-right:10px!important}
-
-/* las tarjetas de "vidrio claro" pasan a vidrio oscuro (la tarjeta de precio queda clara: es el foco de la oferta) */
-main > section:not(.pain):not(.offer) :is(.tcard,.v2-nicho,.v2-origen,.inside-card,.guarantee-box,.versus-card,.case-grid button,.v2-origen-foto button){
-  background:rgba(255,255,255,.045)!important;border-color:rgba(240,235,224,.13)!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 30px 60px -34px rgba(0,0,0,.7)!important}
-main > section:not(.pain):not(.offer) .inside-card:nth-child(2n){background:rgba(255,255,255,.03)!important}
-.v2-marcas{background:rgba(255,255,255,.04)!important;border-color:rgba(240,235,224,.1)!important}
-.v2-caso-tab:not(.on):hover{background:rgba(255,255,255,.08)!important}
-/* "Dos caminos": las dos tarjetas de vidrio claro, a vidrio oscuro; el brillo verde del método pasa a oro */
-.mv-camino{background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02))!important;border-color:rgba(240,235,224,.14)!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 40px 90px -40px rgba(0,0,0,.7)!important}
-.mv-camino-metodo::before{background:radial-gradient(55% 40% at 92% 4%,rgba(227,207,152,.14),transparent 70%),radial-gradient(60% 45% at 4% 100%,rgba(227,207,152,.08),transparent 72%)!important}
-/* la oferta: el aura verde de fondo pasa a negro con brillo dorado */
-.offer::before{background-color:#070908!important;background-image:radial-gradient(60% 40% at 50% 0%,rgba(227,207,152,.13),rgba(227,207,152,0) 70%),radial-gradient(50% 35% at 85% 78%,rgba(150,112,58,.10),rgba(150,112,58,0) 70%)!important}
-/* las tildes de la pila se dibujan en orden: los renglones nuevos (9 a 12) siguen la misma cadencia */
-.price-card .stack li:nth-child(9)>span:first-child::before{transition-delay:1.3s}.price-card .stack li:nth-child(9)>span:first-child::after{transition-delay:1.5s}
-.price-card .stack li:nth-child(10)>span:first-child::before{transition-delay:1.45s}.price-card .stack li:nth-child(10)>span:first-child::after{transition-delay:1.65s}
-.price-card .stack li:nth-child(11)>span:first-child::before{transition-delay:1.6s}.price-card .stack li:nth-child(11)>span:first-child::after{transition-delay:1.8s}
-.price-card .stack li:nth-child(12)>span:first-child::before{transition-delay:1.75s}.price-card .stack li:nth-child(12)>span:first-child::after{transition-delay:1.95s}
-
-/* contraste: textos con color fijo pensado para fondo claro (el pie queda oscuro, como estaba) */
-header .brand,header .brand i{color:var(--ob-texto)!important}
-/* el subrayado a mano de los títulos: de verde a oro */
-.mv-marca-grande::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 12' preserveAspectRatio='none'%3E%3Cpath d='M2 9C70 3 170 1 298 6' fill='none' stroke='%23E3CF98' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E")!important}
-.inside-card .card-tag{color:var(--ob-texto)!important}
-.inside-card h3{color:var(--ink)!important}
-.v2-caso-tab.on{background:var(--ob-oro)!important;color:#0B0E0C!important}
-.mv-chip{background:rgba(255,255,255,.06)!important}
-.mv-chip-verde{color:var(--ob-oro)!important;border-color:rgba(227,207,152,.5)!important}
-.mv-chip-rojo{color:#F0A196!important;border-color:rgba(240,161,150,.45)!important}
-[data-esc="Hazlo"] a{color:#0B0E0C!important}
-/* "El caso": la barra de pestañas era vidrio claro con letra crema; pasa a vidrio oscuro. La etiqueta sobre la foto
-   ("Foto original") sigue clara, así que su letra va oscura */
-.v2-caso-tabs{background:rgba(255,255,255,.06)!important;border-color:rgba(240,235,224,.16)!important;box-shadow:none!important}
-.v2-caso-chip{color:#141410!important}
-/* "Dos caminos": el número de cada paso va sobre un círculo blanco */
-.mv-linea-n i{color:#55554B!important}
-/* la tarjeta de precio y la de "Hagamos la cuenta" son claras: su gris de apoyo, un punto más oscuro para que se lea */
-.offer :is(.price-card,.mv-ahorro){--muted:#5E5E54}
-.price-card .eyebrow.muted{color:#5E5E54!important}
-/* la banda de marcas: logos claros sobre noche (antes quedaban oscuros sobre oscuro) */
-.v2-marcas{background:transparent!important;border-color:var(--ob-linea)!important}
-.v2-marca{color:var(--ob-texto)!important;opacity:.5}
-.v2-marca:hover{opacity:.9}
-
-/* "Qué incluye": la etiqueta de cada pieza quedaba debajo de la foto; va arriba */
-.inside-card .card-tag{z-index:2}
-/* las piezas nuevas llevan la etiqueta en oro; el regalo, con borde y brillo dorados */
-.inside-card.ob-card .card-tag{color:var(--ob-oro)!important;background:rgba(11,14,12,.62)!important;box-shadow:inset 0 0 0 1px rgba(227,207,152,.38)}
-main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:rgba(227,207,152,.5)!important;
-  background:linear-gradient(160deg,rgba(227,207,152,.1),rgba(255,255,255,.03) 55%)!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 40px 90px -40px rgba(227,207,152,.28)!important}
-.inside-card.ob-card-regalo .card-tag{color:#0B0E0C!important;background:var(--ob-oro)!important;box-shadow:none}
-
-/* el sello de garantía, en oro con el texto negro */
-.mv-sello svg{filter:drop-shadow(0 14px 34px rgba(227,207,152,.26))}
-.mv-sello-borde{fill:url(#ob-oro-sello)!important;stroke:#8C7440!important}
-.mv-sello-aro{stroke:#2A2412!important;opacity:.32!important}
-.mv-sello-eye,.mv-sello-num,.mv-sello-dias{fill:#141410!important}
-.mv-sello-visto{stroke:#141410!important}
-
-/* "Aprender solo": las burbujas son blancas, así que el texto y los íconos de adentro van oscuros */
-.mv-rueda-centro,.mv-rueda-txt{color:#26362C!important}
-.mv-rueda-num{color:#C0392B!important}
-.mv-estaciones li{color:#3A3A31!important}
-/* los íconos de los círculos de afuera se dibujaban con el color del texto (crema): oscuros sobre el blanco; el activo sigue en rojo */
-.mv-est-vis svg{stroke:#3A3A31!important}
-.mv-estaciones li.activo .mv-est-vis svg{stroke:var(--mv-rojo)!important}
-/* la órbita punteada era oscura sobre fondo oscuro: pasa a crema suave */
-.mv-rueda-aro circle:not(.mv-rueda-hecho){stroke:rgba(240,235,224,.3)!important}
-
-</style>
-</head>
+}</style></head>
 <body>
 
   <div class="announcement">
     <div class="shell announcement-inner">
-      <span data-cuenta="banner"><b>October Black</b> El pack completo a USD 67. Sube a USD 87 en</span><span class="v2-cuenta-mini"><b data-c=d>00</b><i>d</i><b data-c=h>00</b><i>h</i><b data-c=m>00</b><i>m</i><b data-c=s>00</b><i>s</i></span>
-      <a href="#precio">Ver la oferta</a>
+      <span data-cuenta="banner"><b>Edición Septiembre</b> Incluye actualizaciones y un material exclusivo que no vuelve. Cierra en</span><span class="v2-cuenta-mini"><b data-c=d>00</b><i>d</i><b data-c=h>00</b><i>h</i><b data-c=m>00</b><i>m</i><b data-c=s>00</b><i>s</i></span>
+      <a href="#precio">Reclamar la edición</a>
     </div>
   </div>
   <header>
@@ -2350,7 +2231,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
 <main>
 <section class="showcase v2-hero-gal" id="resultado" data-esc="Inicio">
 <div class="shell">
-<div class="showcase-head v2-hero-gal-head"><div class="ob-sello v2-sube d1"><i aria-hidden="true"></i><b>October Black</b><span>hasta el 12 de octubre</span></div><span class="eyebrow muted v2-sube d1"><span class="mv-marca">Método Prompt Ads</span> para ChatGPT</span><h1 class="v2-sube d2">Imagina poder crear <em class="v2-nw">publicidad así.</em></h1></div>
+<div class="showcase-head v2-hero-gal-head"><span class="eyebrow muted v2-sube d1"><span class="mv-marca">Método Prompt Ads</span> para ChatGPT</span><h1 class="v2-sube d2">Imagina poder crear <em class="v2-nw">publicidad así.</em></h1></div>
 <div class="v2-gal v2-sube d3"><div class="v2-gal-track"><div class="v2-gal-set">
 <figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/colabs/bose-5.webp" aria-label="Ampliar anuncio de Bose"><img src="assets/colabs/bose-5.webp" srcset="assets/colabs/bose-5-m.webp 600w, assets/colabs/bose-5.webp 900w" sizes="(max-width:720px) 200px, 440px" loading="eager" fetchpriority="high" decoding="async" width="1100" height="1375" alt="Anuncio de Bose hecho con Prompt Ads"></button></figure>
 <figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/colabs/cos-11.webp" aria-label="Ampliar anuncio de COS"><img src="assets/colabs/cos-11.webp" srcset="assets/colabs/cos-11-m.webp 600w, assets/colabs/cos-11.webp 900w" sizes="(max-width:720px) 200px, 440px" loading="eager" decoding="async" width="1100" height="1375" alt="Anuncio de COS hecho con Prompt Ads"></button></figure>
@@ -2479,7 +2360,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
 <div class="shell">
 <div class="v2-hero-grid">
 <div class="v2-sube d1"><span class="pill eyebrow"><i class="dot"></i> El método para crear +50 anuncios premium en minutos</span></div>
-<div class="v2-sube d2"><h2 class="v2-hero-h">Aprende a crear <em>+50 anuncios de la más alta calidad</em> en minutos.</h2></div>
+<div class="v2-sube d2"><h2 class="v2-hero-h">Aprende a crear <em>+50 anuncios de la más alta calidad</em> en minutos y <em>aumenta tus ventas.</em></h2></div>
 <div class="v2-prod v2-sube d3"><div class="hero-prod"><figure class="prod-float">
             <!-- La imagen se ve siempre; el video la reemplaza solo cuando esta cargado
                  y el visitante no pidio reducir movimiento. Asi nadie ve un hueco. -->
@@ -2490,7 +2371,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
                  alt="Prompt Ads — el método definitivo para crear anuncios de alta conversión, con ejemplos de anuncios premium alrededor">
             <div id="prodGiro" class="giro" aria-hidden="true"></div>
           </figure></div></div>
-<p class="v2-hero-sub v2-sube d4">Sabemos lo que es perder una tarde entera creando unos pocos anuncios y que al final, después de mucho esfuerzo, no traigan los resultados esperados o ningún resultado. Por eso existe Prompt Ads: <b>el método que hace que tu marca se vea como las grandes marcas del mundo</b>. Subes una foto de lo que vendes y en minutos tienes una tanda de anuncios premium, de los que una agencia te cobraría <b>+USD 1.000</b>. Sin sesión de fotos, sin saber diseño y de la manera más fácil y rápida posible.</p>
+<p class="v2-hero-sub v2-sube d4">Sabemos lo que es perder una tarde entera creando unos pocos anuncios y que al final, después de mucho esfuerzo, no traigan los resultados esperados o ningún resultado. Por eso existe Prompt Ads: <b>el método que hace que tu marca se vea como las que facturan millones</b>. Subes una foto de lo que vendes y en minutos tienes una tanda de anuncios premium, de los que una agencia te cobraría <b>+USD 1.000</b>. Sin sesión de fotos, sin saber diseño y de la manera más fácil y rápida posible.</p>
 <div class="v2-sube d5"><div class="hero-actions">
             <a class="btn" href="#precio">Quiero crear mis anuncios <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
           </div></div>
@@ -2597,35 +2478,30 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
         </div>
         <div class="inside-grid">
           <article class="inside-card reveal">
-            <div class="card-cover"><span class="card-tag">Archivo 01</span><picture><source media="(max-width:760px)" srcset="assets/pack/01-guia-de-uso-600.webp"><source srcset="assets/pack/01-guia-de-uso-600.webp 600w, assets/pack/01-guia-de-uso.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/01-guia-de-uso.webp" width="900" height="900" loading="lazy" alt="La guía del método Prompt Ads"></picture></div>
+            <div class="card-cover"><span class="card-tag">Archivo 01</span><picture><source media="(max-width:760px)" srcset="assets/mockups-modulos/guia-de-uso-600.webp"><source srcset="assets/mockups-modulos/guia-de-uso-600.webp 600w, assets/mockups-modulos/guia-de-uso.webp 900w" sizes="510px"><img decoding="async" src="assets/mockups-modulos/guia-de-uso.webp" loading="lazy" alt="La guía del método Prompt Ads"></picture></div>
             <div class="card-body"><h3>La guía de uso del método</h3><p>Hay una diferencia entre pedirle un anuncio a la IA y dirigirla. Esa diferencia es este archivo: las palabras exactas que la IA obedece, el secreto para que cada anuncio salga exactamente como lo imaginaste, y la línea que lo endereza cuando sale distinto. Y nada de un PDF de puro texto que aburre: todo está explicado paso a paso, con capturas y ejemplos visuales en cada punto, pensado para que lo entiendas a la primera y lo uses el mismo día.</p></div>
           </article>
           <article class="inside-card reveal">
-            <div class="card-cover"><span class="card-tag">Archivo 02</span><picture><source media="(max-width:760px)" srcset="assets/pack/02-protocolo-maestro-600.webp"><source srcset="assets/pack/02-protocolo-maestro-600.webp 600w, assets/pack/02-protocolo-maestro.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/02-protocolo-maestro.webp" width="900" height="900" loading="lazy" alt="Protocolo Maestro Prompt Ads"></picture></div>
+            <div class="card-cover"><span class="card-tag">Archivo 02</span><picture><source media="(max-width:760px)" srcset="assets/mockups-modulos/protocolo-maestro-600.webp"><source srcset="assets/mockups-modulos/protocolo-maestro-600.webp 600w, assets/mockups-modulos/protocolo-maestro.webp 900w" sizes="510px"><img decoding="async" src="assets/mockups-modulos/protocolo-maestro.webp" loading="lazy" alt="Protocolo Maestro Prompt Ads"></picture></div>
             <div class="card-body"><h3>Protocolo Maestro</h3><p>La instrucción central que hace que la IA genere tus anuncios con criterio de agencia.</p></div>
           </article>
           <article class="inside-card reveal">
-            <div class="card-cover"><span class="card-tag">Archivo 03</span><picture><source media="(max-width:760px)" srcset="assets/pack/03-reality-layer-600.webp"><source srcset="assets/pack/03-reality-layer-600.webp 600w, assets/pack/03-reality-layer.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/03-reality-layer.webp" width="900" height="900" loading="lazy" alt="Reality Layer Prompt Ads" style="object-position:50% 70%"></picture></div>
+            <div class="card-cover"><span class="card-tag">Archivo 03</span><picture><source media="(max-width:760px)" srcset="assets/mockups-modulos/reality-layer-600.webp"><source srcset="assets/mockups-modulos/reality-layer-600.webp 600w, assets/mockups-modulos/reality-layer.webp 900w" sizes="510px"><img decoding="async" src="assets/mockups-modulos/reality-layer.webp" loading="lazy" alt="Reality Layer Prompt Ads"></picture></div>
             <div class="card-body"><h3>Reality Layer</h3><p>Bloques de realismo para pedir piel, manos, luz y materiales más creíbles, sin look plástico.</p></div>
           </article>
           <article class="inside-card reveal">
-            <div class="card-cover"><span class="card-tag">Archivo 04</span><picture><source media="(max-width:760px)" srcset="assets/pack/04-direccion-visual-600.webp"><source srcset="assets/pack/04-direccion-visual-600.webp 600w, assets/pack/04-direccion-visual.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/04-direccion-visual.webp" width="900" height="900" loading="lazy" alt="Dirección Visual Prompt Ads" style="object-position:50% 30%"></picture></div>
+            <div class="card-cover"><span class="card-tag">Archivo 04</span><picture><source media="(max-width:760px)" srcset="assets/mockups-modulos/direccion-visual-600.webp"><source srcset="assets/mockups-modulos/direccion-visual-600.webp 600w, assets/mockups-modulos/direccion-visual.webp 900w" sizes="510px"><img decoding="async" src="assets/mockups-modulos/direccion-visual.webp" loading="lazy" alt="Dirección Visual Prompt Ads"></picture></div>
             <div class="card-body"><h3>Dirección Visual</h3><p>Qué pedir cuando no sabes qué pedir: convierte una idea vaga en la estética exacta que buscas.</p></div>
           </article>
           <article class="inside-card reveal">
-            <div class="card-cover"><span class="card-tag">Archivo 05</span><picture><source media="(max-width:760px)" srcset="assets/pack/05-corrige-y-continua-600.webp"><source srcset="assets/pack/05-corrige-y-continua-600.webp 600w, assets/pack/05-corrige-y-continua.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/05-corrige-y-continua.webp" width="900" height="900" loading="lazy" alt="Corrige y Continúa Prompt Ads"></picture></div>
+            <div class="card-cover"><span class="card-tag">Archivo 05</span><picture><source media="(max-width:760px)" srcset="assets/mockups-modulos/corregi-continua-600.webp"><source srcset="assets/mockups-modulos/corregi-continua-600.webp 600w, assets/mockups-modulos/corregi-continua.webp 900w" sizes="510px"><img decoding="async" src="assets/mockups-modulos/corregi-continua.webp" loading="lazy" alt="Corrige y Continúa Prompt Ads"></picture></div>
             <div class="card-body"><h3>Corrige y Continúa</h3><p>Qué escribir cuando el modelo entrega menos anuncios, arma una grilla o cambia tu producto.</p></div>
           </article>
           <article class="inside-card reveal">
-            <div class="card-cover"><span class="card-tag">Archivo 06</span><picture><source media="(max-width:760px)" srcset="assets/pack/06-variedad-total-600.webp"><source srcset="assets/pack/06-variedad-total-600.webp 600w, assets/pack/06-variedad-total.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/06-variedad-total.webp" width="900" height="900" loading="lazy" alt="Variedad Total Prompt Ads"></picture></div>
+            <div class="card-cover"><span class="card-tag">Archivo 06</span><picture><source media="(max-width:760px)" srcset="assets/mockups-modulos/variedad-total-600.webp"><source srcset="assets/mockups-modulos/variedad-total-600.webp 600w, assets/mockups-modulos/variedad-total.webp 900w" sizes="510px"><img decoding="async" src="assets/mockups-modulos/variedad-total.webp" loading="lazy" alt="Variedad Total Prompt Ads"></picture></div>
             <div class="card-body"><h3>Variedad Total</h3><p>Fuerza ángulos, escenas y copy nuevos cuando los anuncios empiezan a parecerse, sin perder coherencia.</p></div>
           </article>
-          
-<article class="inside-card ob-card reveal"><div class="card-cover"><span class="card-tag">Nuevo</span><picture><source media="(max-width:760px)" srcset="assets/pack/07-errores-comunes-600.webp"><source srcset="assets/pack/07-errores-comunes-600.webp 600w, assets/pack/07-errores-comunes.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/07-errores-comunes.webp" width="900" height="900" loading="lazy" alt="La guía Errores comunes y cómo solucionarlos, del Método Prompt Ads" style="object-position:50% 55%"></picture></div><div class="card-body"><h3>Errores comunes y cómo solucionarlos</h3><p>Un texto que no combina con la imagen, anuncios saturados, un producto que de costado sale raro, diez anuncios iguales. Los diez tropiezos que más se repiten y cómo arreglar cada uno, en 26 páginas.</p></div></article>
-<article class="inside-card ob-card reveal"><div class="card-cover"><span class="card-tag">Nuevo</span><picture><source media="(max-width:760px)" srcset="assets/pack/08-angulos-que-venden-600.webp"><source srcset="assets/pack/08-angulos-que-venden-600.webp 600w, assets/pack/08-angulos-que-venden.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/08-angulos-que-venden.webp" width="900" height="900" loading="lazy" alt="La guía Ángulos que venden, del Método Prompt Ads"></picture></div><div class="card-body"><h3>Ángulos que venden</h3><p>120 formas de vender lo mismo, en 12 familias, con ejemplos de productos y de servicios. El método te enseña cómo se ve tu anuncio; esta guía, qué decir en cada uno.</p></div></article>
-<article class="inside-card ob-card reveal"><div class="card-cover"><span class="card-tag">Ahora incluido</span><picture><source media="(max-width:760px)" srcset="assets/pack/09-avatares-hiperrealistas-600.webp"><source srcset="assets/pack/09-avatares-hiperrealistas-600.webp 600w, assets/pack/09-avatares-hiperrealistas.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/09-avatares-hiperrealistas.webp" width="900" height="900" loading="lazy" alt="La guía Cómo crear avatares hiperrealistas, del Método Prompt Ads" style="object-position:50% 20%"></picture></div><div class="card-body"><h3>Cómo crear avatares hiperrealistas</h3><p>Una cara propia para tu marca, que no existe en ninguna parte y se mantiene igual en todos tus anuncios. Antes se vendía aparte: ahora viene en el pack.</p></div></article>
-<article class="inside-card ob-card ob-card-regalo reveal"><div class="card-cover"><span class="card-tag">Regalo October Black</span><picture><source media="(max-width:760px)" srcset="assets/pack/11-plan-365-600.webp"><source srcset="assets/pack/11-plan-365-600.webp 600w, assets/pack/11-plan-365.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/11-plan-365.webp" width="900" height="900" loading="lazy" alt="El Plan 365 en Excel, un plan de acción de un año"></picture></div><div class="card-body"><h3>Plan 365: un año de ideas</h3><p>Tu plan de acción de un año: un ángulo de venta y una idea de anuncio para cada día, con su prompt, para productos y para servicios. Se lo pasas a ChatGPT y lo adapta a tu negocio en minutos. De regalo con October Black, hasta el 12 de octubre.</p></div></article>
-<article class="inside-card v2-card-video reveal"><div class="card-cover"><span class="card-tag">Video explicativo</span><img src="assets/producto/video-portada.webp" width="1280" height="720" loading="lazy" decoding="async" alt="A la izquierda, la foto de producto tal como sale del celular. A la derecha, el mismo producto convertido en anuncio."><span class="v2-vid-play" aria-hidden="true"></span></div><div class="card-body"><h3>Y además, el video del método</h3><p>Además de los archivos y las guías, una grabación completa donde se crea un anuncio de principio a fin, sin cortes. Lo ves funcionando y lo aplicas igual a lo tuyo: no importa si vendes un producto o un servicio, el método es el mismo para cualquier rubro.</p></div></article>
+          <article class="inside-card v2-card-video reveal"><div class="card-cover"><span class="card-tag">Video explicativo</span><img src="assets/producto/video-portada.webp" width="1280" height="720" loading="lazy" decoding="async" alt="A la izquierda, la foto de producto tal como sale del celular. A la derecha, el mismo producto convertido en anuncio."><span class="v2-vid-play" aria-hidden="true"></span></div><div class="card-body"><h3>Y además, el video del método</h3><p>Además de los seis archivos, una grabación completa donde se crea un anuncio de principio a fin, sin cortes. Lo ves funcionando y lo aplicas igual a lo tuyo: no importa si vendes un producto o un servicio, el método es el mismo para cualquier rubro.</p></div></article>
         </div>
       </div>
     
@@ -2661,7 +2537,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
 <section data-esc="Opiniones" class="proof">
       <div class="shell proof-head reveal">
         <span class="eyebrow muted">Lo que dicen los primeros</span>
-        <h2>Dejaron de improvisar. <em>Ahora sus anuncios se ven de marca.</em></h2>
+        <h2>Dejaron de improvisar y <em>empezaron a vender.</em></h2>
         <p>Dropshippers, gente de ecommerce y equipos de marketing que ya usan Prompt Ads todos los días. Esto es lo que nos cuentan.</p>
       </div>
       <div class="marquee reveal">
@@ -2756,34 +2632,31 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
           <aside class="price-card" id="precio">
             <span class="eyebrow muted">Todo lo que te llevas</span>
             <ul class="stack">
- <li><span><b>La guía del método + video explicativo</b></span><b class="v2-si">Incluido</b></li>
- <li><span>Protocolo Maestro</span><b class="v2-si">Incluido</b></li>
- <li><span>Reality Layer</span><b class="v2-si">Incluido</b></li>
- <li><span>Dirección Visual</span><b class="v2-si">Incluido</b></li>
- <li><span>Corrige y Continúa</span><b class="v2-si">Incluido</b></li>
- <li><span>Variedad Total</span><b class="v2-si">Incluido</b></li>
- <li><span><b>Errores comunes y cómo solucionarlos</b><small class="ob-que">La frase exacta para arreglar cada error.</small></span><b class="v2-si ob-nuevo">Nuevo</b></li>
- <li><span><b>Ángulos que venden</b><small class="ob-que">Qué decir en cada anuncio: 120 formas, con ejemplos.</small></span><b class="v2-si ob-nuevo">Nuevo</b></li>
- <li><span><b>Cómo crear avatares hiperrealistas</b><small class="ob-que">Una cara propia para tu marca.</small></span><b class="v2-si">Incluido</b></li>
- <li class="ob-regalo"><span><b>Plan 365</b><small class="ob-que">Tu plan de acción de un año, adaptado a tu negocio. Solo en October Black.</small></span><b class="v2-si">Regalo</b></li>
- <li><span>Actualizaciones del método</span><b class="v2-si">Incluido</b></li>
-</ul> <div class="stack-total"><span>Todo incluido</span><b>Pago único</b></div>
+              <li><span><b>La guía del método + vídeo explicativo</b></span><b>USD 279</b></li>
+              <li><span>Protocolo Maestro</span><b>USD 69</b></li>
+              <li><span>Reality Layer</span><b>USD 49</b></li>
+              <li><span>Dirección Visual</span><b>USD 39</b></li>
+              <li><span>Corrige y Continúa</span><b>USD 34</b></li>
+              <li><span>Variedad Total</span><b>USD 30</b></li>
+              <li><span>Actualizaciones de esta edición</span><b class="v2-si">Incluido</b></li><li><span><b>Lo que la IA no te va a enseñar</b><br><small style="opacity:.7;font-size:.86em;line-height:1.45;display:block;margin-top:3px">Exclusivo de la Edición Septiembre. Qué decir, a quién y a qué precio: lo que se aprende quemando miles de dólares en anuncios que no venden.</small></span><b class="v2-si">Incluido</b></li>
+            </ul>
+            <div class="stack-total"><span>Valor total</span><b><s>USD 500</s></b></div>
             <div class="price-reveal">
-              <span class="launch-tag">October Black</span><span class="mv-marca mv-marca-precio">Método Prompt Ads</span>
+              <span class="launch-tag">Método completo</span><span class="mv-marca mv-marca-precio">Método Prompt Ads</span>
               <div class="price"><sup>USD</sup>67</div>
-              <p class="price-after" data-cuenta="despues">Precio October Black hasta el <b>12 de octubre</b>. Después sube a USD 87.</p>
-              <div class="v2-cuenta" aria-label="Cuenta regresiva hasta que termina October Black"><div><b data-c="d">00</b><span>días</span></div><i></i><div><b data-c="h">00</b><span>horas</span></div><i></i><div><b data-c="m">00</b><span>min</span></div><i></i><div><b data-c="s">00</b><span>seg</span></div></div>
+              <p class="price-after" data-cuenta="despues">Edición Septiembre: incluye actualizaciones y <b>Lo que la IA no te va a enseñar</b>, el material exclusivo de esta edición</p>
+              <div class="v2-cuenta" aria-label="Cuenta regresiva hasta que cierra la edición"><div><b data-c="d">00</b><span>días</span></div><i></i><div><b data-c="h">00</b><span>horas</span></div><i></i><div><b data-c="m">00</b><span>min</span></div><i></i><div><b data-c="s">00</b><span>seg</span></div></div>
             </div>
             <p class="v2-empuje">El riesgo es nuestro, no tuyo. Tienes <b>7 días de garantía</b> para aprender el método con calma. Si no aprendes a crear estos anuncios, recuperas el 100% de tu dinero. <b>No te vas a arrepentir.</b></p>
             <a class="btn checkout" href="https://pay.hotmart.com/G107515293E?off=1tbcugw1&checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads</a>
-            
+            <p class="mv-cupo"><span class="mv-cupo-tope">150 copias por edición</span><span class="mv-cupo-txt"><i class="mv-cupo-pun"></i><em>Últimas copias disponibles</em></span><span class="mv-cupo-barra"><i style="--f:98%"></i></span><span class="mv-cupo-pie">Consigue <em>HOY</em> la edición que no vuelve.</span></p>
             <ul class="mv-confianza" aria-label="Tu compra, protegida">
   <li><span class="mv-conf-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="o" d="M12 0.7C12.53 0.7 13.13 1.48 13.6 1.93C14.06 2.37 14.31 3.18 14.81 3.35C15.32 3.51 15.99 2.99 16.63 2.91C17.27 2.83 18.21 2.55 18.64 2.86C19.07 3.17 19.09 4.16 19.21 4.79C19.33 5.42 19.05 6.22 19.36 6.65C19.67 7.08 20.52 7.06 21.09 7.37C21.65 7.68 22.58 8 22.75 8.51C22.91 9.01 22.35 9.82 22.07 10.4C21.8 10.99 21.1 11.47 21.1 12C21.1 12.53 21.8 13.01 22.07 13.6C22.35 14.18 22.91 14.99 22.75 15.49C22.58 16 21.65 16.32 21.09 16.63C20.52 16.94 19.67 16.92 19.36 17.35C19.05 17.78 19.33 18.58 19.21 19.21C19.09 19.84 19.07 20.83 18.64 21.14C18.21 21.45 17.27 21.17 16.63 21.09C15.99 21.01 15.32 20.49 14.81 20.65C14.31 20.82 14.06 21.63 13.6 22.07C13.13 22.52 12.53 23.3 12 23.3C11.47 23.3 10.87 22.52 10.4 22.07C9.94 21.63 9.69 20.82 9.19 20.65C8.68 20.49 8.01 21.01 7.37 21.09C6.73 21.17 5.79 21.45 5.36 21.14C4.93 20.83 4.91 19.84 4.79 19.21C4.67 18.58 4.95 17.78 4.64 17.35C4.33 16.92 3.48 16.94 2.91 16.63C2.35 16.32 1.42 16 1.25 15.49C1.09 14.99 1.65 14.18 1.93 13.6C2.2 13.01 2.9 12.53 2.9 12C2.9 11.47 2.2 10.99 1.93 10.4C1.65 9.82 1.09 9.01 1.25 8.51C1.42 8 2.35 7.68 2.91 7.37C3.48 7.06 4.33 7.08 4.64 6.65C4.95 6.22 4.67 5.42 4.79 4.79C4.91 4.16 4.93 3.17 5.36 2.86C5.79 2.55 6.73 2.83 7.37 2.91C8.01 2.99 8.68 3.51 9.19 3.35C9.69 3.18 9.94 2.37 10.4 1.93C10.87 1.48 11.47 0.7 12 0.7Z"/><path class="v" d="M7.6 12.2l2.9 2.9 5.9-6"/></svg></span><b>Garantía</b><small>7 días · 100%</small></li>
   <li><span class="mv-conf-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="l" d="M12 2.8L19.97 7.4V16.6L12 21.2L4.03 16.6V7.4Z"/><path class="f" d="M12 7.9A2.3 2.3 0 0 1 13.3 12.1L14 16.2H10L10.7 12.1A2.3 2.3 0 0 1 12 7.9Z"/></svg></span><b>Pago seguro</b><small>Por Hotmart</small></li>
   <li><span class="mv-conf-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="l" d="M4.6 13.6v-1.9a7.4 7.4 0 0 1 14.8 0v1.9"/><rect class="l" x="3.6" y="12.9" width="3.6" height="5.6" rx="1.4"/><rect class="l" x="16.8" y="12.9" width="3.6" height="5.6" rx="1.4"/><path class="l" d="M18.6 18.5c0 1.5-1.5 2.4-4.2 2.4h-1.8"/></svg></span><b>Soporte</b><small>Te respondemos siempre</small></li>
 </ul>
 <p class="mv-conf-nota">Acceso inmediato · Sin suscripciones</p>
-            <p class="price-note">Pago único. Incluye todas las actualizaciones del método, sin costo adicional y para siempre.</p>
+            <p class="price-note">Pago único. Incluye todas las actualizaciones de esta edición, sin costo adicional y para siempre.</p>
           </aside>
         </div>
       </div>
@@ -2794,7 +2667,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
 
       <div class="shell guarantee-box reveal">
         <div class="mv-sello" role="img" aria-label="Garantía de 7 días">
-  <svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="ob-oro-sello" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7E9B8"/><stop offset=".32" stop-color="#E3CF98"/><stop offset=".56" stop-color="#C6A45E"/><stop offset=".76" stop-color="#EFDA9E"/><stop offset="1" stop-color="#B28E4A"/></linearGradient></defs>
+  <svg viewBox="0 0 200 200" aria-hidden="true">
     <path class="mv-sello-borde" d="M100 5.05C101.02 5.05 102.05 6.1 103.06 6.65C104.06 7.2 104.99 8.28 106.01 8.35C107.02 8.41 108.09 7.46 109.15 7.05C110.22 6.64 111.38 5.73 112.39 5.86C113.4 6 114.29 7.17 115.21 7.85C116.14 8.52 116.92 9.72 117.92 9.91C118.92 10.11 120.1 9.31 121.21 9.04C122.32 8.77 123.59 8.02 124.57 8.29C125.56 8.55 126.29 9.83 127.11 10.62C127.94 11.41 128.56 12.7 129.52 13.02C130.49 13.35 131.76 12.71 132.9 12.59C134.04 12.46 135.39 11.89 136.34 12.28C137.28 12.67 137.83 14.03 138.55 14.93C139.26 15.82 139.71 17.17 140.62 17.62C141.54 18.07 142.89 17.6 144.03 17.63C145.17 17.65 146.59 17.26 147.47 17.77C148.36 18.28 148.73 19.71 149.32 20.68C149.91 21.66 150.18 23.06 151.03 23.63C151.88 24.2 153.27 23.91 154.4 24.08C155.53 24.25 156.99 24.05 157.8 24.67C158.61 25.29 158.79 26.76 159.25 27.8C159.71 28.85 159.8 30.27 160.56 30.94C161.33 31.62 162.75 31.51 163.85 31.83C164.94 32.15 166.42 32.14 167.14 32.86C167.86 33.58 167.85 35.06 168.17 36.15C168.49 37.25 168.38 38.67 169.06 39.44C169.73 40.2 171.15 40.29 172.2 40.75C173.24 41.21 174.71 41.39 175.33 42.2C175.95 43.01 175.75 44.47 175.92 45.6C176.09 46.73 175.8 48.12 176.37 48.97C176.94 49.82 178.34 50.09 179.32 50.68C180.29 51.27 181.72 51.64 182.23 52.52C182.74 53.41 182.35 54.83 182.37 55.97C182.4 57.11 181.93 58.46 182.38 59.38C182.83 60.29 184.18 60.74 185.07 61.45C185.97 62.17 187.33 62.72 187.72 63.66C188.11 64.61 187.54 65.96 187.41 67.1C187.29 68.24 186.65 69.51 186.98 70.48C187.3 71.44 188.59 72.06 189.38 72.89C190.17 73.71 191.45 74.44 191.71 75.43C191.98 76.41 191.23 77.68 190.96 78.79C190.69 79.9 189.89 81.08 190.09 82.08C190.28 83.08 191.48 83.86 192.15 84.79C192.83 85.71 194 86.6 194.14 87.61C194.27 88.62 193.36 89.78 192.95 90.85C192.54 91.91 191.59 92.98 191.65 93.99C191.72 95.01 192.8 95.94 193.35 96.94C193.9 97.95 194.95 98.98 194.95 100C194.95 101.02 193.9 102.05 193.35 103.06C192.8 104.06 191.72 104.99 191.65 106.01C191.59 107.02 192.54 108.09 192.95 109.15C193.36 110.22 194.27 111.38 194.14 112.39C194 113.4 192.83 114.29 192.15 115.21C191.48 116.14 190.28 116.92 190.09 117.92C189.89 118.92 190.69 120.1 190.96 121.21C191.23 122.32 191.98 123.59 191.71 124.57C191.45 125.56 190.17 126.29 189.38 127.11C188.59 127.94 187.3 128.56 186.98 129.52C186.65 130.49 187.29 131.76 187.41 132.9C187.54 134.04 188.11 135.39 187.72 136.34C187.33 137.28 185.97 137.83 185.07 138.55C184.18 139.26 182.83 139.71 182.38 140.62C181.93 141.54 182.4 142.89 182.37 144.03C182.35 145.17 182.74 146.59 182.23 147.47C181.72 148.36 180.29 148.73 179.32 149.32C178.34 149.91 176.94 150.18 176.37 151.03C175.8 151.88 176.09 153.27 175.92 154.4C175.75 155.53 175.95 156.99 175.33 157.8C174.71 158.61 173.24 158.79 172.2 159.25C171.15 159.71 169.73 159.8 169.06 160.56C168.38 161.33 168.49 162.75 168.17 163.85C167.85 164.94 167.86 166.42 167.14 167.14C166.42 167.86 164.94 167.85 163.85 168.17C162.75 168.49 161.33 168.38 160.56 169.06C159.8 169.73 159.71 171.15 159.25 172.2C158.79 173.24 158.61 174.71 157.8 175.33C156.99 175.95 155.53 175.75 154.4 175.92C153.27 176.09 151.88 175.8 151.03 176.37C150.18 176.94 149.91 178.34 149.32 179.32C148.73 180.29 148.36 181.72 147.47 182.23C146.59 182.74 145.17 182.35 144.03 182.37C142.89 182.4 141.54 181.93 140.62 182.38C139.71 182.83 139.26 184.18 138.55 185.07C137.83 185.97 137.28 187.33 136.34 187.72C135.39 188.11 134.04 187.54 132.9 187.41C131.76 187.29 130.49 186.65 129.52 186.98C128.56 187.3 127.94 188.59 127.11 189.38C126.29 190.17 125.56 191.45 124.57 191.71C123.59 191.98 122.32 191.23 121.21 190.96C120.1 190.69 118.92 189.89 117.92 190.09C116.92 190.28 116.14 191.48 115.21 192.15C114.29 192.83 113.4 194 112.39 194.14C111.38 194.27 110.22 193.36 109.15 192.95C108.09 192.54 107.02 191.59 106.01 191.65C104.99 191.72 104.06 192.8 103.06 193.35C102.05 193.9 101.02 194.95 100 194.95C98.98 194.95 97.95 193.9 96.94 193.35C95.94 192.8 95.01 191.72 93.99 191.65C92.98 191.59 91.91 192.54 90.85 192.95C89.78 193.36 88.62 194.27 87.61 194.14C86.6 194 85.71 192.83 84.79 192.15C83.86 191.48 83.08 190.28 82.08 190.09C81.08 189.89 79.9 190.69 78.79 190.96C77.68 191.23 76.41 191.98 75.43 191.71C74.44 191.45 73.71 190.17 72.89 189.38C72.06 188.59 71.44 187.3 70.48 186.98C69.51 186.65 68.24 187.29 67.1 187.41C65.96 187.54 64.61 188.11 63.66 187.72C62.72 187.33 62.17 185.97 61.45 185.07C60.74 184.18 60.29 182.83 59.38 182.38C58.46 181.93 57.11 182.4 55.97 182.37C54.83 182.35 53.41 182.74 52.52 182.23C51.64 181.72 51.27 180.29 50.68 179.32C50.09 178.34 49.82 176.94 48.97 176.37C48.12 175.8 46.73 176.09 45.6 175.92C44.47 175.75 43.01 175.95 42.2 175.33C41.39 174.71 41.21 173.24 40.75 172.2C40.29 171.15 40.2 169.73 39.44 169.06C38.67 168.38 37.25 168.49 36.15 168.17C35.06 167.85 33.58 167.86 32.86 167.14C32.14 166.42 32.15 164.94 31.83 163.85C31.51 162.75 31.62 161.33 30.94 160.56C30.27 159.8 28.85 159.71 27.8 159.25C26.76 158.79 25.29 158.61 24.67 157.8C24.05 156.99 24.25 155.53 24.08 154.4C23.91 153.27 24.2 151.88 23.63 151.03C23.06 150.18 21.66 149.91 20.68 149.32C19.71 148.73 18.28 148.36 17.77 147.48C17.26 146.59 17.65 145.17 17.63 144.03C17.6 142.89 18.07 141.54 17.62 140.62C17.17 139.71 15.82 139.26 14.93 138.55C14.03 137.83 12.67 137.28 12.28 136.34C11.89 135.39 12.46 134.04 12.59 132.9C12.71 131.76 13.35 130.49 13.02 129.52C12.7 128.56 11.41 127.94 10.62 127.11C9.83 126.29 8.55 125.56 8.29 124.57C8.02 123.59 8.77 122.32 9.04 121.21C9.31 120.1 10.11 118.92 9.91 117.92C9.72 116.92 8.52 116.14 7.85 115.21C7.17 114.29 6 113.4 5.86 112.39C5.73 111.38 6.64 110.22 7.05 109.15C7.46 108.09 8.41 107.02 8.35 106.01C8.28 104.99 7.2 104.06 6.65 103.06C6.1 102.05 5.05 101.02 5.05 100C5.05 98.98 6.1 97.95 6.65 96.94C7.2 95.94 8.28 95.01 8.35 93.99C8.41 92.98 7.46 91.91 7.05 90.85C6.64 89.78 5.73 88.62 5.86 87.61C6 86.6 7.17 85.71 7.85 84.79C8.52 83.86 9.72 83.08 9.91 82.08C10.11 81.08 9.31 79.9 9.04 78.79C8.77 77.68 8.02 76.41 8.29 75.43C8.55 74.44 9.83 73.71 10.62 72.89C11.41 72.06 12.7 71.44 13.02 70.48C13.35 69.51 12.71 68.24 12.59 67.1C12.46 65.96 11.89 64.61 12.28 63.66C12.67 62.72 14.03 62.17 14.93 61.45C15.82 60.74 17.17 60.29 17.62 59.38C18.07 58.46 17.6 57.11 17.63 55.97C17.65 54.83 17.26 53.41 17.77 52.52C18.28 51.64 19.71 51.27 20.68 50.68C21.66 50.09 23.06 49.82 23.63 48.97C24.2 48.12 23.91 46.73 24.08 45.6C24.25 44.47 24.05 43.01 24.67 42.2C25.29 41.39 26.76 41.21 27.8 40.75C28.85 40.29 30.27 40.2 30.94 39.44C31.62 38.67 31.51 37.25 31.83 36.15C32.15 35.06 32.14 33.58 32.86 32.86C33.58 32.14 35.06 32.15 36.15 31.83C37.25 31.51 38.67 31.62 39.44 30.94C40.2 30.27 40.29 28.85 40.75 27.8C41.21 26.76 41.39 25.29 42.2 24.67C43.01 24.05 44.47 24.25 45.6 24.08C46.73 23.91 48.12 24.2 48.97 23.63C49.82 23.06 50.09 21.66 50.68 20.68C51.27 19.71 51.64 18.28 52.52 17.77C53.41 17.26 54.83 17.65 55.97 17.63C57.11 17.6 58.46 18.07 59.38 17.62C60.29 17.17 60.74 15.82 61.45 14.93C62.17 14.03 62.72 12.67 63.66 12.28C64.61 11.89 65.96 12.46 67.1 12.59C68.24 12.71 69.51 13.35 70.48 13.02C71.44 12.7 72.06 11.41 72.89 10.62C73.71 9.83 74.44 8.55 75.43 8.29C76.41 8.02 77.68 8.77 78.79 9.04C79.9 9.31 81.08 10.11 82.08 9.91C83.08 9.72 83.86 8.52 84.79 7.85C85.71 7.17 86.6 6 87.61 5.86C88.62 5.73 89.78 6.64 90.85 7.05C91.91 7.46 92.98 8.41 93.99 8.35C95.01 8.28 95.94 7.2 96.94 6.65C97.95 6.1 98.98 5.05 100 5.05Z" pathLength="1"/>
     <circle class="mv-sello-aro" cx="100" cy="100" r="80" pathLength="1" transform="rotate(-90 100 100)"/>
     <text class="mv-sello-eye" x="101.6" y="79" text-anchor="middle">GARANTÍA</text>
@@ -2830,7 +2703,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
 <section data-esc="Opiniones" class="proof proof-2">
       <div class="shell proof-head reveal">
         <span class="eyebrow muted">Más historias reales</span>
-        <h2>Fácil de usar. Y se <em>nota en cada anuncio.</em></h2>
+        <h2>Fácil de usar. Y se <em>nota en las ventas.</em></h2>
         <p>Lo que nos cuentan quienes ya lo están usando para su propia marca.</p>
       </div>
       <div class="marquee reveal">
@@ -2864,7 +2737,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
 <div class="v2-deco" aria-hidden="true"><img class="d1" src="assets/deco/rolex.webp" alt="" loading="lazy" decoding="async" width="520" height="650"></div>
 
       <div class="shell faq-wrap">
-        <h2>Preguntas frecuentes.</h2> <details><summary>¿Qué es October Black?</summary><p>Es el lanzamiento de la edición de octubre del método. Hasta el 12 de octubre, el pack completo (el método con su video, Errores comunes, Ángulos que venden y Cómo crear avatares hiperrealistas, más el Plan 365 de regalo) cuesta <b>USD 67</b>. Cuando el reloj de arriba llega a cero, el precio pasa a <b>USD 87</b>. Los que ya compraron el método reciben las piezas nuevas sin pagar de nuevo.</p></details>
+        <h2>Preguntas frecuentes.</h2>
         <details><summary>¿Qué es exactamente Prompt Ads? ¿Son prompts?</summary><p>Sí, en parte. Son <b>6 archivos en PDF</b> que trabajan juntos: <b>2 son guías que lees tú, y empiezas por ahí</b> (la guía de uso paso a paso, que te enseña todo el proceso con capturas, y la de dirección visual), y <b>4 son archivos de prompts e instrucciones</b> que arrastras directo al chat de ChatGPT (el Protocolo Maestro, el de realismo, el de correcciones y el de variedad). No es un software ni una app: <b>lees la guía, subes la foto de lo que vendes, pegas los archivos en ChatGPT y te genera los anuncios</b>. Funciona para cualquier negocio: producto físico, servicio, local, inmobiliaria o producto digital. Y no es un PDF de puro texto hecho sin ganas: cada archivo está diseñado y acompañado de ejemplos visuales y capturas reales, para que entiendas el método de la forma más clara posible.</p></details>
         <details><summary>¿Cómo lo recibo? ¿Y si después no lo encuentro?</summary><p>Apenas se aprueba el pago, Hotmart te manda un correo con el acceso y los <b>6 archivos quedan guardados en tu cuenta</b>, para descargarlos cuando quieras y las veces que quieras. Si el correo no te llega, si cae en spam o si entras y no encuentras el material, escríbenos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a>: <b>te respondemos siempre</b> y te lo dejamos en la mano. Nadie se queda sin lo que compró.</p></details>
         <details><summary>¿Puedo elegir yo el estilo o lo decide la IA?</summary><p>Tú mandas, siempre. Tú defines la estética que quieres y el método te enseña a pedirla con precisión, para que la IA la aplique a TU producto sin cambiarlo ni inventar nada. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas. Y si un resultado se desvía, el archivo de correcciones trae la línea para enderezarlo.</p></details><details><summary>¿Necesito saber diseño?</summary><p>No. El método te da una estructura concreta. Tú aportas la información verdadera de tu negocio, tomas las decisiones de estilo y revisas el resultado final antes de publicarlo.</p></details>
@@ -2887,7 +2760,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
     </div>
   </footer>
 
-  <div class="mobile-buy" id="mobileBuy"><div><span data-cuenta="movil-arriba">October Black</span><b data-cuenta="movil">El pack completo a USD 67</b></div><a href="#precio" class="btn">Aprovechar oferta</a></div>
+  <div class="mobile-buy" id="mobileBuy"><div><span data-cuenta="movil-arriba">Edición Septiembre</span><b data-cuenta="movil">Actualizaciones y material exclusivo incluidos</b></div><a href="#precio" class="btn">Aprovechar oferta</a></div>
   <dialog class="lightbox" id="lightbox" aria-label="Vista ampliada del anuncio">
     <button class="lightbox-close" aria-label="Cerrar vista ampliada">×</button>
     <img loading="lazy" decoding="async" id="lightboxImage" alt="Anuncio ampliado" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
@@ -3313,15 +3186,15 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
      actualiza sola cuando pasás de peldaño, así que esto no se toca a mano.
      Si algo falla, queda el texto que ya estaba escrito en el HTML.        */
   (function(){
-    const LIMITE = '2026-10-12';      // termina October Black (a las 12:00 de Paraguay) y el precio sube a 87
+    const LIMITE = '2026-10-01';      // cuando sube el precio
     /* La hora exacta y el huso. Sin esto cada visitante cuenta hacia SU
        medianoche y el reloj llega a cero en momentos distintos segun el
        pais: entre Espana y Mexico hay ocho horas. Asi todos cuentan hacia
        el mismo instante, el mismo en que se cambia el precio de verdad. */
     const HORA = 'T12:00:00-03:00';   // mediodia en Paraguay (UTC-3 todo el año desde 2024)
     const PRECIO = 67;                // el de ahora
-    const SUBE_A = 87;
-    const PELDANO = 'October Black';   // cómo se llama el precio de ahora
+    const SUBE_A = 67;
+    const PELDANO = 'método completo';   // cómo se llama el precio de ahora
 
     const MAY = s => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -3340,16 +3213,16 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
         meses: ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],
         de: ' de ',
         peldano: PELDANO,
-        lejos:   p => '<b>October Black</b> El pack completo a USD ' + PRECIO + '. Sube a USD ' + SUBE_A + ' en',
-        cerca:   p => '<b>October Black</b> Últimos días a USD ' + PRECIO + '. Sube a USD ' + SUBE_A + ' en',
-        ultimo:  () => '<b>October Black</b> Último día a USD ' + PRECIO + '. Sube a USD ' + SUBE_A + ' en',
-        fecha:   f => 'Precio October Black hasta el <b>' + f + '</b>. Después sube a USD ' + SUBE_A + '.',
-        manana:  () => '<b>Último día a USD ' + PRECIO + '.</b> Hoy sube a USD ' + SUBE_A + '.',
-        arribaLejos: p => 'October Black',
-        arribaCerca: 'Últimos días de October Black',
-        arribaUltimo: 'Último día de October Black',
-        pie: 'El pack completo a USD ' + PRECIO,
-        pieManana: 'Hoy sube a USD ' + SUBE_A
+        lejos:   p => '<b>Edición Septiembre</b> Incluye actualizaciones y un material exclusivo que no vuelve. Cierra en',
+        cerca:   p => '<b>Edición Septiembre</b> Últimos días con el material exclusivo. Cierra en',
+        ultimo:  () => '<b>Edición Septiembre</b> Último día con el material exclusivo.',
+        fecha:   f => 'Edición Septiembre: incluye actualizaciones y <b>Lo que la IA no te va a enseñar</b>, el material exclusivo de esta edición',
+        manana:  () => '<b>Último día de la Edición Septiembre</b>',
+        arribaLejos: p => 'Edición Septiembre',
+        arribaCerca: 'Últimos días de la edición',
+        arribaUltimo: 'Último día de la edición',
+        pie: 'Actualizaciones y material exclusivo incluidos',
+        pieManana: 'Último día de la edición'
       },
       pt: {
         meses: ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'],
