@@ -2334,6 +2334,67 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
 .price-card .ob-garantia p:last-child{margin-bottom:0}
 .price-card .ob-garantia a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 </style>
+<script>
+/* ── Estado de la oferta ─────────────────────────────────────────────────────────────────────────────
+   October Black termina el 8/10/2026 a las 12:00 de Paraguay. Desde ese instante la página muestra sola el
+   precio nuevo, sin esperar a que nadie publique nada. Se decide acá arriba, antes de que se pinte.
+   estado: 'ob' October Black · 'bv' precio de bienvenida con reloj personal · 'regular' · 'fin' precio fijo, sin reloj */
+(function(){
+  var F1 = Date.parse('2026-10-08T12:00:00-03:00');    // fin original de October Black
+  var F = Date.parse('2026-10-11T12:00:00-03:00');     // fin con los 3 días más
+  var BIENVENIDA = 87;                               // el precio desde ese momento (mismo enlace de pago de siempre)
+  var HORAS = 72;                                      // cuánto dura el precio de bienvenida de cada visitante
+  var REGULAR = { precio: 107, off: '' };   // oferta regular de Hotmart (lo que va después de off=). Vacío = sin reloj personal
+  var d = document.documentElement, ahora = Date.now(), o, prox = 0;
+  function cuando(ts, largo){
+    var f = new Date(ts), h = new Date(), S = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'],
+        M = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    var dia = function(x){ var y = new Date(x); y.setHours(0,0,0,0); return y.getTime(); };
+    var n = Math.round((dia(f) - dia(h)) / 864e5), hm = ('0' + f.getHours()).slice(-2) + ':' + ('0' + f.getMinutes()).slice(-2);
+    var fecha = n === 0 ? 'hoy' : n === 1 ? 'mañana' : n === -1 ? 'ayer' : 'el ' + S[f.getDay()] + ' ' + f.getDate() + (largo ? ' de ' + M[f.getMonth()] : '');
+    return { dias: n, fecha: fecha, texto: fecha + ' a las ' + hm };
+  }
+  try {
+    if (ahora < F) { o = { estado: 'ob', precio: 67, ext: ahora >= F1, f1: F1, fin: F }; prox = ahora < F1 ? F1 : F; }
+    else {
+      o = { estado: 'fin', precio: BIENVENIDA };
+      if (REGULAR.off) {
+        /* la primera visita desde que existe el precio de bienvenida queda guardada en el aparato y no se reinicia */
+        var K = 'ss_bv_v1', t = 0, guarda = false, v;
+        try { v = +localStorage.getItem(K); if (v >= F && v <= ahora) t = v; } catch (e) {}
+        v = /(?:^|;\s*)ss_bv=(\d{12,14})/.exec(document.cookie || ''); v = v ? +v[1] : 0;
+        if (v >= F && v <= ahora && (!t || v < t)) t = v;
+        if (!t) t = ahora;
+        try { localStorage.setItem(K, String(t)); guarda = +localStorage.getItem(K) === t; } catch (e) {}
+        try { document.cookie = 'ss_bv=' + t + '; path=/; max-age=34560000; SameSite=Lax'; if (!guarda) guarda = document.cookie.indexOf('ss_bv=' + t) > -1; } catch (e) {}
+        if (guarda) {   /* si el aparato no guarda nada, no se promete ningún plazo: precio fijo y sin reloj */
+          var fin = t + HORAS * 36e5;
+          o.inicio = t; o.fin = fin; o.regular = REGULAR.precio; o.horas = HORAS;
+          o.cuando = cuando(fin, false); o.cuandoLargo = cuando(fin, true);
+          if (ahora < fin) { o.estado = 'bv'; prox = fin; }
+          else { o.estado = 'regular'; o.precio = REGULAR.precio; o.off = REGULAR.off; }
+        }
+      }
+    }
+  } catch (e) { o = Date.now() < F ? { estado: 'ob', precio: 67 } : { estado: 'fin', precio: BIENVENIDA }; prox = o.estado === 'ob' ? F : 0; }
+  window.ssOferta = o; window.ssPrecio = o.precio;
+  d.classList.add('of-' + o.estado);
+  /* si la hora llega con la página abierta, se vuelve a cargar sola y muestra el estado nuevo */
+  if (prox) {
+    var hecho = false, rec = function(){ if (!hecho && Date.now() >= prox) { hecho = true; location.reload(); } };
+    setTimeout(rec, Math.min(Math.max(prox - ahora, 0) + 900, 2147000000));
+    document.addEventListener('visibilitychange', function(){ if (!document.hidden) rec(); });
+    window.addEventListener('pageshow', rec);
+  }
+})();
+</script>
+<style>
+/* lo que solo vale durante October Black y lo que solo vale después. El estado lo pone en <html> el script de arriba */
+html:not(.of-ob) [data-of="ob"],html.of-ob [data-of="post"],html:not(.of-bv) [data-of="bv"],html:not(.of-regular) [data-of="regular"]{display:none!important}
+html:not(.of-ob):not(.of-bv) .v2-cuenta,html:not(.of-ob):not(.of-bv) .v2-cuenta-mini{display:none!important}
+/* sin reloj, el botón de la barra de arriba queda solo en su renglón: en el celular traía un margen negativo pensado para ir al lado del reloj */
+@media (max-width:720px){html:not(.of-ob):not(.of-bv) .announcement .announcement-inner a{margin-top:2px!important}}
+</style>
 </head>
 <body>
 
@@ -2343,6 +2404,11 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
       <a href="#precio">Ver la oferta</a>
     </div>
   </div>
+  <script>/* la barra de arriba según el estado de la oferta (corre apenas existe la barra) */
+  (function(){var o=window.ssOferta,b=document.querySelector('[data-cuenta="banner"]'),a=document.querySelector('.announcement-inner a');
+  if(!o||!b||o.estado==='ob')return;
+  if(o.estado==='bv'){b.innerHTML='<b>Precio de bienvenida</b> '+(o.cuando.dias===0?'Último día. ':'')+'Termina en';}
+  else{b.textContent='Acceso inmediato y 7 días de garantía.';if(a)a.textContent='Ver el acceso';}})();</script>
   <header>
     <div class="shell nav">
       <a class="brand" href="#">simply <i>studio.</i></a>
@@ -2358,7 +2424,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
 <main>
 <section class="showcase v2-hero-gal" id="resultado" data-esc="Inicio">
 <div class="shell">
-<div class="showcase-head v2-hero-gal-head"><div class="ob-sello v2-sube d1"><i aria-hidden="true"></i><b>October Black</b><span>hasta el miércoles 8 de octubre</span></div><span class="eyebrow muted v2-sube d1"><span class="mv-marca">Método Prompt Ads</span> para ChatGPT</span><h1 class="v2-sube d2">Imagina poder crear <em class="v2-nw">publicidad así.</em></h1></div>
+<div class="showcase-head v2-hero-gal-head"><div class="ob-sello v2-sube d1" data-of="ob"><i aria-hidden="true"></i><b>October Black</b><span>hasta el jueves 8 de octubre</span></div><span class="eyebrow muted v2-sube d1"><span class="mv-marca">Método Prompt Ads</span> para ChatGPT</span><h1 class="v2-sube d2">Imagina poder crear <em class="v2-nw">publicidad así.</em></h1></div>
 <div class="v2-gal v2-sube d3"><div class="v2-gal-track"><div class="v2-gal-set">
 <figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/colabs/bose-5.webp" aria-label="Ampliar anuncio de Bose"><img src="assets/colabs/bose-5.webp" srcset="assets/colabs/bose-5-m.webp 600w, assets/colabs/bose-5.webp 900w" sizes="(max-width:720px) 200px, 440px" loading="eager" fetchpriority="high" decoding="async" width="1100" height="1375" alt="Anuncio de Bose hecho con Prompt Ads"></button></figure>
 <figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/colabs/cos-11.webp" aria-label="Ampliar anuncio de COS"><img src="assets/colabs/cos-11.webp" srcset="assets/colabs/cos-11-m.webp 600w, assets/colabs/cos-11.webp 900w" sizes="(max-width:720px) 200px, 440px" loading="eager" decoding="async" width="1100" height="1375" alt="Anuncio de COS hecho con Prompt Ads"></button></figure>
@@ -2632,7 +2698,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
 <article class="inside-card ob-card reveal"><div class="card-cover"><span class="card-tag">Nuevo</span><picture><source media="(max-width:760px)" srcset="assets/pack/07-errores-comunes-600.webp"><source srcset="assets/pack/07-errores-comunes-600.webp 600w, assets/pack/07-errores-comunes.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/07-errores-comunes.webp" width="900" height="900" loading="lazy" alt="La guía Errores comunes y cómo solucionarlos, del Método Prompt Ads" style="object-position:50% 55%"></picture></div><div class="card-body"><h3>Errores comunes y cómo solucionarlos</h3><p>Un texto que no combina con la imagen, anuncios saturados, un producto que de costado sale raro, diez anuncios iguales. Los diez tropiezos que más se repiten y cómo arreglar cada uno, en 26 páginas.</p></div></article>
 <article class="inside-card ob-card reveal"><div class="card-cover"><span class="card-tag">Nuevo</span><picture><source media="(max-width:760px)" srcset="assets/pack/08-angulos-que-venden-600.webp"><source srcset="assets/pack/08-angulos-que-venden-600.webp 600w, assets/pack/08-angulos-que-venden.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/08-angulos-que-venden.webp" width="900" height="900" loading="lazy" alt="La guía Ángulos que venden, del Método Prompt Ads"></picture></div><div class="card-body"><h3>Ángulos que venden</h3><p>120 formas de vender lo mismo, en 12 familias, con ejemplos de productos y de servicios. El método te enseña cómo se ve tu anuncio; esta guía, qué decir en cada uno.</p></div></article>
 <article class="inside-card ob-card reveal"><div class="card-cover"><span class="card-tag">Ahora incluido</span><picture><source media="(max-width:760px)" srcset="assets/pack/09-avatares-hiperrealistas-600.webp"><source srcset="assets/pack/09-avatares-hiperrealistas-600.webp 600w, assets/pack/09-avatares-hiperrealistas.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/09-avatares-hiperrealistas.webp" width="900" height="900" loading="lazy" alt="La guía Cómo crear avatares hiperrealistas, del Método Prompt Ads" style="object-position:50% 20%"></picture></div><div class="card-body"><h3>Cómo crear avatares hiperrealistas</h3><p>Una cara propia para tu marca, que no existe en ninguna parte y se mantiene igual en todos tus anuncios. Antes se vendía aparte: ahora viene en el pack.</p></div></article>
-<article class="inside-card ob-card ob-card-regalo reveal"><div class="card-cover"><span class="card-tag">Regalo October Black</span><picture><source media="(max-width:760px)" srcset="assets/pack/11-plan-365-600.webp"><source srcset="assets/pack/11-plan-365-600.webp 600w, assets/pack/11-plan-365.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/11-plan-365.webp" width="900" height="900" loading="lazy" alt="El Plan 365 en Excel, un plan de acción de un año"></picture></div><div class="card-body"><h3>Plan 365: un año de ideas</h3><p>Tu plan de acción de un año: un ángulo de venta y una idea de anuncio para cada día, con su prompt, para productos y para servicios. Se lo pasas a ChatGPT y lo adapta a tu negocio en minutos. De regalo con October Black, hasta el 8 de octubre.</p></div></article>
+<article class="inside-card ob-card ob-card-regalo reveal" data-of="ob"><div class="card-cover"><span class="card-tag">Regalo October Black</span><picture><source media="(max-width:760px)" srcset="assets/pack/11-plan-365-600.webp"><source srcset="assets/pack/11-plan-365-600.webp 600w, assets/pack/11-plan-365.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/11-plan-365.webp" width="900" height="900" loading="lazy" alt="El Plan 365 en Excel, un plan de acción de un año"></picture></div><div class="card-body"><h3>Plan 365: un año de ideas</h3><p>Tu plan de acción de un año: un ángulo de venta y una idea de anuncio para cada día, con su prompt, para productos y para servicios. Se lo pasas a ChatGPT y lo adapta a tu negocio en minutos. De regalo con October Black, hasta el 8 de octubre.</p></div></article>
 <article class="inside-card v2-card-video reveal"><div class="card-cover"><span class="card-tag">Video explicativo</span><img src="assets/producto/video-portada.webp" width="1280" height="720" loading="lazy" decoding="async" alt="A la izquierda, la foto de producto tal como sale del celular. A la derecha, el mismo producto convertido en anuncio."><span class="v2-vid-play" aria-hidden="true"></span></div><div class="card-body"><h3>Y además, el video del método</h3><p>Además de los archivos y las guías, una grabación completa donde se crea un anuncio de principio a fin, sin cortes. Lo ves funcionando y lo aplicas igual a lo tuyo: no importa si vendes un producto o un servicio, el método es el mismo para cualquier rubro.</p></div></article>
         </div>
       </div>
@@ -2773,18 +2839,18 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
  <li><span><b>Errores comunes y cómo solucionarlos</b><small class="ob-que">La frase exacta para arreglar cada error.</small></span><b>USD 39</b></li>
  <li><span><b>Ángulos que venden</b><small class="ob-que">Qué decir en cada anuncio: 120 formas, con ejemplos.</small></span><b>USD 27</b></li>
  <li><span><b>Cómo crear avatares hiperrealistas</b><small class="ob-que">Una cara propia para tu marca.</small></span><b>USD 27</b></li>
- <li class="ob-regalo"><span><b>Plan 365</b><small class="ob-que">Tu plan de acción de un año, adaptado a tu negocio. Solo en October Black.</small></span><b>USD 27</b></li>
+ <li class="ob-regalo" data-of="ob"><span><b>Plan 365</b><small class="ob-que">Tu plan de acción de un año, adaptado a tu negocio. Solo en October Black.</small></span><b>USD 27</b></li>
  <li><span>Actualizaciones del método</span><b class="v2-si">Incluido</b></li>
-</ul> <div class="stack-total"><span>Valor total</span><b><s>USD 620</s></b></div>
+</ul> <div class="stack-total"><span>Valor total</span><b><s data-of="ob">USD 620</s><s data-of="post">USD 593</s></b></div>
             <div class="price-reveal">
-              <span class="launch-tag">October Black</span><span class="mv-marca mv-marca-precio">Método Prompt Ads</span>
-              <div class="price"><sup>USD</sup>67</div>
-              <p class="price-after" data-cuenta="despues">Precio October Black hasta el <b>8 de octubre</b>. Después sube a USD 87.</p>
+              <span class="launch-tag" data-of="ob">October Black</span><span class="mv-marca mv-marca-precio">Método Prompt Ads</span>
+              <div class="price"><sup>USD</sup><span data-of="ob">67</span><span data-of="post" data-of-precio>87</span></div>
+              <p class="price-after" data-cuenta="despues" data-of="ob">Precio October Black hasta el <b>8 de octubre</b>. Después sube a USD 87.</p>
               <div class="v2-cuenta" aria-label="Cuenta regresiva hasta que termina October Black"><div><b data-c="d">00</b><span>días</span></div><i></i><div><b data-c="h">00</b><span>horas</span></div><i></i><div><b data-c="m">00</b><span>min</span></div><i></i><div><b data-c="s">00</b><span>seg</span></div></div>
             </div>
             <p class="v2-empuje">El riesgo es nuestro, no tuyo. Tienes <b>7 días de garantía</b> para aprender el método con calma. Si no aprendes a crear estos anuncios, recuperas el 100% de tu dinero. <b>No te vas a arrepentir.</b></p>
             <a class="btn checkout" href="https://pay.hotmart.com/G107515293E?off=1tbcugw1&checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads</a>
-            <p class="mv-cupo ob-cupo"><span class="mv-cupo-txt"><i class="mv-cupo-pun"></i><em>Últimos días a USD 67</em></span><span class="mv-cupo-barra" aria-hidden="true"><i style="--f:55%"></i></span><span class="mv-cupo-pie">El miércoles 8 a las 12:00 sube a <em>USD 87</em>.</span></p>
+            <p class="mv-cupo ob-cupo" data-of="ob"><span class="mv-cupo-txt"><i class="mv-cupo-pun"></i><em>Últimos días a USD 67</em></span><span class="mv-cupo-barra" aria-hidden="true"><i style="--f:55%"></i></span><span class="mv-cupo-pie">El jueves 8 a las 12:00 sube a <em>USD 87</em>.</span></p>
             <div class="guarantee-box ob-garantia">
         <div class="mv-sello" role="img" aria-label="Garantía de 7 días">
   <svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="ob-oro-sello" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7E9B8"/><stop offset=".32" stop-color="#E3CF98"/><stop offset=".56" stop-color="#C6A45E"/><stop offset=".76" stop-color="#EFDA9E"/><stop offset="1" stop-color="#B28E4A"/></linearGradient></defs>
@@ -2865,7 +2931,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
 <div class="v2-deco" aria-hidden="true"><img class="d1" src="assets/deco/rolex.webp" alt="" loading="lazy" decoding="async" width="520" height="650"></div>
 
       <div class="shell faq-wrap">
-        <h2>Preguntas frecuentes.</h2> <details><summary>¿Qué es October Black?</summary><p>Es el lanzamiento de la edición de octubre del método. Hasta el miércoles 8 de octubre a las 12:00 (hora de Paraguay), el pack completo (el método con su video, Errores comunes, Ángulos que venden y Cómo crear avatares hiperrealistas, más el Plan 365 de regalo) cuesta <b>USD 67</b>. Cuando el reloj de arriba llega a cero, el precio pasa a <b>USD 87</b>. Los que ya compraron el método reciben las piezas nuevas sin pagar de nuevo.</p></details>
+        <h2>Preguntas frecuentes.</h2> <details data-of="ob"><summary>¿Qué es October Black?</summary><p>Es el lanzamiento de la edición de octubre del método. Hasta el jueves 8 de octubre a las 12:00 (hora de Paraguay), el pack completo (el método con su video, Errores comunes, Ángulos que venden y Cómo crear avatares hiperrealistas, más el Plan 365 de regalo) cuesta <b>USD 67</b>. Cuando el reloj de arriba llega a cero, el precio pasa a <b>USD 87</b>. Los que ya compraron el método reciben las piezas nuevas sin pagar de nuevo.</p></details>
         <details><summary>¿Qué es exactamente Prompt Ads? ¿Son prompts?</summary><p>Sí, en parte. Son <b>6 archivos en PDF</b> que trabajan juntos: <b>2 son guías que lees tú, y empiezas por ahí</b> (la guía de uso paso a paso, que te enseña todo el proceso con capturas, y la de dirección visual), y <b>4 son archivos de prompts e instrucciones</b> que arrastras directo al chat de ChatGPT (el Protocolo Maestro, el de realismo, el de correcciones y el de variedad). No es un software ni una app: <b>lees la guía, subes la foto de lo que vendes, pegas los archivos en ChatGPT y te genera los anuncios</b>. Funciona para cualquier negocio: producto físico, servicio, local, inmobiliaria o producto digital. Y no es un PDF de puro texto hecho sin ganas: cada archivo está diseñado y acompañado de ejemplos visuales y capturas reales, para que entiendas el método de la forma más clara posible.</p></details>
         <details><summary>¿Cómo lo recibo? ¿Y si después no lo encuentro?</summary><p>Apenas se aprueba el pago, Hotmart te manda un correo con el acceso y los <b>6 archivos quedan guardados en tu cuenta</b>, para descargarlos cuando quieras y las veces que quieras. Si el correo no te llega, si cae en spam o si entras y no encuentras el material, escríbenos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a>: <b>te respondemos siempre</b> y te lo dejamos en la mano. Nadie se queda sin lo que compró.</p></details>
         <details><summary>¿Puedo elegir yo el estilo o lo decide la IA?</summary><p>Tú mandas, siempre. Tú defines la estética que quieres y el método te enseña a pedirla con precisión, para que la IA la aplique a TU producto sin cambiarlo ni inventar nada. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas. Y si un resultado se desvía, el archivo de correcciones trae la línea para enderezarlo.</p></details><details><summary>¿Necesito saber diseño?</summary><p>No. El método te da una estructura concreta. Tú aportas la información verdadera de tu negocio, tomas las decisiones de estilo y revisas el resultado final antes de publicarlo.</p></details>
@@ -2888,7 +2954,12 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
     </div>
   </footer>
 
-  <div class="mobile-buy" id="mobileBuy"><div><span data-cuenta="movil-arriba">October Black</span><b data-cuenta="movil">Termina el miércoles 8 a las 12:00</b></div><a href="#precio" class="btn">Aprovechar oferta</a></div>
+  <div class="mobile-buy" id="mobileBuy"><div><span data-cuenta="movil-arriba">October Black</span><b data-cuenta="movil">Termina el jueves 8 a las 12:00</b></div><a href="#precio" class="btn">Aprovechar oferta</a></div>
+  <script>/* la barra de abajo del celular según el estado de la oferta */
+  (function(){var o=window.ssOferta;if(!o||o.estado==='ob')return;
+  var a=document.querySelector('[data-cuenta="movil-arriba"]'),b=document.querySelector('[data-cuenta="movil"]'),c=document.querySelector('#mobileBuy .btn');
+  if(o.estado==='bv'){if(a)a.textContent='Precio de bienvenida';if(b)b.textContent='Termina '+o.cuando.texto;}
+  else{if(a)a.textContent='Método Prompt Ads';if(b)b.textContent='Acceso inmediato';if(c)c.textContent='Ver el acceso';}})();</script>
   <dialog class="lightbox" id="lightbox" aria-label="Vista ampliada del anuncio">
     <button class="lightbox-close" aria-label="Cerrar vista ampliada">×</button>
     <img loading="lazy" decoding="async" id="lightboxImage" alt="Anuncio ampliado" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
@@ -3143,7 +3214,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
           }
           a.href=u.toString();
         }catch(e){}
-        a.addEventListener('click',()=>{ if(window.ssTrack) ssTrack('InitiateCheckout', false, {value:67, currency:'USD'}); });
+        a.addEventListener('click',()=>{ if(window.ssTrack) ssTrack('InitiateCheckout', false, {value:(window.ssPrecio||67), currency:'USD'}); });
       });
     })();
     addEventListener('contextmenu',event=>event.preventDefault());
@@ -3309,12 +3380,38 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
   </script>
 
   <script>
+  /* ── El estado de la oferta en la tarjeta de precio (lo decide el script de <head>) ── */
+  (function(){
+    var o = window.ssOferta; if (!o || o.estado === 'ob') return;
+    var q = function(s){ return document.querySelector(s); };
+    /* la cuenta del ahorro muestra el precio de ahora */
+    var n = q('.mv-barra-tu b[data-n]'); if (n) { n.setAttribute('data-n', o.precio); n.textContent = 'USD ' + o.precio; }
+    var p = q('[data-of-precio]'); if (p) p.textContent = o.precio;
+    if (o.estado === 'bv') {
+      var x = q('[data-bv="despues"]'); if (x) x.innerHTML = 'Tu precio de bienvenida vale hasta <b>' + o.cuandoLargo.texto + '</b>. Después, USD ' + o.regular + '.';
+      var r = q('.v2-cuenta'); if (r) r.setAttribute('aria-label', 'Cuenta regresiva de tu precio de bienvenida');
+      var c = q('.bv-cupo');
+      if (c) {
+        var i = c.querySelector('.mv-cupo-barra i'); if (i) i.style.setProperty('--f', Math.round(Math.min(1, Math.max(0, (Date.now() - o.inicio) / (o.fin - o.inicio))) * 100) + '%');
+        if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function(es){ if (es[0].isIntersecting) { c.classList.add('mv-listo'); io.disconnect(); } }, { threshold: 0.4 }); io.observe(c); }
+        else c.classList.add('mv-listo');
+      }
+    }
+    if (o.estado === 'regular') {
+      /* el plazo de esta persona ya pasó: su botón va a la oferta regular, con el mismo origen (sck, xcod) de siempre */
+      [].forEach.call(document.querySelectorAll('a[href*="pay.hotmart.com"]'), function(a){ try { var u = new URL(a.href); u.searchParams.set('off', o.off); a.href = u.toString(); } catch (e) {} });
+      var t = q('[data-bv="termino"]'); if (t) t.textContent = 'El precio de bienvenida terminó ' + o.cuandoLargo.fecha + '.';
+    }
+  })();
+  </script>
+
+  <script>
   /* ── Cuenta atrás del precio ──────────────────────────────────────────
      Una sola fecha para toda la página. El script cambiar-precio.js la
      actualiza sola cuando pasás de peldaño, así que esto no se toca a mano.
      Si algo falla, queda el texto que ya estaba escrito en el HTML.        */
   (function(){
-    const LIMITE = '2026-10-08';      // termina October Black (a las 12:00 de Paraguay) y el precio sube a 87
+    const LIMITE = (window.ssOferta && window.ssOferta.ext) ? '2026-10-11' : '2026-10-08';      // termina October Black (12:00 de Paraguay); desde el 8/10 12:00 rigen los 3 días más
     /* La hora exacta y el huso. Sin esto cada visitante cuenta hacia SU
        medianoche y el reloj llega a cero en momentos distintos segun el
        pais: entre Espana y Mexico hay ocho horas. Asi todos cuentan hacia
@@ -3325,11 +3422,19 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
     const PELDANO = 'October Black';   // cómo se llama el precio de ahora
 
     const MAY = s => s.charAt(0).toUpperCase() + s.slice(1);
+    const IDIOMA_ES = () => (document.documentElement.lang || 'es').slice(0, 2) === 'es';
 
     const hoy = new Date(); hoy.setHours(0,0,0,0);
     const fin = new Date(LIMITE + HORA);
-    const dias = Math.round((fin - hoy) / 86400000);
-    if (isNaN(dias)) return;
+    if (isNaN(fin)) return;
+    // Días de CALENDARIO del visitante hasta el día en que termina: 0 = termina hoy, 1 = termina mañana.
+    // Antes se medía hasta la hora exacta y se redondeaba: según el país, el último día decía "mañana"
+    // o el día anterior decía "hoy". La hora del cierre se muestra en el reloj de quien mira.
+    const finDia = new Date(fin); finDia.setHours(0,0,0,0);
+    const dias = fin - Date.now() <= 0 ? -1 : Math.round((finDia - hoy) / 86400000);
+    const HHMM = ('0' + fin.getHours()).slice(-2) + ':' + ('0' + fin.getMinutes()).slice(-2);
+    const SEMANA = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+    const ES = IDIOMA_ES();
 
     // La fecha en palabras sale de LIMITE, así que cuando cambiar-precio.js
     // mueva el peldaño no queda una fecha vieja escrita a mano.
@@ -3349,7 +3454,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
         arribaLejos: p => 'October Black',
         arribaCerca: 'Últimos días de October Black',
         arribaUltimo: 'Último día de October Black',
-        pie: 'Termina el miércoles 8 a las 12:00',
+        pie: 'Termina el jueves 8 a las 12:00',
         pieManana: 'Termina mañana a las 12:00'
       },
       pt: {
@@ -3407,12 +3512,19 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
       banner  = L.cerca(L.peldano);
       despues = L.fecha(enPalabras);
       movilArriba = L.arribaCerca;
-      movil       = L.pie;
+      movil       = ES ? 'Termina el ' + SEMANA[fin.getDay()] + ' ' + fin.getDate() + ' a las ' + HHMM : L.pie;
     } else if (dias === 1) {
+      // termina mañana (en el calendario de quien mira)
+      banner  = L.cerca(L.peldano);
+      despues = L.fecha(enPalabras);
+      movilArriba = L.arribaCerca;
+      movil       = ES ? 'Termina mañana a las ' + HHMM : L.pieManana;
+    } else if (dias === 0) {
+      // termina hoy: el último día es el que más vende, tiene su propio texto
       banner  = L.ultimo();
       despues = L.manana();
       movilArriba = L.arribaUltimo;
-      movil       = L.pieManana;
+      movil       = ES ? 'Termina hoy a las ' + HHMM : L.pie;
     } else {
       // dias <= 0. LIMITE es el día en que el precio SUBE, no el último día
       // a ese precio: lo aclara escalera-de-precios.json. O sea que el día
@@ -3449,7 +3561,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
   }
   var cajas=[].slice.call(document.querySelectorAll(".v2-cuenta,.v2-cuenta-mini"));
   if(cajas.length){
-    var lim=null; [].slice.call(document.scripts).forEach(function(s){ var m=/const LIMITE = \x27(\d{4}-\d{2}-\d{2})\x27/.exec(s.textContent||""); if(m) lim=m[1]; });
+    var lim=(window.ssOferta&&window.ssOferta.ext)?"2026-10-11":"2026-10-08";   /* la misma fecha que LIMITE */
     var fin=lim?new Date(lim+"T12:00:00-03:00").getTime():NaN;   /* mismo instante para todos, no la medianoche de cada visitante */
     var dd=function(n){ return (n<10?"0":"")+n; };
     var tic=function(){ var r=fin-Date.now();
@@ -3849,6 +3961,17 @@ o.observe(cupo);
 /* la barra de la promo: cuánto pasó de October Black (del 1/10 12:00 al 8/10 12:00, hora de Paraguay) */
 (function(){var a=Date.parse('2026-10-01T12:00:00-03:00'),b=Date.parse('2026-10-08T12:00:00-03:00'),f=Math.min(1,Math.max(0,(Date.now()-a)/(b-a)));
 [].forEach.call(document.querySelectorAll('.ob-cupo .mv-cupo-barra i'),function(i){i.style.setProperty('--f',Math.round(f*100)+'%');});})();
+</script>
+<script>
+/* Los 3 días más de October Black: los textos fijos que nombran la fecha pasan a la fecha nueva. */
+(function(){
+  var o = window.ssOferta; if (!o || o.estado !== 'ob' || !o.ext) return;
+  var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), n, L = [];
+  while ((n = w.nextNode())) { var p = n.parentNode && n.parentNode.nodeName; if (p === 'SCRIPT' || p === 'STYLE') continue; if (/jueves 8|(^|\D)8 de octubre/.test(n.nodeValue)) L.push(n); }
+  L.forEach(function(n){ n.nodeValue = n.nodeValue.replace(/jueves 8/g, 'domingo 11').replace(/(^|\D)8 de octubre/g, function(m, a){ return a + '11 de octubre'; }); });
+  var f = Math.min(1, Math.max(0, (Date.now() - o.f1) / (o.fin - o.f1)));
+  [].forEach.call(document.querySelectorAll('.ob-cupo .mv-cupo-barra i'), function(i){ i.style.setProperty('--f', Math.round(f * 100) + '%'); });
+})();
 </script>
 </body>
 </html>
