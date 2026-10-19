@@ -2473,7 +2473,7 @@ html:not(.of-ob):not(.of-bv) .v2-cuenta,html:not(.of-ob):not(.of-bv) .v2-cuenta-
 </div>
 <div class="vsl-pie">
 <a class="btn" href="#precio">Quiero crear mis anuncios <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
-<p class="vsl-conf vsl-ob" data-of="ob" id="vslOb">October Black · USD 67 · últimos días</p><p class="vsl-conf" data-of="post">Acceso inmediato · Garantía de 7 días</p>
+<p class="vsl-conf vsl-ob" data-of="ob" id="vslOb">October Black · últimos días</p><p class="vsl-conf" data-of="post">Acceso inmediato · Garantía de 7 días</p>
 </div>
 </div>
 </section>
@@ -2492,7 +2492,7 @@ v.addEventListener('ended',function(){v.controls=false;v.currentTime=0;m.classLi
 /* la fecha real de October Black, la misma del reloj de la página (si algo falla, queda «últimos días») */
 var o=window.ssOferta,f=document.getElementById('vslOb');
 if(o&&o.estado==='ob'&&o.fin&&f){try{var pa={};new Intl.DateTimeFormat('es-PY',{timeZone:'America/Asuncion',weekday:'long',day:'numeric',month:'numeric'}).formatToParts(new Date(o.fin)).forEach(function(x){pa[x.type]=x.value;});
-f.textContent='October Black · USD 67 hasta el '+pa.weekday+' '+pa.day+'/'+pa.month+' a las 12:00';}catch(e){}}
+f.textContent='October Black · termina el '+pa.weekday+' '+pa.day+'/'+pa.month+' a las 12:00';}catch(e){}}
 })();</script>
 <section class="showcase v2-hero-gal" id="resultado" data-esc="Inicio">
 <div class="shell">
