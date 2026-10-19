@@ -2399,6 +2399,43 @@ html:not(.of-ob):not(.of-bv) .v2-cuenta,html:not(.of-ob):not(.of-bv) .v2-cuenta-
 /* sin reloj, el botón de la barra de arriba queda solo en su renglón: en el celular traía un margen negativo pensado para ir al lado del reloj */
 @media (max-width:720px){html:not(.of-ob):not(.of-bv) .announcement .announcement-inner a{margin-top:2px!important}}
 </style>
+<style id="vsl-css">
+.vsl{padding-block:clamp(26px,5vw,64px) clamp(22px,4vw,48px);position:relative}
+.vsl .shell{display:grid;gap:clamp(16px,2.4vw,26px);justify-items:center;text-align:center}
+.vsl-ojo{font:400 10px/1 var(--mono);letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
+.vsl-tit{margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(34px,4.6vw,64px);line-height:.96;letter-spacing:-.03em;max-width:17ch;text-wrap:balance}
+@media (min-width:900px){.vsl-tit{max-width:26ch}}
+.vsl-tit em{font-style:italic;color:var(--gold)}
+.vsl-marco{position:relative;width:min(100%,520px,max(320px,calc((100vh - 380px) * .8)));aspect-ratio:4/5;border-radius:18px;overflow:hidden;background:#0b0e0c;
+  box-shadow:0 0 0 1px var(--line-strong),0 40px 90px -40px rgba(0,0,0,.65)}
+.vsl-marco video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+/* 19/10: arranca en pausa; un play clásico y minimalista en el centro, sin texto ni efectos */
+.vsl-play{position:absolute;inset:0;display:grid;place-items:center;border:0;padding:0;margin:0;cursor:pointer;background:rgba(11,14,12,.28);transition:opacity .3s ease}
+.vsl-play-o{width:clamp(68px,17vw,84px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:rgba(240,235,224,.94);
+  box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .25s ease}
+.vsl-play-o svg{width:36%;height:36%;fill:#141410;margin-left:8%}
+.vsl-play:hover .vsl-play-o{transform:scale(1.04)}
+.vsl-play:focus-visible{outline:2px solid var(--gold);outline-offset:-6px}
+.vsl-marco.jugando .vsl-play{opacity:0;pointer-events:none}
+.vsl-pie{display:grid;gap:12px;justify-items:center}
+.vsl-ob{color:var(--gold)!important}
+.vsl-conf{margin:0;font:400 11px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.vsl-marco{box-shadow:0 0 0 1px var(--line-strong)}}
+</style>
+<style id="pp-css">
+/* precio protagonista (19/10) · mismo papel, tinta, bosque y oro de siempre */
+.price-card .price{font-size:clamp(108px,31vw,172px);line-height:.8;letter-spacing:-.055em;color:#1B3326;margin:16px 0 8px;font-variant-numeric:lining-nums}
+.price-card .price sup{font:500 12px/1 var(--mono);letter-spacing:.24em;color:#8A7A4E;margin-top:18px;margin-right:4px}
+.price-card .launch-tag{display:inline-block;padding:7px 12px;border:1px solid rgba(138,122,78,.45);border-radius:999px;color:#6F6240}
+.pp-ancla{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 12px;margin:4px 0 6px}
+.pp-ancla s{font:400 12px/1 var(--mono);letter-spacing:.06em;color:var(--muted);text-decoration-thickness:1px}
+.pp-ancla b{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#1B3326;background:rgba(201,185,138,.28);padding:7px 11px;border-radius:999px}
+.pp-reencuadre{margin:2px auto 0;max-width:34ch;text-wrap:balance;font-family:var(--serif);font-style:italic;font-size:16px;line-height:1.35;color:var(--ink-2);text-align:center}
+.price-card>.btn.checkout{min-height:60px;font-size:17px}
+.pp-micro{margin:12px 0 0;text-align:center;font:400 10.5px/1.6 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.pp-micro span{display:block;text-transform:none;letter-spacing:.02em;font:400 12px/1.5 var(--sans);color:var(--muted)}
+@media (min-width:900px){.price-card .price{font-size:clamp(120px,9vw,168px)}}
+</style>
 </head>
 <body>
 
@@ -2426,6 +2463,37 @@ html:not(.of-ob):not(.of-bv) .v2-cuenta,html:not(.of-ob):not(.of-bv) .v2-cuenta-
   </header>
 <div class="esc-riel" id="escRiel" aria-hidden="true">01 · Inicio</div>
 <main>
+<section class="vsl" id="video" data-esc="Video" aria-label="Video: cómo se crean anuncios premium con el Método Prompt Ads">
+<div class="shell">
+<span class="vsl-ojo">Mira esto antes de seguir · 2 minutos</span>
+<h2 class="vsl-tit">De una foto de celular a anuncios <em>de marca grande.</em></h2>
+<div class="vsl-marco" id="vslMarco">
+<video id="vslVideo" src="assets/vsl/vsl.mp4" poster="assets/vsl/portada.webp" playsinline preload="none"></video>
+<button type="button" class="vsl-play" id="vslPlay" aria-label="Reproducir el video con sonido"><span class="vsl-play-o"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg></span></button>
+</div>
+<div class="vsl-pie">
+<a class="btn" href="#precio">Quiero crear mis anuncios <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
+<p class="vsl-conf vsl-ob" data-of="ob" id="vslOb">October Black · USD 67 · últimos días</p><p class="vsl-conf" data-of="post">Acceso inmediato · Garantía de 7 días</p>
+</div>
+</div>
+</section>
+<script>/* VSL: cuánto mira cada persona (píxel + servidor, con ssTrack). Hitos: 3 s, sonido, 25/50/75/95 % */
+(function(){var v=document.getElementById('vslVideo');if(!v||!window.ssTrack)return;var hechos={};
+function hito(n,p){if(hechos[n])return;hechos[n]=1;try{window.ssTrack(n,true,p||{});}catch(e){}}
+v.addEventListener('timeupdate',function(){var d=v.duration||0,t=v.currentTime;if(!d)return;
+ if(t>=3)hito('VSL_3s');var c=v.muted?'mudo':'sonido',q=t/d;
+ if(!v.muted){if(q>=.25)hito('VSL_25',{modo:c});if(q>=.5)hito('VSL_50',{modo:c});if(q>=.75)hito('VSL_75',{modo:c});if(q>=.95)hito('VSL_95',{modo:c});}});
+v.addEventListener('play',function(){hito('VSL_Play');});})();</script>
+<script>/* VSL (19/10): arranca en pausa; con el botón de play arranca con sonido y aparece la barra para adelantar y retroceder */
+(function(){var v=document.getElementById('vslVideo'),b=document.getElementById('vslPlay'),m=document.getElementById('vslMarco');if(!v||!b||!m)return;
+b.addEventListener('click',function(e){e.preventDefault();v.muted=false;v.controls=true;m.classList.add('jugando');var p=v.play();if(p&&p.catch)p.catch(function(){m.classList.remove('jugando');});});
+v.addEventListener('play',function(){m.classList.add('jugando');v.controls=true;if(v.muted)v.muted=false;});
+v.addEventListener('ended',function(){v.controls=false;v.currentTime=0;m.classList.remove('jugando');});
+/* la fecha real de October Black, la misma del reloj de la página (si algo falla, queda «últimos días») */
+var o=window.ssOferta,f=document.getElementById('vslOb');
+if(o&&o.estado==='ob'&&o.fin&&f){try{var pa={};new Intl.DateTimeFormat('es-PY',{timeZone:'America/Asuncion',weekday:'long',day:'numeric',month:'numeric'}).formatToParts(new Date(o.fin)).forEach(function(x){pa[x.type]=x.value;});
+f.textContent='October Black · USD 67 hasta el '+pa.weekday+' '+pa.day+'/'+pa.month+' a las 12:00';}catch(e){}}
+})();</script>
 <section class="showcase v2-hero-gal" id="resultado" data-esc="Inicio">
 <div class="shell">
 <div class="showcase-head v2-hero-gal-head"><div class="ob-sello v2-sube d1" data-of="ob"><i aria-hidden="true"></i><b>October Black</b><span>hasta el jueves 8 de octubre</span></div><span class="eyebrow muted v2-sube d1"><span class="mv-marca">Método Prompt Ads</span> para ChatGPT</span><h1 class="v2-sube d2">Imagina poder crear <em class="v2-nw">publicidad así.</em></h1></div>
@@ -2895,7 +2963,7 @@ html:not(.of-ob):not(.of-bv) .v2-cuenta,html:not(.of-ob):not(.of-bv) .v2-cuenta-
     <div class="mv-barra mv-barra-tu" style="--v:.035"><div class="mv-barra-txt"><span><span class="mv-marca mv-marca-serif">Método Prompt Ads</span></span><em>un solo pago, y es tuyo</em></div><b data-n="67">USD 67</b><i></i></div>
   </div>
   <p class="mv-ahorro-cierre">Y cada vez que necesites anuncios nuevos, <b>todo eso se vuelve a pagar.</b> El método lo pagas una vez y es tuyo.</p>
-  <small class="mv-ahorro-nota">Valores de referencia del mercado. Funciona dentro de ChatGPT; para producir en serio conviene ChatGPT Plus.</small>
+  <small class="mv-ahorro-nota">Funciona dentro de ChatGPT; para producir en serio conviene ChatGPT Plus.</small>
 </div>
             <div class="after-buy">
               <span class="ab-title">Qué pasa cuando compras</span>
@@ -2923,12 +2991,12 @@ html:not(.of-ob):not(.of-bv) .v2-cuenta,html:not(.of-ob):not(.of-bv) .v2-cuenta-
 </ul> <div class="stack-total"><span>Valor total</span><b><s data-of="ob">USD 620</s><s data-of="post">USD 593</s></b></div>
             <div class="price-reveal">
               <span class="launch-tag" data-of="ob">October Black</span><span class="mv-marca mv-marca-precio">Método Prompt Ads</span>
-              <div class="price"><sup>USD</sup><span data-of="ob">67</span><span data-of="post" data-of-precio>87</span></div>
+              <div class="price"><sup>USD</sup><span data-of="ob">67</span><span data-of="post" data-of-precio>87</span></div><p class="pp-ancla" data-of="ob"><s>Valor total USD 620</s><b>Ahorras USD 553 · 89 %</b></p><p class="pp-ancla" data-of="post"><s>Valor total USD 593</s><b>Ahorras USD 506 · 85 %</b></p><p class="pp-reencuadre">Menos de lo que cobra un diseñador por 3 anuncios. Pago único.</p>
               <p class="price-after" data-cuenta="despues" data-of="ob">Precio October Black hasta el <b>8 de octubre</b>. Después sube a USD 87.</p>
               <div class="v2-cuenta" aria-label="Cuenta regresiva hasta que termina October Black"><div><b data-c="d">00</b><span>días</span></div><i></i><div><b data-c="h">00</b><span>horas</span></div><i></i><div><b data-c="m">00</b><span>min</span></div><i></i><div><b data-c="s">00</b><span>seg</span></div></div>
             </div>
             <p class="v2-empuje">El riesgo es nuestro, no tuyo. Tienes <b>7 días de garantía</b> para aprender el método con calma. Si no aprendes a crear estos anuncios, recuperas el 100% de tu dinero. <b>No te vas a arrepentir.</b></p>
-            <a class="btn checkout" href="https://pay.hotmart.com/G107515293E?off=1tbcugw1&checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads</a>
+            <a class="btn checkout" href="https://pay.hotmart.com/G107515293E?off=1tbcugw1&checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads</a><p class="pp-micro">Pago único · Acceso inmediato · Garantía de 7 días<span>Pago 100 % seguro por Hotmart</span></p>
             <p class="mv-cupo ob-cupo" data-of="ob"><span class="mv-cupo-txt"><i class="mv-cupo-pun"></i><em>Últimos días a USD 67</em></span><span class="mv-cupo-barra" aria-hidden="true"><i style="--f:55%"></i></span><span class="mv-cupo-pie">El jueves 8 a las 12:00 sube a <em>USD 87</em>.</span></p>
             <div class="guarantee-box ob-garantia">
         <div class="mv-sello" role="img" aria-label="Garantía de 7 días">
