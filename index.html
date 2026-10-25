@@ -2347,6 +2347,7 @@ main > section:not(.pain):not(.offer) .inside-card.ob-card-regalo{border-color:r
   var F5 = Date.parse('2026-10-20T12:00:00-03:00');    // fin de la cuarta tanda de 3 días más
   var F6 = Date.parse('2026-10-23T12:00:00-03:00');    // fin de la quinta tanda de 3 días más
   var F = Date.parse('2026-10-26T12:00:00-03:00');     // fin con la sexta tanda de 3 días más
+  var P3 = 3 * 864e5, k3 = Date.now() >= F ? Math.ceil((Date.now() - F + 1) / P3) : 0; if (k3) { F6 = F + (k3 - 1) * P3; F += k3 * P3; }   // desde el 26/10, cada vez que llega a cero: 3 días más
   var BIENVENIDA = 87;                               // el precio desde ese momento (mismo enlace de pago de siempre)
   var HORAS = 72;                                      // cuánto dura el precio de bienvenida de cada visitante
   var REGULAR = { precio: 107, off: '' };   // oferta regular de Hotmart (lo que va después de off=). Vacío = sin reloj personal
@@ -3491,7 +3492,7 @@ html:not(.of-ob):not(.of-bv) .v2-cuenta,html:not(.of-ob):not(.of-bv) .v2-cuenta-
      actualiza sola cuando pasás de peldaño, así que esto no se toca a mano.
      Si algo falla, queda el texto que ya estaba escrito en el HTML.        */
   (function(){
-    const LIMITE = (window.ssOferta && window.ssOferta.ext6) ? '2026-10-26' : (window.ssOferta && window.ssOferta.ext5) ? '2026-10-23' : (window.ssOferta && window.ssOferta.ext4) ? '2026-10-20' : (window.ssOferta && window.ssOferta.ext3) ? '2026-10-17' : (window.ssOferta && window.ssOferta.ext2) ? '2026-10-14' : (window.ssOferta && window.ssOferta.ext) ? '2026-10-11' : '2026-10-08';      // termina October Black (12:00 de Paraguay); desde el 8/10 12:00 rigen 3 días más y desde el 11/10 12:00, otros 3
+    const LIMITE = (window.ssOferta && window.ssOferta.estado === 'ob' && window.ssOferta.fin) ? new Date(window.ssOferta.fin - 108e5).toISOString().slice(0,10) : (window.ssOferta && window.ssOferta.ext6) ? '2026-10-26' : (window.ssOferta && window.ssOferta.ext5) ? '2026-10-23' : (window.ssOferta && window.ssOferta.ext4) ? '2026-10-20' : (window.ssOferta && window.ssOferta.ext3) ? '2026-10-17' : (window.ssOferta && window.ssOferta.ext2) ? '2026-10-14' : (window.ssOferta && window.ssOferta.ext) ? '2026-10-11' : '2026-10-08';      // termina October Black (12:00 de Paraguay); desde el 8/10 12:00 rigen 3 días más y desde el 11/10 12:00, otros 3
     /* La hora exacta y el huso. Sin esto cada visitante cuenta hacia SU
        medianoche y el reloj llega a cero en momentos distintos segun el
        pais: entre Espana y Mexico hay ocho horas. Asi todos cuentan hacia
@@ -3641,7 +3642,7 @@ html:not(.of-ob):not(.of-bv) .v2-cuenta,html:not(.of-ob):not(.of-bv) .v2-cuenta-
   }
   var cajas=[].slice.call(document.querySelectorAll(".v2-cuenta,.v2-cuenta-mini"));
   if(cajas.length){
-    var lim=(window.ssOferta&&window.ssOferta.ext6)?"2026-10-26":(window.ssOferta&&window.ssOferta.ext5)?"2026-10-23":(window.ssOferta&&window.ssOferta.ext4)?"2026-10-20":(window.ssOferta&&window.ssOferta.ext3)?"2026-10-17":(window.ssOferta&&window.ssOferta.ext2)?"2026-10-14":(window.ssOferta&&window.ssOferta.ext)?"2026-10-11":"2026-10-08";   /* la misma fecha que LIMITE */
+    var lim=(window.ssOferta&&window.ssOferta.estado==='ob'&&window.ssOferta.fin)?new Date(window.ssOferta.fin - 108e5).toISOString().slice(0,10):(window.ssOferta&&window.ssOferta.ext6)?"2026-10-26":(window.ssOferta&&window.ssOferta.ext5)?"2026-10-23":(window.ssOferta&&window.ssOferta.ext4)?"2026-10-20":(window.ssOferta&&window.ssOferta.ext3)?"2026-10-17":(window.ssOferta&&window.ssOferta.ext2)?"2026-10-14":(window.ssOferta&&window.ssOferta.ext)?"2026-10-11":"2026-10-08";   /* la misma fecha que LIMITE */
     var fin=lim?new Date(lim+"T12:00:00-03:00").getTime():NaN;   /* mismo instante para todos, no la medianoche de cada visitante */
     var dd=function(n){ return (n<10?"0":"")+n; };
     var tic=function(){ var r=fin-Date.now();
@@ -4048,7 +4049,8 @@ o.observe(cupo);
   var o = window.ssOferta; if (!o || o.estado !== 'ob' || !o.ext) return;
   var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), n, L = [];
   while ((n = w.nextNode())) { var p = n.parentNode && n.parentNode.nodeName; if (p === 'SCRIPT' || p === 'STYLE') continue; if (/jueves 8|(^|\D)8 de octubre/.test(n.nodeValue)) L.push(n); }
-  var DIA = o.ext6 ? 'lunes 26' : o.ext5 ? 'viernes 23' : o.ext4 ? 'martes 20' : o.ext3 ? 'sábado 17' : o.ext2 ? 'miércoles 14' : 'domingo 11', FECHA = o.ext6 ? '26 de octubre' : o.ext5 ? '23 de octubre' : o.ext4 ? '20 de octubre' : o.ext3 ? '17 de octubre' : o.ext2 ? '14 de octubre' : '11 de octubre';
+  var FD = o.fin ? new Date(o.fin - 108e5) : null;
+  var DIA = FD ? ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'][FD.getUTCDay()] + ' ' + FD.getUTCDate() : o.ext6 ? 'lunes 26' : o.ext5 ? 'viernes 23' : o.ext4 ? 'martes 20' : o.ext3 ? 'sábado 17' : o.ext2 ? 'miércoles 14' : 'domingo 11', FECHA = FD ? FD.getUTCDate() + ' de ' + ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][FD.getUTCMonth()] : o.ext6 ? '26 de octubre' : o.ext5 ? '23 de octubre' : o.ext4 ? '20 de octubre' : o.ext3 ? '17 de octubre' : o.ext2 ? '14 de octubre' : '11 de octubre';
   L.forEach(function(n){ n.nodeValue = n.nodeValue.replace(/jueves 8/g, DIA).replace(/(^|\D)8 de octubre/g, function(m, a){ return a + FECHA; }); });
   var f = Math.min(1, Math.max(0, (Date.now() - o.f1) / (o.fin - o.f1)));
   [].forEach.call(document.querySelectorAll('.ob-cupo .mv-cupo-barra i'), function(i){ i.style.setProperty('--f', Math.round(f * 100) + '%'); });
