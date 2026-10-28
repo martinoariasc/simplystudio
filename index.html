@@ -5,15 +5,18 @@
   <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data: blob:; frame-src 'none'">
 <!-- COPIA SOLO PARA MIRAR · el píxel de Meta y Google están bloqueados · NO publicar este archivo -->
-<script>/* VISTA SEGURA: ?fecha=AAAA-MM-DDTHH:MM simula la hora (si no lleva huso, hora de Paraguay). Este bloque NO existe en el archivo publicable. */
+<script>/* VISTA SEGURA: ?fecha=AAAA-MM-DDTHH:MM simula la hora y ?bienvenida=AAAA-MM-DDTHH:MM simula la primera visita (si no llevan huso, hora de Paraguay). Este bloque NO existe en el archivo publicable. */
 (function(){try{
-  var m=/[?&]fecha=([^&#]+)/.exec(location.search); if(!m) return;
-  var txt=decodeURIComponent(m[1]); if(!/(Z|[+-]\d\d:\d\d)$/i.test(txt)) txt+=(txt.length===16?':00':'')+'-03:00';
-  var objetivo=Date.parse(txt); if(isNaN(objetivo)) return;
-  var R=Date, real=R.now(), K='ss_fecha_vista', desfase=objetivo-real;
-  try{ var g=JSON.parse(sessionStorage.getItem(K)||'null'); if(g&&g.f===txt) desfase=objetivo-g.r; else sessionStorage.setItem(K,JSON.stringify({f:txt,r:real})); }catch(e){}   /* si la página se recarga sola, la hora simulada sigue corriendo */
-  class D extends R{constructor(...a){if(a.length===0)super(R.now()+desfase);else super(...a);} static now(){return R.now()+desfase;}}
-  window.Date=D;
+  var ms=function(p){var m=new RegExp('[?&]'+p+'=([^&#]+)').exec(location.search); if(!m) return NaN; var txt=decodeURIComponent(m[1]); if(!/(Z|[+-]\d\d:\d\d)$/i.test(txt)) txt+=(txt.length===16?':00':'')+'-03:00'; return [txt,Date.parse(txt)];};
+  var f=ms('fecha');
+  if(f&&!isNaN(f[1])){
+    var R=Date, real=R.now(), K='ss_fecha_vista', desfase=f[1]-real;
+    try{ var g=JSON.parse(sessionStorage.getItem(K)||'null'); if(g&&g.f===f[0]) desfase=f[1]-g.r; else sessionStorage.setItem(K,JSON.stringify({f:f[0],r:real})); }catch(e){}   /* si la página se recarga sola, la hora simulada sigue corriendo */
+    class D extends R{constructor(...a){if(a.length===0)super(R.now()+desfase);else super(...a);} static now(){return R.now()+desfase;}}
+    window.Date=D;
+  }
+  var b=ms('bienvenida');   /* la primera visita, simulada: se guarda como la guardaría la página */
+  if(b&&!isNaN(b[1])){ try{ localStorage.setItem('ss_bv_v1',String(b[1])); }catch(e){} try{ document.cookie='ss_bv='+b[1]+'; path=/; max-age=34560000; SameSite=Lax'; }catch(e){} }
 }catch(e){}})();
 </script>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -2313,64 +2316,40 @@ html:where(.of-ob), :where(html.of-ob) > body{background:var(--ob-noche)!importa
 </style>
 <script>
 /* ── Estado de la oferta ─────────────────────────────────────────────────────────────────────────────
-   October Black termina el 8/10/2026 a las 12:00 de Paraguay. Desde ese instante la página muestra sola el
-   precio nuevo, sin esperar a que nadie publique nada. Se decide acá arriba, antes de que se pinte.
-   estado: 'ob' October Black · 'bv' precio de bienvenida con reloj personal · 'regular' · 'fin' precio fijo, sin reloj */
+   EDICIÓN (la decide la fecha, hora de Paraguay): 'ob' October Black (hasta el domingo 1/11 12:00) · 'nov' Edición Noviembre
+   (hasta el lunes 30/11 12:00) · 'nov-cerrada' (después). Es el tema de la página: oscuro con 'ob', claro con 'nov'.
+   PRECIO, POR VISITANTE (no depende de la fecha): la primera visita guarda la hora (localStorage y cookie) y durante HORAS horas vale
+   el precio de bienvenida; después rige el precio regular, con el enlace de la oferta regular de Hotmart (REGULAR_OFF).
+   fase: 'bv' bienvenida con reloj · 'regular' ya pasaron las horas · 'sinmem' el aparato no guarda datos: precio de bienvenida fijo, sin reloj.
+   Se decide acá arriba, antes de que se pinte. Si la hora cambia con la página abierta, se recarga sola. */
 (function(){
-  var PRECIO_NOV = 67;                         // precio de la Edición Noviembre (python _armar-edicion-noviembre.py --precio N)
-  var NOV = Date.parse('2026-11-01T12:00:00-03:00');       // desde acá October Black ya no se reinicia: rige la Edición Noviembre
-  var NOV_FIN = Date.parse('2026-11-30T12:00:00-03:00');   // fin de la Edición Noviembre (el Asistente va incluido hasta acá)
-  var F1 = Date.parse('2026-10-08T12:00:00-03:00');    // fin original de October Black
-  var F2 = Date.parse('2026-10-11T12:00:00-03:00');    // fin de los primeros 3 días más
-  var F3 = Date.parse('2026-10-14T12:00:00-03:00');    // fin de los otros 3 días más
-  var F4 = Date.parse('2026-10-17T12:00:00-03:00');    // fin de la tercera tanda de 3 días más
-  var F5 = Date.parse('2026-10-20T12:00:00-03:00');    // fin de la cuarta tanda de 3 días más
-  var F6 = Date.parse('2026-10-23T12:00:00-03:00');    // fin de la quinta tanda de 3 días más
-  var F = Date.parse('2026-10-26T12:00:00-03:00');     // fin con la sexta tanda de 3 días más
-  var P3 = 3 * 864e5, k3 = Date.now() >= F && Date.now() < NOV ? Math.ceil((Date.now() - F + 1) / P3) : 0; if (k3) { F6 = F + (k3 - 1) * P3; F += k3 * P3; }   // desde el 26/10, cada vez que llega a cero: 3 días más
-  var BIENVENIDA = 87;                               // el precio desde ese momento (mismo enlace de pago de siempre)
-  var HORAS = 72;                                      // cuánto dura el precio de bienvenida de cada visitante
-  var REGULAR = { precio: 107, off: '' };   // oferta regular de Hotmart (lo que va después de off=). Vacío = sin reloj personal
-  var d = document.documentElement, ahora = Date.now(), o, prox = 0;
-  function cuando(ts, largo){
-    var f = new Date(ts), h = new Date(), S = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'],
-        M = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-    var dia = function(x){ var y = new Date(x); y.setHours(0,0,0,0); return y.getTime(); };
-    var n = Math.round((dia(f) - dia(h)) / 864e5), hm = ('0' + f.getHours()).slice(-2) + ':' + ('0' + f.getMinutes()).slice(-2);
-    var fecha = n === 0 ? 'hoy' : n === 1 ? 'mañana' : n === -1 ? 'ayer' : 'el ' + S[f.getDay()] + ' ' + f.getDate() + (largo ? ' de ' + M[f.getMonth()] : '');
-    return { dias: n, fecha: fecha, texto: fecha + ' a las ' + hm };
-  }
+  var PRECIO_BV = 67;                              // precio de bienvenida (python _armar-edicion-noviembre.py --precio N)
+  var PRECIO_REGULAR = 87;                        // precio regular, de verdad (--regular N)
+  var REGULAR_OFF = 'PRUEBA87';                     // lo que va después de off= en el enlace de la oferta regular de Hotmart (--regular-off CODIGO)
+  var HORAS = 24;                                        // cuánto dura la bienvenida de cada visitante
+  var NOV = Date.parse('2026-11-01T12:00:00-03:00');     // desde acá rige la Edición Noviembre (October Black termina)
+  var NOV_FIN = Date.parse('2026-11-30T12:00:00-03:00'); // fin de la Edición Noviembre (el Asistente va incluido hasta acá)
+  var DESDE = Date.parse('2026-10-28T00:00:00-03:00');   // las visitas anteriores no cuentan
+  var d = document.documentElement, ahora = Date.now(), o, prox = 0, ed = ahora < NOV ? 'ob' : ahora < NOV_FIN ? 'nov' : 'nov-cerrada';
   try {
-    if (ahora < F) { o = { estado: 'ob', precio: 67, ext: ahora >= F1, ext2: ahora >= F2, ext3: ahora >= F3, ext4: ahora >= F4, ext5: ahora >= F5, ext6: ahora >= F6, f1: ahora >= F6 ? F6 : ahora >= F5 ? F5 : ahora >= F4 ? F4 : ahora >= F3 ? F3 : ahora >= F2 ? F2 : F1, fin: ahora >= F6 ? F : ahora >= F5 ? F6 : ahora >= F4 ? F5 : ahora >= F3 ? F4 : ahora >= F2 ? F3 : F2 }; prox = ahora < F1 ? F1 : ahora < F2 ? F2 : ahora < F3 ? F3 : ahora < F4 ? F4 : ahora < F5 ? F5 : ahora < F6 ? F6 : F; }
-    else if (ahora >= NOV) {
-      /* Edición Noviembre: 'nov' con la cuenta regresiva todo el mes, hacia el cierre real (30/11 12:00); después, 'nov-cerrada' */
-      o = ahora < NOV_FIN ? { estado: 'nov', precio: PRECIO_NOV, inicio: NOV, fin: NOV_FIN } : { estado: 'nov-cerrada', precio: PRECIO_NOV, inicio: NOV, fin: NOV_FIN };
-      prox = ahora < NOV_FIN ? NOV_FIN : 0;
+    var K = 'ss_bv_v1', t = 0, guarda = false, v;
+    try { v = +localStorage.getItem(K); if (v >= DESDE && v <= ahora) t = v; } catch (e) {}
+    v = /(?:^|;\s*)ss_bv=(\d{12,14})/.exec(document.cookie || ''); v = v ? +v[1] : 0;
+    if (v >= DESDE && v <= ahora && (!t || v < t)) t = v;
+    if (!t) t = ahora;
+    try { localStorage.setItem(K, String(t)); guarda = +localStorage.getItem(K) === t; } catch (e) {}
+    try { document.cookie = 'ss_bv=' + t + '; path=/; max-age=34560000; SameSite=Lax'; if (!guarda) guarda = document.cookie.indexOf('ss_bv=' + t) > -1; } catch (e) {}
+    o = { estado: ed, fase: 'sinmem', precio: PRECIO_BV, bv: PRECIO_BV, regular: PRECIO_REGULAR, horas: HORAS, nov: NOV, finEdicion: NOV_FIN };
+    if (guarda) {   /* si el aparato no guarda nada, no se promete ningún plazo: precio de bienvenida fijo y sin reloj */
+      o.inicio = t; o.finBv = t + HORAS * 36e5;
+      if (ahora < o.finBv) { o.fase = 'bv'; prox = o.finBv; }
+      else { o.fase = 'regular'; o.precio = PRECIO_REGULAR; o.off = REGULAR_OFF; }
     }
-    else {
-      o = { estado: 'fin', precio: BIENVENIDA };
-      if (REGULAR.off) {
-        /* la primera visita desde que existe el precio de bienvenida queda guardada en el aparato y no se reinicia */
-        var K = 'ss_bv_v1', t = 0, guarda = false, v;
-        try { v = +localStorage.getItem(K); if (v >= F && v <= ahora) t = v; } catch (e) {}
-        v = /(?:^|;\s*)ss_bv=(\d{12,14})/.exec(document.cookie || ''); v = v ? +v[1] : 0;
-        if (v >= F && v <= ahora && (!t || v < t)) t = v;
-        if (!t) t = ahora;
-        try { localStorage.setItem(K, String(t)); guarda = +localStorage.getItem(K) === t; } catch (e) {}
-        try { document.cookie = 'ss_bv=' + t + '; path=/; max-age=34560000; SameSite=Lax'; if (!guarda) guarda = document.cookie.indexOf('ss_bv=' + t) > -1; } catch (e) {}
-        if (guarda) {   /* si el aparato no guarda nada, no se promete ningún plazo: precio fijo y sin reloj */
-          var fin = t + HORAS * 36e5;
-          o.inicio = t; o.fin = fin; o.regular = REGULAR.precio; o.horas = HORAS;
-          o.cuando = cuando(fin, false); o.cuandoLargo = cuando(fin, true);
-          if (ahora < fin) { o.estado = 'bv'; prox = fin; }
-          else { o.estado = 'regular'; o.precio = REGULAR.precio; o.off = REGULAR.off; }
-        }
-      }
-    }
-  } catch (e) { o = Date.now() < F ? { estado: 'ob', precio: 67 } : Date.now() >= NOV ? { estado: Date.now() < NOV_FIN ? 'nov' : 'nov-cerrada', precio: PRECIO_NOV, fin: NOV_FIN } : { estado: 'fin', precio: BIENVENIDA }; prox = o.estado === 'ob' ? F : 0; }
+  } catch (e) { o = { estado: ed, fase: 'sinmem', precio: PRECIO_BV, bv: PRECIO_BV, regular: PRECIO_REGULAR, horas: HORAS }; prox = 0; }
+  if (ed === 'ob') prox = prox ? Math.min(prox, NOV) : NOV; else if (ed === 'nov') prox = prox ? Math.min(prox, NOV_FIN) : NOV_FIN;
   window.ssOferta = o; window.ssPrecio = o.precio;
-  d.classList.add('of-' + o.estado);
-  if (o.estado === 'nov' || o.estado === 'nov-cerrada') d.classList.add('of-nv');   /* of-nv = las dos de la Edición Noviembre */
+  d.classList.add('of-' + ed, 'of-' + o.fase);
+  if (ed !== 'ob') d.classList.add('of-nv');   /* of-nv = las dos de noviembre (activa y cerrada) */
   /* si la hora llega con la página abierta, se vuelve a cargar sola y muestra el estado nuevo */
   if (prox) {
     var hecho = false, rec = function(){ if (!hecho && Date.now() >= prox) { hecho = true; location.reload(); } };
@@ -2381,14 +2360,16 @@ html:where(.of-ob), :where(html.of-ob) > body{background:var(--ob-noche)!importa
 })();
 </script>
 <style>
-/* lo que solo vale durante October Black y lo que solo vale después. El estado lo pone en <html> el script de arriba */
-html:not(.of-ob) [data-of="ob"],html.of-ob [data-of="post"],html:not(.of-bv) [data-of="bv"],html:not(.of-regular) [data-of="regular"]{display:none!important}
-html:not(.of-ob):not(.of-bv):not(.of-nov) .v2-cuenta,html:not(.of-ob):not(.of-bv):not(.of-nov) .v2-cuenta-mini{display:none!important}
+/* Lo que se ve en cada edición y en cada fase del precio. Lo pone en <html> el script de arriba.
+   Ediciones: of-ob (October Black, tema oscuro) · of-nov (Edición Noviembre, tema claro) · of-nov-cerrada (después del 30/11) · of-nv (las dos de noviembre).
+   Fases del precio por visitante: of-bv (bienvenida, con reloj) · of-regular (ya pasaron las 24 h) · of-sinmem (el aparato no guarda datos).
+   data-of="ob|nov|nov-cerrada|nv|nonv" (nonv: se esconde en noviembre) · data-fase="bv|regular|sinmem" · data-ocultar: repetido, escondido a propósito */
+html:not(.of-ob) [data-of="ob"],html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrada"],html:not(.of-nv) [data-of="nv"],html.of-nv [data-of="nonv"],
+html:not(.of-bv) [data-fase="bv"],html:not(.of-regular) [data-fase="regular"],html:not(.of-sinmem) [data-fase="sinmem"],[data-ocultar]{display:none!important}
+html:not(.of-bv) .v2-cuenta,html:not(.of-bv) .v2-cuenta-mini{display:none!important}
+.v2-cuenta.sin-dias>:nth-child(-n+2),.v2-cuenta-mini.sin-dias>:nth-child(-n+2){display:none}
 /* sin reloj, el botón de la barra de arriba queda solo en su renglón: en el celular traía un margen negativo pensado para ir al lado del reloj */
-@media (max-width:720px){html:not(.of-ob):not(.of-bv):not(.of-nov) .announcement .announcement-inner a{margin-top:2px!important}}
-/* Edición Noviembre. data-of="nov": solo en la edición activa (con el reloj) · "nov-cerrada": solo después del 30/11 ·
-   "nv": en las dos · "nonv": en ninguna (lo que sale en noviembre) · "post" (el precio de después) tampoco se ve */
-html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrada"],html:not(.of-nv) [data-of="nv"],html.of-nv [data-of="nonv"],html.of-nv [data-of="post"]{display:none!important}
+@media (max-width:720px){html:not(.of-bv) .announcement .announcement-inner a{margin-top:2px!important}}
 </style>
 <style id="ss-claude-css">/* vista previa 25/10: bloque «¿Ya usas Claude?» */
 .ss-claude{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(20px,4vw,56px);align-items:center;
@@ -2408,42 +2389,45 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
   .ss-claude-txt p{font-size:15px}.ss-claude-chips li{font-size:10.5px;padding:10px 12px}}
 </style>
 <style id="edicion-noviembre">
-/* Edición Noviembre (diseño claro: papel, tinta, bosque). Solo lo que se ve con html.of-nv; el resto de la página es la de siempre. */
+/* Piezas de la landing agresiva. Usan las variables de color de cada sección: papel, tinta y bosque en Edición Noviembre; noche y oro en October Black. */
 .nov-sello{display:flex;width:max-content;max-width:100%;align-items:center;gap:12px;margin:0 auto 22px;padding:9px 18px 8px;border:1px solid rgba(34,56,43,.36);
   border-radius:999px;background:rgba(34,56,43,.05);font:500 11px/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--forest)}
 .nov-sello i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--forest);box-shadow:0 0 10px rgba(34,56,43,.35)}
 .nov-sello b{font:italic 400 19px/1 var(--mv-fuente-marca,"DM Serif Display"),serif;letter-spacing:0;text-transform:none;color:var(--ink)}
-.inside-card.nov-regalo{border-color:rgba(34,56,43,.34)}
-/* el bloque «¿Ya usas Claude?» (de _preview-claude.html) en claro: el dorado del énfasis no se lee sobre papel, pasa a bosque */
+.inside-card.nov-regalo{border-color:color-mix(in srgb,var(--forest) 38%,transparent)}
+/* el bloque «¿Ya usas Claude?» (de _preview-claude.html): en claro el dorado del énfasis no se lee sobre papel, pasa a bosque */
 .ss-claude{box-shadow:0 30px 70px -46px rgba(20,20,16,.35)}
 .ss-claude .eyebrow{color:var(--forest)}
 .ss-claude h3 em,.ss-claude-chips li span{color:var(--forest)}
 .ss-claude-txt p{color:var(--ink-2)}
-.nov-sec{padding:clamp(60px,9vw,128px) 0;color:var(--ink)}
+.nov-sec{padding:clamp(56px,8vw,120px) 0;color:var(--ink)}
 .nov-cab{text-align:center;max-width:800px;margin:0 auto}
 .nov-cab .eyebrow{margin:0 0 18px;color:var(--forest)}
-.nov-sec h2{font-family:var(--serif);font-weight:400;font-size:clamp(40px,6.4vw,88px);line-height:1;letter-spacing:-.02em;margin:0;color:var(--ink)}
+.nov-sec h2{font-family:var(--serif);font-weight:400;font-size:clamp(38px,6vw,84px);line-height:1;letter-spacing:-.02em;margin:0;color:var(--ink)}
 .nov-sec h2 em{font-style:italic;color:var(--forest)}
 .nov-baj{margin:22px auto 0;max-width:60ch;font-size:clamp(16px,1.5vw,19px);line-height:1.6;color:var(--ink-2)}
-.nov-fig{margin:clamp(30px,4.4vw,56px) auto 0;max-width:960px}
+.nov-bajada{margin:18px auto 0;max-width:58ch;text-align:center;font:400 clamp(16px,1.7vw,19px)/1.55 var(--sans);color:var(--ink-2)}
+.nov-tiempo h2{font-size:clamp(32px,4.8vw,64px)}
+.nov-tiempo .nov-cab{max-width:900px}
+.nov-tres{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2vw,26px);max-width:1040px;margin:clamp(28px,4vw,50px) auto 0}
+.nov-tres .nov-col h3{font-size:clamp(24px,2.4vw,32px)}
+.nov-avz h2{font-size:clamp(32px,5vw,70px)}
+.nov-avz .nov-cab{max-width:900px}
+.nov-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2vw,26px);max-width:1040px;margin:clamp(30px,4vw,54px) auto 0}
+.nov-col{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:clamp(24px,3vw,38px);box-shadow:0 24px 50px -38px rgba(20,20,16,.35)}
+.nov-col-avz{border-color:color-mix(in srgb,var(--forest) 40%,transparent)}
+.nov-col h3{margin:0;font:400 clamp(28px,3vw,40px)/1.05 var(--serif);letter-spacing:-.01em;color:var(--ink)}
+.nov-col-sub{display:block;margin:12px 0 14px;font:400 10px/1.3 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--forest)}
+.nov-col p{margin:0;font-size:16.5px;line-height:1.6;color:var(--ink-2)}
+.nov-tres .nov-col p{margin-top:12px}
+.nov-claude-anim,.mv-claude{margin-top:clamp(34px,4.6vw,60px)}
+.nov-fig{margin:clamp(34px,4.6vw,60px) auto 0;max-width:960px}
 .nov-video{position:relative;overflow:hidden;border-radius:18px;background:#0B0F0C;border:1px solid var(--line-strong);box-shadow:0 34px 70px -42px rgba(20,20,16,.55)}
 .nov-video-16x9{aspect-ratio:16/9}
 .nov-video-9x16{aspect-ratio:9/16;width:min(250px,66vw)}
 .nov-video video{display:block;width:100%;height:100%;object-fit:contain;background:#0B0F0C}
 .nov-sin-video{position:absolute;inset:0;display:grid;place-items:center;background:#D9D9D3;color:#4A4A42;font:500 12px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;text-align:center}
-.nov-fig figcaption{margin:14px 0 0;text-align:center;font:italic 400 17px/1.45 var(--serif);color:#55554B}
-.nov-hero-linea{margin:16px auto 0;max-width:46ch;text-align:center;font:400 15px/1.5 var(--sans);color:var(--ink-2)}
-.nov-hero-linea b{font-weight:600;color:var(--forest)}
-.nov-avz h2{font-size:clamp(34px,5.2vw,72px)}
-.nov-avz .nov-cab{max-width:900px}
-.nov-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2vw,26px);max-width:1040px;margin:clamp(30px,4vw,54px) auto 0}
-.nov-col{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:clamp(24px,3vw,38px);box-shadow:0 24px 50px -38px rgba(20,20,16,.35)}
-.nov-col-avz{border-color:rgba(34,56,43,.36)}
-.nov-col h3{margin:0;font:400 clamp(28px,3vw,40px)/1.05 var(--serif);letter-spacing:-.01em;color:var(--ink)}
-.nov-col-sub{display:block;margin:12px 0 14px;font:400 10px/1.3 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--forest)}
-.nov-col p{margin:0;font-size:16.5px;line-height:1.6;color:var(--ink-2)}
-.nov-col .nov-col-suma{margin-top:16px;font-weight:600;color:var(--forest)}
-.nov-imagina{max-width:62ch;margin:clamp(30px,4vw,52px) auto 0;text-align:center;font-size:clamp(17px,1.6vw,20px);line-height:1.65;color:var(--ink)}
+.nov-fig figcaption{margin:14px 0 0;text-align:center;font:italic 400 17px/1.45 var(--serif);color:var(--ink-2)}
 .price-card .stack li:nth-child(13)>span:first-child::before{transition-delay:1.9s}.price-card .stack li:nth-child(13)>span:first-child::after{transition-delay:2.1s}
 .price-card .stack li:nth-child(14)>span:first-child::before{transition-delay:2.05s}.price-card .stack li:nth-child(14)>span:first-child::after{transition-delay:2.25s}
 .nov-req{max-width:760px;margin:clamp(30px,4vw,52px) auto 0;padding:clamp(24px,3vw,36px) clamp(22px,3.4vw,44px);background:var(--paper-2);border:1px solid var(--line-strong);border-radius:20px}
@@ -2451,30 +2435,49 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
 .nov-req ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
 .nov-req li{position:relative;padding-left:32px;font-size:16px;line-height:1.5;color:var(--ink)}
 .nov-req li::before{content:"";position:absolute;left:0;top:.18em;width:20px;height:20px;border-radius:50%;background:var(--forest) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F3EFE7' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/12px no-repeat}
+html.of-ob .nov-req li::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230B0E0C' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E")}
 .nov-suma{margin:clamp(26px,3.4vw,40px) auto 0;max-width:60ch;text-align:center;font-size:clamp(16px,1.4vw,18px);line-height:1.6;font-weight:500;color:var(--ink)}
-.nov-nota{margin:14px auto 0;max-width:72ch;text-align:center;font-size:12.5px;line-height:1.55;color:#55554B}
+.nov-nota{margin:14px auto 0;max-width:72ch;text-align:center;font-size:12.5px;line-height:1.55;color:var(--ink-2)}
 .nov-vid{padding:clamp(40px,6vw,84px) 0 clamp(56px,8vw,112px)}
 .nov-vid-in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(26px,6vw,88px);align-items:center;max-width:960px}
 .nov-vid .nov-cab{text-align:left;margin:0;max-width:none}
 .nov-vid h2{font-size:clamp(32px,4.2vw,54px)}
 .nov-vid .nov-baj{margin-left:0;font-size:clamp(15.5px,1.4vw,18px)}
+.nov-despues .mv-cupo-pie{font-style:normal;font-weight:500}
+.nov-cierre-precio{margin:16px 0 0;font:500 clamp(17px,1.8vw,20px)/1.4 var(--sans);color:var(--ink)}
+@media (max-width:860px){.nov-tres{grid-template-columns:1fr}}
 @media (max-width:760px){.nov-cols{grid-template-columns:1fr}}
 @media (max-width:720px){.nov-vid-in{grid-template-columns:1fr;justify-items:center}.nov-vid .nov-cab{text-align:center}.nov-vid .nov-baj{margin-left:auto}.nov-video-9x16{width:min(240px,70vw)}}
+
+/* la animación de Claude: reusa todo el lenguaje de la de ChatGPT (.mv-demo, .mv-win, .mv-pasos...) con cuatro pasos y su propia lista de tareas */
+.mv-claude .mv-cap-barras{grid-template-columns:repeat(4,1fr)}
+.mv-claude[data-paso="3"] .mv-send{opacity:1}
+.mv-claude .mv-file{width:150px}
+.mv-claude .mv-file b,.mv-claude .mv-yo-pdf b{background:#1f1f1f;font:700 12px/30px var(--sans)}
+.mv-claude .mv-yo-pdf b{line-height:26px}
+.mv-claude .mv-hilo .mv-resp{align-self:flex-start;max-width:94%;display:flex;flex-direction:column;gap:10px;padding:2px 4px 0}
+.mv-claude .mv-resp>b{font:600 12px/1 var(--sans);color:#0d0d0d}
+.mv-claude .mv-lista{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.mv-claude .mv-lista li{display:flex;align-items:center;gap:10px;font:400 14px/1.3 var(--sans);color:#0d0d0d;animation:mvEntra .35s cubic-bezier(.2,.7,.2,1) both}
+.mv-claude .mv-lista li i{flex:none;width:18px;height:18px;box-sizing:border-box;border-radius:50%;border:2px solid #dcdcdc;border-top-color:#0d0d0d;animation:mvGira .8s linear infinite}
+.mv-claude .mv-lista li.ok i{border:0;background:#147a3c url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/11px no-repeat;animation:none}
+@keyframes mvGira{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.mv-claude .mv-lista li i{animation:none}}
 </style>
 </head>
 <body>
 
   <div class="announcement">
     <div class="shell announcement-inner">
-      <span data-cuenta="banner"><b>October Black</b> Últimos días. Termina en</span><span class="v2-cuenta-mini"><b data-c=d>00</b><i>d</i><b data-c=h>00</b><i>h</i><b data-c=m>00</b><i>m</i><b data-c=s>00</b><i>s</i></span>
+      <span data-cuenta="banner"><b>Tu precio de bienvenida</b> termina en</span><span class="v2-cuenta-mini"><b data-c=d>00</b><i>d</i><b data-c=h>00</b><i>h</i><b data-c=m>00</b><i>m</i><b data-c=s>00</b><i>s</i></span>
       <a href="#precio">Ver la oferta</a>
     </div>
   </div>
-  <script>/* la barra de arriba según el estado de la oferta (corre apenas existe la barra) */
+  <script>/* la barra de arriba según la fase del precio (corre apenas existe la barra) */
   (function(){var o=window.ssOferta,b=document.querySelector('[data-cuenta="banner"]'),a=document.querySelector('.announcement-inner a');
-  if(!o||!b||o.estado==='ob')return;
-  if(o.estado==='nov'){b.innerHTML='<b>Edición Noviembre</b> · Termina en';return;}
-  if(o.estado==='bv'){b.innerHTML='<b>Precio de bienvenida</b> '+(o.cuando.dias===0?'Último día. ':'')+'Termina en';}
+  if(!o||!b)return;
+  if(o.fase==='bv'){b.innerHTML=o.estado==='ob'?'<b>Precio de October Black para ti</b> · termina en':'<b>Tu precio de bienvenida</b> termina en';}
+  else if(o.fase==='regular'){b.innerHTML='<b>Precio regular</b>';}
   else{b.textContent='Acceso inmediato y 7 días de garantía.';if(a)a.textContent='Ver el acceso';}})();</script>
   <header>
     <div class="shell nav">
@@ -2491,7 +2494,7 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
 <main>
 <section class="showcase v2-hero-gal" id="resultado" data-esc="Inicio">
 <div class="shell">
-<div class="showcase-head v2-hero-gal-head"><div class="ob-sello v2-sube d1" data-of="ob"><i aria-hidden="true"></i><b>October Black</b><span>hasta el jueves 8 de octubre</span></div><div class="nov-sello v2-sube d1" data-of="nov"><i aria-hidden="true"></i><b>Edición Noviembre</b><span>hasta el lunes 30 de noviembre</span></div><span class="eyebrow muted v2-sube d1"><span class="mv-marca">Método Prompt Ads</span> para ChatGPT</span><h1 class="v2-sube d2">Imagina poder crear <em class="v2-nw">publicidad así.</em></h1><p class="nov-hero-linea v2-sube d3" data-of="nv"><b>Nuevo en noviembre:</b> la versión automática con Claude, para sumar al pagar.</p></div>
+<div class="showcase-head v2-hero-gal-head"><div class="ob-sello v2-sube d1" data-of="ob"><i aria-hidden="true"></i><b>October Black</b><span>hasta el domingo 1 de noviembre</span></div><div class="nov-sello v2-sube d1" data-of="nov"><i aria-hidden="true"></i><b>Edición Noviembre</b><span>hasta el lunes 30 de noviembre</span></div><span class="eyebrow muted v2-sube d1"><span class="mv-marca">Método Prompt Ads</span> para ChatGPT</span><h1 class="v2-sube d2">Imagina poder crear <em class="v2-nw">publicidad así.</em></h1><p class="nov-bajada v2-sube d3">Con una foto de tu producto. A mano con ChatGPT, o en automático con Claude mientras haces otra cosa. Ahorra horas de trabajo y cientos de dólares en agencias y sesiones de fotos.</p></div>
 <div class="v2-gal v2-sube d3"><div class="v2-gal-track"><div class="v2-gal-set">
 <figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/colabs/bose-5.webp" aria-label="Ampliar anuncio de Bose"><img src="assets/colabs/bose-5.webp" srcset="assets/colabs/bose-5-m.webp 600w, assets/colabs/bose-5.webp 900w" sizes="(max-width:720px) 200px, 440px" loading="eager" fetchpriority="high" decoding="async" width="1100" height="1375" alt="Anuncio de Bose hecho con Prompt Ads"></button></figure>
 <figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/colabs/cos-11.webp" aria-label="Ampliar anuncio de COS"><img src="assets/colabs/cos-11.webp" srcset="assets/colabs/cos-11-m.webp 600w, assets/colabs/cos-11.webp 900w" sizes="(max-width:720px) 200px, 440px" loading="eager" decoding="async" width="1100" height="1375" alt="Anuncio de COS hecho con Prompt Ads"></button></figure>
@@ -2620,7 +2623,7 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
 <div class="shell">
 <div class="v2-hero-grid">
 <div class="v2-sube d1"><span class="pill eyebrow"><i class="dot"></i> El método para crear +50 anuncios premium en minutos</span></div>
-<div class="v2-sube d2"><h2 class="v2-hero-h">Aprende a crear <em>+50 anuncios de la más alta calidad</em> en minutos.</h2></div>
+<div class="v2-sube d2"><h2 class="v2-hero-h">Ahorra horas y cientos de dólares: <em>los anuncios de tu negocio, con calidad de marca grande.</em></h2></div>
 <div class="v2-prod v2-sube d3"><div class="hero-prod"><figure class="prod-float">
             <!-- La imagen se ve siempre; el video la reemplaza solo cuando esta cargado
                  y el visitante no pidio reducir movimiento. Asi nadie ve un hueco. -->
@@ -2643,6 +2646,13 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
 <div class="v2-marcas" aria-label="Marcas de referencia">
 <div class="v2-marcas-track"><div class="v2-marcas-set"><span class="v2-marca" title="Nike" style="--h:30px"><svg viewBox="0 0 26.88 11.28" aria-hidden="true" focusable="false"><use href="#l-nike"/></svg></span><span class="v2-marca" title="Rolex" style="--h:22px"><svg viewBox="0 0 113.68 30.58" aria-hidden="true" focusable="false"><use href="#l-rolex"/></svg></span><span class="v2-marca" title="Coca-Cola" style="--h:29px"><svg viewBox="0 0 26.88 10.41" aria-hidden="true" focusable="false"><use href="#l-cocacola"/></svg></span><span class="v2-marca" title="Red Bull" style="--h:38px"><svg viewBox="0 0 26.88 16.48" aria-hidden="true" focusable="false"><use href="#l-redbull"/></svg></span><span class="v2-marca" title="New Balance" style="--h:35px"><svg viewBox="0 0 26.88 14.42" aria-hidden="true" focusable="false"><use href="#l-newbalance"/></svg></span><span class="v2-marca" title="Aesop" style="--h:29px"><svg viewBox="0 0 1079.79 419.49" aria-hidden="true" focusable="false"><use href="#l-aesop"/></svg></span><span class="v2-marca" title="Apple" style="--h:46px"><svg viewBox="0 0 22.43 26.88" aria-hidden="true" focusable="false"><use href="#l-apple"/></svg></span><span class="v2-marca" title="Leica" style="--h:46px"><svg viewBox="0 0 26.88 26.88" aria-hidden="true" focusable="false"><use href="#l-leica"/></svg></span><span class="v2-marca" title="Adidas" style="--h:40px"><svg viewBox="0 0 26.88 17.95" aria-hidden="true" focusable="false"><use href="#l-adidas"/></svg></span><span class="v2-marca" title="Dior" style="--h:27px"><svg viewBox="0 0 26.88 9.59" aria-hidden="true" focusable="false"><use href="#l-dior"/></svg></span><span class="v2-marca" title="Puma" style="--h:45px"><svg viewBox="0 0 26.88 21.38" aria-hidden="true" focusable="false"><use href="#l-puma"/></svg></span><span class="v2-marca" title="Sony" style="--h:22px"><svg viewBox="0 0 26.88 7.1" aria-hidden="true" focusable="false"><use href="#l-sony"/></svg></span><span class="v2-marca" title="Starbucks" style="--h:46px"><svg viewBox="0 0 26.88 26.7" aria-hidden="true" focusable="false"><use href="#l-starbucks"/></svg></span><span class="v2-marca" title="Dyson" style="--h:31px"><svg viewBox="0 0 110.77 49.08" aria-hidden="true" focusable="false"><use href="#l-dyson"/></svg></span><span class="v2-marca" title="BMW" style="--h:46px"><svg viewBox="0 0 26.88 26.88" aria-hidden="true" focusable="false"><use href="#l-bmw"/></svg></span><span class="v2-marca" title="Samsung" style="--h:22px"><svg viewBox="0 0 26.88 6.55" aria-hidden="true" focusable="false"><use href="#l-samsung"/></svg></span><span class="v2-marca" title="Jordan" style="--h:46px"><svg viewBox="0 0 26.88 25.34" aria-hidden="true" focusable="false"><use href="#l-jordan"/></svg></span><span class="v2-marca" title="Porsche" style="--h:46px"><svg viewBox="0 0 21.59 26.88" aria-hidden="true" focusable="false"><use href="#l-porsche"/></svg></span><span class="v2-marca" title="Zara" style="--h:33px"><svg viewBox="0 0 26.88 12.88" aria-hidden="true" focusable="false"><use href="#l-zara"/></svg></span><span class="v2-marca" title="Uniqlo" style="--h:46px"><svg viewBox="0 0 26.88 26.88" aria-hidden="true" focusable="false"><use href="#l-uniqlo"/></svg></span><span class="v2-marca" title="Sprite" style="--h:43px"><svg viewBox="0 0 1027.51 758.35" aria-hidden="true" focusable="false"><use href="#l-sprite"/></svg></span><span class="v2-marca" title="Audi" style="--h:30px"><svg viewBox="0 0 26.88 11.18" aria-hidden="true" focusable="false"><use href="#l-audi"/></svg></span><span class="v2-marca" title="The North Face" style="--h:35px"><svg viewBox="0 0 26.88 14.16" aria-hidden="true" focusable="false"><use href="#l-thenorthface"/></svg></span><span class="v2-marca" title="IKEA" style="--h:32px"><svg viewBox="0 0 26.88 12.48" aria-hidden="true" focusable="false"><use href="#l-ikea"/></svg></span><span class="v2-marca" title="Tesla" style="--h:46px"><svg viewBox="0 0 26.88 26.88" aria-hidden="true" focusable="false"><use href="#l-tesla"/></svg></span><span class="v2-marca" title="Ferrari" style="--h:46px"><svg viewBox="0 0 20.14 26.88" aria-hidden="true" focusable="false"><use href="#l-ferrari"/></svg></span></div><div class="v2-marcas-set" aria-hidden="true"><span class="v2-marca" title="Nike" style="--h:30px"><svg viewBox="0 0 26.88 11.28" aria-hidden="true" focusable="false"><use href="#l-nike"/></svg></span><span class="v2-marca" title="Rolex" style="--h:22px"><svg viewBox="0 0 113.68 30.58" aria-hidden="true" focusable="false"><use href="#l-rolex"/></svg></span><span class="v2-marca" title="Coca-Cola" style="--h:29px"><svg viewBox="0 0 26.88 10.41" aria-hidden="true" focusable="false"><use href="#l-cocacola"/></svg></span><span class="v2-marca" title="Red Bull" style="--h:38px"><svg viewBox="0 0 26.88 16.48" aria-hidden="true" focusable="false"><use href="#l-redbull"/></svg></span><span class="v2-marca" title="New Balance" style="--h:35px"><svg viewBox="0 0 26.88 14.42" aria-hidden="true" focusable="false"><use href="#l-newbalance"/></svg></span><span class="v2-marca" title="Aesop" style="--h:29px"><svg viewBox="0 0 1079.79 419.49" aria-hidden="true" focusable="false"><use href="#l-aesop"/></svg></span><span class="v2-marca" title="Apple" style="--h:46px"><svg viewBox="0 0 22.43 26.88" aria-hidden="true" focusable="false"><use href="#l-apple"/></svg></span><span class="v2-marca" title="Leica" style="--h:46px"><svg viewBox="0 0 26.88 26.88" aria-hidden="true" focusable="false"><use href="#l-leica"/></svg></span><span class="v2-marca" title="Adidas" style="--h:40px"><svg viewBox="0 0 26.88 17.95" aria-hidden="true" focusable="false"><use href="#l-adidas"/></svg></span><span class="v2-marca" title="Dior" style="--h:27px"><svg viewBox="0 0 26.88 9.59" aria-hidden="true" focusable="false"><use href="#l-dior"/></svg></span><span class="v2-marca" title="Puma" style="--h:45px"><svg viewBox="0 0 26.88 21.38" aria-hidden="true" focusable="false"><use href="#l-puma"/></svg></span><span class="v2-marca" title="Sony" style="--h:22px"><svg viewBox="0 0 26.88 7.1" aria-hidden="true" focusable="false"><use href="#l-sony"/></svg></span><span class="v2-marca" title="Starbucks" style="--h:46px"><svg viewBox="0 0 26.88 26.7" aria-hidden="true" focusable="false"><use href="#l-starbucks"/></svg></span><span class="v2-marca" title="Dyson" style="--h:31px"><svg viewBox="0 0 110.77 49.08" aria-hidden="true" focusable="false"><use href="#l-dyson"/></svg></span><span class="v2-marca" title="BMW" style="--h:46px"><svg viewBox="0 0 26.88 26.88" aria-hidden="true" focusable="false"><use href="#l-bmw"/></svg></span><span class="v2-marca" title="Samsung" style="--h:22px"><svg viewBox="0 0 26.88 6.55" aria-hidden="true" focusable="false"><use href="#l-samsung"/></svg></span><span class="v2-marca" title="Jordan" style="--h:46px"><svg viewBox="0 0 26.88 25.34" aria-hidden="true" focusable="false"><use href="#l-jordan"/></svg></span><span class="v2-marca" title="Porsche" style="--h:46px"><svg viewBox="0 0 21.59 26.88" aria-hidden="true" focusable="false"><use href="#l-porsche"/></svg></span><span class="v2-marca" title="Zara" style="--h:33px"><svg viewBox="0 0 26.88 12.88" aria-hidden="true" focusable="false"><use href="#l-zara"/></svg></span><span class="v2-marca" title="Uniqlo" style="--h:46px"><svg viewBox="0 0 26.88 26.88" aria-hidden="true" focusable="false"><use href="#l-uniqlo"/></svg></span><span class="v2-marca" title="Sprite" style="--h:43px"><svg viewBox="0 0 1027.51 758.35" aria-hidden="true" focusable="false"><use href="#l-sprite"/></svg></span><span class="v2-marca" title="Audi" style="--h:30px"><svg viewBox="0 0 26.88 11.18" aria-hidden="true" focusable="false"><use href="#l-audi"/></svg></span><span class="v2-marca" title="The North Face" style="--h:35px"><svg viewBox="0 0 26.88 14.16" aria-hidden="true" focusable="false"><use href="#l-thenorthface"/></svg></span><span class="v2-marca" title="IKEA" style="--h:32px"><svg viewBox="0 0 26.88 12.48" aria-hidden="true" focusable="false"><use href="#l-ikea"/></svg></span><span class="v2-marca" title="Tesla" style="--h:46px"><svg viewBox="0 0 26.88 26.88" aria-hidden="true" focusable="false"><use href="#l-tesla"/></svg></span><span class="v2-marca" title="Ferrari" style="--h:46px"><svg viewBox="0 0 20.14 26.88" aria-hidden="true" focusable="false"><use href="#l-ferrari"/></svg></span></div></div>
 </div>
+
+<section class="nov-sec nov-tiempo" id="tiempo-y-dinero" aria-labelledby="nov-tiempo-t">
+  <div class="shell">
+    <div class="nov-cab reveal"><h2 id="nov-tiempo-t">Lo que hoy te cuesta una tarde y cientos de dólares, <em>ahora es una instrucción.</em></h2></div>
+    <div class="nov-tres reveal"><article class="nov-col"><h3>Sin agencia</h3><p>Una tanda así, una agencia te la cobra más de USD 1.000.</p></article><article class="nov-col"><h3>Sin sesión de fotos</h3><p>Con una foto de celular de tu producto alcanza.</p></article><article class="nov-col"><h3>Sin pasarte horas</h3><p>La tanda sale en minutos. Con la versión automática, se hace sola mientras haces otra cosa.</p></article></div>
+  </div>
+</section>
 
 <section data-esc="El problema" class="pain">
       <div class="shell pain-grid">
@@ -2766,8 +2776,8 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
 <article class="inside-card ob-card reveal"><div class="card-cover"><span class="card-tag">Nuevo</span><picture><source media="(max-width:760px)" srcset="assets/pack/08-angulos-que-venden-600.webp"><source srcset="assets/pack/08-angulos-que-venden-600.webp 600w, assets/pack/08-angulos-que-venden.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/08-angulos-que-venden.webp" width="900" height="900" loading="lazy" alt="La guía Ángulos que venden, del Método Prompt Ads"></picture></div><div class="card-body"><h3>Ángulos que venden</h3><p>120 formas de vender lo mismo, en 12 familias, con ejemplos de productos y de servicios. El método te enseña cómo se ve tu anuncio; esta guía, qué decir en cada uno.</p></div></article>
 <article class="inside-card ob-card reveal" data-of="nonv"><div class="card-cover"><span class="card-tag">Ahora incluido</span><picture><source media="(max-width:760px)" srcset="assets/pack/09-avatares-hiperrealistas-600.webp"><source srcset="assets/pack/09-avatares-hiperrealistas-600.webp 600w, assets/pack/09-avatares-hiperrealistas.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/09-avatares-hiperrealistas.webp" width="900" height="900" loading="lazy" alt="La guía Cómo crear avatares hiperrealistas, del Método Prompt Ads" style="object-position:50% 20%"></picture></div><div class="card-body"><h3>Cómo crear avatares hiperrealistas</h3><p>Una cara propia para tu marca, que no existe en ninguna parte y se mantiene igual en todos tus anuncios. Antes se vendía aparte: ahora viene en el pack.</p></div></article>
 <article class="inside-card reveal" data-of="nov"><div class="card-cover"><span class="card-tag">Solo en la Edición Noviembre</span><div class="nov-sin-imagen" role="img" aria-label="Imagen en producción" style="position:absolute;inset:0;display:grid;place-items:center;background:#D9D9D3;color:#4A4A42;font:500 13px/1.4 var(--mono,monospace);letter-spacing:.14em;text-transform:uppercase;text-align:center">Imagen en producción</div></div><div class="card-body"><h3>Asistente de personalización</h3><p>Te hace 14 preguntas, una por vez, y arma la ficha de tu marca. Así cada anuncio sale con tu tono, tus colores y lo que te diferencia, aunque no encuentres referencias.</p></div></article>
-<article class="inside-card ob-card ob-card-regalo reveal" data-of="ob"><div class="card-cover"><span class="card-tag">Regalo October Black</span><picture><source media="(max-width:760px)" srcset="assets/pack/11-plan-365-600.webp"><source srcset="assets/pack/11-plan-365-600.webp 600w, assets/pack/11-plan-365.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/11-plan-365.webp" width="900" height="900" loading="lazy" alt="El Plan 365 en Excel, un plan de acción de un año"></picture></div><div class="card-body"><h3>Plan 365: un año de ideas</h3><p>Tu plan de acción de un año: un ángulo de venta y una idea de anuncio para cada día, con su prompt, para productos y para servicios. Se lo pasas a ChatGPT y lo adapta a tu negocio en minutos. De regalo con October Black, hasta el 8 de octubre.</p></div></article>
-<article class="inside-card nov-regalo reveal" data-of="nv"><div class="card-cover"><span class="card-tag">De regalo</span><picture><source media="(max-width:760px)" srcset="assets/pack/11-plan-365-600.webp"><source srcset="assets/pack/11-plan-365-600.webp 600w, assets/pack/11-plan-365.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/11-plan-365.webp" width="900" height="900" loading="lazy" alt="El Plan 365 en Excel, un plan de acción de un año"></picture></div><div class="card-body"><h3>Plan 365: un año de ideas</h3><p>Tu plan de acción de un año: un ángulo de venta y una idea de anuncio para cada día, con su prompt, para productos y para servicios. Se lo pasas a ChatGPT y lo adapta a tu negocio en minutos.</p></div></article>
+<article class="inside-card ob-card reveal"><div class="card-cover"><span class="card-tag">Nuevo · incluido</span><div class="nov-sin-imagen" role="img" aria-label="Imagen en producción" style="position:absolute;inset:0;display:grid;place-items:center;background:#D9D9D3;color:#4A4A42;font:500 13px/1.4 var(--mono,monospace);letter-spacing:.14em;text-transform:uppercase;text-align:center">Imagen en producción</div></div><div class="card-body"><h3>Método Prompt Ads Avanzado</h3><p>La versión automática del método. Le dices a Claude «hazme 10 anuncios» y Claude y ChatGPT los crean por ti, con la misma calidad, mientras haces otra cosa.</p></div></article>
+<article class="inside-card ob-card ob-card-regalo nov-regalo reveal"><div class="card-cover"><span class="card-tag">De regalo</span><picture><source media="(max-width:760px)" srcset="assets/pack/11-plan-365-600.webp"><source srcset="assets/pack/11-plan-365-600.webp 600w, assets/pack/11-plan-365.webp 900w" sizes="510px"><img decoding="async" src="assets/pack/11-plan-365.webp" width="900" height="900" loading="lazy" alt="El Plan 365 en Excel, un plan de acción de un año"></picture></div><div class="card-body"><h3>Plan 365: un año de ideas</h3><p>Tu plan de acción de un año: un ángulo de venta y una idea de anuncio para cada día, con su prompt, para productos y para servicios. Se lo pasas a ChatGPT y lo adapta a tu negocio en minutos.</p></div></article>
 <article class="inside-card v2-card-video reveal"><div class="card-cover"><span class="card-tag">Video explicativo</span><img src="assets/producto/video-portada.webp" width="1280" height="720" loading="lazy" decoding="async" alt="A la izquierda, la foto de producto tal como sale del celular. A la derecha, el mismo producto convertido en anuncio."><span class="v2-vid-play" aria-hidden="true"></span></div><div class="card-body"><h3>Y además, el video del método</h3><p>Además de los archivos y las guías, una grabación completa donde se crea un anuncio de principio a fin, sin cortes. Lo ves funcionando y lo aplicas igual a lo tuyo: no importa si vendes un producto o un servicio, el método es el mismo para cualquier rubro.</p></div></article>
         </div>
       </div>
@@ -2775,15 +2785,49 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
 <div class="shell v2-cta reveal"><a class="btn" href="#precio">Quiero crear mis anuncios <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a><span class="v2-cta-nota">Pago único · acceso inmediato · 7 días de garantía</span></div>
 </section>
 
-<section class="nov-sec nov-avz" id="avanzado" data-of="nv" aria-labelledby="nov-avz-t">
+<section class="nov-sec nov-avz" id="avanzado" aria-labelledby="nov-avz-t">
   <div class="shell">
-    <div class="nov-cab reveal"><span class="eyebrow">Para principiantes y para avanzados</span><h2 id="nov-avz-t">Empieza a mano. <em>Cuando quieras, que se haga solo.</em></h2></div>
-    <div class="nov-cols reveal"><article class="nov-col"><h3>Método Prompt Ads</h3><span class="nov-col-sub">Para empezar hoy</span><p>Abres ChatGPT, arrastras los archivos del método y pides tus anuncios. También funciona con apps de imágenes como Higgsfield que usan GPT Image 2 (y sus versiones superiores).</p></article><article class="nov-col nov-col-avz"><h3>Método Prompt Ads Avanzado</h3><span class="nov-col-sub">Para que se haga solo</span><p>Le dices a Claude qué necesitas, por ejemplo «hazme 10 anuncios para mi perfume», y Claude y ChatGPT los crean, los revisan contra tu producto real y te entregan los que pasan. Tú solo eliges.</p><p class="nov-col-suma">Se suma con un clic al pagar.</p></article></div>
-    <figure class="nov-fig reveal"><div class="nov-video nov-video-16x9"><video muted loop playsinline controls preload="none" width="1280" height="720" data-poster="assets/nov/demo-automatico-borrador.jpg" aria-label="Demostración del Método Prompt Ads Avanzado: una instrucción en Claude y la tanda de anuncios terminada"><source src="assets/nov/demo-automatico-borrador.mp4" type="video/mp4"></video></div><figcaption>Una instrucción y la tanda terminada.</figcaption></figure>
-    <p class="nov-imagina reveal">Imagina abrir la computadora el lunes, pedir los anuncios de toda la semana y dedicar la mañana a otra cosa. Lo que antes pedía una agencia, una sesión de fotos o tardes enteras frente a la pantalla, ahora es una instrucción. Sin pagar otra suscripción: usa las cuentas de Claude y ChatGPT que ya tienes.</p>
-    <div class="nov-req reveal"><h3>Qué necesitas para la versión avanzada</h3><ul><li>Una computadora con Windows. En Mac, próximamente.</li><li>Claude Pro o superior, con la app de escritorio de Claude.</li><li>ChatGPT Plus o superior. Las imágenes salen de tu propia cuenta.</li><li>Nada de API, claves ni programación: la primera vez, Claude prepara todo y tú solo inicias sesión con tu cuenta de ChatGPT.</li></ul></div>
-    <p class="nov-suma reveal">La versión a mano, con ChatGPT, viene incluida en el Método. La automática se suma con un clic al pagar. Y tienes 7 días de garantía.</p>
-            <aside class="ss-claude reveal" data-of="nv" aria-labelledby="ss-claude-t">
+    <div class="nov-cab reveal"><span class="eyebrow">Para principiantes y para avanzados · las dos incluidas</span><h2 id="nov-avz-t">Empieza a mano. <em>Cuando quieras, que se haga solo.</em></h2></div>
+    <div class="nov-cols reveal"><article class="nov-col"><h3>Método Prompt Ads</h3><span class="nov-col-sub">Para empezar hoy</span><p>Abres ChatGPT, arrastras los archivos y pides tus anuncios. También funciona con apps de imágenes como Higgsfield que usan GPT Image 2 (y sus versiones superiores).</p></article><article class="nov-col nov-col-avz"><h3>Método Prompt Ads Avanzado</h3><span class="nov-col-sub">Para que se haga solo</span><p>Para quien ya usa Claude y ChatGPT. Arrastras un archivo a Claude y él prepara todo en tu computadora: instala lo que falta, te guía paso a paso y conecta tu cuenta de ChatGPT. Después le dices «hazme 10 anuncios para mi perfume» y Claude y ChatGPT los crean, los revisan contra tu producto real y te entregan los que pasan. Tú revisas y eliges.</p></article></div>
+    <div class="mv-demo mv-claude reveal" id="mvDemoClaude" data-paso="1">
+      <div class="mv-demo-izq">
+        <div class="mv-cap" aria-hidden="true">
+          <div class="mv-cap-barras"><i class="lleno ahora"></i><i></i><i></i><i></i></div>
+          <p class="mv-cap-txt"><b>Paso 1 de 4</b><span>Arrastras el archivo</span></p>
+        </div>
+        <div class="mv-win" aria-hidden="true">
+          <div class="mv-top">
+            <span class="mv-top-name">Claude <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+            <span class="mv-top-dots"><b></b><b></b><b></b></span>
+          </div>
+          <p class="mv-hola">¿En qué trabajamos hoy?</p>
+          <div class="mv-chat"><div class="mv-hilo"></div></div>
+          <div class="mv-drop"><span>Suelta el archivo aquí</span></div>
+          <div class="mv-composer">
+            <div class="mv-adj"></div>
+            <div class="mv-input">
+              <span class="mv-plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+              <span class="mv-texto"><span class="mv-ph">Escríbele a Claude</span><span class="mv-typed"></span><span class="mv-caret"></span></span>
+              <span class="mv-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></span>
+            </div>
+          </div>
+          <div class="mv-cursor"><svg viewBox="0 0 24 24"><path d="M5 3l14 8-6 1.6L10 19z" fill="#0d0d0d" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg><span>EMPIEZA AQUÍ</span></div>
+        </div>
+      </div>
+      <div class="mv-demo-der">
+        <ol class="mv-pasos">
+          <li data-paso="1"><span>Paso 01</span><b>Arrastras el archivo</b><p>Un solo archivo, a la caja de Claude.</p></li>
+          <li data-paso="2"><span>Paso 02</span><b>Claude prepara todo</b><p>Revisa tu computadora, instala lo que falta y conecta tu ChatGPT.</p></li>
+          <li data-paso="3"><span>Paso 03</span><b>Pides tu tanda</b><p>Le escribes lo que necesitas, con tus palabras.</p></li>
+          <li data-paso="4"><span>Paso 04</span><b>Llega tu tanda</b><p>Los anuncios llegan revisados contra tu producto real.</p></li>
+        </ol>
+        <p class="mv-demo-nota">Así se ve dentro de Claude</p>
+      </div>
+    </div>
+    <figure class="nov-fig reveal"><div class="nov-video nov-video-16x9"><video muted loop playsinline controls preload="none" width="1280" height="720" data-poster="assets/nov/demo-automatico-borrador.jpg" aria-label="Demostración del Método Prompt Ads Avanzado: una instrucción en Claude y la tanda de anuncios terminada"><source src="assets/nov/demo-automatico-borrador.mp4" type="video/mp4"></video></div><figcaption>Así se ve con un producto real.</figcaption></figure>
+    <div class="nov-req reveal"><h3>Qué necesitas para la versión automática</h3><ul><li>Una computadora con Windows. En Mac, próximamente.</li><li>Claude Pro o superior, con la app de escritorio de Claude.</li><li>ChatGPT Plus o superior. Las imágenes salen de tu propia cuenta.</li><li>Nada de API, claves ni programación: Claude instala lo que falta, incluida la app de ChatGPT si hace falta, y te avisa antes de cada paso.</li></ul></div>
+    <p class="nov-suma reveal">Es el mismo sistema que usamos para manejar nuestras propias tiendas online y productos digitales. Tú revisas cada tanda antes de usarla: siempre tienes la última palabra.</p>
+            <aside class="ss-claude reveal" aria-labelledby="ss-claude-t">
           <div class="ss-claude-cab">
             <span class="eyebrow">Con la IA que ya usas</span>
             <h3 id="ss-claude-t">¿Ya usas Claude? <em>También funciona.</em></h3>
@@ -2797,7 +2841,7 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
   </div>
 </section>
 
-<section class="nov-sec nov-vid" id="video-con-claude" data-of="nv" aria-labelledby="nov-vid-t">
+<section class="nov-sec nov-vid" id="video-con-claude" aria-labelledby="nov-vid-t">
   <div class="shell nov-vid-in">
     <div class="nov-cab reveal"><span class="eyebrow">Nuevo · también en video</span><h2 id="nov-vid-t">Anuncios de video <em>con Claude</em></h2><p class="nov-baj">Videos verticales animados, con voz y subtítulos, para tu producto. Se los pides a Claude y te entrega el video listo para publicar. Puedes sumarlo al pagar.</p></div>
     <div class="reveal"><div class="nov-video nov-video-9x16"><video muted loop playsinline controls preload="none" width="720" height="1280" data-poster="assets/nov/demo-videos.jpg" aria-label="Ejemplo de un anuncio de video vertical hecho con Claude"><source src="assets/nov/demo-videos.mp4" type="video/mp4"></video></div></div>
@@ -2814,16 +2858,11 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
           <div><h2>Si necesitas crear anuncios o contenido más rápido y con calidad como de las grandes marcas del mundo, <em>esto es para ti.</em></h2><p class="mt16">Da igual si vendes online, atiendes un local, ofreces un servicio o diriges una empresa que quiere una presencia digital como la de las marcas grandes del mundo.</p><p class="mt16">Y si ya pagas ChatGPT Plus, esto es exactamente lo que le faltaba a esa suscripción.</p></div>
         </div>
         <div class="audience-chips v2-nichos reveal">
-          <div class="v2-nicho"><span class="n">01</span><b>Tiendas y dropshipping</b></div>
-          <div class="v2-nicho"><span class="n">02</span><b>Restaurantes y gastronomía</b></div>
-          <div class="v2-nicho"><span class="n">03</span><b>Bienes raíces e inmobiliarias</b></div>
-          <div class="v2-nicho"><span class="n">04</span><b>Gimnasios y bienestar</b></div>
-          <div class="v2-nicho"><span class="n">05</span><b>Salones, barberías y estética</b></div>
-          <div class="v2-nicho"><span class="n">06</span><b>Servicios y profesionales</b></div>
-          <div class="v2-nicho"><span class="n">07</span><b>Productos digitales y SaaS</b></div>
-          <div class="v2-nicho"><span class="n">08</span><b>Marcas de ropa y accesorios</b></div>
-          <div class="v2-nicho"><span class="n">09</span><b>Freelancers y agencias chicas</b></div>
-          <div class="v2-nicho"><span class="n">10</span><b>Creadores de contenido</b></div>
+          <div class="v2-nicho"><span class="n">01</span><b>Tienes una tienda online o haces dropshipping</b></div>
+          <div class="v2-nicho"><span class="n">02</span><b>Vendes un producto: belleza, moda, joyas, comida, hogar</b></div>
+          <div class="v2-nicho"><span class="n">03</span><b>Haces anuncios para clientes y quieres entregar más rápido y mejor</b></div>
+          <div class="v2-nicho"><span class="n">04</span><b>Vendes productos digitales o servicios</b></div>
+          <div class="v2-nicho"><span class="n">05</span><b>Ya usas Claude o Higgsfield y quieres que se haga solo</b></div>
         </div>
         <p class="audience-note reveal">Si vendes algo real y estás cansado de crear anuncios o contenido que se nota que están hechos con IA, esto es para ti. <b>Tú pones la foto y tus datos; el método pone la dirección creativa.</b> El tiempo que te ahorra, lo usas en vender.</p>
       </div>
@@ -2930,7 +2969,7 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
       })();
       </script>
     </section>
-    <section data-esc="Dos caminos" class="difference mv-caminos">
+    <section class="difference mv-caminos" data-ocultar>
   <div class="shell">
     <div class="section-intro reveal"><span class="eyebrow muted">Los dos caminos</span><div><h2>Hazlo solo. O <em>hazlo hoy.</em></h2><p>Aprender esto por tu cuenta se puede: cuesta meses de prueba y error. El <span class="mv-marca mv-marca-serif">Método Prompt Ads</span> es eso mismo, ya resuelto: <b>cada error ya cometido, cada solución ya escrita, cada paso en orden</b>. Tú solo sigues los pasos, y en una tarde estás creando. Pagas una vez y te ahorras el camino entero.</p></div></div>
     <div class="mv-caminos-grid">
@@ -2978,9 +3017,9 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
           <div class="offer-copy">
             <figure class="offer-visual"><img decoding="async" src="assets/producto/prompt-ads-oferta.webp" srcset="assets/producto/prompt-ads-oferta-700.webp 700w, assets/producto/prompt-ads-oferta.webp 900w" sizes="(max-width:760px) 89vw, 420px" width="900" height="900" loading="lazy" alt="Prompt Ads en las manos: el método de visuales estratégicos que venden"></figure>
             <span class="eyebrow">PROMPT ADS · ACCESO COMPLETO</span>
-            <h2>Empieza a crear <em>+50 anuncios premium en minutos.</em> Hoy mismo.</h2>
-            <p>Entra con el método listo y deja de regalarle horas a un diseño que no vende. Produce anuncios con calidad de estudio, de los que cobrarían miles de dólares, <b>sin diseñador, sin agencia y sin semanas de producción</b>. No tienes que aprender nada nuevo: solo seguir los pasos.</p>
-            <p class="offer-choice">Tus anuncios pueden seguir pasando desapercibidos, o volverse imposibles de olvidar. <b>Hoy, esa decisión es tuya.</b></p>
+            <h2 data-ocultar>Empieza a crear <em>+50 anuncios premium en minutos.</em> Hoy mismo.</h2>
+            <p data-ocultar>Entra con el método listo y deja de regalarle horas a un diseño que no vende. Produce anuncios con calidad de estudio, de los que cobrarían miles de dólares, <b>sin diseñador, sin agencia y sin semanas de producción</b>. No tienes que aprender nada nuevo: solo seguir los pasos.</p>
+            <p class="offer-choice" data-ocultar>Tus anuncios pueden seguir pasando desapercibidos, o volverse imposibles de olvidar. <b>Hoy, esa decisión es tuya.</b></p>
             <div class="mv-ahorro" id="mvAhorro">
   <p class="mv-ahorro-t">Hagamos la cuenta. Hacer <b>50 anuncios de este nivel</b> por fuera te cuesta:</p>
   <div class="mv-barras">
@@ -3014,20 +3053,19 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
  <li><span><b>Ángulos que venden</b><small class="ob-que">Qué decir en cada anuncio: 120 formas, con ejemplos.</small></span><b>USD 27</b></li>
  <li data-of="nonv"><span><b>Cómo crear avatares hiperrealistas</b><small class="ob-que">Una cara propia para tu marca.</small></span><b>USD 27</b></li>
 <li data-of="nov"><span><b>Asistente de personalización</b><small class="ob-que">La ficha de tu marca, en 14 preguntas. Solo en la Edición Noviembre.</small></span><b class="v2-si">Incluido</b></li>
- <li class="ob-regalo" data-of="ob"><span><b>Plan 365</b><small class="ob-que">Tu plan de acción de un año, adaptado a tu negocio. Solo en October Black.</small></span><b>USD 27</b></li>
- <li class="ob-regalo" data-of="nv"><span><b>Plan 365</b><small class="ob-que">Tu plan de acción de un año, adaptado a tu negocio.</small></span><b>USD 27</b></li>
+<li><span><b>Método Prompt Ads Avanzado</b><small class="ob-que">La versión automática, con Claude</small></span><b class="v2-si">Incluido</b></li>
+ <li class="ob-regalo"><span><b>Plan 365</b><small class="ob-que">Tu plan de acción de un año, adaptado a tu negocio.</small></span><b>USD 27</b></li>
  <li><span>Actualizaciones del método</span><b class="v2-si">Incluido</b></li>
-</ul> <div class="stack-total"><span>Valor total</span><b><s data-of="ob">USD 620</s><s data-of="post">USD 593</s><s data-of="nov">USD 593</s><s data-of="nov-cerrada">USD 593</s></b></div>
+</ul> <div class="stack-total"><span>Valor total</span><b><s data-of="ob">USD 620</s><s data-of="nv">USD 593</s></b></div>
             <div class="price-reveal">
-              <span class="launch-tag" data-of="ob">October Black</span><span class="launch-tag" data-of="nov">Precio Edición Noviembre</span><span class="mv-marca mv-marca-precio">Método Prompt Ads</span>
-              <div class="price"><sup>USD</sup><span data-of="ob">67</span><span data-of="post" data-of-precio>87</span><span data-of="nv" data-nov-precio>67</span></div>
-              <p class="price-after" data-cuenta="despues" data-of="ob">Precio October Black hasta el <b>8 de octubre</b>. Después sube a USD 87.</p>
+              <span class="launch-tag" data-of="ob" data-fase="bv">Tu precio de October Black</span><span class="launch-tag" data-of="nv" data-fase="bv">Tu precio de bienvenida</span><span class="launch-tag" data-fase="regular">Precio regular</span><span class="mv-marca mv-marca-precio">Método Prompt Ads</span>
+              <div class="price"><sup>USD</sup><span data-precio>67</span></div>
               <div class="v2-cuenta" aria-label="Cuenta regresiva hasta que termina October Black"><div><b data-c="d">00</b><span>días</span></div><i></i><div><b data-c="h">00</b><span>horas</span></div><i></i><div><b data-c="m">00</b><span>min</span></div><i></i><div><b data-c="s">00</b><span>seg</span></div></div>
             </div>
             <p class="v2-empuje">El riesgo es nuestro, no tuyo. Tienes <b>7 días de garantía</b> para aprender el método con calma. Si no aprendes a crear estos anuncios, recuperas el 100% de tu dinero. <b>No te vas a arrepentir.</b></p>
             <a class="btn checkout" href="https://pay.hotmart.com/G107515293E?off=1tbcugw1&checkoutMode=10" target="_blank" rel="noopener">Conseguir Prompt Ads</a>
-            <p class="mv-cupo ob-cupo" data-of="ob"><span class="mv-cupo-txt"><i class="mv-cupo-pun"></i><em>Últimos días a USD 67</em></span><span class="mv-cupo-barra" aria-hidden="true"><i style="--f:55%"></i></span><span class="mv-cupo-pie">El jueves 8 a las 12:00 sube a <em>USD 87</em>.</span></p>
-            <p class="mv-cupo ob-cupo" data-of="nov"><span class="mv-cupo-pie">La Edición Noviembre cierra el lunes 30 de noviembre a las 12:00 (hora de Paraguay).</span></p>
+            <p class="mv-cupo nov-despues" data-fase="bv"><span class="mv-cupo-pie">Después de las 24 horas, el precio es USD <span data-p-reg>87</span>.</span></p>
+            <p class="mv-cupo" data-of="nov"><span class="mv-cupo-pie">La Edición Noviembre cierra el lunes 30 de noviembre a las 12:00 (hora de Paraguay).</span></p>
             <div class="guarantee-box ob-garantia">
         <div class="mv-sello" role="img" aria-label="Garantía de 7 días">
   <svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="ob-oro-sello" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7E9B8"/><stop offset=".32" stop-color="#E3CF98"/><stop offset=".56" stop-color="#C6A45E"/><stop offset=".76" stop-color="#EFDA9E"/><stop offset="1" stop-color="#B28E4A"/></linearGradient></defs>
@@ -3065,7 +3103,7 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
 </div></div>
 </section>
 
-<section data-esc="Hazlo" class="difference v2-hazlo">
+<section class="difference v2-hazlo" data-ocultar>
 <div class="shell"><div class="section-intro reveal"><span class="eyebrow muted">Todo esto salió del método</span><div><h2>Hazlo. <em>Empieza a crear anuncios así.</em></h2><p>Perfume, muebles, comida, deporte, skincare. Ninguno pasó por una agencia: cada uno salió de una foto real y del método. <b>El próximo puede ser de tu producto.</b></p></div></div></div>
 <div class="v2-gal" id="galeria2"><div class="v2-gal-track"><div class="v2-gal-set"><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-01-byredo.webp" aria-label="Ampliar anuncio de Byredo"><img src="assets/galeria2/g2-01-byredo.webp" alt="Anuncio editorial de perfume creado con el Método Prompt Ads" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-02-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-02-muuto.webp" alt="Anuncio de diseño de una silla creado con el Método Prompt Ads" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-03-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-03-burguer.webp" alt="Anuncio gastronómico creado con el Método Prompt Ads" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-04-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-04-stanley.webp" alt="Anuncio comparativo de un termo creado con el Método Prompt Ads" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-05-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-05-ordinary.webp" alt="Anuncio de skincare creado con el Método Prompt Ads" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-06-byredo.webp" aria-label="Ampliar anuncio de Byredo"><img src="assets/galeria2/g2-06-byredo.webp" alt="Anuncio de perfume con dirección de arte, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-07-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-07-muuto.webp" alt="Anuncio minimalista de mobiliario, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-08-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-08-burguer.webp" alt="Anuncio de hamburguesa bajo el agua, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-09-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-09-stanley.webp" alt="Anuncio deportivo de un termo, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-10-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-10-ordinary.webp" alt="Anuncio editorial de sérum, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-11-byredo.webp" aria-label="Ampliar anuncio de Byredo"><img src="assets/galeria2/g2-11-byredo.webp" alt="Anuncio de lujo de perfume, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-12-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-12-muuto.webp" alt="Anuncio de una silla sobre el agua, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-13-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-13-burguer.webp" alt="Anuncio de hamburguesa con auto clásico, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-14-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-14-stanley.webp" alt="Anuncio de termo en cielo abierto, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-15-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-15-ordinary.webp" alt="Anuncio de textura de sérum, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-16-byredo.webp" aria-label="Ampliar anuncio de Byredo"><img src="assets/galeria2/g2-16-byredo.webp" alt="Anuncio de perfume en atardecer, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-17-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-17-muuto.webp" alt="Anuncio de silla con modelo, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-18-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-18-burguer.webp" alt="Anuncio creativo de hamburguesa, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-19-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-19-stanley.webp" alt="Anuncio urbano de termo, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-20-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-20-ordinary.webp" alt="Anuncio científico de skincare, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-22-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-22-muuto.webp" alt="Anuncio de dos sillas en el campo, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-23-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-23-burguer.webp" alt="Anuncio de la anatomía de una hamburguesa, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-24-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-24-stanley.webp" alt="Anuncio de termo en movimiento, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-25-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-25-ordinary.webp" alt="Anuncio editorial de sérum puro, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-26-byredo.webp" aria-label="Ampliar anuncio de Byredo"><img src="assets/galeria2/g2-26-byredo.webp" alt="Anuncio floral de perfume, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-27-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-27-muuto.webp" alt="Anuncio de silla flotante, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-28-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-28-burguer.webp" alt="Anuncio de capas de hamburguesa, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-29-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-29-stanley.webp" alt="Anuncio deportivo de pausa e hidratación, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-30-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-30-ordinary.webp" alt="Anuncio de equilibrio de skincare, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-31-byredo.webp" aria-label="Ampliar anuncio de Byredo"><img src="assets/galeria2/g2-31-byredo.webp" alt="Anuncio de perfume en el desierto, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-32-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-32-muuto.webp" alt="Anuncio de dos formas de habitar, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-33-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-33-burguer.webp" alt="Anuncio de pausa con hamburguesa, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-34-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-34-stanley.webp" alt="Anuncio urbano de termo en uso, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-35-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-35-ordinary.webp" alt="Anuncio clínico de skincare, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-36-redbull.webp" aria-label="Ampliar anuncio de Red Bull"><img src="assets/galeria2/g2-36-redbull.webp" alt="Anuncio de verano de Red Bull, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure></div><div class="v2-gal-set" aria-hidden="true"><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-01-byredo.webp" aria-label="Ampliar anuncio de Byredo"><img src="assets/galeria2/g2-01-byredo.webp" alt="Anuncio editorial de perfume creado con el Método Prompt Ads" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-02-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-02-muuto.webp" alt="Anuncio de diseño de una silla creado con el Método Prompt Ads" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-03-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-03-burguer.webp" alt="Anuncio gastronómico creado con el Método Prompt Ads" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-04-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-04-stanley.webp" alt="Anuncio comparativo de un termo creado con el Método Prompt Ads" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-05-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-05-ordinary.webp" alt="Anuncio de skincare creado con el Método Prompt Ads" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-06-byredo.webp" aria-label="Ampliar anuncio de Byredo"><img src="assets/galeria2/g2-06-byredo.webp" alt="Anuncio de perfume con dirección de arte, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-07-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-07-muuto.webp" alt="Anuncio minimalista de mobiliario, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-08-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-08-burguer.webp" alt="Anuncio de hamburguesa bajo el agua, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-09-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-09-stanley.webp" alt="Anuncio deportivo de un termo, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-10-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-10-ordinary.webp" alt="Anuncio editorial de sérum, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-11-byredo.webp" aria-label="Ampliar anuncio de Byredo"><img src="assets/galeria2/g2-11-byredo.webp" alt="Anuncio de lujo de perfume, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-12-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-12-muuto.webp" alt="Anuncio de una silla sobre el agua, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-13-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-13-burguer.webp" alt="Anuncio de hamburguesa con auto clásico, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-14-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-14-stanley.webp" alt="Anuncio de termo en cielo abierto, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-15-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-15-ordinary.webp" alt="Anuncio de textura de sérum, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-16-byredo.webp" aria-label="Ampliar anuncio de Byredo"><img src="assets/galeria2/g2-16-byredo.webp" alt="Anuncio de perfume en atardecer, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-17-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-17-muuto.webp" alt="Anuncio de silla con modelo, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-18-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-18-burguer.webp" alt="Anuncio creativo de hamburguesa, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-19-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-19-stanley.webp" alt="Anuncio urbano de termo, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-20-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-20-ordinary.webp" alt="Anuncio científico de skincare, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-22-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-22-muuto.webp" alt="Anuncio de dos sillas en el campo, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-23-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-23-burguer.webp" alt="Anuncio de la anatomía de una hamburguesa, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-24-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-24-stanley.webp" alt="Anuncio de termo en movimiento, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-25-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-25-ordinary.webp" alt="Anuncio editorial de sérum puro, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-26-byredo.webp" aria-label="Ampliar anuncio de Byredo"><img src="assets/galeria2/g2-26-byredo.webp" alt="Anuncio floral de perfume, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-27-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-27-muuto.webp" alt="Anuncio de silla flotante, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-28-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-28-burguer.webp" alt="Anuncio de capas de hamburguesa, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-29-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-29-stanley.webp" alt="Anuncio deportivo de pausa e hidratación, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-30-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-30-ordinary.webp" alt="Anuncio de equilibrio de skincare, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-31-byredo.webp" aria-label="Ampliar anuncio de Byredo"><img src="assets/galeria2/g2-31-byredo.webp" alt="Anuncio de perfume en el desierto, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-32-muuto.webp" aria-label="Ampliar anuncio de Muuto"><img src="assets/galeria2/g2-32-muuto.webp" alt="Anuncio de dos formas de habitar, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-33-burguer.webp" aria-label="Ampliar anuncio de Simply Burguer"><img src="assets/galeria2/g2-33-burguer.webp" alt="Anuncio de pausa con hamburguesa, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-34-stanley.webp" aria-label="Ampliar anuncio de Stanley"><img src="assets/galeria2/g2-34-stanley.webp" alt="Anuncio urbano de termo en uso, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-35-ordinary.webp" aria-label="Ampliar anuncio de The Ordinary"><img src="assets/galeria2/g2-35-ordinary.webp" alt="Anuncio clínico de skincare, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure><figure class="v2-piece"><button class="zoomable" type="button" data-full="assets/galeria2/g2-36-redbull.webp" aria-label="Ampliar anuncio de Red Bull"><img src="assets/galeria2/g2-36-redbull.webp" alt="Anuncio de verano de Red Bull, hecho con el método" loading="lazy" decoding="async" width="600" height="750"></button></figure></div></div></div>
 <div class="shell" style="text-align:center;margin-top:28px"><a href="#precio" style="display:inline-block;background:var(--ink,#171713);color:#F2EEE5;padding:17px 34px;border-radius:999px;font-weight:600;text-decoration:none">Quiero crear los míos</a></div>
@@ -3101,22 +3139,22 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
 </section>
 
 <section data-esc="Lo que cuesta esperar" class="difference">
-<div class="shell"><div class="section-intro reveal"><span class="eyebrow muted">Lo que cuesta esperar</span><div><h2>Dentro de un mes vas a estar <em>exactamente donde estás hoy.</em></h2><p>Piensa en el último mes. Cuántas publicaciones hiciste, cuántas horas te llevaron y cuántas ventas trajeron. <b>Ese número no cambia solo:</b> el mes que viene va a ser igual, y el siguiente también, hasta que cambies algo.</p><p>Cada semana que sigue igual tiene un costo que no aparece en ninguna cuenta: las horas que se te van armando anuncios que no frenan a nadie, y lo que pagas por cada persona que ve tu anuncio y sigue de largo. No se siente como una pérdida porque nunca la ves junta. Pero está, y se acumula.</p><p><b>Probarlo te cuesta una tarde, y tienes siete días para arrepentirte y recuperar tu dinero. No probarlo te cuesta otro mes igual al anterior.</b> De los dos caminos, solo uno tiene devolución.</p><p><a href="#precio" class="btn">Quiero empezar hoy</a></p></div></div></div>
+<div class="shell"><div class="section-intro reveal"><span class="eyebrow muted">Lo que cuesta esperar</span><div><h2>Dentro de un mes vas a estar <em>exactamente donde estás hoy.</em></h2><p>Piensa en el último mes. Cuántas publicaciones hiciste, cuántas horas te llevaron y cuántas ventas trajeron. <b>Ese número no cambia solo:</b> el mes que viene va a ser igual, y el siguiente también, hasta que cambies algo.</p><p>Cada semana que sigue igual tiene un costo que no aparece en ninguna cuenta: las horas que se te van armando anuncios que no frenan a nadie, y lo que pagas por cada persona que ve tu anuncio y sigue de largo. No se siente como una pérdida porque nunca la ves junta. Pero está, y se acumula.</p><p><b>Probarlo te cuesta una tarde, y tienes siete días para arrepentirte y recuperar tu dinero. No probarlo te cuesta otro mes igual al anterior.</b> De los dos caminos, solo uno tiene devolución.</p><p><a href="#precio" class="btn">Quiero empezar hoy</a></p><p class="nov-cierre-precio" data-linea-precio></p></div></div></div>
 </section>
 
 <section data-esc="Preguntas" class="faq" id="preguntas">
 <div class="v2-deco" aria-hidden="true"><img class="d1" src="assets/deco/rolex.webp" alt="" loading="lazy" decoding="async" width="520" height="650"></div>
 
       <div class="shell faq-wrap">
-        <h2>Preguntas frecuentes.</h2> <details data-of="ob"><summary>¿Qué es October Black?</summary><p>Es el lanzamiento de la edición de octubre del método. Hasta el jueves 8 de octubre a las 12:00 (hora de Paraguay), el pack completo (el método con su video, Errores comunes, Ángulos que venden y Cómo crear avatares hiperrealistas, más el Plan 365 de regalo) cuesta <b>USD 67</b>. Cuando el reloj de arriba llega a cero, el precio pasa a <b>USD 87</b>. Los que ya compraron el método reciben las piezas nuevas sin pagar de nuevo.</p></details><details data-of="nov"><summary>¿Qué es la Edición Noviembre?</summary><p>Cada mes el método sale en una edición con un material exclusivo. La Edición Noviembre incluye el Asistente de personalización hasta el lunes 30 de noviembre a las 12:00 (hora de Paraguay). Quien compra en noviembre lo conserva para siempre. La guía Cómo crear avatares hiperrealistas, que vino con la edición de octubre, ahora se puede sumar al pagar.</p></details><details data-of="nv"><summary>¿Qué diferencia hay entre el Método y el Método Avanzado?</summary><p>El Método Prompt Ads lo usas en ChatGPT: arrastras los archivos y pides tus anuncios. El Avanzado hace lo mismo en automático con Claude: le pides la tanda y Claude y ChatGPT la crean y la revisan por ti. El Método viene en el pack; el Avanzado se suma con un clic al pagar.</p></details><details data-of="nv"><summary>¿Necesito saber programar o conectar una API?</summary><p>No. No hay claves ni configuraciones técnicas. La primera vez, Claude revisa tu computadora, instala lo que falta y te pide que inicies sesión con tu cuenta de ChatGPT. Después solo escribes lo que quieres.</p></details><details data-of="nv"><summary>¿Funciona en Mac?</summary><p>La versión a mano funciona en cualquier computadora con ChatGPT. La versión avanzada, por ahora en Windows; en Mac, próximamente.</p></details>
+        <h2>Preguntas frecuentes.</h2> <details data-of="ob"><summary>¿Qué es October Black?</summary><p>Es el lanzamiento de la edición de octubre del método. Tu precio de bienvenida es de <b>USD 67</b> durante las 24 horas siguientes a tu primera visita, con el pack completo (el método con su video, Errores comunes, Ángulos que venden, Cómo crear avatares hiperrealistas y el Método Prompt Ads Avanzado, más el Plan 365 de regalo). Después de esas 24 horas, el precio es <b>USD 87</b>. Los que ya compraron el método reciben las piezas nuevas sin pagar de nuevo.</p></details><details data-of="nov"><summary>¿Qué es la Edición Noviembre?</summary><p>Cada mes el método sale en una edición con un material exclusivo. La Edición Noviembre incluye el Asistente de personalización hasta el lunes 30 de noviembre a las 12:00 (hora de Paraguay). Quien compra en noviembre lo conserva para siempre. La guía Cómo crear avatares hiperrealistas, que vino con la edición de octubre, ahora se puede sumar al pagar.</p></details><details><summary>¿Por qué tengo un precio especial y un reloj?</summary><p>Es tu precio de bienvenida: dura 24 horas desde la primera vez que entras. Después, el precio es USD 87. Y el precio puede subir en cualquier momento.</p></details><details><summary>¿Funciona para mi rubro?</summary><p>Sí. Sirve para cualquier producto que se pueda fotografiar y para servicios. En la página ves tandas de rubros muy distintos hechas con el mismo método.</p></details><details><summary>¿Qué diferencia hay entre el Método y el Método Avanzado?</summary><p>El Método Prompt Ads lo usas en ChatGPT: arrastras los archivos y pides tus anuncios. El Avanzado hace lo mismo en automático con Claude: le pides la tanda y Claude y ChatGPT la crean y la revisan por ti. Los dos vienen incluidos.</p></details><details><summary>¿Y si no uso Claude?</summary><p>Usas la versión a mano con ChatGPT, que funciona igual de bien. La automática queda para cuando quieras.</p></details><details><summary>¿Qué necesito para la versión automática?</summary><p>Una computadora con Windows (en Mac, próximamente), Claude Pro o superior con la app de escritorio de Claude, y ChatGPT Plus o superior: las imágenes salen de tu propia cuenta.</p></details><details><summary>¿Tengo que conectar una API o saber programar?</summary><p>No. Arrastras un archivo a Claude y él prepara todo; tú solo inicias sesión en tu cuenta de ChatGPT cuando te lo pide.</p></details><details><summary>¿Funciona en Mac?</summary><p>La versión a mano, sí. La automática, por ahora en Windows; en Mac, próximamente.</p></details><details><summary>¿Los anuncios se ven hechos con IA?</summary><p>No es la idea. El método está pensado para que se vean como fotos de campaña, con tu producto real y sin esa cara de IA que todos reconocen.</p></details><details><summary>¿Es una suscripción?</summary><p>No. Es un pago único.</p></details>
         <details><summary>¿Qué es exactamente Prompt Ads? ¿Son prompts?</summary><p>Sí, en parte. Son <b>6 archivos en PDF</b> que trabajan juntos: <b>2 son guías que lees tú, y empiezas por ahí</b> (la guía de uso paso a paso, que te enseña todo el proceso con capturas, y la de dirección visual), y <b>4 son archivos de prompts e instrucciones</b> que arrastras directo al chat de ChatGPT (el Protocolo Maestro, el de realismo, el de correcciones y el de variedad). No es un software ni una app: <b>lees la guía, subes la foto de lo que vendes, pegas los archivos en ChatGPT y te genera los anuncios</b>. Funciona para cualquier negocio: producto físico, servicio, local, inmobiliaria o producto digital. Y no es un PDF de puro texto hecho sin ganas: cada archivo está diseñado y acompañado de ejemplos visuales y capturas reales, para que entiendas el método de la forma más clara posible.</p></details>
         <details><summary>¿Cómo lo recibo? ¿Y si después no lo encuentro?</summary><p>Apenas se aprueba el pago, Hotmart te manda un correo con el acceso y los <b>6 archivos quedan guardados en tu cuenta</b>, para descargarlos cuando quieras y las veces que quieras. Si el correo no te llega, si cae en spam o si entras y no encuentras el material, escríbenos a <a href="mailto:soporte@simplystudioai.com">soporte@simplystudioai.com</a>: <b>te respondemos siempre</b> y te lo dejamos en la mano. Nadie se queda sin lo que compró.</p></details>
         <details><summary>¿Puedo elegir yo el estilo o lo decide la IA?</summary><p>Tú mandas, siempre. Tú defines la estética que quieres y el método te enseña a pedirla con precisión, para que la IA la aplique a TU producto sin cambiarlo ni inventar nada. Uno de los seis archivos, <b>Dirección Visual</b>, existe solo para eso: convertir la estética que tienes en la cabeza en instrucciones exactas. Y si un resultado se desvía, el archivo de correcciones trae la línea para enderezarlo.</p></details><details><summary>¿Necesito saber diseño?</summary><p>No. El método te da una estructura concreta. Tú aportas la información verdadera de tu negocio, tomas las decisiones de estilo y revisas el resultado final antes de publicarlo.</p></details>
         <details><summary>¿Necesito ChatGPT pago (Plus)?</summary><p>Para producir en serio, lo mejor es <b>ChatGPT Plus</b>: te da más capacidad por sesión, mantiene mejor el contexto de tu marca y entrega las tandas de forma más fluida. Con la versión gratuita puedes arrancar y probar el método, pero vas a chocar con los límites: menos generaciones, anuncios que a veces salen de a uno y cortes al llegar al tope diario. Y si ya pagas Plus, Prompt Ads es justamente la forma de exprimir esa suscripción y convertirla en una máquina de producir anuncios.</p></details>
-        <details data-of="nv"><summary>¿Funciona con Claude u otras apps?</summary><p>Sí. El método nació en ChatGPT y también lo puedes usar con <b>Claude</b>. Como Claude no crea imágenes por sí solo, lo conectas a una app de imágenes que trabaje con <b>GPT Image 2 de OpenAI o sus versiones superiores</b>, como <b>Higgsfield</b> (se agrega en Claude como conector y requiere un plan pago de Higgsfield). Claude aplica el método y la app genera los anuncios. Si prefieres no conectar nada, haces lo mismo directo en ChatGPT. Lo que importa es que la imagen salga de GPT Image: con otros modelos de imagen los resultados pueden variar. Y como el método se apoya en la dirección creativa y no en una versión puntual del modelo, lo sigues usando cuando OpenAI actualiza GPT Image.</p></details>
+        <details><summary>¿Funciona con Claude u otras apps?</summary><p>Sí. El método nació en ChatGPT y también lo puedes usar con <b>Claude</b>. Como Claude no crea imágenes por sí solo, lo conectas a una app de imágenes que trabaje con <b>GPT Image 2 de OpenAI o sus versiones superiores</b>, como <b>Higgsfield</b> (se agrega en Claude como conector y requiere un plan pago de Higgsfield). Claude aplica el método y la app genera los anuncios. Si prefieres no conectar nada, haces lo mismo directo en ChatGPT. Lo que importa es que la imagen salga de GPT Image: con otros modelos de imagen los resultados pueden variar. Y como el método se apoya en la dirección creativa y no en una versión puntual del modelo, lo sigues usando cuando OpenAI actualiza GPT Image.</p></details>
         <details><summary>¿Qué pasa si no sé qué estilo pedir?</summary><p>El método incluye un archivo guiado para definir la apariencia que necesita tu campaña y convertir una idea vaga en instrucciones claras para ChatGPT.</p></details>
         <details><summary>¿Genera siempre la misma cantidad de anuncios?</summary><p>No. La cantidad puede variar según el modelo, el plan y la complejidad. Por eso Prompt Ads trabaja con tandas e incluye instrucciones para pedir los siguientes anuncios sin perder el contexto.</p></details>
-        <details><summary>¿Sirve para servicios o productos digitales?</summary><p>Sí. La ficha cambia la forma de representar la oferta: puede mostrar la experiencia, el resultado, el entorno, el proceso o una escena real coherente con el beneficio.</p></details>
+        
         <details><summary>¿Mantiene mi producto exactamente igual?</summary><p>La fidelidad mejora cuanto mejor aplicas el método: el pack te enseña exactamente qué aportar y cómo corregir forma, escala, ángulos y detalles. Ningún modelo garantiza reproducción perfecta en todos los intentos.</p></details>
         <details><summary>¿Puedo usarlo para clientes?</summary><p>Sí, puedes usar el método para producir anuncios para tus propios proyectos o servicios. No puedes revender, compartir ni distribuir los archivos y prompts del pack como si fueran tuyos.</p></details>
         <details><summary>¿Esto me va a ayudar a vender más?</summary><p>Prompt Ads mejora la <b>calidad y la presentación</b> de tus anuncios, y eso puede aumentar tus ventas: un anuncio que se ve profesional genera más confianza, frena el scroll y hace que tu producto se perciba más valioso. Ten en cuenta que tus resultados también dependen de tu oferta, el precio, la segmentación, tu página y el presupuesto que inviertas.</p></details>
@@ -3132,12 +3170,12 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
     </div>
   </footer>
 
-  <div class="mobile-buy" id="mobileBuy"><div><span data-cuenta="movil-arriba">October Black</span><b data-cuenta="movil">Termina el jueves 8 a las 12:00</b></div><a href="#precio" class="btn">Aprovechar oferta</a></div>
-  <script>/* la barra de abajo del celular según el estado de la oferta */
-  (function(){var o=window.ssOferta;if(!o||o.estado==='ob')return;
+  <div class="mobile-buy" id="mobileBuy"><div><span data-cuenta="movil-arriba">Método Prompt Ads</span><b data-cuenta="movil">Acceso inmediato</b></div><a href="#precio" class="btn">Aprovechar oferta</a></div>
+  <script>/* la barra de abajo del celular según la fase del precio (sin precios) */
+  (function(){var o=window.ssOferta;if(!o)return;
   var a=document.querySelector('[data-cuenta="movil-arriba"]'),b=document.querySelector('[data-cuenta="movil"]'),c=document.querySelector('#mobileBuy .btn');
-  if(o.estado==='nov'){if(a)a.textContent='Edición Noviembre';if(b){var f=new Date(o.fin),S=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];b.textContent='Termina el '+S[f.getDay()]+' '+f.getDate()+' a las '+('0'+f.getHours()).slice(-2)+':'+('0'+f.getMinutes()).slice(-2);}return;}
-  if(o.estado==='bv'){if(a)a.textContent='Precio de bienvenida';if(b)b.textContent='Termina '+o.cuando.texto;}
+  if(o.fase==='bv'){var f=new Date(o.finBv),h=('0'+f.getHours()).slice(-2)+':'+('0'+f.getMinutes()).slice(-2),hoy=f.toDateString()===new Date().toDateString();
+    if(a)a.textContent=o.estado==='ob'?'Precio de October Black':'Tu precio de bienvenida';if(b)b.textContent='Termina '+(hoy?'hoy':'mañana')+' a las '+h;}
   else{if(a)a.textContent='Método Prompt Ads';if(b)b.textContent='Acceso inmediato';if(c)c.textContent='Ver el acceso';}})();</script>
   <dialog class="lightbox" id="lightbox" aria-label="Vista ampliada del anuncio">
     <button class="lightbox-close" aria-label="Cerrar vista ampliada">×</button>
@@ -3558,172 +3596,8 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
     })();
   </script>
 
-  <script>
-  /* ── El estado de la oferta en la tarjeta de precio (lo decide el script de <head>) ── */
-  (function(){
-    var o = window.ssOferta; if (!o || o.estado === 'ob') return;
-    var q = function(s){ return document.querySelector(s); };
-    /* la cuenta del ahorro muestra el precio de ahora */
-    var n = q('.mv-barra-tu b[data-n]'); if (n) { n.setAttribute('data-n', o.precio); n.textContent = 'USD ' + o.precio; }
-    var p = q('[data-of-precio]'); if (p) p.textContent = o.precio;
-    if (o.estado === 'bv') {
-      var x = q('[data-bv="despues"]'); if (x) x.innerHTML = 'Tu precio de bienvenida vale hasta <b>' + o.cuandoLargo.texto + '</b>. Después, USD ' + o.regular + '.';
-      var r = q('.v2-cuenta'); if (r) r.setAttribute('aria-label', 'Cuenta regresiva de tu precio de bienvenida');
-      var c = q('.bv-cupo');
-      if (c) {
-        var i = c.querySelector('.mv-cupo-barra i'); if (i) i.style.setProperty('--f', Math.round(Math.min(1, Math.max(0, (Date.now() - o.inicio) / (o.fin - o.inicio))) * 100) + '%');
-        if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function(es){ if (es[0].isIntersecting) { c.classList.add('mv-listo'); io.disconnect(); } }, { threshold: 0.4 }); io.observe(c); }
-        else c.classList.add('mv-listo');
-      }
-    }
-    if (o.estado === 'regular') {
-      /* el plazo de esta persona ya pasó: su botón va a la oferta regular, con el mismo origen (sck, xcod) de siempre */
-      [].forEach.call(document.querySelectorAll('a[href*="pay.hotmart.com"]'), function(a){ try { var u = new URL(a.href); u.searchParams.set('off', o.off); a.href = u.toString(); } catch (e) {} });
-      var t = q('[data-bv="termino"]'); if (t) t.textContent = 'El precio de bienvenida terminó ' + o.cuandoLargo.fecha + '.';
-    }
-  })();
-  </script>
-
-  <script>
-  /* ── Cuenta atrás del precio ──────────────────────────────────────────
-     Una sola fecha para toda la página. El script cambiar-precio.js la
-     actualiza sola cuando pasás de peldaño, así que esto no se toca a mano.
-     Si algo falla, queda el texto que ya estaba escrito en el HTML.        */
-  (function(){
-    const LIMITE = (window.ssOferta && window.ssOferta.estado === 'ob' && window.ssOferta.fin) ? new Date(window.ssOferta.fin - 108e5).toISOString().slice(0,10) : (window.ssOferta && window.ssOferta.ext6) ? '2026-10-26' : (window.ssOferta && window.ssOferta.ext5) ? '2026-10-23' : (window.ssOferta && window.ssOferta.ext4) ? '2026-10-20' : (window.ssOferta && window.ssOferta.ext3) ? '2026-10-17' : (window.ssOferta && window.ssOferta.ext2) ? '2026-10-14' : (window.ssOferta && window.ssOferta.ext) ? '2026-10-11' : '2026-10-08';      // termina October Black (12:00 de Paraguay); desde el 8/10 12:00 rigen 3 días más y desde el 11/10 12:00, otros 3
-    /* La hora exacta y el huso. Sin esto cada visitante cuenta hacia SU
-       medianoche y el reloj llega a cero en momentos distintos segun el
-       pais: entre Espana y Mexico hay ocho horas. Asi todos cuentan hacia
-       el mismo instante, el mismo en que se cambia el precio de verdad. */
-    const HORA = 'T12:00:00-03:00';   // mediodia en Paraguay (UTC-3 todo el año desde 2024)
-    const PRECIO = 67;                // el de ahora
-    const SUBE_A = 87;
-    const PELDANO = 'October Black';   // cómo se llama el precio de ahora
-
-    const MAY = s => s.charAt(0).toUpperCase() + s.slice(1);
-    const IDIOMA_ES = () => (document.documentElement.lang || 'es').slice(0, 2) === 'es';
-
-    const hoy = new Date(); hoy.setHours(0,0,0,0);
-    const fin = new Date(LIMITE + HORA);
-    if (isNaN(fin)) return;
-    // Días de CALENDARIO del visitante hasta el día en que termina: 0 = termina hoy, 1 = termina mañana.
-    // Antes se medía hasta la hora exacta y se redondeaba: según el país, el último día decía "mañana"
-    // o el día anterior decía "hoy". La hora del cierre se muestra en el reloj de quien mira.
-    const finDia = new Date(fin); finDia.setHours(0,0,0,0);
-    const dias = fin - Date.now() <= 0 ? -1 : Math.round((finDia - hoy) / 86400000);
-    const HHMM = ('0' + fin.getHours()).slice(-2) + ':' + ('0' + fin.getMinutes()).slice(-2);
-    const SEMANA = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
-    const ES = IDIOMA_ES();
-
-    // La fecha en palabras sale de LIMITE, así que cuando cambiar-precio.js
-    // mueva el peldaño no queda una fecha vieja escrita a mano.
-    /* Los textos del contador, por idioma. El script corre en las tres
-       versiones de la pagina y toma el que corresponde de <html lang>. */
-    const IDIOMA = (document.documentElement.lang || 'es').slice(0, 2);
-    const T = {
-      es: {
-        meses: ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],
-        de: ' de ',
-        peldano: PELDANO,
-        lejos:   p => '<b>October Black</b> Últimos días. Termina en',
-        cerca:   p => '<b>October Black</b> Últimos días. Termina en',
-        ultimo:  () => '<b>October Black</b> Último día. Termina en',
-        fecha:   f => 'Precio October Black hasta el <b>' + f + '</b>. Después sube a USD ' + SUBE_A + '.',
-        manana:  () => '<b>Último día a USD ' + PRECIO + '.</b> Hoy sube a USD ' + SUBE_A + '.',
-        arribaLejos: p => 'October Black',
-        arribaCerca: 'Últimos días de October Black',
-        arribaUltimo: 'Último día de October Black',
-        pie: 'Termina el jueves 8 a las 12:00',
-        pieManana: 'Termina mañana a las 12:00'
-      },
-      pt: {
-        meses: ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'],
-        de: ' de ',
-        peldano: 'preço de lançamento',
-        lejos:   p => '<b>' + MAY(p) + ':</b> sobe para <b>USD ' + SUBE_A + '</b> em',
-        cerca:   p => '<b>Últimos dias</b> de ' + p + '. Sobe para <b>USD ' + SUBE_A + '</b> em',
-        ultimo:  () => '<b>Último dia com o preço mais baixo que vai ter.</b> Amanhã sobe para <b>USD ' + SUBE_A + '</b>.',
-        fecha:   f => 'Em <b>' + f + '</b> passa para <b>USD ' + SUBE_A + '</b>',
-        manana:  () => '<b>Amanhã sobe para USD ' + SUBE_A + '</b>',
-        arribaLejos: p => MAY(p),
-        arribaCerca: 'Últimos dias',
-        arribaUltimo: 'Último dia',
-        pie: 'Depois sobe para USD ' + SUBE_A,
-        pieManana: 'Amanhã sobe para USD ' + SUBE_A
-      },
-      en: {
-        meses: ['January','February','March','April','May','June','July','August','September','October','November','December'],
-        de: ' ',
-        peldano: 'launch price',
-        lejos:   p => '<b>' + MAY(p) + ':</b> goes up to <b>USD ' + SUBE_A + '</b> in',
-        cerca:   p => '<b>Final days</b> of the ' + p + '. Goes up to <b>USD ' + SUBE_A + '</b> in',
-        ultimo:  () => '<b>Last day at the lowest price it will ever have.</b> Tomorrow it goes up to <b>USD ' + SUBE_A + '</b>.',
-        fecha:   f => 'On <b>' + f + '</b> it goes to <b>USD ' + SUBE_A + '</b>',
-        manana:  () => '<b>Tomorrow it goes up to USD ' + SUBE_A + '</b>',
-        arribaLejos: p => MAY(p),
-        arribaCerca: 'Final days',
-        arribaUltimo: 'Last day',
-        pie: 'Then goes up to USD ' + SUBE_A,
-        pieManana: 'Tomorrow it goes up to USD ' + SUBE_A
-      }
-    };
-    const L = T[IDIOMA] || T.es;
-    const MESES = L.meses;
-    const enPalabras = IDIOMA === 'en'
-      ? MESES[fin.getMonth()] + ' ' + fin.getDate()
-      : fin.getDate() + L.de + MESES[fin.getMonth()];
-
-    // Cómo se dice cada tramo. El último día es el que más vende, así que
-    // tiene su propio texto y no uno genérico.
-    //
-    // Ni el banner ni la tarjeta repiten el número de días: los dos llevan
-    // un reloj al lado. El texto contaba días de calendario y el reloj cuenta
-    // horas reales, así que a media tarde el texto decía 5 y el reloj 04d.
-    // Las dos cuentas eran correctas, pero juntas se leían como un error.
-    // Ahora el número lo dice el reloj y nadie más.
-    let banner, despues, movil, movilArriba;
-    if (dias > 5) {
-      banner  = L.lejos(L.peldano);
-      despues = L.fecha(enPalabras);
-      movilArriba = L.arribaLejos(L.peldano);
-      movil       = L.pie;
-    } else if (dias > 1) {
-      banner  = L.cerca(L.peldano);
-      despues = L.fecha(enPalabras);
-      movilArriba = L.arribaCerca;
-      movil       = ES ? 'Termina el ' + SEMANA[fin.getDay()] + ' ' + fin.getDate() + ' a las ' + HHMM : L.pie;
-    } else if (dias === 1) {
-      // termina mañana (en el calendario de quien mira)
-      banner  = L.cerca(L.peldano);
-      despues = L.fecha(enPalabras);
-      movilArriba = L.arribaCerca;
-      movil       = ES ? 'Termina mañana a las ' + HHMM : L.pieManana;
-    } else if (dias === 0) {
-      // termina hoy: el último día es el que más vende, tiene su propio texto
-      banner  = L.ultimo();
-      despues = L.manana();
-      movilArriba = L.arribaUltimo;
-      movil       = ES ? 'Termina hoy a las ' + HHMM : L.pie;
-    } else {
-      // dias <= 0. LIMITE es el día en que el precio SUBE, no el último día
-      // a ese precio: lo aclara escalera-de-precios.json. O sea que el día
-      // del límite el precio nuevo ya rige, y no hay nada que anunciar.
-      // El último día real lo cubre el tramo de arriba (dias === 1).
-      // Manda el texto del peldaño nuevo, que escribe cambiar-precio.js.
-      return;
-    }
-
-    const b = document.querySelector('[data-cuenta="banner"]');
-    const d = document.querySelector('[data-cuenta="despues"]');
-    const m  = document.querySelector('[data-cuenta="movil"]');
-    const ma = document.querySelector('[data-cuenta="movil-arriba"]');
-    if (m && movil) m.textContent = movil;
-    if (ma && movilArriba) ma.textContent = movilArriba;
-    if (b) b.innerHTML = banner;
-    if (d) d.innerHTML = despues;
-  })();
-  </script>
-
+  
+  
 <script>
 (function(){
   var h=document.querySelector("header");
@@ -3740,13 +3614,12 @@ html:not(.of-nov) [data-of="nov"],html:not(.of-nov-cerrada) [data-of="nov-cerrad
   }
   var cajas=[].slice.call(document.querySelectorAll(".v2-cuenta,.v2-cuenta-mini"));
   if(cajas.length){
-    var lim=(window.ssOferta&&(window.ssOferta.estado==='ob'||window.ssOferta.estado==='nov')&&window.ssOferta.fin)?new Date(window.ssOferta.fin - 108e5).toISOString().slice(0,10):(window.ssOferta&&window.ssOferta.ext6)?"2026-10-26":(window.ssOferta&&window.ssOferta.ext5)?"2026-10-23":(window.ssOferta&&window.ssOferta.ext4)?"2026-10-20":(window.ssOferta&&window.ssOferta.ext3)?"2026-10-17":(window.ssOferta&&window.ssOferta.ext2)?"2026-10-14":(window.ssOferta&&window.ssOferta.ext)?"2026-10-11":"2026-10-08";   /* la misma fecha que LIMITE */
-    var fin=lim?new Date(lim+"T12:00:00-03:00").getTime():NaN;   /* mismo instante para todos, no la medianoche de cada visitante */
+    var fin=(window.ssOferta&&window.ssOferta.fase==='bv')?window.ssOferta.finBv:NaN;   /* el final de la bienvenida de este visitante */
     var dd=function(n){ return (n<10?"0":"")+n; };
     var tic=function(){ var r=fin-Date.now();
       if(isNaN(r)||r<=0){ cajas.forEach(function(c){ c.hidden=true; }); return; }
       var v={d:dd(Math.floor(r/864e5)),h:dd(Math.floor(r%864e5/36e5)),m:dd(Math.floor(r%36e5/6e4)),s:dd(Math.floor(r%6e4/1e3))};
-      cajas.forEach(function(c){ [].slice.call(c.querySelectorAll("[data-c]")).forEach(function(e){ var k=e.getAttribute("data-c"); if(e.textContent!==v[k]) e.textContent=v[k]; }); }); };
+      cajas.forEach(function(c){ c.classList.toggle("sin-dias",v.d==="00"); [].slice.call(c.querySelectorAll("[data-c]")).forEach(function(e){ var k=e.getAttribute("data-c"); if(e.textContent!==v[k]) e.textContent=v[k]; }); }); };
     tic(); setInterval(tic,1000);
   }
   /* la barra fija de compra se aparta solo cuando el boton de compra real ya esta en pantalla:
@@ -4137,31 +4010,129 @@ if (es[0].isIntersecting) { cupo.classList.add('mv-listo'); o.disconnect(); }
 o.observe(cupo);
 })();
 })();</script><script>
-/* la barra de la promo: cuánto pasó de October Black (del 1/10 12:00 al 8/10 12:00, hora de Paraguay) */
-(function(){var a=Date.parse('2026-10-01T12:00:00-03:00'),b=Date.parse('2026-10-08T12:00:00-03:00'),f=Math.min(1,Math.max(0,(Date.now()-a)/(b-a)));
-[].forEach.call(document.querySelectorAll('.ob-cupo .mv-cupo-barra i'),function(i){i.style.setProperty('--f',Math.round(f*100)+'%');});})();
-</script>
-<script>
-/* Los 3 días más de October Black: los textos fijos que nombran la fecha pasan a la fecha nueva. */
+/* La animación de Claude (#mvDemoClaude): hermana de la de ChatGPT (#mvDemo). Mismo motor: un ciclo que corre solo cuando se ve y se corta si se va. */
 (function(){
-  var o = window.ssOferta; if (!o || o.estado !== 'ob' || !o.ext) return;
-  var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), n, L = [];
-  while ((n = w.nextNode())) { var p = n.parentNode && n.parentNode.nodeName; if (p === 'SCRIPT' || p === 'STYLE') continue; if (/jueves 8|(^|\D)8 de octubre/.test(n.nodeValue)) L.push(n); }
-  var FD = o.fin ? new Date(o.fin - 108e5) : null;
-  var DIA = FD ? ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'][FD.getUTCDay()] + ' ' + FD.getUTCDate() : o.ext6 ? 'lunes 26' : o.ext5 ? 'viernes 23' : o.ext4 ? 'martes 20' : o.ext3 ? 'sábado 17' : o.ext2 ? 'miércoles 14' : 'domingo 11', FECHA = FD ? FD.getUTCDate() + ' de ' + ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][FD.getUTCMonth()] : o.ext6 ? '26 de octubre' : o.ext5 ? '23 de octubre' : o.ext4 ? '20 de octubre' : o.ext3 ? '17 de octubre' : o.ext2 ? '14 de octubre' : '11 de octubre';
-  L.forEach(function(n){ n.nodeValue = n.nodeValue.replace(/jueves 8/g, DIA).replace(/(^|\D)8 de octubre/g, function(m, a){ return a + FECHA; }); });
-  var f = Math.min(1, Math.max(0, (Date.now() - o.f1) / (o.fin - o.f1)));
-  [].forEach.call(document.querySelectorAll('.ob-cupo .mv-cupo-barra i'), function(i){ i.style.setProperty('--f', Math.round(f * 100) + '%'); });
+var demo = document.getElementById('mvDemoClaude'); if (!demo) return;
+var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, IO = 'IntersectionObserver' in window;
+var win = demo.querySelector('.mv-win'), hilo = demo.querySelector('.mv-hilo'), adj = demo.querySelector('.mv-adj'), send = demo.querySelector('.mv-send');
+var capB = demo.querySelector('.mv-cap-txt b'), capS = demo.querySelector('.mv-cap-txt span'), texto = demo.querySelector('.mv-texto'), typed = demo.querySelector('.mv-typed');
+var barras = [].slice.call(demo.querySelectorAll('.mv-cap-barras i')), lista = demo.querySelector('.mv-pasos'), pasos = [].slice.call(lista.children);
+var TITULOS = ["Arrastras el archivo", "Claude prepara todo", "Pides tu tanda", "Llega tu tanda"], TAREAS = ["Revisando tu computadora", "Instalando lo que falta", "Conectando tu ChatGPT", "Todo listo"], FRASE = 'Hazme 10 anuncios de mi perfume', ARCHIVO = 'EMPIEZA AQUÍ';
+var IMGS = ["assets/colabs/byredo-12-m.webp", "assets/colabs/byredo-14-m.webp", "assets/colabs/aesop-3-m.webp", "assets/colabs/glossier-3-m.webp", "assets/colabs/fenty-3-m.webp", "assets/colabs/aesop-2-m.webp"];
+var BAJAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m6 13 6 6 6-6"/></svg>';
+var DOC = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg>';
+var vuelta = 0, activo = false, precargado = false;
+var el = function(tag, cls, html){ var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+var dormir = function(ms, v){ return new Promise(function(ok, no){ setTimeout(function(){ if (v === vuelta && activo) ok(); else no('corte'); }, ms); }); };
+var todos = function(raiz, sel){ return [].slice.call(raiz.querySelectorAll(sel)); };
+var paso = function(n){
+  demo.setAttribute('data-paso', String(n));
+  if (capB) capB.textContent = 'Paso ' + n + ' de 4';
+  if (capS) capS.textContent = TITULOS[n - 1];
+  barras.forEach(function(b, i){ b.classList.toggle('lleno', i < n); });
+  pasos.forEach(function(li, i){ li.classList.toggle('on', i < n); });
+  lista.style.setProperty('--p', (n / 4).toFixed(3));
+};
+var limpiar = function(){ hilo.innerHTML = ''; adj.innerHTML = ''; typed.textContent = ''; texto.classList.remove('escribiendo'); win.classList.remove('con-hilo', 'soltando', 'arrastrando'); };
+var msgArchivo = function(){ return el('div', 'mv-yo', '<div class="mv-yo-adj"><span class="mv-yo-pdf"><b>' + DOC + '</b>' + ARCHIVO + '</span></div>'); };
+var msgTexto = function(){ return el('div', 'mv-yo', '<p>' + FRASE + '</p>'); };
+var respuesta = function(){ return el('div', 'mv-resp', '<b>Claude</b><ul class="mv-lista"></ul>'); };
+var galeria = function(){ return el('div', 'mv-galeria', '<div class="mv-gal-grande creando"><span class="mv-gal-est">Creando anuncio</span><span class="mv-gal-editar">Editar</span><span class="mv-gal-bajar">' + BAJAR + '</span></div><div class="mv-gal-riel"><div class="mv-gal-col"></div></div>'); };
+var acomodar = function(riel, col){ var d = Math.min(0, riel.clientHeight - col.scrollHeight); col.style.transform = 'translateY(' + d + 'px)'; riel.classList.toggle('movida', d < 0); };
+var precargar = function(){ if (precargado) return; precargado = true; IMGS.forEach(function(src){ var i = new Image(); i.src = src; }); };
+var ciclo = async function(v){
+  limpiar(); paso(1);
+  await dormir(500, v);
+  win.classList.add('arrastrando');
+  await dormir(1250, v);
+  win.classList.add('soltando');
+  await dormir(650, v);
+  adj.appendChild(el('span', 'mv-file', '<b>' + DOC + '</b><em>' + ARCHIVO + '</em>'));
+  await dormir(900, v);
+  win.classList.remove('soltando', 'arrastrando');
+  /* paso 2: se envía el archivo y Claude prepara todo, tarea por tarea */
+  paso(2);
+  send.classList.add('aprieta'); await dormir(200, v); send.classList.remove('aprieta');
+  adj.innerHTML = ''; win.classList.add('con-hilo');
+  hilo.appendChild(msgArchivo());
+  await dormir(700, v);
+  var r = respuesta(); hilo.appendChild(r); var ul = r.querySelector('ul');
+  for (var i = 0; i < TAREAS.length; i++) {
+    var li = el('li', '', '<i></i><span>' + TAREAS[i] + '</span>'); ul.appendChild(li);
+    await dormir(i === TAREAS.length - 1 ? 250 : 950, v);
+    li.classList.add('ok');
+  }
+  await dormir(1100, v);
+  /* paso 3: se escribe el pedido */
+  paso(3);
+  limpiar(); await dormir(300, v);
+  texto.classList.add('escribiendo');
+  for (var c = 1; c <= FRASE.length; c++) { typed.textContent = FRASE.slice(0, c); await dormir(38, v); }
+  await dormir(800, v);
+  send.classList.add('aprieta'); await dormir(200, v); send.classList.remove('aprieta');
+  typed.textContent = ''; texto.classList.remove('escribiendo');
+  win.classList.add('con-hilo');
+  hilo.appendChild(msgTexto());
+  await dormir(700, v);
+  /* paso 4: llega la tanda (anuncios que ya usa la página) */
+  paso(4);
+  var g = galeria(); hilo.appendChild(g);
+  var grande = g.querySelector('.mv-gal-grande'), riel = g.querySelector('.mv-gal-riel'), col = g.querySelector('.mv-gal-col');
+  for (var k = 0; k < IMGS.length; k++) {
+    var rapido = k >= 1;
+    var mini = el('i', 'mv-gal-mini pend'); col.appendChild(mini); acomodar(riel, col);
+    todos(grande, 'img').forEach(function(x){ x.classList.add('sale'); });
+    grande.classList.add('creando');
+    await dormir(rapido ? 450 : 700, v);
+    todos(grande, 'img').forEach(function(x){ x.remove(); });
+    var im = el('img'); im.alt = ''; im.src = IMGS[k]; grande.appendChild(im);
+    void im.offsetWidth; im.classList.add('lista');
+    grande.classList.remove('creando');
+    mini.classList.remove('pend'); mini.innerHTML = '<img src="' + IMGS[k] + '" alt="">';
+    todos(col, '.sel').forEach(function(x){ x.classList.remove('sel'); }); mini.classList.add('sel');
+    await dormir(rapido ? 700 : 850, v);
+  }
+  await dormir(2800, v);
+};
+var correr = async function(){ var v = ++vuelta; try { while (activo && v === vuelta) await ciclo(v); } catch (e) {} };
+if (reduce) {
+  /* sin movimiento: el cuadro final, con la tanda a la vista */
+  paso(4); win.classList.add('con-hilo');
+  hilo.appendChild(msgTexto());
+  var g0 = galeria(); hilo.appendChild(g0);
+  var gr0 = g0.querySelector('.mv-gal-grande'), col0 = g0.querySelector('.mv-gal-col');
+  gr0.classList.remove('creando');
+  var im0 = el('img', 'lista'); im0.alt = ''; im0.src = IMGS[0]; gr0.appendChild(im0);
+  IMGS.forEach(function(src, i){ col0.appendChild(el('i', 'mv-gal-mini' + (i ? '' : ' sel'), '<img src="' + src + '" alt="">')); });
+} else if (IO) {
+  var oPre = new IntersectionObserver(function(es){ if (es[0].isIntersecting) { precargar(); oPre.disconnect(); } }, { rootMargin: '1400px 0px' });
+  oPre.observe(win);
+  new IntersectionObserver(function(es){
+    var vis = es[0].isIntersecting;
+    if (vis && !activo) { activo = true; precargar(); correr(); }
+    else if (!vis && activo) { activo = false; vuelta++; }
+  }, { threshold: 0.3 }).observe(win);
+  document.addEventListener('visibilitychange', function(){ if (document.hidden) { activo = false; vuelta++; } });
+} else { activo = true; precargar(); correr(); }
 })();
 </script>
 <script>
-/* Edición Noviembre: el precio sale de window.ssOferta (el mismo que va en InitiateCheckout) y el reloj lleva su nombre */
+/* El estado de la oferta en la página: precio, enlace de pago, reloj y póster de los videos. Lo decide window.ssOferta (script de <head>). */
 (function(){
-  var o = window.ssOferta; if (!o || (o.estado !== 'nov' && o.estado !== 'nov-cerrada')) return;
-  [].forEach.call(document.querySelectorAll('[data-nov-precio]'), function(e){ e.textContent = o.precio; });
-  var c = document.querySelector('.v2-cuenta'); if (c) c.setAttribute('aria-label', 'Cuenta regresiva hasta que termina la Edición Noviembre');
-  /* carga diferida del video: el póster se pide recién cuando la sección está por entrar en pantalla (con October Black no se pide nada) */
-  var vs = [].slice.call(document.querySelectorAll('video[data-poster]')), poner = function(v){ v.setAttribute('poster', v.getAttribute('data-poster')); v.removeAttribute('data-poster'); };
+  var o = window.ssOferta; if (!o) return;
+  var q = function(s){ return document.querySelector(s); }, qa = function(s){ return [].slice.call(document.querySelectorAll(s)); };
+  /* el precio de ahora: en la tarjeta, en la cuenta del ahorro y en la línea del cierre (el mismo que va en InitiateCheckout) */
+  qa('[data-precio]').forEach(function(e){ e.textContent = o.precio; });
+  qa('[data-p-reg]').forEach(function(e){ e.textContent = o.regular; });
+  qa('[data-p-bv]').forEach(function(e){ e.textContent = o.bv; });
+  var n = q('.mv-barra-tu b[data-n]'); if (n) { n.setAttribute('data-n', o.precio); n.textContent = 'USD ' + o.precio; }
+  var l = q('[data-linea-precio]');
+  if (l) l.textContent = o.fase === 'regular' ? 'Precio: USD ' + o.regular + '.' : (o.fase === 'bv' ? 'Tu precio de bienvenida: USD @N@.'.replace('@N@', o.bv) : 'USD ' + o.bv + '.');
+  /* pasadas las horas del visitante, todos los botones van a la oferta regular, con el mismo origen (sck, xcod) de siempre */
+  if (o.fase === 'regular' && o.off) qa('a[href*="pay.hotmart.com"]').forEach(function(a){ try { var u = new URL(a.href); u.searchParams.set('off', o.off); a.href = u.toString(); } catch (e) {} });
+  var c = q('.v2-cuenta'); if (c) c.setAttribute('aria-label', o.estado === 'ob' ? 'Cuenta regresiva de tu precio de October Black' : 'Cuenta regresiva de tu precio de bienvenida');
+  /* carga diferida del video: el póster se pide recién cuando la sección está por entrar en pantalla */
+  var vs = qa('video[data-poster]'), poner = function(v){ v.setAttribute('poster', v.getAttribute('data-poster')); v.removeAttribute('data-poster'); };
   if (!('IntersectionObserver' in window)) vs.forEach(poner);
   else { var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { poner(e.target); io.unobserve(e.target); } }); }, { rootMargin: '900px 0px' }); vs.forEach(function(v){ io.observe(v); }); }
 })();
