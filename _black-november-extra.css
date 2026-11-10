@@ -1,0 +1,7 @@
+/* Retoques propios de Black November: piezas de noviembre que October Black no tenía */
+html.of-bn main > section:not(.pain):not(.offer) .eyebrow.muted{color:var(--ob-gris)!important}
+html.of-bn .nov-vs-b{background:linear-gradient(160deg,#17261D,#0E1511)!important;border:1px solid rgba(227,207,152,.45);box-shadow:0 30px 70px -30px rgba(0,0,0,.75),inset 0 1px 0 rgba(227,207,152,.14)!important}
+html.of-bn .nov-vs-b::after{background:radial-gradient(circle,rgba(227,207,152,.2),transparent 70%)!important}
+html.of-bn .nov-vs-b span.x{color:var(--ob-texto-2)}
+html.of-bn .nov-vs-b i{background:var(--ob-oro)!important;color:#0B0E0C!important}
+html.of-bn #resultado .nov-eye-largo{color:var(--ob-gris)!important}
