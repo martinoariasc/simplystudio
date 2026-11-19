@@ -36,12 +36,26 @@
    La fila de abajo usa el mismo arreglo en orden inverso. */
 (function(){
 var FLYERS=[
-{src:"assets/flyers/r09-1.webp",alt:"Portada de carrusel: 5 palabras que venden más que oferta"},
-{src:"assets/flyers/r09-2.webp",alt:"Afiche con titular: hecho a mano, por personas, no por máquinas"},
-{src:"assets/flyers/r09-3.webp",alt:"Afiche con titular: recién llegado y casi nadie lo tiene todavía"},
-{src:"assets/flyers/r09-4.webp",alt:"Afiche con titular: para regalar, listo para envolver"},
-{src:"assets/flyers/r09-5.webp",alt:"Afiche con titular: edición limitada, solo si de verdad es limitada"},
-{src:"assets/flyers/r09-6.webp",alt:"Afiche con titular: elegido por clientes que ya lo compraron y volvieron"}
+{src:"assets/flyers/flyer-01.webp",alt:"Afiche con letras negras gigantes «Hecho a mano» y la línea «por personas, no por máquinas» sobre papel crema"},
+{src:"assets/flyers/flyer-02.webp",alt:"Afiche tipográfico azul y blanco con el titular «Respira más. Piensa menos.» de un estudio de yoga"},
+{src:"assets/flyers/flyer-03.webp",alt:"Afiche naranja con las letras negras gigantes «Para regalar» y la línea «listo para envolver»"},
+{src:"assets/flyers/flyer-04.webp",alt:"Cartel negro con el titular blanco «Haz una pausa» para una cafetería"},
+{src:"assets/flyers/flyer-05.webp",alt:"Afiche azul con la frase «Edición limitada» en amarillo gigante y una flecha blanca"},
+{src:"assets/flyers/flyer-06.webp",alt:"Afiche con letras negras gigantes «Menos, pero mejor» y un círculo rojo, para una joyería de autor"},
+{src:"assets/flyers/flyer-07.webp",alt:"Portada de periódico de barrio con titular sobre el pan y una foto de panes, para una panadería"},
+{src:"assets/flyers/flyer-08.webp",alt:"Afiche negro con «Recién llegado» en blanco y verde lima y la frase «y casi nadie lo tiene todavía»"},
+{src:"assets/flyers/flyer-09.webp",alt:"Póster rojo a cuadros sobre croissants dorados con el texto «Dejar migas es un crimen», para una pastelería"},
+{src:"assets/flyers/flyer-10.webp",alt:"Afiche negro con titular blanco y la palabra «nunca» en verde lima para un gimnasio"},
+{src:"assets/flyers/flyer-11.webp",alt:"Portada de carrusel: «Hay 5 palabras que venden más que oferta», con «oferta» tachada sobre un recuadro azul"},
+{src:"assets/flyers/flyer-12.webp",alt:"Flyer naranja con una mano que saca un boleto de un sobre y la pregunta «¿Sigues postergando ese viaje?»"},
+{src:"assets/flyers/flyer-13.webp",alt:"Fotografía de una pared blanca con letras negras en relieve: «Huele bien, vive bien, vuelve pronto», para una perfumería"},
+{src:"assets/flyers/flyer-14.webp",alt:"Cartel negro con «Elegido por clientes que ya lo compraron y volvieron» sobre una superficie gris"},
+{src:"assets/flyers/flyer-15.webp",alt:"Afiche ilustrado de la fachada de una panadería con tres líneas de eslogan"},
+{src:"assets/flyers/flyer-16.webp",alt:"Frase «Recuerda quién querías ser» pintada a mano con brocha negra sobre papel blanco, para una escuela de arte"},
+{src:"assets/flyers/flyer-17.webp",alt:"Foto nocturna de un escritorio con laptop y lámpara y la frase «Ninguna marca grande empezó grande.»"},
+{src:"assets/flyers/flyer-18.webp",alt:"Fotografía de un cartel iluminado en un hall con el texto «Tu próximo hogar ya tiene luz», para una inmobiliaria"},
+{src:"assets/flyers/flyer-19.webp",alt:"Titular blanco difuminado sobre negro: «El mismo producto. Otro precio.»"},
+{src:"assets/flyers/flyer-20.webp",alt:"Afiche verde brillante con el texto «Queremos más helado bueno», para una heladería"}
 ];
 var W=600,H=750,MIN=8;
 function set(items,oculto){
@@ -60,8 +74,8 @@ function fila(id,items){
   el.appendChild(t);
   el.addEventListener("pointerdown",function(e){if(e.pointerType==="touch")el.classList.toggle("fl-pausa");},{passive:true});
 }
-fila("flFilaA",FLYERS);
-fila("flFilaB",FLYERS.slice().reverse());
+fila("flFilaA",FLYERS.slice(0,10));
+fila("flFilaB",FLYERS.slice(10).reverse());
 })();
 </script>
 
