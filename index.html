@@ -4,14 +4,14 @@
 .fl-cinta .fl-head h2{margin:14px 0 0;font-size:clamp(30px,4.6vw,58px);line-height:1.05}
 .fl-cinta .fl-head p{margin:16px auto 0;max-width:46ch;color:var(--ink-2);font-size:clamp(16px,1.6vw,19px);line-height:1.55}
 .fl-fila{overflow:hidden;width:100%;margin-top:14px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
-.fl-track{display:flex;width:max-content;will-change:transform;animation:fl-izq 48s linear infinite}
-.fl-fila.fl-inv .fl-track{animation-name:fl-der;animation-duration:56s}
+.fl-track{display:flex;width:max-content;will-change:transform}
+.fl-fila.fl-js{touch-action:pan-y;cursor:grab;-webkit-user-select:none;user-select:none}.fl-fila.fl-js.arrastrando{cursor:grabbing}.fl-fila.fl-js img{-webkit-user-drag:none;pointer-events:none}
 .fl-set{display:flex;gap:14px;padding-right:14px;flex:none}
-.fl-fila:hover .fl-track,.fl-fila:active .fl-track,.fl-fila.fl-pausa .fl-track{animation-play-state:paused}
+
 .fl-card{flex:none;width:clamp(150px,42vw,250px);margin:0;border-radius:8px;overflow:hidden;background:var(--paper-2,#E8E2D6)}
 .fl-card img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
-@keyframes fl-izq{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
-@keyframes fl-der{from{transform:translate3d(-50%,0,0)}to{transform:translate3d(0,0,0)}}
+
+
 @media (prefers-reduced-motion:reduce){
 .fl-fila{overflow-x:auto;-webkit-mask-image:none;mask-image:none;scrollbar-width:thin}
 .fl-track{animation:none!important;transform:none}
@@ -67,15 +67,43 @@ function set(items,oculto){
     f.appendChild(im);s.appendChild(f);}
   return s;
 }
-function fila(id,items){
+/* Se mueve sola y además se arrastra con el dedo o el mouse hacia los dos lados (igual que la galería de arriba).
+   Al soltar sigue con inercia y a los 3,5 s retoma sola. Con el mouse encima se queda quieta. */
+function mover(el,t,dir,vel){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  el.classList.add("fl-js");
+  var s0=t.firstChild,f=0,a=0,o=0,ult=0,quieto=0,encima=false,visible=true,p=null,movio=false,inicio=true;
+  function medir(){f=s0.getBoundingClientRect().width;if(inicio&&f){inicio=false;if(dir<0)a=f*.5;}}
+  function pintar(){if(f){while(a>=f)a-=f;while(a<0)a+=f;}t.style.transform="translate3d("+(-a)+"px,0,0)";}
+  function pausa(ms){quieto=Math.max(quieto,performance.now()+ms);}
+  el.addEventListener("pointerdown",function(e){if(e.pointerType==="mouse"&&e.button!==0)return;p={x:e.clientX,a0:a,u:e.clientX,ut:performance.now(),id:e.pointerId};movio=false;o=0;pausa(3500);});
+  el.addEventListener("pointermove",function(e){if(!p||e.pointerId!==p.id)return;var d=e.clientX-p.x;
+    if(!movio&&Math.abs(d)>6){movio=true;el.classList.add("arrastrando");try{el.setPointerCapture(e.pointerId);}catch(_){}}
+    if(movio){a=p.a0-d;var ah=performance.now();o=-(e.clientX-p.u)/Math.max(1,ah-p.ut)*16;p.u=e.clientX;p.ut=ah;pintar();}});
+  function soltar(){if(p){p=null;el.classList.remove("arrastrando");pausa(3500);}}
+  el.addEventListener("pointerup",soltar);el.addEventListener("pointercancel",soltar);el.addEventListener("lostpointercapture",soltar);
+  el.addEventListener("wheel",function(e){if(Math.abs(e.deltaX)>Math.abs(e.deltaY)){e.preventDefault();a+=e.deltaX;o=0;pintar();pausa(3500);}},{passive:false});
+  if(matchMedia("(hover: hover)").matches){el.addEventListener("mouseenter",function(){encima=true;});el.addEventListener("mouseleave",function(){encima=false;});}
+  if("IntersectionObserver" in window)new IntersectionObserver(function(es){visible=es[0].isIntersecting;},{rootMargin:"200px 0px"}).observe(el);
+  addEventListener("resize",medir,{passive:true});addEventListener("load",medir);medir();pintar();
+  requestAnimationFrame(function paso(ts){var dt=ult?Math.min((ts-ult)/1000,.05):.016;ult=ts;
+    if(!f)medir();
+    if(visible&&!document.hidden&&!p){if(Math.abs(o)>.05){a+=o;o*=.94;}else if(!encima&&ts>quieto){a+=dir*vel*dt;}pintar();}
+    requestAnimationFrame(paso);});
+}
+function fila(id,items,dir,vel){
   var el=document.getElementById(id);if(!el)return;
   var t=document.createElement("div");t.className="fl-track";
   t.appendChild(set(items,false));t.appendChild(set(items,true));
   el.appendChild(t);
-  el.addEventListener("pointerdown",function(e){if(e.pointerType==="touch")el.classList.toggle("fl-pausa");},{passive:true});
+  mover(el,t,dir,vel);
 }
-fila("flFilaA",FLYERS.slice(0,10));
-fila("flFilaB",FLYERS.slice(10).reverse());
+fila("flFilaA",FLYERS.slice(0,10),1,55);
+fila("flFilaB",FLYERS.slice(10).reverse(),-1,47);
+// Las piezas entran moviéndose: el navegador no las carga solas a tiempo. Cuando la sección está cerca, se piden todas.
+var sec=document.getElementById("mas-estilos");
+function cargar(){[].forEach.call(document.querySelectorAll("#flFilaA img,#flFilaB img"),function(i){i.loading="eager";});}
+if(sec&&"IntersectionObserver" in window){var io=new IntersectionObserver(function(es){if(es.some(function(e){return e.isIntersecting;})){cargar();io.disconnect();}},{rootMargin:"800px 0px"});io.observe(sec);}else cargar();
 })();
 </script>
 
