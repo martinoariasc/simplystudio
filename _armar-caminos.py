@@ -385,6 +385,10 @@ def control_palabras(s):
 
 
 def main():
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
     ruta_copy = sys.argv[1] if len(sys.argv) > 1 else COPY_DEFECTO
     if not os.path.exists(INDEX):
         sys.exit('ERROR: no encuentro ' + INDEX)
