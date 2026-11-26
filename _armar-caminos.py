@@ -509,7 +509,33 @@ def armar(base, copy, camino):
     for esc in c['quitar_secciones'] + ['Para quién']:
         a, b = seccion(s, esc)
         s = s[:a] + s[b:]
+    control_fijas(base, s, copy, c, camino)
     return s
+
+
+def seccion_fija(s, nombre):
+    """Texto completo de una seccion fija: por data-esc, o por clase si el nombre es 'inside'."""
+    if nombre == 'inside':
+        cand = abrir_tags(s, 'section', clase='inside')
+        if not cand:
+            raise Falla('ANCLAJE NO ENCONTRADO: <section class="inside">')
+        e = elemento(s, cand[0])
+        return s[e[0]:e[1]]
+    a, b = seccion(s, nombre)
+    return s[a:b]
+
+
+def control_fijas(base, out, copy, c, camino):
+    """Las secciones que explican y venden el producto deben quedar IDENTICAS a index.html."""
+    for nombre in copy['comun']['secciones_fijas']:
+        if seccion_fija(base, nombre) != seccion_fija(out, nombre):
+            raise Falla('SECCION FIJA ALTERADA en %s: "%s" ya no es identica a index.html' % (camino, nombre))
+    original = seccion_fija(base, 'Cómo funciona')
+    buscar = copy['agencias']['como_funciona_intro']['buscar']
+    esperada = htmllib.unescape(original).replace(buscar, c['como_funciona_intro']['nuevo'])
+    obtenida = htmllib.unescape(seccion_fija(out, 'Cómo funciona'))
+    if esperada != obtenida:
+        raise Falla('SECCION FIJA ALTERADA en %s: "Cómo funciona" difiere de index.html en algo mas que la frase del perfil' % camino)
 
 
 def control_palabras(s):
