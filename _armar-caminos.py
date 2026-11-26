@@ -22,7 +22,6 @@ INDEX = os.path.join(AQUI, 'index.html')
 COPY_DEFECTO = os.path.normpath(os.path.join(
     AQUI, '..', 'estrategia', 'caminos-por-perfil-26-11', 'copy-caminos.json'))
 DOMINIO = 'https://simplystudioai.com'
-CAMINOS = ['agencias', 'disenadores', 'negocios']
 VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta',
         'param', 'source', 'track', 'wbr', 'path', 'circle', 'rect', 'line', 'polyline',
         'polygon', 'use', 'stop'}
@@ -283,6 +282,17 @@ def preguntas(sec, c, camino):
     primero = [h for q in c['preguntas_primero'] for qq, h in items if qq == q]
     resto = [h for qq, h in items if qq not in c['preguntas_primero']]
     nuevo = primero + resto
+    # preguntas nuevas: se clona el marcado de una pregunta existente (mismo abrir/cerrar)
+    molde = items[0][1]
+    mm = re.match(r'(<details[^>]*>\s*)<summary>.*?</summary>(\s*)<p>.*?</p>(\s*</details>)', molde, re.S)
+    if c.get('preguntas_nuevas') and not mm:
+        raise Falla('ANCLAJE CAMBIO: las preguntas ya no tienen el formato <details><summary/><p/></details>')
+    nuevas = []
+    for pn in c.get('preguntas_nuevas', []):
+        nuevas.append('%s<summary>%s</summary>%s<p>%s</p>%s' % (
+            mm.group(1), htmllib.escape(pn['pregunta'], quote=False), mm.group(2),
+            htmllib.escape(pn['respuesta'], quote=False), mm.group(3)))
+    nuevo = nuevas + nuevo
     if 'pregunta_reescrita' in c:
         pr = c['pregunta_reescrita']
         hecho = False
@@ -297,12 +307,11 @@ def preguntas(sec, c, camino):
         if not hecho:
             raise Falla('ANCLAJE NO ENCONTRADO: pregunta a reescribir "%s"' % pr['buscar'])
     # reconstruir conservando lo que hay entre details (espacios/botones)
-    partes, pos = [], dets[0][0]
     out = sec[:dets[0][0]]
-    for i, e in enumerate(dets):
-        out += nuevo[i]
-        if i + 1 < len(dets):
-            out += sec[e[1]:dets[i + 1][0]]
+    for i, h in enumerate(nuevo):
+        out += h
+        if i + 1 < len(nuevo):
+            out += sec[dets[i][1]:dets[i + 1][0]] if i + 1 < len(dets) else ' '
     out += sec[dets[-1][1]:]
     return out
 
@@ -321,6 +330,7 @@ def cierre(sec, c, ancla):
 
 
 def head(s, c, camino):
+    camino = c.get('ruta', '/' + camino).lstrip('/')
     t = uno(s, 'title', donde='(head)')
     s = poner_interno(s, t, htmllib.escape(c['title'], quote=False))
     esc = lambda v: htmllib.escape(v, quote=True)
@@ -340,6 +350,130 @@ def head(s, c, camino):
 
 
 # ---------------------------------------------------------------- armado por camino
+def versus(sec, nombre):
+    """Cambia el par de la hamburguesa por el par `nombre` (assets/nov/versus-<nombre>-feo|premium*.webp)."""
+    if nombre != 'bolso':
+        raise Falla('versus: solo hay textos alt para "bolso"')
+    for t in ('feo', 'premium'):
+        for suf in ('', '-640'):
+            f = os.path.join(AQUI, 'assets', 'nov', 'versus-%s-%s%s.webp' % (nombre, t, suf))
+            if not os.path.exists(f):
+                raise Falla('FALTA la imagen ' + f)
+        if 'versus-burguer-%s' % t not in sec:
+            raise Falla('ANCLAJE NO ENCONTRADO: versus-burguer-%s en "La IA no lo sabe todo"' % t)
+        sec = sec.replace('versus-burguer-%s' % t, 'versus-%s-%s' % (nombre, t))
+    cambios = [
+        (r'alt="Anuncio genérico de la hamburguesa[^"]*"', 'alt="Anuncio genérico de un bolso"'),
+        (r'alt="Anuncio premium de la misma hamburguesa[^"]*"', 'alt="Anuncio premium del mismo bolso"'),
+        (r'aria-label="Ampliar el anuncio genérico de la hamburguesa"', 'aria-label="Ampliar el anuncio genérico del bolso"'),
+        (r'aria-label="Ampliar el anuncio premium de la hamburguesa"', 'aria-label="Ampliar el anuncio premium del bolso"'),
+    ]
+    for pat, nuevo in cambios:
+        sec, n = re.subn(pat, nuevo, sec)
+        if n != 1:
+            raise Falla('ANCLAJE NO ENCONTRADO (versus): ' + pat)
+    resto = texto(sec) + ' '.join(re.findall(r'(?:alt|aria-label)="[^"]*"', sec))
+    if re.search(r'hambur', resto, re.I):
+        raise Falla('Quedo la palabra "hamburguesa" en "La IA no lo sabe todo"; revisar los textos')
+    return sec
+
+
+def cinta(sec, nums, eager, invertir, donde):
+    """Deja en la cinta solo las piezas `nums` (clonando el marcado de una pieza existente)."""
+    pistas = abrir_tags(sec, 'div', 'v2-gal-set')
+    if not pistas:
+        raise Falla('ANCLAJE NO ENCONTRADO: .v2-gal-set en ' + donde)
+    st = elemento(sec, pistas[0])
+    figs = hijos_directos(sec, st[2], st[3], 'figure')
+    if not figs:
+        raise Falla('ANCLAJE NO ENCONTRADO: piezas <figure> en la cinta de ' + donde)
+    molde = sec[figs[0][0]:figs[0][1]]
+    if not re.search(r's-cinta/s-\d+\.webp', molde):
+        raise Falla('ANCLAJE CAMBIO: las piezas de la cinta de %s ya no usan assets/s-cinta/s-NN.webp' % donde)
+    orden = list(reversed(nums)) if invertir else list(nums)
+    salida = []
+    for i, n in enumerate(orden):
+        nn = '%02d' % n
+        if not os.path.exists(os.path.join(AQUI, 'assets', 's-cinta', 's-%s.webp' % nn)):
+            raise Falla('FALTA la imagen assets/s-cinta/s-%s.webp' % nn)
+        f = re.sub(r's-cinta/s-\d+\.webp', 's-cinta/s-%s.webp' % nn, molde)
+        f = re.sub(r'loading="\w+"', 'loading="%s"' % ('eager' if i < eager else 'lazy'), f)
+        salida.append(f)
+    return sec[:st[2]] + ''.join(salida) + sec[st[3]:]
+
+
+CSS_CAT = (
+    '.cat-pares{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(30px,6vw,44px);max-width:1180px;'
+    'margin:clamp(32px,4.5vw,56px) auto 0}'
+    '.cat-par{min-width:0}'
+    '.cat-nom{margin:0 0 12px;text-align:center;font:400 11px/1 var(--mono);letter-spacing:.2em;'
+    'text-transform:uppercase;color:var(--muted)}'
+    '.cat-duo{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;'
+    'max-width:560px;margin:0 auto}'
+    '.cat-fig{margin:0;min-width:0}'
+    '.cat-img{display:block;width:100%;padding:0;border:0;aspect-ratio:4/5;border-radius:8px;overflow:hidden;'
+    'background:var(--paper-2);cursor:zoom-in}'
+    '.cat-img img{display:block;width:100%;height:100%;object-fit:cover}'
+    '.cat-antes .cat-img{background:#fff;border:1px solid var(--line-strong)}'
+    '.cat-antes .cat-img img{object-fit:contain}'
+    '.cat-fig figcaption{margin-top:10px;text-align:center}'
+    '.cat-tag{display:inline-block;padding:7px 11px;border-radius:999px;font:400 9.5px/1.2 var(--mono);'
+    'letter-spacing:.12em;text-transform:uppercase}'
+    '.cat-tag-a{color:var(--muted);border:1px solid var(--line-strong)}'
+    '.cat-tag-d{color:var(--paper);background:var(--forest)}'
+    '.cat-duo::after{content:"\\2192";position:absolute;left:50%;top:38%;width:30px;height:30px;'
+    'transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;background:var(--forest);'
+    'color:var(--paper);font:400 15px/1 var(--sans);box-shadow:0 6px 16px rgba(20,20,16,.28);z-index:2;'
+    'pointer-events:none}'
+    '@media(min-width:900px){.cat-pares{grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,2.4vw,34px)}'
+    '.cat-duo{gap:8px}.cat-tag{padding:6px 9px;letter-spacing:.08em}}'
+)
+
+
+def dims_webp(ruta):
+    import struct
+    d = open(ruta, 'rb').read(40)
+    t = d[12:16]
+    if t == b'VP8 ':
+        return struct.unpack('<HH', d[26:30])
+    if t == b'VP8L':
+        v = struct.unpack('<I', d[21:25])[0]
+        return (v & 0x3fff) + 1, ((v >> 14) & 0x3fff) + 1
+    if t == b'VP8X':
+        return int.from_bytes(d[24:27], 'little') + 1, int.from_bytes(d[27:30], 'little') + 1
+    raise Falla('formato webp desconocido: ' + ruta)
+
+
+def bloque_catalogo(b):
+    """Seccion nueva 'Del catalogo al anuncio' (se inserta despues de 'Tu problema')."""
+    pares = []
+    for f, a, nom in b['pares']:
+        trozos = []
+        for arch, clase, tag, tagc in ((f, 'cat-antes', b['etiqueta_antes'], 'cat-tag-a'),
+                                       (a, 'cat-despues', b['etiqueta_despues'], 'cat-tag-d')):
+            ruta = os.path.join(AQUI, 'assets', 'nov', arch)
+            if not os.path.exists(ruta):
+                raise Falla('FALTA la imagen assets/nov/' + arch)
+            ancho, alto = dims_webp(ruta)
+            grande = arch.replace('-f.webp', '-fg.webp').replace('-a.webp', '-ag.webp')
+            if not os.path.exists(os.path.join(AQUI, 'assets', 'nov', grande)):
+                grande = arch
+            alt = '%s: %s' % (nom, 'foto de catálogo' if clase == 'cat-antes' else 'anuncio creado con el Método')
+            trozos.append(
+                '<figure class="cat-fig %s"><button class="zoomable cat-img" type="button" '
+                'data-full="assets/nov/%s" aria-label="Ampliar: %s"><img src="assets/nov/%s" width="%d" '
+                'height="%d" loading="lazy" decoding="async" alt="%s"></button>'
+                '<figcaption><span class="cat-tag %s">%s</span></figcaption></figure>' % (
+                    clase, grande, htmllib.escape(alt, quote=True), arch, ancho, alto,
+                    htmllib.escape(alt, quote=True), tagc, htmllib.escape(tag, quote=False)))
+        pares.append('<div class="cat-par"><p class="cat-nom">%s</p><div class="cat-duo">%s</div></div>' % (
+            htmllib.escape(nom, quote=False), ''.join(trozos)))
+    return ('<section class="nov-sec cat-sec" data-esc="Del catálogo al anuncio" aria-labelledby="cat-t">'
+            '<style>' + CSS_CAT + '</style><div class="shell">'
+            '<div class="nov-cab reveal"><h2 id="cat-t">' + b['titulo'] + '</h2><p class="nov-baj">' + b['texto'] +
+            '</p></div><div class="cat-pares reveal">' + ''.join(pares) + '</div></div></section>')
+
+
 def armar(base, copy, camino):
     c = copy[camino]
     ancla = dict(copy['agencias'])  # los anclajes *_buscar viven solo en agencias
@@ -349,7 +483,15 @@ def armar(base, copy, camino):
     s = edita_seccion(s, 'Inicio', lambda x: hero(x, c, ancla))
     s = edita_seccion(s, 'Qué es', lambda x: que_es(x, c, ancla))
     s = edita_seccion(s, 'Tu problema', lambda x: dolor(x, c))
+    if c.get('bloque_catalogo'):
+        a, b = seccion(s, 'Tu problema')
+        s = s[:b] + bloque_catalogo(c['bloque_catalogo']) + s[b:]
     s = edita_seccion(s, 'La IA no lo sabe todo', lambda x: ia_no_sabe(x, c, ancla))
+    if c.get('versus'):
+        s = edita_seccion(s, 'La IA no lo sabe todo', lambda x: versus(x, c['versus']))
+    if c.get('galeria_cinta'):
+        s = edita_seccion(s, 'Inicio', lambda x: cinta(x, c['galeria_cinta'], 2, False, 'Inicio'))
+        s = edita_seccion(s, 'Más historias', lambda x: cinta(x, c['galeria_cinta'], 0, True, 'Más historias'))
     s = edita_seccion(s, 'Cómo funciona', lambda x: como_funciona(x, c, ancla))
     vistos = []
 
@@ -399,8 +541,10 @@ def main():
     with open(ruta_copy, 'r', encoding='utf-8') as f:
         copy = json.load(f)
     salidas = {}
+    caminos = [k for k, v in copy.items()
+               if isinstance(v, dict) and 'ruta' in v and v.get('activo', True) is not False]
     try:
-        for cam in CAMINOS:
+        for cam in caminos:
             salidas[cam] = armar(base, copy, cam)
     except Falla as e:
         sys.exit('\nERROR: la landing general cambio o falta un anclaje; no se genero nada.\n' + str(e))
@@ -409,9 +553,11 @@ def main():
             f.write(h)
         print('%-12s %7.1f KB  (index.html %.1f KB)' % (
             cam + '.html', len(h.encode('utf-8')) / 1024, len(base.encode('utf-8')) / 1024))
-    print('\nControl de palabras en disenadores.html (texto visible; revisar, no se reescribe):')
-    for l in control_palabras(salidas['disenadores']):
-        print(' -', l[:260])
+    for cam in salidas:
+        if copy[cam].get('control_palabras'):
+            print('\nControl de palabras en %s.html (texto visible; revisar, no se reescribe):' % cam)
+            for l in control_palabras(salidas[cam]):
+                print(' -', l[:260])
 
 
 if __name__ == '__main__':

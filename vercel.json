@@ -1,5 +1,5 @@
 {
-  "rewrites": [{"source":"/agencias","destination":"/agencias.html"},{"source":"/disenadores","destination":"/disenadores.html"},{"source":"/negocios","destination":"/negocios.html"}],
+  "rewrites": [{"source":"/agencias","destination":"/agencias.html"},{"source":"/tiendas","destination":"/tiendas.html"},{"source":"/dropshipping","destination":"/dropshipping.html"}],
   "headers": [
     {
       "source": "/(.*)",
