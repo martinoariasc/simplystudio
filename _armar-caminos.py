@@ -186,6 +186,26 @@ def hero_un_boton(sec, c):
     return sec[:e[1]] + CSS_HERO_UN_BOTON + bloque + sec[e[1]:]
 
 
+CSS_RECIBES = ('<style id="aviso-recibes">.cm-recibes{margin:14px auto 0;max-width:36ch;font:500 14px/1.45 var(--sans);'
+               'letter-spacing:-.005em;color:var(--ink-2);text-align:center;text-wrap:balance}'
+               '.bf-portada .cm-recibes{margin-top:16px}</style>')
+
+
+def aviso_recibes(s, frase):
+    """Martino 26/11 noche: junto a cada boton de las secciones por perfil, que quede claro que se compra."""
+    p = '<p class="cm-recibes">%s</p>' % frase
+    puntos = [('Inicio', '<p class="bf-nota">'), ('Inicio', '<span class="v2-cta-nota">'),
+              ('Dos caminos', '<span class="v2-cta-nota">'), ('Empieza hoy', '<p class="nov-bajo-boton">')]
+    for i, (esc, ancla) in enumerate(puntos):
+        a, b = seccion(s, esc)
+        sec = s[a:b]
+        if sec.count(ancla) != 1:
+            raise Falla('ANCLAJE (aviso 16 minutos): %s en "%s" aparece %d veces' % (ancla, esc, sec.count(ancla)))
+        sec = sec.replace(ancla, (CSS_RECIBES if i == 0 else '') + p + ancla)
+        s = s[:a] + sec + s[b:]
+    return s
+
+
 def que_es(sec, c, ancla):
     buscar = ancla['_comun']['que_es_tarjetas_buscar']
     nuevas = c['que_es_tarjetas']
@@ -510,6 +530,7 @@ CSS_DC = r'''
 .dc-anim figure{margin:0;min-width:0}
 .dc-lab{display:block;margin:0 0 14px;text-align:center;font:400 10px/1.2 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 .dc-lab-b{color:var(--forest)}
+.dc-dos .dc-lab{min-height:2.5em;display:flex;align-items:flex-end;justify-content:center}
 .dc-cap{margin:16px 0 0;text-align:center;font:400 clamp(18px,2vw,24px)/1.15 var(--serif);letter-spacing:-.01em;color:var(--ink)}
 .dc-dos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(18px,5vw,64px);max-width:620px;margin-inline:auto}
 .dc-scr{position:relative;overflow:hidden;aspect-ratio:2/3;border-radius:clamp(16px,2.6vw,26px);background:var(--white);box-shadow:0 0 0 clamp(4px,.7vw,7px) #050605,0 0 0 calc(clamp(4px,.7vw,7px) + 1px) var(--line-strong),0 34px 60px -30px rgba(0,0,0,.6)}
@@ -522,9 +543,10 @@ CSS_DC = r'''
 .dc-ac{aspect-ratio:100/13;display:flex;align-items:center;gap:6%;padding:0 6%}
 .dc-ac svg{width:9%;height:auto;fill:none;stroke:var(--ink);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round;overflow:visible}
 .dc-ac svg:last-child{margin-left:auto}
-.dc-ph-a .dc-trk{animation-name:dcA;animation-duration:6.4s}
-.dc-ph-b .dc-trk{animation-name:dcB,dcF;animation-duration:6.4s}
-.dc-like{transform-box:fill-box;transform-origin:center;animation:dcLike 6.4s infinite paused}
+.dc-ph-a .dc-trk,.dc-ph-b .dc-trk{animation-name:dcS;animation-duration:14s}
+.dc-like{transform-box:fill-box;transform-origin:center;fill:transparent;stroke:var(--ink);animation:dcLk 14s infinite paused;animation-delay:calc(var(--i,0)*2s)}
+@keyframes dcS{0.00%,11.43%{transform:translateY(-0.0000%)}14.29%,25.71%{transform:translateY(-12.5000%)}28.57%,40.00%{transform:translateY(-25.0000%)}42.86%,54.29%{transform:translateY(-37.5000%)}57.14%,68.57%{transform:translateY(-50.0000%)}71.43%,82.86%{transform:translateY(-62.5000%)}85.71%,97.14%{transform:translateY(-75.0000%)}100%{transform:translateY(-87.5000%)}}
+@keyframes dcLk{0%,3.2%{fill:transparent;stroke:var(--ink);transform:scale(1)}4.4%{fill:#B8453B;stroke:#B8453B;transform:scale(1.3)}5.4%,13.6%{fill:#B8453B;stroke:#B8453B;transform:scale(1)}14.2%,100%{fill:transparent;stroke:var(--ink);transform:scale(1)}}
 .dc-buy{position:absolute;left:50%;bottom:13%;z-index:2;padding:9px 15px;border-radius:999px;background:var(--ink);color:var(--paper);font:500 clamp(10px,1.3vw,13px)/1 var(--sans);letter-spacing:-.01em;white-space:nowrap;opacity:0;transform:translate(-50%,10px);box-shadow:0 10px 24px -10px rgba(20,20,16,.6);animation:dcBuy 6.4s infinite paused}
 @keyframes dcA{0%,16%{transform:translateY(0)}22%,36%{transform:translateY(-20%)}42%,56%{transform:translateY(-40%)}62%,76%{transform:translateY(-60%)}82%,100%{transform:translateY(-80%)}}
 @keyframes dcB{0%,14%{transform:translateY(0)}21%,30%{transform:translateY(-33.3333%);animation-timing-function:cubic-bezier(.12,.85,.22,1)}42%,100%{transform:translateY(-66.6667%)}}
@@ -582,7 +604,7 @@ CSS_DC = r'''
 .dc-sec .v2-cta .btn:hover{background:var(--forest)}
 @media(min-width:760px){.dc-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
 @media (prefers-reduced-motion:reduce){.dc-anim *{animation:none!important}
-.dc-ph-a .dc-trk{transform:translateY(-20%)}.dc-ph-b .dc-trk{transform:translateY(-66.6667%)}
+.dc-ph-a .dc-trk,.dc-ph-b .dc-trk{transform:none}
 .dc-buy{opacity:1;transform:translate(-50%,0)}.dc-like{fill:#B8453B;stroke:#B8453B}
 .dc-t{opacity:.22}.dc-t-c{opacity:1;transform:scale(1.12)}.dc-p{opacity:1}.dc-k2{opacity:1}
 .dc-slot img,.dc-cell img{opacity:1}}
@@ -612,26 +634,36 @@ def _img(src, w, h, alt=''):
     return '<img src="%s" width="%d" height="%d" alt="%s" loading="lazy" decoding="async">' % (src, w, h, alt)
 
 
-def _post(src, like=False):
+def _post(src, like=False, i=0):
     ico = lambda k, extra='': '<svg viewBox="0 0 24 24"%s>%s</svg>' % (extra, SVG_ICO[k])
     corazon = ('<svg viewBox="0 0 24 24"><path class="dc-like" d="%s"/></svg>' % re.search(r'd="([^"]+)"', SVG_ICO['heart']).group(1)
                if like else ico('heart'))
-    return ('<div class="dc-post"><div class="dc-hd"><i></i><b></b></div>' + _img(src, 640, 800) +
+    return ('<div class="dc-post" style="--i:%d"><div class="dc-hd"><i></i><b></b></div>' % i + _img(src, 640, 800) +
             '<div class="dc-ac">' + corazon + ico('com') + ico('send') + ico('save') + '</div></div>')
 
 
+# Martino 26/11 noche: en el scroll cada anuncio feo va al lado del MISMO producto en clase S (assets/s-cinta).
+# Izquierda: los feos calcados de sus 6 referencias (feos-tanda). Derecha: solo clase S, nunca un feo.
+PARES_SCROLL = [
+    ('assets/feos/feo-energia-640.webp', 'assets/s-cinta/s-06.webp'),
+    ('assets/feos/feo-zapatillas-640.webp', 'assets/s-cinta/s-21.webp'),
+    ('assets/feos/feo-bolso-640.webp', 'assets/s-cinta/s-02.webp'),
+    ('assets/feos/feo-ketchup-640.webp', 'assets/s-cinta/s-15.webp'),
+    ('assets/feos/feo-rubor-640.webp', 'assets/s-cinta/s-05.webp'),
+    ('assets/feos/feo-peine-640.webp', 'assets/s-cinta/s-04.webp'),
+    ('assets/feos/feo-bolso-2-640.webp', 'assets/s-cinta/s-30.webp'),
+]
+
+
 def anim_scroll(t):
-    # Anuncios feos calcados de las 6 referencias de Martino (26/11 noche): feos-tanda -> assets/feos
-    feos = ['assets/feos/feo-bolso-640.webp', 'assets/feos/feo-zapatillas-640.webp',
-            'assets/feos/feo-ketchup-640.webp', 'assets/feos/feo-energia-640.webp']
-    izq = ''.join(_post(x) for x in feos + feos[:1])
-    der = ''.join(_post(x) for x in ('assets/feos/feo-peine-640.webp', 'assets/feos/feo-rubor-640.webp')) +         _post('assets/nov/par-bolso-a.webp', like=True)
+    izq = ''.join(_post(f, i=i) for i, (f, _) in enumerate(PARES_SCROLL)) + _post(PARES_SCROLL[0][0])
+    der = ''.join(_post(c, like=True, i=i) for i, (_, c) in enumerate(PARES_SCROLL)) + _post(PARES_SCROLL[0][1])
     return ('<div class="dc-anim dc-scroll reveal" role="img" aria-label="%s"><div class="dc-dos">'
             '<figure class="dc-ph-a"><figcaption class="dc-lab">%s</figcaption><div class="dc-scr"><div class="dc-trk">%s</div></div>'
             '<p class="dc-cap">%s</p></figure>'
-            '<figure class="dc-ph-b"><figcaption class="dc-lab dc-lab-b">%s</figcaption><div class="dc-scr"><div class="dc-trk">%s</div>'
-            '<span class="dc-buy" aria-hidden="true">%s</span></div><p class="dc-cap">%s</p></figure>'
-            '</div></div>') % (t['aria'], t['lab_a'], izq, t['cap_a'], t['lab_b'], der, t['boton'], t['cap_b'])
+            '<figure class="dc-ph-b"><figcaption class="dc-lab dc-lab-b">%s</figcaption><div class="dc-scr"><div class="dc-trk">%s</div></div>'
+            '<p class="dc-cap">%s</p></figure>'
+            '</div></div>') % (t['aria'], t['lab_a'], izq, t['cap_a'], t['lab_b'], der, t['cap_b'])
 
 
 def anim_proveedor(t):
@@ -715,6 +747,8 @@ def armar(base, copy, camino):
         s = edita_seccion(s, 'La IA no lo sabe todo', lambda x: versus(x, c['versus']))
     if c.get('dos_caminos'):
         s = mover_cta_a_dos_caminos(s, c['dos_caminos'])
+    if copy['comun'].get('recibes'):
+        s = aviso_recibes(s, copy['comun']['recibes'])
     if c.get('galeria_cinta'):
         s = edita_seccion(s, 'Inicio', lambda x: cinta(x, c['galeria_cinta'], 2, False, 'Inicio'))
         s = edita_seccion(s, 'Más historias', lambda x: cinta(x, c['galeria_cinta'], 0, True, 'Más historias'))
