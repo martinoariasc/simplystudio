@@ -394,6 +394,10 @@ def versus(sec, nombre):
         sec, n = re.subn(pat, nuevo, sec)
         if n != 1:
             raise Falla('ANCLAJE NO ENCONTRADO (versus): ' + pat)
+    # el feo del bolso pasa a ser el calcado de las referencias de Martino (26/11 noche)
+    if 'assets/nov/versus-bolso-feo' not in sec:
+        raise Falla('ANCLAJE NO ENCONTRADO: assets/nov/versus-bolso-feo en "La IA no lo sabe todo"')
+    sec = sec.replace('assets/nov/versus-bolso-feo', 'assets/feos/feo-bolso')
     resto = texto(sec) + ' '.join(re.findall(r'(?:alt|aria-label)="[^"]*"', sec))
     if re.search(r'hambur', resto, re.I):
         raise Falla('Quedo la palabra "hamburguesa" en "La IA no lo sabe todo"; revisar los textos')
@@ -617,10 +621,11 @@ def _post(src, like=False):
 
 
 def anim_scroll(t):
-    feos = ['assets/versus-nb/generico-640.webp', 'assets/nov/versus-bolso-feo-640.webp',
-            'assets/prompt-ads/05-comparacion-anuncio-generico-640.webp', 'assets/nov/versus-burguer-feo-640.webp']
+    # Anuncios feos calcados de las 6 referencias de Martino (26/11 noche): feos-tanda -> assets/feos
+    feos = ['assets/feos/feo-bolso-640.webp', 'assets/feos/feo-zapatillas-640.webp',
+            'assets/feos/feo-ketchup-640.webp', 'assets/feos/feo-energia-640.webp']
     izq = ''.join(_post(x) for x in feos + feos[:1])
-    der = ''.join(_post(x) for x in (feos[0], feos[2])) + _post('assets/nov/par-bolso-a.webp', like=True)
+    der = ''.join(_post(x) for x in ('assets/feos/feo-peine-640.webp', 'assets/feos/feo-rubor-640.webp')) +         _post('assets/nov/par-bolso-a.webp', like=True)
     return ('<div class="dc-anim dc-scroll reveal" role="img" aria-label="%s"><div class="dc-dos">'
             '<figure class="dc-ph-a"><figcaption class="dc-lab">%s</figcaption><div class="dc-scr"><div class="dc-trk">%s</div></div>'
             '<p class="dc-cap">%s</p></figure>'
@@ -650,8 +655,8 @@ def anim_proveedor(t):
 
 
 def anim_tanda(t):
-    feos = ['assets/nov/versus-bolso-feo-640.webp', 'assets/versus-nb/generico-640.webp',
-            'assets/prompt-ads/05-comparacion-anuncio-generico-640.webp']
+    feos = ['assets/feos/feo-bolso-2-640.webp', 'assets/feos/feo-zapatillas-2-640.webp',
+            'assets/feos/feo-peine-640.webp']
     slots = ''.join('<div class="dc-slot dc-s%d">%s</div>' % (i + 1, _img(x, 640, 800)) for i, x in enumerate(feos))
     reloj = ('<div class="dc-slot dc-clock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/>'
              '<path d="M50 50V30"/><path class="dc-hand" d="M50 50l17 9"/></svg></div>')
