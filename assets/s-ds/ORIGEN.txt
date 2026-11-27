@@ -1,0 +1,40 @@
+Cinta de dropshipping (Martino 27/11): ds-NN.webp en el orden de la cinta, 480x600 (4:5), webp q80.
+Formato: número | ruta original | producto · estado (publicado en IG y fecha; tier del tablero IA/Fabrica de contenido/tablero-tiers).
+Orden: 01-05 clase S publicadas que nombró (Game Boy, Marshall, olla, «John Fus» = candidato Sol de Janeiro, bolso); 06-13 electrónica; 14-25 cremas y belleza; 26-30 suplementos y bienestar (fotos de galería de la tienda, sin logo: OJO, no están en el tablero de tiers); 31-36 resto.
+
+ds-01 | C:\Users\USER\Desktop\Jobs\Productos digitales\simply studio\ig\automatizado\_una-sola-foto-30-10\gameboy\05.jpg | Game Boy (consola retro) · publicado 06/11 · tier A
+ds-02 | C:\Users\USER\Documents\ChatGPT\simply studio\outputs\feed-5-productos-clase-s\marshall\feed\02.jpg | Marshall Emberton III (parlante) · publicado 08/11 · tier A
+ds-03 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\producciones\simply-studio\feed-06-11-tres-productos-b\le-creuset-cocotte\feed\04.jpg | Le Creuset (olla de hierro) · publicado 09/11 · tier S
+ds-04 | C:\Users\USER\Desktop\Jobs\Productos digitales\simply studio\ig\automatizado\_programacion\subir\2026-10-29-sol-de-janeiro\06.jpg | Sol de Janeiro (crema corporal; candidato a «John Fus») · publicado 09/11 · sin voto
+ds-05 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\marcas\referencias\colaboraciones\col-cos-bolso-11.png (ya estaba en la cinta: assets/s-cinta/s-02.webp) | COS (bolso acolchado) · tier S
+ds-06 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\marcas\referencias\colaboraciones\col-bose-5.png (ya estaba en la cinta: assets/s-cinta/s-29.webp) | Bose (auriculares) · tier S
+ds-07 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\producciones\simply-studio\feed-06-11-tres-productos\smeg-kettle\feed\03.jpg | Smeg (hervidor eléctrico) · tier S
+ds-08 | C:\Users\USER\Desktop\Jobs\Productos digitales\simply studio\ig\automatizado\_una-sola-foto-30-10\gameboy\06.jpg | Game Boy (consola retro) · publicado 06/11 · tier A
+ds-09 | C:\Users\USER\Documents\ChatGPT\simply studio\outputs\feed-5-productos-clase-s\marshall\feed\12.jpg | Marshall Emberton III (parlante) · publicado 08/11 · tier A
+ds-10 | C:\Users\USER\Desktop\Jobs\Productos digitales\simply studio\ig\Feed\colaboraciones\casio f91w\9.png (ya estaba en la cinta como assets/s-cinta/s-50.webp, pero en 480x634: recortada de nuevo a 4:5 desde el original) | Casio F-91W (reloj digital) · tier S
+ds-11 | C:\Users\USER\Desktop\Jobs\Productos digitales\simply studio\ig\automatizado\_programacion\ver-grande\09-Polaroid-Now\Polaroid-Now-foto-02.jpg (ya estaba en la cinta: assets/s-cinta/s-18.webp) | Polaroid Now (cámara instantánea) · tier S
+ds-12 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\producciones\simply-studio\feed-06-11-tres-productos\smeg-kettle\feed\08.jpg | Smeg (hervidor eléctrico) · tier S
+ds-13 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\marcas\referencias\colaboraciones\col-bose-9.png (ya estaba en la cinta: assets/s-cinta/s-46.webp) | Bose (auriculares) · tier S
+ds-14 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\producciones\simply-studio\feed-06-11-tres-productos-b\kiehls-ultra-facial-v2\feed\02.jpg | Kiehl's Ultra Facial (crema facial) · tier S
+ds-15 | C:\Users\USER\Documents\ChatGPT\simply studio\outputs\feed-5-productos-clase-s\loccitane\feed\02.jpg (ya estaba en la cinta: assets/s-cinta/s-43.webp) | L'Occitane (crema de manos) · publicado 05/11 · tier S
+ds-16 | C:\Users\USER\Desktop\Jobs\Productos digitales\simply studio\ig\automatizado\_programacion\subir\2026-10-29-sol-de-janeiro\04.jpg | Sol de Janeiro (crema corporal) · publicado 09/11 · sin voto
+ds-17 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\marcas\referencias\colaboraciones\col-rare-beauty-2.png (ya estaba en la cinta: assets/s-cinta/s-05.webp) | Rare Beauty (rubor líquido) · tier S
+ds-18 | C:\Users\USER\Desktop\Jobs\Productos digitales\simply studio\ig\automatizado\_nivea-codex-30-10\_motor\NV07.png (ya estaba en la cinta: assets/s-cinta/s-26.webp) | NIVEA Creme (crema) · tier S
+ds-19 | C:\Users\USER\Desktop\Jobs\Productos digitales\simply studio\ig\automatizado\_mac-ruby-woo-30-10\final\02.jpg | MAC Ruby Woo (labial) · publicado 31/10 · tier S
+ds-20 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\producciones\simply-studio\feed-06-11-tres-productos-b\kiehls-ultra-facial-v2\feed\06.jpg | Kiehl's Ultra Facial (crema facial) · tier S
+ds-21 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\marcas\referencias\colaboraciones\col-peine-9.png (ya estaba en la cinta: assets/s-cinta/s-32.webp) | Peine (accesorio de belleza) · tier S
+ds-22 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\marcas\referencias\colaboraciones\col-rare-beauty-7.png (ya estaba en la cinta: assets/s-cinta/s-66.webp) | Rare Beauty (rubor líquido) · tier S
+ds-23 | C:\Users\USER\Documents\ChatGPT\simply studio\outputs\feed-5-productos-clase-s\loccitane\feed\06.jpg (ya estaba en la cinta: assets/s-cinta/s-69.webp) | L'Occitane (crema de manos) · publicado 05/11 · tier S
+ds-24 | C:\Users\USER\Desktop\Jobs\Productos digitales\simply studio\ig\automatizado\_programacion\subir\2026-10-19-santal\07.jpg (ya estaba en la cinta: assets/s-cinta/s-40.webp) | Santal 33 (perfume) · tier S
+ds-25 | C:\Users\USER\Documents\ChatGPT\simply studio\outputs\feed-5-productos-clase-s\diptyque\feed\03.jpg (ya estaba en la cinta: assets/s-cinta/s-24.webp) | Diptyque Baies (vela aromática) · publicado 05/11 · tier S
+ds-26 | C:\Users\USER\Desktop\Jobs\Dropshipping\Tan Simple Paraguay\rediseno-chic-06-11\imagenes\gomitas-de-colageno-30cap\G06.jpg | Gomitas de colágeno (suplemento) · galería tienda, sin logo · sin voto
+ds-27 | C:\Users\USER\Desktop\Jobs\Dropshipping\Tan Simple Paraguay\rediseno-chic-06-11\imagenes\curcuma-y-pimienta-capsulas\G02.jpg | Cúrcuma y pimienta en cápsulas (suplemento) · galería tienda, sin logo · sin voto
+ds-28 | C:\Users\USER\Desktop\Jobs\Dropshipping\Tan Simple Paraguay\rediseno-chic-06-11\imagenes\aceite-de-curcuma-con-pimienta-negra\G06.jpg | Aceite de cúrcuma con pimienta negra (bienestar) · galería tienda, sin logo · sin voto
+ds-29 | C:\Users\USER\Desktop\Jobs\Dropshipping\Tan Simple Paraguay\rediseno-chic-06-11\imagenes\mini-pistola-de-masaje\G02.jpg | Mini pistola de masaje (bienestar) · galería tienda, sin logo · sin voto
+ds-30 | C:\Users\USER\Desktop\Jobs\Dropshipping\Tan Simple Paraguay\rediseno-chic-06-11\imagenes\humidificador-ovni-efecto-lluvia\G02.jpg | Humidificador efecto lluvia (hogar y bienestar) · galería tienda, sin logo · sin voto
+ds-31 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\producciones\simply-studio\feed-06-11-tres-productos-b\le-creuset-cocotte\feed\09.jpg | Le Creuset (olla de hierro) · publicado 09/11 · tier S
+ds-32 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\marcas\referencias\colaboraciones\col-rimowa-maleta-12.png (ya estaba en la cinta: assets/s-cinta/s-08.webp) | Rimowa (maleta de aluminio) · tier S
+ds-33 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\producciones\simply-studio\feed-06-11-tres-productos\birkenstock-boston\feed\02.jpg | Birkenstock Boston (zueco) · tier S
+ds-34 | C:\Users\USER\Desktop\Jobs\Productos digitales\simply studio\ig\automatizado\_programacion\subir\2026-10-19-rayban-10\03.jpg (ya estaba en la cinta: assets/s-cinta/s-39.webp) | Ray-Ban Wayfarer (lentes de sol) · tier S
+ds-35 | C:\Users\USER\Desktop\Jobs\Productos digitales\simply studio\ig\automatizado\_programacion\subir\2026-10-21-havaianas\02.jpg (ya estaba en la cinta: assets/s-cinta/s-14.webp) | Havaianas (ojotas) · tier S
+ds-36 | C:\Users\USER\Desktop\Jobs\IA\Fabrica de contenido\marcas\referencias\colaboraciones\col-cos-bolso-8.png (ya estaba en la cinta: assets/s-cinta/s-74.webp) | COS (bolso acolchado) · tier S

@@ -424,7 +424,7 @@ def versus(sec, nombre):
     return sec
 
 
-def cinta(sec, nums, eager, invertir, donde):
+def cinta(sec, nums, eager, invertir, donde, carpeta='s-cinta', rotar=0):
     """Deja en la cinta solo las piezas `nums` (clonando el marcado de una pieza existente)."""
     pistas = abrir_tags(sec, 'div', 'v2-gal-set')
     if not pistas:
@@ -437,12 +437,15 @@ def cinta(sec, nums, eager, invertir, donde):
     if not re.search(r's-cinta/s-\d+\.webp', molde):
         raise Falla('ANCLAJE CAMBIO: las piezas de la cinta de %s ya no usan assets/s-cinta/s-NN.webp' % donde)
     orden = list(reversed(nums)) if invertir else list(nums)
+    if rotar:
+        orden = orden[rotar:] + orden[:rotar]
+    pre = {'s-cinta': 's', 's-ds': 'ds'}[carpeta]
     salida = []
     for i, n in enumerate(orden):
         nn = '%02d' % n
-        if not os.path.exists(os.path.join(AQUI, 'assets', 's-cinta', 's-%s.webp' % nn)):
-            raise Falla('FALTA la imagen assets/s-cinta/s-%s.webp' % nn)
-        f = re.sub(r's-cinta/s-\d+\.webp', 's-cinta/s-%s.webp' % nn, molde)
+        if not os.path.exists(os.path.join(AQUI, 'assets', carpeta, '%s-%s.webp' % (pre, nn))):
+            raise Falla('FALTA la imagen assets/%s/%s-%s.webp' % (carpeta, pre, nn))
+        f = re.sub(r's-cinta/s-\d+\.webp', '%s/%s-%s.webp' % (carpeta, pre, nn), molde)
         f = re.sub(r'loading="\w+"', 'loading="%s"' % ('eager' if i < eager else 'lazy'), f)
         salida.append(f)
     return sec[:st[2]] + ''.join(salida) + sec[st[3]:]
@@ -667,7 +670,7 @@ def anim_scroll(t):
 
 
 def anim_proveedor(t):
-    sets = [['assets/nov/par-bolso-f.webp', 'assets/nov/par-bolso-a.webp'],
+    sets = t.get('sets') or [['assets/nov/par-bolso-f.webp', 'assets/nov/par-bolso-a.webp'],
             ['assets/nov/par-samba-f.webp', 'assets/nov/par-samba-a.webp'],
             ['assets/nov/par-peine-f.webp', 'assets/nov/par-peine-a.webp']]
     for f in sum(sets, []):
@@ -750,8 +753,10 @@ def armar(base, copy, camino):
     if copy['comun'].get('recibes'):
         s = aviso_recibes(s, copy['comun']['recibes'])
     if c.get('galeria_cinta'):
-        s = edita_seccion(s, 'Inicio', lambda x: cinta(x, c['galeria_cinta'], 2, False, 'Inicio'))
-        s = edita_seccion(s, 'Más historias', lambda x: cinta(x, c['galeria_cinta'], 0, True, 'Más historias'))
+        car = c.get('galeria_carpeta', 's-cinta')
+        rot = c.get('galeria_rotar_abajo', 0)
+        s = edita_seccion(s, 'Inicio', lambda x: cinta(x, c['galeria_cinta'], 2, False, 'Inicio', car))
+        s = edita_seccion(s, 'Más historias', lambda x: cinta(x, c['galeria_cinta'], 0, not rot, 'Más historias', car, rot))
     s = edita_seccion(s, 'Cómo funciona', lambda x: como_funciona(x, c, ancla))
     vistos = []
 
