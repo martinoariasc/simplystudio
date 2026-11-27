@@ -737,6 +737,11 @@ def armar(base, copy, camino):
     ancla['_comun'] = copy['comun']
     s = base
     s = head(s, c, camino)
+    # MARCA DE CAMINO (27/11): el sck de Hotmart empieza con el camino, para saber de qué landing salió cada venta
+    viejo = 'var p=[origen,saved.utm_campaign||"",saved.utm_content||""]'
+    if s.count(viejo) != 1:
+        raise Falla('ANCLAJE NO ENCONTRADO: armado del sck en el script de seguimiento')
+    s = s.replace(viejo, 'var p=["c-%s",origen,saved.utm_campaign||"",saved.utm_content||""]' % camino)
     s = edita_seccion(s, 'Inicio', lambda x: hero(x, c, ancla))
     if c['hero'].get('toca'):
         s = edita_seccion(s, 'Inicio', lambda x: hero_un_boton(x, c))
