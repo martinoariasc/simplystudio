@@ -164,6 +164,28 @@ def hero(sec, c, ancla):
     return poner_interno(sec, e, c['hero']['parrafo'])
 
 
+CSS_HERO_UN_BOTON = (
+    '<style id="hero-un-boton">'
+    'html.of-bf #resultado .nov-hero-cta{display:none!important}'
+    '#resultado .nov-hero-desc .bf-portada{margin:clamp(14px,2vw,20px) auto 0!important}'
+    '#resultado .nov-hero-desc .bf-portada .bf-texto{display:none!important}'
+    '</style>')
+
+
+def hero_un_boton(sec, c):
+    """Martino 26/11 noche: titulo -> imagenes pasando -> «Imagina...» -> «Metodo Prompt Ads para <perfil>»
+    -> UN solo boton (el de «Conseguir el Metodo» con los medios de pago). La linea del perfil sale de arriba."""
+    e = uno(sec, 'span', 'nov-eye-largo', donde='(hero, eyebrow)')
+    sec = sec[:e[0]] + sec[e[1]:]
+    e = uno(sec, 'p', 'nov-hero-toca', donde='(hero, linea del metodo)')
+    sec = poner_interno(sec, e, c['hero']['toca'])
+    b = uno(sec, 'div', 'bf-portada', donde='(hero, boton de arriba)')
+    bloque = sec[b[0]:b[1]]
+    sec = sec[:b[0]] + sec[b[1]:]
+    e = uno(sec, 'p', 'nov-hero-toca', donde='(hero, linea del metodo)')
+    return sec[:e[1]] + CSS_HERO_UN_BOTON + bloque + sec[e[1]:]
+
+
 def que_es(sec, c, ancla):
     buscar = ancla['_comun']['que_es_tarjetas_buscar']
     nuevas = c['que_es_tarjetas']
@@ -676,6 +698,8 @@ def armar(base, copy, camino):
     s = base
     s = head(s, c, camino)
     s = edita_seccion(s, 'Inicio', lambda x: hero(x, c, ancla))
+    if c['hero'].get('toca'):
+        s = edita_seccion(s, 'Inicio', lambda x: hero_un_boton(x, c))
     s = edita_seccion(s, 'Qué es', lambda x: que_es(x, c, ancla))
     s = edita_seccion(s, 'Tu problema', lambda x: dolor(x, c))
     if c.get('bloque_catalogo'):
